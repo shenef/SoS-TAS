@@ -1,4 +1,6 @@
 # Logging
-verbosity       : DEBUG         # Verbosity of log messages in the console.
+logging:
+  color_log           : True    # Colors the console output. May not work on some systems.
+  verbosity           : DEBUG   # Verbosity of log messages in the console.
                                 # These are the valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
                                 # Full log will always be available in a file.

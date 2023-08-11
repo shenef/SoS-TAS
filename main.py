@@ -1,36 +1,28 @@
-import imgui
+import config
 from GUI import Window
+from engine.seq import SequencerEngine, SeqList, SeqLog
 
-# Temporary window
-class SoSWindow(Window):
-    def __init__(self) -> None:
-        super().__init__()
-        # Local state
-        self.string = ""
-        self.f = 0.5
-
-    def draw_window(self) -> None:
-        # Print some text
-        imgui.text("Hello, world!")
-        # A button
-        if imgui.button("OK"):
-            print(f"String: {self.string}")
-            print(f"Float: {self.f}")
-        # Set up some interactive values
-        _, self.string = imgui.input_text("A String", self.string, 256)
-        _, self.f = imgui.slider_float("float", self.f, 0.25, 1.5)
+from log_init import initialize_logging
 
 
 if __name__ == "__main__":
-    gui = SoSWindow()
-    # Main loop
-    while(gui.is_open()):
-        gui.start_frame()
-        # Create a window and draw it
-        gui.start_window("Custom window")
-        gui.draw_window()
-        gui.end_window()
-        # End of imgui frame (render)
-        gui.end_frame()
+    # Read config data from file
+    config_data = config.open_config()
+    initialize_logging(config_data)
+
+    gui = Window()
+
+    root = SeqList(
+        name="Sea of Stars Any%",
+        #func=setup_memory,
+        children=[
+            SeqLog(name="LOG", text="Logging something"),
+        ],
+    )
+
+    # TODO: Pick category
+    sequencer = SequencerEngine(window=gui, config=config_data, root=root)
+    sequencer.run_engine()
+
     # Cleanup
     gui.close()
