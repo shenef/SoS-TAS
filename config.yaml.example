@@ -1,0 +1,4 @@
+# Logging
+verbosity       : DEBUG         # Verbosity of log messages in the console.
+                                # These are the valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+                                # Full log will always be available in a file.
