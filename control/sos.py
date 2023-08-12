@@ -101,6 +101,9 @@ class SoSController:
     def toggle_bracelet(self, state: bool):
         self.set_button(x_key=Buttons.BRACELET, value=1 if state else 0)
 
+    def toggle_turbo(self, state: bool):
+        self.set_button(x_key=Buttons.TURBO, value=1 if state else 0)
+
     def confirm(self, tapping=False):
         self.set_button(x_key=Buttons.CONFIRM, value=1)
         wait_frames(self.delay)
