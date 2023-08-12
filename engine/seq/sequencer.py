@@ -85,9 +85,11 @@ class SequencerEngine:
         self._print_timer()
         imgui.text(f"Gamestate:\n  {self.root}")
 
-        position = player_party_manager.position()
         imgui.text(
-            f"Coordinates \n x: {position.x} \n y: {position.y} \n z: {position.z}"
+            f"""Coordinates \n \
+                  x: {player_party_manager.position.x} \n 
+                  y: {player_party_manager.position.y} \n 
+                  z: {player_party_manager.position.z}"""
         )
 
         if imgui.button("Pause"):

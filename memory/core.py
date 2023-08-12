@@ -27,10 +27,21 @@ class SoSMemory():
             'monoclassfield_name': 0x0,
             'monoclassfield_offset': 0x18,
         }
+
+    def ready_for_updates(self):
+        return self.pm is not None and \
+               self.assemblies is not None and \
+               self.type_info_definition_table is not None and \
+               self.module is not None and \
+               self.module_base is not None and \
+               self.image is not None
         
     def update(self):
-        try:
-            if self.pm is None:
+        try: 
+            if self.pm is not None and not self.pm.base_address:
+                self.__init__()
+
+            if not self.ready_for_updates():
                 pm = pymem.Pymem("SeaOfStars.exe")      
                 self.pm = pm
 
@@ -47,47 +58,9 @@ class SoSMemory():
                 self._assemblies_trg_sig()
                 self._type_info_definition_table_trg_sig()
                 self.get_image()
-                
-                # ppm_class = self.get_class("PlayerPartyManager")
-
-                # parent = self.get_parent(ppm_class)
-                # instance_ptr = self.get_field(parent, "instance")
-                # print("instance ptr")
-                # print(instance_ptr)
-                
-                # static_table = self.get_static_table(parent) 
-                # singleton_ptr = (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
-                # # need to double dip into instance results, use pointer stuff instead
-                # print("singleton ptr")
-                # print(singleton_ptr)
-                # print(hex(singleton_ptr))
-                # singleton = self.get_class_root(singleton_ptr)
-                # print("singleton")
-                # print(singleton)
-                # print(hex(singleton))
-                # max_followers = self.get_field(singleton, "followersCatchUpEnabled") 
-                # print("MAX FOLLOWERS")
-                # print(max_followers)
-                # print(hex(max_followers))
-                # out = pymem.memory.read_int(self.pm.process_handle, singleton + 0x60)
-                # print(out)
-                # print(hex(max_followers))
-                # print("singleton 1")
-                # print(singleton)
-                # print(hex(singleton))
-                # singleton = pymem.memory.read_longlong(self.pm.process_handle, singleton)
-                # print("singleton 2")
-                # print(singleton)
-                # print(hex(singleton))              
-               
-
-                # out = pymem.memory.read_int(self.pm.process_handle, singleton + max_followers)
-                # print(out)
-                # get field > can follow a pointer from here
-                # 
-
+                    
         except Exception:
-            return self
+            self.__init__()
         
     def get_pointer(self, root, offsets):
         """
@@ -156,10 +129,16 @@ class SoSMemory():
     def get_parent(self, class_ptr):
         return pymem.memory.read_longlong(self.pm.process_handle, class_ptr + self.offsets["monoclass_parent"])
     
-    # This is used to get the root of the class when evaluating non-parent classes
-    def get_class_root(self, class_ptr):
-        singleton = pymem.memory.read_longlong(self.pm.process_handle, class_ptr)
-        return pymem.memory.read_longlong(self.pm.process_handle, singleton)
+    # This is used to get the fields lookup base of the class
+    # > use this if you are looking up field offsets
+    def get_class_fields_base(self, class_ptr):
+        return pymem.memory.read_longlong(self.pm.process_handle, self.get_class_base(class_ptr))
+    
+    # This is used to get the actual base of the class
+    # > use this is you are following pointers
+    def get_class_base(self, class_ptr):
+        return pymem.memory.read_longlong(self.pm.process_handle, class_ptr)
+
 
     def _assemblies_trg_sig(self):
             if self.assemblies is None:
