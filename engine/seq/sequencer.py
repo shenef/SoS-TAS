@@ -9,9 +9,10 @@ from engine.seq.base import SeqBase
 from GUI import Window
 from app import TAS_VERSION_STRING
 
+from memory.player_party_manager import PlayerPartyManager
 
 logger = logging.getLogger(__name__)
-
+player_party_manager = PlayerPartyManager()
 
 class SequencerEngine(object):
     """
@@ -59,10 +60,15 @@ class SequencerEngine(object):
         return delta
 
     def _update(self) -> None:
+        time.sleep(0.008333333)
+        # This should probably be moved somewhere nicer.
+        player_party_manager.update()
+
         # Execute current gamestate logic
         if not self.paused and not self.done:
             delta = self._get_deltatime()
             self.done = self.root.execute(delta=delta)
+            
 
     def _print_timer(self) -> None:
         # Timestamp
@@ -78,6 +84,10 @@ class SequencerEngine(object):
         # Render timer and gamestate tree
         self._print_timer()
         imgui.text(f"Gamestate:\n  {self.root}")
+
+        position = player_party_manager.position()
+        imgui.text(f"Coordinates \n x: {position.x} \n y: {position.y} \n z: {position.z}")
+
         if imgui.button("Pause"):
             if self.paused:
                 self.unpause()
@@ -97,6 +107,7 @@ class SequencerEngine(object):
     def run(self) -> None:
         self.window.start_frame()
         self.window.start_window(f"Sea of Stars TAS {TAS_VERSION_STRING}")
+
         if not self.done:
             self._update()
             self._render()

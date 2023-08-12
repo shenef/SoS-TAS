@@ -1,2 +1,5 @@
 imgui[glfw]==2.0.0
 pyyaml==6.0
+numpy
+pymem
+vgamepad
