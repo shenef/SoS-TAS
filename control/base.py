@@ -29,11 +29,11 @@ class VgTranslator:
     def _set_dpad(self, value: int):
         if value == 1:  # d_pad up
             self.gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
-        elif value == 2:  # d_pad down
+        elif value == 2:  # d_pad down  # noqa: PLR2004
             self.gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
-        elif value == 4:  # d_pad left
+        elif value == 4:  # d_pad left  # noqa: PLR2004
             self.gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
-        elif value == 8:  # d_pad right
+        elif value == 8:  # d_pad right  # noqa: PLR2004
             self.gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
         elif value == 0:
             self.gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)

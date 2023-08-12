@@ -1,9 +1,7 @@
 import config
+from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
-from engine.seq import SequencerEngine, SeqList, SeqLog
-
 from log_init import initialize_logging
-
 
 if __name__ == "__main__":
     # Read config data from file
@@ -14,7 +12,7 @@ if __name__ == "__main__":
 
     root = SeqList(
         name="Sea of Stars Any%",
-        #func=setup_memory,
+        # func=setup_memory,
         children=[
             SeqLog(name="LOG", text="Logging something"),
         ],

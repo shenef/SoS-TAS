@@ -1,13 +1,15 @@
 # Libraries and Core Files
 import logging
+
 import pymem
 
 logger = logging.getLogger(__name__)
 
-class SoSMemory():
+
+class SoSMemory:
     def __init__(self):
         self.pm = None
-        
+
     def update(self):
         # try:
         if self.pm is None:
@@ -18,23 +20,24 @@ class SoSMemory():
             print(
                 f"Base address of GameAssembly.dll in SeaOfStars.exe: {hex(self.base_addr)}"
             )
-        
+
             self.pm = pm
         # except:
         #     return self
-        
+
     def get_pointer(self, root, offsets):
         """
         Follow the pointer from the application and add the last offset.
         """
-    # try:
-        
+        # try:
+
         addr = self.pm.read_longlong(self.base_addr + root)
         last = offsets.pop()
-        for i in offsets: 
+        for i in offsets:
             addr = self.pm.read_longlong(addr + i)
-        
+
         return addr + last
+
     # except:
     #     return None
 
@@ -45,18 +48,19 @@ class SoSMemory():
         try:
             last = offsets.pop()
             addr = base
-            for i in offsets: 
+            for i in offsets:
                 addr = self.pm.read_longlong(addr + i)
-            
+
             return addr + last
-        except:
+        except Exception:
             return None
 
     def read_float(self, ptr):
         try:
             return self.pm.read_float(ptr)
-        except:
+        except Exception:
             return 0.0
+
 
 _mem = SoSMemory()
 _mem.update()

@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger("Timekeeping")
 
@@ -18,7 +18,10 @@ class Checkpoint:
         self.duration = duration
 
     def __repr__(self) -> str:
-        return f"Checkpoint at [{timestr(self.timestamp)}] {self.name} (Duration: {timestr(self.duration)})"
+        return (
+            f"Checkpoint at [{timestr(self.timestamp)}] {self.name} "
+            + f"(Duration: {timestr(self.duration)})"
+        )
 
 
 class Blackboard:
@@ -29,7 +32,7 @@ class Blackboard:
         self.dict: dict[str, Any] = {}
 
     # Dictionary
-    def get(self, key: str, default: Any = None) -> Optional[Any]:
+    def get(self, key: str, default: Any = None) -> Any | None:
         return self.dict.get(key, default)
 
     def set(self, key: str, value: Any) -> None:
@@ -71,5 +74,5 @@ def clear_blackboard():
 
 
 def blackboard() -> Blackboard:
-    global _blackboard
+    global _blackboard  # noqa: PLW0602
     return _blackboard

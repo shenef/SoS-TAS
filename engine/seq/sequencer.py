@@ -2,19 +2,20 @@
 import datetime
 import logging
 import time
+
 import imgui
 
+from app import TAS_VERSION_STRING
 from control import sos_ctrl
 from engine.seq.base import SeqBase
 from GUI import Window
-from app import TAS_VERSION_STRING
-
 from memory.player_party_manager import PlayerPartyManager
 
 logger = logging.getLogger(__name__)
 player_party_manager = PlayerPartyManager()
 
-class SequencerEngine(object):
+
+class SequencerEngine:
     """
     Engine for executing sequences of generic TAS events.
     Each event sequence can be nested using SeqList.
@@ -68,7 +69,6 @@ class SequencerEngine(object):
         if not self.paused and not self.done:
             delta = self._get_deltatime()
             self.done = self.root.execute(delta=delta)
-            
 
     def _print_timer(self) -> None:
         # Timestamp
@@ -86,7 +86,9 @@ class SequencerEngine(object):
         imgui.text(f"Gamestate:\n  {self.root}")
 
         position = player_party_manager.position()
-        imgui.text(f"Coordinates \n x: {position.x} \n y: {position.y} \n z: {position.z}")
+        imgui.text(
+            f"Coordinates \n x: {position.x} \n y: {position.y} \n z: {position.z}"
+        )
 
         if imgui.button("Pause"):
             if self.paused:
