@@ -11,23 +11,12 @@ class PlayerPartyManager:
         self.memory.update()
 
         if self.memory is not None:
+            # fmt: off
             _BASE_PTR = [
-                0xB8,
-                0x10,
-                0x40,
-                0x30,
-                0x10,
-                0x38,
-                0xA8,
-                0x10,
-                0xC8,
-                0x38,
-                0xE8,
-                0x20,
-                0x40,
-                0xD0,
-                0x200,
+                0xB8, 0x10, 0x40, 0x30, 0x10, 0x38, 0xA8, 0x10,
+                0xC8, 0x38, 0xE8, 0x20, 0x40, 0xD0, 0x200,
             ]
+            # fmt: on
 
             ptr = self.memory.get_pointer(0x2EAA3D0, _BASE_PTR)
             self.base = ptr
