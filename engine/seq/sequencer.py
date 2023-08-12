@@ -9,11 +9,19 @@ from app import TAS_VERSION_STRING
 from control import sos_ctrl
 from engine.seq.base import SeqBase
 from GUI import Window
+<<<<<<< HEAD
+=======
+from app import TAS_VERSION_STRING
+
+>>>>>>> 621c191 (Adds initial memory reads and some performance fixes)
 from memory.player_party_manager import PlayerPartyManager
 
 logger = logging.getLogger(__name__)
 player_party_manager = PlayerPartyManager()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 621c191 (Adds initial memory reads and some performance fixes)
 
 class SequencerEngine:
     """
@@ -69,6 +77,7 @@ class SequencerEngine:
         if not self.paused and not self.done:
             delta = self._get_deltatime()
             self.done = self.root.execute(delta=delta)
+            
 
     def _print_timer(self) -> None:
         # Timestamp
@@ -86,9 +95,13 @@ class SequencerEngine:
         imgui.text(f"Gamestate:\n  {self.root}")
 
         position = player_party_manager.position()
+<<<<<<< HEAD
         imgui.text(
             f"Coordinates \n x: {position.x} \n y: {position.y} \n z: {position.z}"
         )
+=======
+        imgui.text(f"Coordinates \n x: {position.x} \n y: {position.y} \n z: {position.z}")
+>>>>>>> 621c191 (Adds initial memory reads and some performance fixes)
 
         if imgui.button("Pause"):
             if self.paused:
