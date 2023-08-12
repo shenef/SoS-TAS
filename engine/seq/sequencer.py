@@ -14,6 +14,7 @@ from memory.player_party_manager import PlayerPartyManager
 logger = logging.getLogger(__name__)
 player_party_manager = PlayerPartyManager()
 
+
 class SequencerEngine:
     """
     Engine for executing sequences of generic TAS events.
@@ -68,7 +69,6 @@ class SequencerEngine:
         if not self.paused and not self.done:
             delta = self._get_deltatime()
             self.done = self.root.execute(delta=delta)
-            
 
     def _print_timer(self) -> None:
         # Timestamp
@@ -85,8 +85,8 @@ class SequencerEngine:
         self._print_timer()
         imgui.text(f"Gamestate:\n  {self.root}")
 
-        imgui.text(f"Coordinates")
-        imgui.text(f"x: {player_party_manager.position.x}")    
+        imgui.text("Coordinates")
+        imgui.text(f"x: {player_party_manager.position.x}")
         imgui.text(f"y: {player_party_manager.position.y}")
         imgui.text(f"z: {player_party_manager.position.z}")
 
