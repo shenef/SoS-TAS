@@ -1,7 +1,6 @@
 import datetime
 import logging
 import time
-from typing import Optional
 
 
 # Used to reset time reference at start of run
@@ -33,11 +32,16 @@ class DeltaTimeFormatter(logging.Formatter):
     }
 
     def format(self, record):
-        # Create a timestamp we can use to parse, using the millisecond timestamp since start of program / 1000
+        # Create a timestamp we can use to parse,
+        # using the millisecond timestamp since start of program / 1000
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
         # Create the delta property, with the format 'HH:MM:SS.sss'
-        record.delta_ms = f"{duration.strftime('%H:%M:%S')}.{int(duration.strftime('%f')) // 1000:03d}"
-        # Latter part may be removed if we are not interested in milliseconds, or replaced with %f if we want microseconds.
+        record.delta_ms = (
+            f"{duration.strftime('%H:%M:%S')}."
+            + f"{int(duration.strftime('%f')) // 1000:03d}"
+        )
+        # Latter part may be removed if we are not interested in milliseconds,
+        # or replaced with %f if we want microseconds.
         record.delta = f"{duration.strftime('%H:%M:%S')}.{int(duration.strftime('%f')) // 1000:03d}"
         record.color = self.COLOR.get(record.levelno)
         record.color_reset = self.reset
@@ -59,7 +63,10 @@ def initialize_logging(config_data: dict):
     file_log_formatter = DeltaTimeFormatter(fmt=file_log_fmt)
     # Get current time in order to create log file name
     time_now = datetime.datetime.now()
-    time_str = f"{time_now.year}{time_now.month:02d}{time_now.day:02d}_{time_now.hour:02d}_{time_now.minute:02d}_{time_now.second:02d}"
+    time_str = (
+        f"{time_now.year}{time_now.month:02d}{time_now.day:02d}_"
+        + f"{time_now.hour:02d}_{time_now.minute:02d}_{time_now.second:02d}"
+    )
 
     # Set up logging to file
     logging.basicConfig(
@@ -118,7 +125,7 @@ def initialize_logging(config_data: dict):
 
 # Method for adding a custom log level. Adapted from:
 # https://stackoverflow.com/questions/2183233/how-to-add-a-custom-loglevel-to-pythons-logging-facility/35804945#35804945
-def _add_log_level(level_name: str, level_num: int, method_name: Optional[str] = None):
+def _add_log_level(level_name: str, level_num: int, method_name: str | None = None):
     """
     Comprehensively adds a new logging level to the `logging` module and the
     currently configured logging class.
@@ -167,4 +174,3 @@ def _add_log_level(level_name: str, level_num: int, method_name: Optional[str] =
     setattr(logging, level_name, level_num)
     setattr(logging.getLoggerClass(), method_name, log_for_level)
     setattr(logging, method_name, log_to_root)
-

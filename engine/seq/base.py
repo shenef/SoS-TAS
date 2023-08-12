@@ -7,7 +7,7 @@ from GUI import Window
 logger = logging.getLogger(__name__)
 
 
-class SeqBase(object):
+class SeqBase:
     def __init__(self, name: str = "", func=None):
         self.name = name
         self.func = func

@@ -1,5 +1,7 @@
-import imgui
+import sys
+
 import glfw
+import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
@@ -8,7 +10,7 @@ from imgui.integrations.glfw import GlfwRenderer
 def create_glfw_window(window_name="Sea of Stars TAS", width=1280, height=720):
     if not glfw.init():
         print("Could not initialize OpenGL context")
-        exit(1)
+        sys.exit(1)
 
     # Set up OpenGL
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
@@ -18,19 +20,25 @@ def create_glfw_window(window_name="Sea of Stars TAS", width=1280, height=720):
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
     # Create a windowed mode window and its OpenGL context
-    window = glfw.create_window(width=int(width), height=int(height), title=window_name, monitor=None, share=None)
+    window = glfw.create_window(
+        width=int(width),
+        height=int(height),
+        title=window_name,
+        monitor=None,
+        share=None,
+    )
     glfw.make_context_current(window)
 
     # Check we actually managed to create a window
     if not window:
         glfw.terminate()
         print("Could not initialize glfw window")
-        exit(1)
+        sys.exit(1)
 
     return window
 
 
-class Window(object):
+class Window:
     def __init__(self) -> None:
         super().__init__()
 
@@ -44,7 +52,6 @@ class Window(object):
 
     def is_open(self) -> bool:
         return not glfw.window_should_close(self.window)
-
 
     def start_frame(self) -> None:
         glfw.poll_events()
@@ -72,4 +79,3 @@ class Window(object):
     def close(self) -> None:
         self.impl.shutdown()
         glfw.terminate()
-

@@ -215,8 +215,9 @@ def facing_ch(facing: Facing) -> str:
         case Facing.DOWN:
             return "v"
 
+
 # https://gist.github.com/tatsy/e14dd18079bca60ac8f78217b77332c1
-class Vec3(object):
+class Vec3:
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
@@ -243,7 +244,7 @@ class Vec3(object):
     def __add__(self, v):
         return Vec3(self.x + v.x, self.y + v.y, self.z + v.z)
 
-    def __neg__(self, _v):
+    def __neg__(self):
         return Vec3(-self.x, -self.y, -self.z)
 
     def __sub__(self, v):
@@ -265,4 +266,4 @@ class Vec3(object):
             return Vec3(self.x / v, self.y / v, self.z / v)
 
     def __str__(self):
-        return '[ %.4f, %.4f, %.4f ]' % (self.x, self.y, self.z)
+        return f"[ {self.x:.4f}, {self.y:.4f}, {self.z:.4f} ]"

@@ -1,0 +1,18 @@
+target-version = "py311"
+line-length = 100
+select = [
+  # https://beta.ruff.rs/docs/rules/
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "PL",  # pylint
+  "B",   # bugbear
+]
+ignore = [
+  "PLR0911",
+  "PLR0912",
+  "PLR0913",
+  "PLR0915",
+  "PLW0603",
+]
