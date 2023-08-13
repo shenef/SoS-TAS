@@ -26,7 +26,6 @@ class TitleSequenceManager:
     def update(self):
         try:
             self.memory.update()
-
             if self.memory.ready_for_updates():
                 singleton_ptr = self.memory.get_singleton_by_class_name(
                     "TitleSequenceManager"
@@ -51,6 +50,7 @@ class TitleSequenceManager:
             else:
                 self.__init__()
         except Exception:
+            self.title_cursor_position = TitleCursorPosition.NONE
             return
 
     def get_title_cursor_position(self):
