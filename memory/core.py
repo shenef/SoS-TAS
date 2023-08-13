@@ -5,7 +5,6 @@ import pymem
 
 logger = logging.getLogger(__name__)
 
-
 class SoSMemory:
     def __init__(self):
         self.pm = None
@@ -54,7 +53,7 @@ class SoSMemory:
                 )
                 self.module_base = self.module.lpBaseOfDll
 
-                print(
+                logger.info(
                     f"Base address of GameAssembly.dll in SeaOfStars.exe: {hex(self.module_base)}"
                 )
 
@@ -117,6 +116,7 @@ class SoSMemory:
             ptr = pymem.memory.read_longlong(
                 self.pm.process_handle, item + self.offsets["monoclass_name"]
             )
+
             name = pymem.memory.read_string(self.pm.process_handle, ptr, 128)
             if name == class_name:
                 record = item

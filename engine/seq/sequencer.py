@@ -10,11 +10,9 @@ from control import sos_ctrl
 from engine.seq.base import SeqBase
 from GUI import Window
 from memory.player_party_manager import PlayerPartyManager
-from memory.player_world_map_state import PlayerWorldMapState
 
 logger = logging.getLogger(__name__)
 player_party_manager = PlayerPartyManager()
-player_world_map_state = PlayerWorldMapState()
 
 
 class SequencerEngine:
@@ -66,7 +64,7 @@ class SequencerEngine:
         time.sleep(0.008333333)
         # This should probably be moved somewhere nicer.
         player_party_manager.update()
-        player_world_map_state.update()
+        # player_world_map_state.update()
 
         # Execute current gamestate logic
         if not self.paused and not self.done:
@@ -92,11 +90,6 @@ class SequencerEngine:
         imgui.text(f"x: {player_party_manager.position.x}")
         imgui.text(f"y: {player_party_manager.position.y}")
         imgui.text(f"z: {player_party_manager.position.z}")
-
-        imgui.text("Player World Map Coordinates")
-        imgui.text(f"x: {player_world_map_state.position.x}")
-        imgui.text(f"y: {player_world_map_state.position.y}")
-        imgui.text(f"z: {player_world_map_state.position.z}")
 
         if imgui.button("Pause"): 
             if self.paused:
