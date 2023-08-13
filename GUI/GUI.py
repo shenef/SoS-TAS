@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import glfw
@@ -5,11 +6,13 @@ import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
+logger = logging.getLogger(__name__)
+
 
 # Create the window that our GUI/visualization will be in
 def create_glfw_window(window_name="Sea of Stars TAS", width=1280, height=720):
     if not glfw.init():
-        print("Could not initialize OpenGL context")
+        logger.error("Could not initialize OpenGL context")
         sys.exit(1)
 
     # Set up OpenGL
@@ -32,7 +35,7 @@ def create_glfw_window(window_name="Sea of Stars TAS", width=1280, height=720):
     # Check we actually managed to create a window
     if not window:
         glfw.terminate()
-        print("Could not initialize glfw window")
+        logger.error("Could not initialize glfw window")
         sys.exit(1)
 
     return window

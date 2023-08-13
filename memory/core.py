@@ -54,7 +54,7 @@ class SoSMemory:
                 )
                 self.module_base = self.module.lpBaseOfDll
 
-                print(
+                logger.info(
                     f"Base address of GameAssembly.dll in SeaOfStars.exe: {hex(self.module_base)}"
                 )
 
@@ -65,6 +65,15 @@ class SoSMemory:
 
         except Exception:
             self.__init__()
+
+    def get_singleton_by_class_name(self, class_name):
+        local_class = self.get_class(class_name)
+        parent = self.get_parent(local_class)
+        instance_ptr = self.get_field(parent, "instance")
+        static_table = self.get_static_table(parent)
+        # The bitwise AND is probably not necessary here
+        # but i'll try removing it when more stuff is added
+        return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 
     def get_pointer(self, root, offsets):
         """
@@ -101,6 +110,12 @@ class SoSMemory:
         except Exception:
             return 0.0
 
+    def read_bool(self, ptr, default=False):
+        try:
+            return self.pm.read_bool(ptr)
+        except Exception:
+            return default
+
     def get_class(self, class_name):
         record = None
         unity_classes = self._get_image_classes()
@@ -108,6 +123,7 @@ class SoSMemory:
             ptr = pymem.memory.read_longlong(
                 self.pm.process_handle, item + self.offsets["monoclass_name"]
             )
+
             name = pymem.memory.read_string(self.pm.process_handle, ptr, 128)
             if name == class_name:
                 record = item
