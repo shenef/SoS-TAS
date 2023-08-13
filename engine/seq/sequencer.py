@@ -94,8 +94,10 @@ class SequencerEngine:
         imgui.text(f"z: {player_party_manager.position.z}")
 
         title_cursor_position = title_sequence_manager.get_title_cursor_position()
-        imgui.text(f"Title Cursor Position: {title_cursor_position.value} {title_cursor_position.name}")
-        if imgui.button("Pause"): 
+        imgui.text(
+            f"Title Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
+        )
+        if imgui.button("Pause"):
             if self.paused:
                 self.unpause()
             else:

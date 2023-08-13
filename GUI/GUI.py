@@ -1,13 +1,13 @@
+import logging
 import sys
 
 import glfw
 import imgui
-import logging
-
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
 logger = logging.getLogger(__name__)
+
 
 # Create the window that our GUI/visualization will be in
 def create_glfw_window(window_name="Sea of Stars TAS", width=1280, height=720):

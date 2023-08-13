@@ -5,6 +5,7 @@ import pymem
 
 logger = logging.getLogger(__name__)
 
+
 class SoSMemory:
     def __init__(self):
         self.pm = None
@@ -69,11 +70,11 @@ class SoSMemory:
         local_class = self.get_class(class_name)
         parent = self.get_parent(local_class)
         instance_ptr = self.get_field(parent, "instance")
-        static_table = self.get_static_table(parent) 
+        static_table = self.get_static_table(parent)
         # The bitwise AND is probably not necessary here
         # but i'll try removing it when more stuff is added
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
-        
+
     def get_pointer(self, root, offsets):
         """
         Follow the pointer from the application and add the last offset.
@@ -108,7 +109,8 @@ class SoSMemory:
             return self.pm.read_float(ptr)
         except Exception:
             return 0.0
-    def read_bool(self, ptr, default = False):
+
+    def read_bool(self, ptr, default=False):
         try:
             return self.pm.read_bool(ptr)
         except Exception:
