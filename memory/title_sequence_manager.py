@@ -12,6 +12,7 @@ class TitleCursorPosition(Enum):
     HowToPlay = 5
     Quit = 6
 
+
 class TitleSequenceManager:
     def __init__(self):
         self.memory = mem_handle()
@@ -57,9 +58,7 @@ class TitleSequenceManager:
 
     def get_continue_selected(self):
         # titleScreen -> continueButton -> selected
-        ptr = self.memory.follow_pointer(
-            self.base, [self.title_screen, 0x78, 0x148]
-        )
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0x78, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.Continue
