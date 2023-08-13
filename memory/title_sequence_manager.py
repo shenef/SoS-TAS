@@ -26,16 +26,16 @@ class TitleSequenceManager:
     def update(self):
         try:
             self.memory.update()
+
             if self.memory.ready_for_updates():
-                if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "TitleSequenceManager"
-                    )
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.title_screen = self.memory.get_field(
-                        self.fields_base, "titleScreen"
-                    )
+                singleton_ptr = self.memory.get_singleton_by_class_name(
+                    "TitleSequenceManager"
+                )
+                self.base = self.memory.get_class_base(singleton_ptr)
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                self.title_screen = self.memory.get_field(
+                    self.fields_base, "titleScreen"
+                )
 
                 # Update fields
                 self.title_position_set = False
