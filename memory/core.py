@@ -66,6 +66,18 @@ class SoSMemory:
         except Exception:
             self.__init__()
 
+<<<<<<< Updated upstream
+=======
+    def get_singleton_by_class_name(self, class_name):
+        local_class = self.get_class(class_name)
+        parent = self.get_parent(local_class)
+        instance_ptr = self.get_field(parent, "instance")
+        static_table = self.get_static_table(parent) 
+        # The bitwise AND is probably not necessary here
+        # but i'll try removing it when more stuff is added
+        return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
+        
+>>>>>>> Stashed changes
     def get_pointer(self, root, offsets):
         """
         Follow the pointer from the application and add the last offset.

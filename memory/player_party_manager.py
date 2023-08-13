@@ -15,14 +15,17 @@ class PlayerPartyManager:
 
             if self.memory.ready_for_updates():
                 if self.base is None or self.fields_base is None:
+<<<<<<< Updated upstream
                     local_class = self.memory.get_class("PlayerPartyManager")
                     parent = self.memory.get_parent(local_class)
                     instance_ptr = self.memory.get_field(parent, "instance")
                     static_table = self.memory.get_static_table(parent)
                     singleton_ptr = (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
+=======
+                    singleton_ptr = self.memory.get_singleton_by_class_name("PlayerPartyManager")
+>>>>>>> Stashed changes
                     self.base = self.memory.get_class_base(singleton_ptr)
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-
                     self.controller = self.memory.get_field(self.fields_base, "leader")
 
                 # Update fields

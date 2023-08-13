@@ -90,7 +90,7 @@ class SequencerEngine:
         imgui.text(f"y: {player_party_manager.position.y}")
         imgui.text(f"z: {player_party_manager.position.z}")
 
-        if imgui.button("Pause"):
+        if imgui.button("Pause"): 
             if self.paused:
                 self.unpause()
             else:
