@@ -108,6 +108,11 @@ class SoSMemory:
             return self.pm.read_float(ptr)
         except Exception:
             return 0.0
+    def read_bool(self, ptr, default = False):
+        try:
+            return self.pm.read_bool(ptr)
+        except Exception:
+            return default
 
     def get_class(self, class_name):
         record = None
