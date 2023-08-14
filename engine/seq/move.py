@@ -1,8 +1,8 @@
 import logging
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from control import sos_ctrl
-from engine.mathlib import Vec3, Vec2
+from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
 from engine.seq.time import SeqDelay
 from memory.player_party_manager import PlayerPartyManager
@@ -84,7 +84,7 @@ class SeqMove(SeqBase):
         coords: list[Vec3],
         precision: float = 0.2,
         func=None,
-        emergency_skip: Optional[Callable[[], bool]] = None,
+        emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
     ):
         self.step = 0
