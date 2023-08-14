@@ -1,5 +1,6 @@
 from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.log import SeqDebug, SeqLog
+from engine.seq.move import SeqHoldInPlace, SeqManualUntilClose, SeqMove
 from engine.seq.sequencer import SequencerEngine
 from engine.seq.time import SeqDelay, SeqMashDelay, SeqTurboMashDelay
 
@@ -15,4 +16,7 @@ __all__ = [
     "SeqDelay",
     "SeqMashDelay",
     "SeqTurboMashDelay",
+    "SeqHoldInPlace",
+    "SeqManualUntilClose",
+    "SeqMove",
 ]
