@@ -2,6 +2,7 @@ import logging
 import time
 
 import imgui
+
 from GUI.GUI import Window
 
 logger = logging.getLogger(__name__)

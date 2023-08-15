@@ -1,6 +1,7 @@
 import logging
 
 import imgui
+
 from GUI.GUI import Window
 from GUI.menu import Menu
 from memory.player_party_manager import PlayerPartyManager

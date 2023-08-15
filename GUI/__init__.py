@@ -1,5 +1,5 @@
 from GUI.GUI import Window
-from GUI.menu import MenuManager, Menu
+from GUI.menu import Menu, MenuManager
 
 __all__ = [
     "Window",
