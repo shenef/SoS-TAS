@@ -1,7 +1,10 @@
 import config
 from engine.seq import SeqList, SeqLog, SequencerEngine
-from GUI import Window
+from GUI import Window, Menu, MenuManager
+from GUI.debug_menu import DebugMenu
 from log_init import initialize_logging
+
+
 
 if __name__ == "__main__":
     # Read config data from file
@@ -10,17 +13,28 @@ if __name__ == "__main__":
 
     gui = Window()
 
-    root = SeqList(
+    # This is the root node of the TAS
+    # TODO: This should be moved to its own file
+    TAS_root = SeqList(
         name="Sea of Stars Any%",
         # func=setup_memory,
         children=[
             SeqLog(name="LOG", text="Logging something"),
         ],
     )
+    # This initializes the sequencer engine that will execute the TAS
+    sequencer = SequencerEngine(window=gui, title="Sea of Stars Any%", config=config_data, root=TAS_root)
 
-    # TODO: Pick category
-    sequencer = SequencerEngine(window=gui, config=config_data, root=root)
-    sequencer.run_engine()
+    # This is the main menu. Other menues can be instantiated as its children
+    main_menu = Menu(window=gui, title="Main Menu", children=[
+        sequencer,
+        DebugMenu(window=gui),
+    ])
+
+    # The menu manager will capture control until the GUI window is closed
+    # It allows for navigating between submenues and starting the TAS
+    menu_manager = MenuManager(window=gui, root=main_menu)
+    menu_manager.run()
 
     # Cleanup
     gui.close()
