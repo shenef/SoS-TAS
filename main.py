@@ -25,15 +25,15 @@ if __name__ == "__main__":
     # This initializes the sequencer engine that will execute the TAS
     sequencer = SequencerEngine(window=gui, title="Sea of Stars Any%", config=config_data, root=TAS_root)
 
-    # This is the main menu. Other menues can be instantiated as its children
-    main_menu = Menu(window=gui, title="Main Menu", children=[
-        sequencer,
-        DebugMenu(window=gui),
-    ])
-
     # The menu manager will capture control until the GUI window is closed
     # It allows for navigating between submenues and starting the TAS
-    menu_manager = MenuManager(window=gui, root=main_menu)
+    menu_manager = MenuManager(window=gui, root_menues=[
+        # This is the main menu. Other menues can be instantiated as its children
+        Menu(window=gui, title="Main Menu", children=[
+            sequencer,
+        ]),
+        DebugMenu(window=gui),
+    ])
     menu_manager.run()
 
     # Cleanup
