@@ -218,7 +218,7 @@ def facing_ch(facing: Facing) -> str:
 
 # https://gist.github.com/tatsy/e14dd18079bca60ac8f78217b77332c1
 class Vec3:
-    def __init__(self, x, y, z):
+    def __init__(self, x: float, y: float, z: float) -> None:
         self.x = x
         self.y = y
         self.z = z
@@ -237,6 +237,17 @@ class Vec3:
     @staticmethod
     def normalize(v):
         return v / v.norm()
+
+    @staticmethod
+    def dist(v1, v2) -> float:
+        dx = v2.x - v1.x
+        dy = v2.y - v1.y
+        dz = v2.z - v1.z
+        return math.sqrt(dx * dx + dy * dy + dz * dz)
+
+    @staticmethod
+    def is_close(v1, v2, precision: float) -> bool:
+        return Vec3.dist(v1, v2) <= precision
 
     def norm(self):
         return math.sqrt(Vec3.dot(self, self))
@@ -265,5 +276,5 @@ class Vec3:
         else:
             return Vec3(self.x / v, self.y / v, self.z / v)
 
-    def __str__(self):
+    def __repr__(self) -> str:
         return f"[ {self.x:.4f}, {self.y:.4f}, {self.z:.4f} ]"
