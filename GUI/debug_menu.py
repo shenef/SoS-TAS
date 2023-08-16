@@ -30,7 +30,7 @@ class DebugMenu(Menu):
 
         title_cursor_position = title_sequence_manager.get_title_cursor_position()
         imgui.text(
-            f"Title Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
+            f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
 
         ret = False
