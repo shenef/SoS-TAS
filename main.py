@@ -2,6 +2,7 @@ import config
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Menu, MenuManager, Window
 from GUI.debug_menu import DebugMenu
+from GUI.tools.nav_helper import NavHelper
 from log_init import initialize_logging
 
 if __name__ == "__main__":
@@ -39,6 +40,7 @@ if __name__ == "__main__":
                 ],
             ),
             DebugMenu(window=gui),
+            NavHelper(window=gui),
         ],
     )
     menu_manager.run()
