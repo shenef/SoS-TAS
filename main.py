@@ -27,11 +27,11 @@ if __name__ == "__main__":
     )
 
     # The menu manager will capture control until the GUI window is closed
-    # It allows for navigating between submenues and starting the TAS
+    # It allows for navigating between submenus and starting the TAS
     menu_manager = MenuManager(
         window=gui,
-        root_menues=[
-            # This is the main menu. Other menues can be instantiated as its children
+        root_menus=[
+            # This is the main menu. Other menus can be instantiated as its children
             Menu(
                 window=gui,
                 title="Main Menu",
