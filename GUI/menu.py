@@ -9,7 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 class Menu:
-    def __init__(self, window: Window, title: str, children: list = []) -> None:
+    def __init__(self, window: Window, title: str, children: list = None) -> None:
+        if children is None:
+            children = []
         self.window = window
         self.title = title
         self.children = children
