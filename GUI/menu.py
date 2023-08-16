@@ -3,18 +3,9 @@ import time
 
 import imgui
 
-import config
 from GUI.GUI import Window
-from log_init import initialize_logging
 
 logger = logging.getLogger(__name__)
-
-
-# Read config data from file
-config_data = config.open_config()
-initialize_logging(config_data)
-config_logging = config_data.get("logging", {})
-refresh_rate = config_logging.get("refresh_rate")
 
 
 class Menu:
@@ -50,9 +41,10 @@ class Menu:
 
 
 class MenuManager:
-    def __init__(self, window: Window, root_menus: list[Menu]) -> None:
+    def __init__(self, window: Window, root_menus: list[Menu], refresh_rate) -> None:
         self.window = window
         self.root_menus = root_menus
+        self.refresh_rate = refresh_rate
 
     def run(self) -> None:
         while self.window.is_open():
@@ -60,4 +52,4 @@ class MenuManager:
             for menu in self.root_menus:
                 menu.run(top_level=True)
             self.window.end_frame()
-            time.sleep(1 / refresh_rate)
+            time.sleep(1 / self.refresh_rate)

@@ -9,6 +9,7 @@ if __name__ == "__main__":
     # Read config data from file
     config_data = config.open_config()
     initialize_logging(config_data)
+    config_logging = config_data.get("logging", {})
 
     gui = Window()
 
@@ -42,6 +43,7 @@ if __name__ == "__main__":
             DebugMenu(window=gui),
             NavHelper(window=gui),
         ],
+        refresh_rate=config_logging.get("refresh_rate"),
     )
     menu_manager.run()
 
