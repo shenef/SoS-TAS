@@ -9,12 +9,8 @@ from app import TAS_VERSION_STRING
 from control import sos_ctrl
 from engine.seq.base import SeqBase
 from GUI import Window
-from memory.player_party_manager import PlayerPartyManager
-from memory.title_sequence_manager import TitleSequenceManager
 
 logger = logging.getLogger(__name__)
-player_party_manager = PlayerPartyManager()
-title_sequence_manager = TitleSequenceManager()
 
 
 class SequencerEngine:
@@ -23,10 +19,11 @@ class SequencerEngine:
     Each event sequence can be nested using SeqList.
     """
 
-    def __init__(self, window: Window, config, root: SeqBase):
+    def __init__(self, window: Window, title: str, config, root: SeqBase):
         self.window = window
         self.root = root
         self.done = False
+        self.title = title
         self.config = config
         self.paused = False
         self.timestamp = time.time()
@@ -63,13 +60,8 @@ class SequencerEngine:
         return delta
 
     def _update(self) -> None:
-        time.sleep(0.008333333)
-        # This should probably be moved somewhere nicer.
-        player_party_manager.update()
-        title_sequence_manager.update()
-
         # Execute current gamestate logic
-        if not self.paused and not self.done:
+        if not self.paused:
             delta = self._get_deltatime()
             self.done = self.root.execute(delta=delta)
 
@@ -88,15 +80,6 @@ class SequencerEngine:
         self._print_timer()
         imgui.text(f"Gamestate:\n  {self.root}")
 
-        imgui.text("Player Coordinates")
-        imgui.text(f"x: {player_party_manager.position.x}")
-        imgui.text(f"y: {player_party_manager.position.y}")
-        imgui.text(f"z: {player_party_manager.position.z}")
-
-        title_cursor_position = title_sequence_manager.get_title_cursor_position()
-        imgui.text(
-            f"Title Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
-        )
         if imgui.button("Pause"):
             if self.paused:
                 self.unpause()
@@ -105,20 +88,17 @@ class SequencerEngine:
         # Render the current gamestate
         self.root.render(window=self.window)
 
-    def run_engine(self) -> None:
-        self.pause()
-        # Run sequence
-        # Return current state of sequence engine (False when the game finishes)
-        while self.window.is_open():
-            self.run()
-
     # Execute and render TAS progress
-    def run(self) -> None:
-        self.window.start_frame()
+    def run(self) -> bool:
         self.window.start_window(f"Sea of Stars TAS {TAS_VERSION_STRING}")
 
-        if not self.done:
-            self._update()
-            self._render()
+        self._update()
+        self._render()
+
+        ret = False
+        if imgui.button("Stop TAS"):
+            ret = True
+            self.reset()
         self.window.end_window()
-        self.window.end_frame()
+
+        return ret
