@@ -1,8 +1,11 @@
+# User Interface
+ui:
+  refresh_rate        : 60      # Determines how often (per second) the TAS window refreshes.
+                                # Setting this too high can cause performance issues.
+
 # Logging
 logging:
   color_log           : True    # Colors the console output. May not work on some systems.
   verbosity           : DEBUG   # Verbosity of log messages in the console.
                                 # These are the valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
                                 # Full log will always be available in a file.
-  refresh_rate        : 120     # Determines how often (per second) the TAS window refreshes.
-                                # Setting this too high can cause performance issues.
