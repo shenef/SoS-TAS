@@ -13,25 +13,35 @@ player_party_manager = PlayerPartyManager()
 title_sequence_manager = TitleSequenceManager()
 
 
-class DebugMenu(Menu):
+class NavHelper(Menu):
     def __init__(self, window: Window) -> None:
-        super().__init__(window, title="Debug menu")
+        super().__init__(window, title="(WIP)Navigation helper")
 
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
         player_party_manager.update()
-        title_sequence_manager.update()
 
-        imgui.text("Player Coordinates")
-        imgui.text(f"x: {player_party_manager.position.x}")
-        imgui.text(f"y: {player_party_manager.position.y}")
-        imgui.text(f"z: {player_party_manager.position.z}")
+        imgui.text("Target Coordinates:")
+        imgui.text("x:")
+        imgui.same_line()
+        imgui.input_text("", "0.000")
 
-        title_cursor_position = title_sequence_manager.get_title_cursor_position()
-        imgui.text(
-            f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
-        )
+        imgui.text("y:")
+        imgui.same_line()
+        imgui.input_text("", "0.000")
+
+        imgui.text("z:")
+        imgui.same_line()
+        imgui.input_text("", "0.000")
+
+        imgui.text("\n")
+
+        imgui.button("Set current as target")
+        imgui.button("Navigate to target")
+        imgui.button("Cancel navigation")
+
+        imgui.set_window_size(190, 210)
 
         ret = False
         if not top_level:

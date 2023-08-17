@@ -2,12 +2,15 @@ import config
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Menu, MenuManager, Window
 from GUI.debug_menu import DebugMenu
+from GUI.tools.nav_helper import NavHelper
 from log_init import initialize_logging
 
 if __name__ == "__main__":
     # Read config data from file
     config_data = config.open_config()
     initialize_logging(config_data)
+    config_logging = config_data.get("logging", {})
+    config_ui = config_data.get("ui", {})
 
     gui = Window()
 
@@ -26,11 +29,11 @@ if __name__ == "__main__":
     )
 
     # The menu manager will capture control until the GUI window is closed
-    # It allows for navigating between submenues and starting the TAS
+    # It allows for navigating between submenus and starting the TAS
     menu_manager = MenuManager(
         window=gui,
-        root_menues=[
-            # This is the main menu. Other menues can be instantiated as its children
+        root_menus=[
+            # This is the main menu. Other menus can be instantiated as its children
             Menu(
                 window=gui,
                 title="Main Menu",
@@ -39,7 +42,9 @@ if __name__ == "__main__":
                 ],
             ),
             DebugMenu(window=gui),
+            NavHelper(window=gui),
         ],
+        refresh_rate=config_ui.get("refresh_rate", 60),
     )
     menu_manager.run()
 

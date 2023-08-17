@@ -41,14 +41,15 @@ class Menu:
 
 
 class MenuManager:
-    def __init__(self, window: Window, root_menues: list[Menu]) -> None:
+    def __init__(self, window: Window, root_menus: list[Menu], refresh_rate) -> None:
         self.window = window
-        self.root_menues = root_menues
+        self.root_menus = root_menus
+        self.refresh_rate = refresh_rate
 
     def run(self) -> None:
         while self.window.is_open():
             self.window.start_frame()
-            for menu in self.root_menues:
+            for menu in self.root_menus:
                 menu.run(top_level=True)
             self.window.end_frame()
-            time.sleep(0.008333333)
+            time.sleep(1 / self.refresh_rate)
