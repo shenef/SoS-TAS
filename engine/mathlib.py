@@ -185,11 +185,11 @@ def is_facing_opposite(a: Facing, b: Facing) -> bool:
             return b == Facing.UP
 
 
-def get_2d_facing_from_dir(dir: Vec2) -> Facing:
-    if abs(dir.x) > abs(dir.y):
-        return Facing.LEFT if dir.x < 0 else Facing.RIGHT
-    else:  # dir.y is larger
-        return Facing.UP if dir.y < 0 else Facing.DOWN
+def get_2d_facing_from_dir(direction: Vec2) -> Facing:
+    if abs(direction.x) > abs(direction.y):
+        return Facing.LEFT if direction.x < 0 else Facing.RIGHT
+    # dir.y is larger:
+    return Facing.UP if direction.y < 0 else Facing.DOWN
 
 
 def facing_str(facing: Facing) -> str:
@@ -264,8 +264,7 @@ class Vec3:
     def __mul__(self, v):
         if isinstance(v, Vec3):
             return Vec3(self.x * v.x, self.y * v.y, self.z * v.z)
-        else:
-            return Vec3(self.x * v, self.y * v, self.z * v)
+        return Vec3(self.x * v, self.y * v, self.z * v)
 
     def __rmul__(self, v):
         return self.__mul__(v)
@@ -273,8 +272,7 @@ class Vec3:
     def __div__(self, v):
         if isinstance(v, Vec3):
             return Vec3(self.x / v.x, self.y / v.y, self.z / v.z)
-        else:
-            return Vec3(self.x / v, self.y / v, self.z / v)
+        return Vec3(self.x / v, self.y / v, self.z / v)
 
     def __repr__(self) -> str:
         return f"[ {self.x:.4f}, {self.y:.4f}, {self.z:.4f} ]"

@@ -24,19 +24,17 @@ class Menu:
             if imgui.button(child.title):
                 self.active = child
         ret = False
-        if not top_level:
-            if imgui.button("Back"):
-                ret = True
+        if not top_level and imgui.button("Back"):
+            ret = True
         self.window.end_window()
         return ret
 
     def run(self, top_level: bool = False) -> bool:
         if self.active is None:
             return self.execute(top_level)
-        else:
-            done = self.active.run()
-            if done:
-                self.active = None
+        done = self.active.run()
+        if done:
+            self.active = None
         return False
 
 

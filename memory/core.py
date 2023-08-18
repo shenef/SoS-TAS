@@ -76,9 +76,7 @@ class SoSMemory:
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 
     def get_pointer(self, root, offsets):
-        """
-        Follow the pointer from the application and add the last offset.
-        """
+        """Follow the pointer from the application and add the last offset."""
         try:
             addr = self.pm.read_longlong(self.base_addr + root)
             last = offsets.pop()
@@ -91,9 +89,7 @@ class SoSMemory:
             return None
 
     def follow_pointer(self, base, offsets):
-        """
-        Follow an existing pointer and add the last offset.
-        """
+        """Follow an existing pointer and add the last offset."""
         try:
             last = offsets.pop()
             addr = base
@@ -145,8 +141,7 @@ class SoSMemory:
             return pymem.memory.read_int(
                 self.pm.process_handle, record + self.offsets["monoclassfield_offset"]
             )
-        else:
-            return None
+        return None
 
     def get_static_table(self, class_ptr):
         return pymem.memory.read_longlong(
@@ -211,7 +206,7 @@ class SoSMemory:
             )
 
             if mono_assembly is None:
-                return None
+                return
 
             name_addr_pointer = (
                 mono_assembly
