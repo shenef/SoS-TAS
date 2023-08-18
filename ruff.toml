@@ -2,12 +2,18 @@ target-version = "py311"
 line-length = 100
 select = [
   # https://beta.ruff.rs/docs/rules/
-  "E",   # pycodestyle
-  "F",   # pyflakes
-  "I",   # isort
-  "UP",  # pyupgrade
-  "PL",  # pylint
-  "B",   # bugbear
+  "A",      # flake8-builtins
+  "B",      # bugbear
+  "D200",   # pydocstyle fits-on-one-line
+  "E",      # pycodestyle
+  "F",      # pyflakes
+  "I",      # isort
+  "PL",     # pylint
+  "RET",    # flake8-return
+  "SIM",    # flake8-simplify
+  "TRY302", # tryceratops useless-try-except
+  "TRY401", # tryceratops verbose-log-message
+  "UP",     # pyupgrade
 ]
 ignore = [
   "PLR0911",
