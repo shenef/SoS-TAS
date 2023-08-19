@@ -35,14 +35,14 @@ class PlayerPartyManager:
                     self.leader = self.memory.get_field(self.fields_base, "leader")
 
                 # Update fields
-                self.get_position()
-                self.get_movement_state()
+                self._read_position()
+                self._read_movement_state()
             else:
                 self.__init__()
         except Exception:
             return
 
-    def get_position(self):
+    def _read_position(self):
         if self.memory.ready_for_updates():
             # leader -> controller -> currentTargetPosition
             ptr = self.memory.follow_pointer(self.base, [self.leader, 0x78, 0x7C])
@@ -56,7 +56,7 @@ class PlayerPartyManager:
 
         self.position = Vec3(None, None, None)
 
-    def get_movement_state(self):
+    def _read_movement_state(self):
         if self.memory.ready_for_updates():
             ptr = self.memory.follow_pointer(self.base, [self.leader, 0x70, 0x50, 0x84])
 
