@@ -15,9 +15,8 @@ player_party_manager = PlayerPartyManager()
 def move_to(player: Vec2, target: Vec2, precision: float, invert: bool = False) -> None:
     ctrl = sos_ctrl()
 
-    diff = (target - player).normalized
+    joy = (target - player).normalized
 
-    joy = diff.invert_y
     if invert:
         joy = Vec2(-joy.x, -joy.y)
 
@@ -118,6 +117,8 @@ class SeqMove(SeqBase):
 
         player_party_manager.update()
         player_pos = player_party_manager.position
+        if player_pos.x is None:
+            return
 
         ctrl = sos_ctrl()
         # If arrived, go to next coordinate in the list
