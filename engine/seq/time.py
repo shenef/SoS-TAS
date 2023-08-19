@@ -30,6 +30,20 @@ class SeqDelay(SeqBase):
         return f"Waiting({self.name})... {self.timer:.2f}/{self.timeout:.2f}"
 
 
+class SeqHoldConfirm(SeqDelay):
+    def execute(self, delta: float) -> bool:
+        self.timer += delta
+        sos_ctrl().toggle_confirm(state=True)
+        # Wait out any cutscene/pickup animation
+        done = self.timer >= self.timeout
+        if done:
+            sos_ctrl().toggle_confirm(state=False)
+        return done
+
+    def __repr__(self) -> str:
+        return f"Holding confirm while waiting ({self.name})... {self.timer:.2f}/{self.timeout:.2f}"
+
+
 class SeqMashDelay(SeqDelay):
     def execute(self, delta: float) -> bool:
         self.timer += delta
