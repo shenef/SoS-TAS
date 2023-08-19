@@ -33,6 +33,10 @@ class DebugMenu(Menu):
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
 
+        mstate_v = player_party_manager.movement_state.value
+        mstate_m = player_party_manager.movement_state.name
+        imgui.text(f"Movement State: {mstate_v} {mstate_m}")
+
         ret = False
         if not top_level:
             if imgui.button("Back"):
