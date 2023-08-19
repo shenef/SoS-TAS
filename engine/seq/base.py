@@ -2,7 +2,6 @@
 import logging
 
 from engine.blackboard import blackboard
-from GUI import Window
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +14,6 @@ class SeqBase:
     def reset(self) -> None:
         pass
 
-    def handle_input(self, input: str) -> None:  # noqa: A002
-        pass
-
     def advance_to_checkpoint(self, checkpoint: str) -> bool:
         return False
 
@@ -27,7 +23,7 @@ class SeqBase:
             self.func()
         return True
 
-    def render(self, window: Window) -> None:
+    def render(self) -> None:
         pass
 
     # Should be overloaded
@@ -86,12 +82,12 @@ class SeqList(SeqBase):
             self.step = self.step + 1
         return False
 
-    def render(self, window: Window) -> None:
+    def render(self) -> None:
         num_children = len(self.children)
         if self.step >= num_children:
             return
         cur_child = self.children[self.step]
-        cur_child.render(window=window)
+        cur_child.render()
 
     def __repr__(self) -> str:
         num_children = len(self.children)
@@ -131,12 +127,12 @@ class SeqIf(SeqBase):
         branch = self.when_true if self.selection else self.when_false
         return branch.execute(delta) if branch is not None else True
 
-    def render(self, window: Window) -> None:
+    def render(self) -> None:
         if self.selection is None:
             return
         branch = self.when_true if self.selection else self.when_false
         if branch is not None:
-            branch.render(window)
+            branch.render()
 
     def __repr__(self) -> str:
         if self.selection is None:
@@ -177,10 +173,10 @@ class SeqWhile(SeqBase):
         # If result is False, we are done
         return not self.result
 
-    def render(self, window: Window) -> None:
+    def render(self) -> None:
         if self.result is None:
             return
-        self.child.render(window)
+        self.child.render()
 
     def __repr__(self) -> str:
         if self.result is None:

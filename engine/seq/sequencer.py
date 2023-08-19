@@ -86,7 +86,7 @@ class SequencerEngine:
             else:
                 self.pause()
         # Render the current gamestate
-        self.root.render(window=self.window)
+        self.root.render()
 
     # Execute and render TAS progress
     def run(self) -> bool:
