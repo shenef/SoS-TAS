@@ -31,7 +31,7 @@ class DeltaTimeFormatter(logging.Formatter):
         logging.CRITICAL: bold_red,
     }
 
-    def format(self, record):
+    def format_log(self, record):
         # Create a timestamp we can use to parse,
         # using the millisecond timestamp since start of program / 1000
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
@@ -45,7 +45,7 @@ class DeltaTimeFormatter(logging.Formatter):
         record.delta = f"{duration.strftime('%H:%M:%S')}.{int(duration.strftime('%f')) // 1000:03d}"
         record.color = self.COLOR.get(record.levelno)
         record.color_reset = self.reset
-        return super().format(record)
+        return super().format_log(record)
 
 
 # This should be called once in main, before any calls to the logging library

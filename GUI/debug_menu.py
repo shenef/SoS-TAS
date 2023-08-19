@@ -34,8 +34,7 @@ class DebugMenu(Menu):
         )
 
         ret = False
-        if not top_level:
-            if imgui.button("Back"):
-                ret = True
+        if not top_level and imgui.button("Back"):
+            ret = True
         self.window.end_window()
         return ret

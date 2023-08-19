@@ -32,10 +32,10 @@ class Blackboard:
         self.dict: dict[str, Any] = {}
 
     # Dictionary
-    def get(self, key: str, default: Any = None) -> Any | None:
+    def get_dict(self, key: str, default: Any = None) -> Any | None:
         return self.dict.get(key, default)
 
-    def set(self, key: str, value: Any) -> None:
+    def set_dict(self, key: str, value: Any) -> None:
         self.dict[key] = value
 
     # Time related functions

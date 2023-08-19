@@ -20,9 +20,9 @@ def open_config():
         with open(CONFIG_FILE_PATH) as config_file:
             try:
                 return yaml.load(config_file, Loader=Loader)
-            except Exception as E:
+            except Exception:
                 logger.error(f"Error: Failed to parse config file {CONFIG_FILE_PATH}")
-                logger.exception(E)
+                logger.exception()
                 return {}
     except Exception:
         logger.info(

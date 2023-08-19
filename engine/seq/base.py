@@ -15,7 +15,7 @@ class SeqBase:
     def reset(self) -> None:
         pass
 
-    def handle_input(self, input: str) -> None:
+    def handle_input(self, input: str) -> None:  # noqa: A002
         pass
 
     def advance_to_checkpoint(self, checkpoint: str) -> bool:
