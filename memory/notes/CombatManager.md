@@ -5,6 +5,9 @@
   - There is information on cutsceneRunner and encounterCutscenes, this is probably for boss fights, and we'll need this information to proceed when its a blocker.
 - Timed Attacks
   - Theres a bit of information on timed attacks, we just need to know how to approach it, i believe we can get move times, when an enemy is using a move and precalculate how long we need to time before a timing attack or block, as it seems like the animation travel is static based on the code.
+- Spell Locks
+  - for the bomb characters in the demo, breaking a spell lock will kill it - need to find records for that.
+- Loot, did it drop and should we grab it?
 
 Combat Manager
   - 0xF0 - currentEncounter (Encounter)
