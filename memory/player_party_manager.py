@@ -5,7 +5,7 @@ from memory.core import mem_handle
 
 
 # PlayerDefaultState.EState
-class PlayerState(Enum):
+class PlayerMovementState(Enum):
     NONE = 0
     Running = 1
     Walking = 2
@@ -19,7 +19,7 @@ class PlayerPartyManager:
         self.fields_base = None
         self.position = Vec3(None, None, None)
         self.leader = None
-        self.movement_state = PlayerState.NONE
+        self.movement_state = PlayerMovementState.NONE
 
     def update(self):
         try:
@@ -61,15 +61,13 @@ class PlayerPartyManager:
             ptr = self.memory.follow_pointer(self.base, [self.leader, 0x70, 0x50, 0x84])
 
             match self.memory.read_int(ptr):
-                case None:
-                    self.movement_state = PlayerState.NONE
                 case 0:
-                    self.movement_state = PlayerState.NONE
+                    self.movement_state = PlayerMovementState.NONE
                 case 1:
-                    self.movement_state = PlayerState.Running
+                    self.movement_state = PlayerMovementState.Running
                 case 2:
-                    self.movement_state = PlayerState.Walking
+                    self.movement_state = PlayerMovementState.Walking
                 case 3:
-                    self.movement_state = PlayerState.Idle
+                    self.movement_state = PlayerMovementState.Idle
                 case _:
-                    self.movement_state = PlayerState.NONE
+                    self.movement_state = PlayerMovementState.NONE
