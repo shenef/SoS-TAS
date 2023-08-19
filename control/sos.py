@@ -132,6 +132,13 @@ class SoSController:
         if tapping:
             wait_frames(self.delay)
 
+    def start(self, tapping=False):
+        self.set_button(x_key=Buttons.PAUSE, value=1)
+        wait_frames(self.delay)
+        self.set_button(x_key=Buttons.PAUSE, value=0)
+        if tapping:
+            wait_frames(self.delay)
+
 
 _controller = SoSController(delay=4)
 

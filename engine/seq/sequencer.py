@@ -19,11 +19,10 @@ class SequencerEngine:
     Each event sequence can be nested using SeqList.
     """
 
-    def __init__(self, window: Window, title: str, config, root: SeqBase):
+    def __init__(self, window: Window, config, root: SeqBase):
         self.window = window
         self.root = root
         self.done = False
-        self.title = title
         self.config = config
         self.paused = False
         self.timestamp = time.time()
