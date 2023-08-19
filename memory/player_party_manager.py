@@ -11,6 +11,7 @@ class PlayerState(Enum):
     Walking = 2
     Idle = 3
 
+
 class PlayerPartyManager:
     def __init__(self):
         self.memory = mem_handle()
@@ -19,6 +20,7 @@ class PlayerPartyManager:
         self.position = Vec3(None, None, None)
         self.leader = None
         self.movement_state = PlayerState.NONE
+
     def update(self):
         try:
             self.memory.update()
@@ -54,9 +56,9 @@ class PlayerPartyManager:
 
         self.position = Vec3(None, None, None)
 
-    def get_movement_state(self): 
+    def get_movement_state(self):
         if self.memory.ready_for_updates():
-            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x70, 0x50, 0x84])        
+            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x70, 0x50, 0x84])
 
             match self.memory.read_int(ptr):
                 case None:
