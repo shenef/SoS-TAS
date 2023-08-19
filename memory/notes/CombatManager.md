@@ -1,0 +1,70 @@
+Combat Manager
+  - 0xF0 - currentEncounter (Encounter)
+    - 0x110 - encounterDone (bool)
+    - 0x168 - inGameHud (InGameHud)
+      - 0x60 - playerBattleUI (PlayerBattleUI)
+        - 0x50 - comboPointsPanel (ComboPointsPanel)
+          - 0x40 - comboPointerMeter (ComboPointsMeter)
+            - 0x3C - currentComboPoints (float) 0 - 3
+    - 0x120 - playerActors (Generic.List<PlayerCombatActor>)
+      - 0x10 - _items
+        - 0x18 - count
+        - 0x20 - Item[0] (Player 0)
+          - 0xC8 - dead
+          - 0x150 - fighterDefinition
+            - 0x18 - characterDefinitionId (2851000752) cyclops?
+            - 0x20 - battleCommands
+              - 0x18 - count (5)
+              - 0x20 - Item[0]
+                - 0x18 - descriptionLocId (figure these out)
+        - 0x28 - Item[1] (Player 1)
+          - 0xC8 - dead
+            - 0x150 - fighterDefinition
+              - 0x18 - characterDefinitionId (2851000800) moongirl?
+              - 0x20 - battleCommands
+                - 0x18 - count (5)
+                - 0x20 - Item[0]
+                  - 0x18 - descriptionLocId (figure these out)
+        - 0x30 - Item[2] (Player 2)
+          - 0xC8 - dead
+            - 0x150 - fighterDefinition
+              - 0x18 - characterDefinitionId (2851000800) sunboy?
+              - 0x20 - battleCommands
+                - 0x18 - count (5)
+                - 0x20 - Item[0]
+                  - 0x18 - descriptionLocId (figure these out)
+        - 0x38 - Item[3] (Player 3) ...
+    - 0x130 - enemyTargets (List<EnemyTarget?>)
+      - 0x10 _items
+        - 0x18 count (4?)
+        - 0x20 - item[0]
+          - 0x6C - currentHP
+          - 0x60 - dead (dead enemies seem to disappear from the list)
+        - 0x58 - owner (EnemyController?)
+          - 0xB0 - isPlayer (0)
+          - 0xF0 - enemy (Enemy)
+            - 0x100 - enemyData
+              - 0x20 - HP (39)
+              - 0x24 - speed (0)
+              - 0x28 - basePhysicalDefense (75)
+              - 0x2C - basePhysicalAttack (10)
+              - 0x30 - baseMagicAttack (20)
+              - 0x34 - baseMagicDefense (50)
+              - 0x5C - enemyLevel
+              - 0x60 - xpData
+                - 0x18 - baseXP (4)
+                - 0x1C - underLevelXPIncrease (1)
+                - 0x20 - overLevelXPreduction (2)
+          - 0x118 - castingData
+            - 0x18 - spellLocks (dont see anything about active/disabled just icons that dont point)
+              - 0x10 - _items
+                - 0x18 - count (0-x)
+                  - 0x20 - item[0] (and so on)
+                    - 0x18 icon - TODO: check status here?
+                    - 0x20 disabled icon  
+                    - 0x28 nameLocId (localization id, RE)
+                    - 0x38 damageType (the type of attack, RE)
+                - 
+            - 0x24 - turnsToAction
+            - 0x28 - totalSpellLocks
+            -
