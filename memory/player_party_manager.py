@@ -1,5 +1,15 @@
+from enum import Enum
+
 from engine.mathlib import Vec3
 from memory.core import mem_handle
+
+
+# PlayerDefaultState.EState
+class PlayerMovementState(Enum):
+    NONE = 0
+    Running = 1
+    Walking = 2
+    Idle = 3
 
 
 class PlayerPartyManager:
@@ -9,6 +19,7 @@ class PlayerPartyManager:
         self.fields_base = None
         self.position = Vec3(None, None, None)
         self.leader = None
+        self.movement_state = PlayerMovementState.NONE
 
     def update(self):
         try:
@@ -25,6 +36,7 @@ class PlayerPartyManager:
 
                 # Update fields
                 self.get_position()
+                self.get_movement_state()
             else:
                 self.__init__()
         except Exception:
@@ -43,3 +55,19 @@ class PlayerPartyManager:
                 return
 
         self.position = Vec3(None, None, None)
+
+    def get_movement_state(self):
+        if self.memory.ready_for_updates():
+            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x70, 0x50, 0x84])
+
+            match self.memory.read_int(ptr):
+                case 0:
+                    self.movement_state = PlayerMovementState.NONE
+                case 1:
+                    self.movement_state = PlayerMovementState.Running
+                case 2:
+                    self.movement_state = PlayerMovementState.Walking
+                case 3:
+                    self.movement_state = PlayerMovementState.Idle
+                case _:
+                    self.movement_state = PlayerMovementState.NONE

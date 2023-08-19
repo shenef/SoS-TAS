@@ -112,6 +112,12 @@ class SoSMemory:
         except Exception:
             return default
 
+    def read_int(self, ptr):
+        try:
+            return self.pm.read_int(ptr)
+        except Exception:
+            return None
+
     def get_class(self, class_name):
         record = None
         unity_classes = self._get_image_classes()
