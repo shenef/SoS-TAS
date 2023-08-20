@@ -31,7 +31,11 @@ Combat Manager
                 - 0x54 - targetValue (the final value, after animation)
               - 0x70 - characterDefinitionId (do these vary between reloads?)
               - 0x78 - selected (is active character for menus)
-
+    - 0x60 - liveManaHandler (boost point things)
+      - 0x20 - smallLiveManaParticles (shards on ground)
+        - 0x18 - _size (count of particles)
+      - 0x20 - bigLiveManaParticles (when combining) - only non-zero when combined trigger is held
+        - 0x18 - _size (count of orbs)
     - 0x120 - playerActors (Generic.List<PlayerCombatActor>)
       - 0x10 - _items
         - 0x18 - count
