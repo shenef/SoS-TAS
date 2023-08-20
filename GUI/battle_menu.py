@@ -23,12 +23,12 @@ class BattleMenu(Menu):
         imgui.columns(4)
 
         if len(combat_manager.enemies):
-            for idx, e in enumerate(combat_manager.players):
+            for idx, e in enumerate(combat_manager.enemies):
                 imgui.text(f"Enemy {idx}:")
                 imgui.text(f"hp: {e['current_hp']}")
                 imgui.next_column()
 
-            columns_remaining = 4 - len(combat_manager.players)
+            columns_remaining = 4 - len(combat_manager.enemies)
             for _r in range(columns_remaining):
                 imgui.next_column()
             imgui.separator()
@@ -42,7 +42,7 @@ class BattleMenu(Menu):
                 imgui.text(f"enabled: {e['enabled']}")
                 imgui.next_column()
 
-            columns_remaining = 4 - len(combat_manager.enemies)
+            columns_remaining = 4 - len(combat_manager.players)
             for _r in range(columns_remaining):
                 imgui.next_column()
         ret = False
