@@ -31,6 +31,12 @@ Combat Manager
                 - 0x54 - targetValue (the final value, after animation)
               - 0x70 - characterDefinitionId (do these vary between reloads?)
               - 0x78 - selected (is active character for menus)
+      - 0xF8 - stateMachine
+        - 0x50 - currentState
+          - 0x60 - battleCommandSelector
+            - 0x3C - hasFocus
+            - 0x40 - selectedItemIndex
+      - 0x88 turnsElapsed
     - 0x60 - liveManaHandler (boost point things)
       - 0x20 - smallLiveManaParticles (shards on ground)
         - 0x18 - _size (count of particles)
@@ -49,20 +55,20 @@ Combat Manager
                 - 0x18 - descriptionLocId (figure these out)
         - 0x28 - Item[1] (Player 1)
           - 0xC8 - dead
-            - 0x150 - fighterDefinition
-              - 0x18 - characterDefinitionId (2851000800) moongirl?
-              - 0x20 - battleCommands
-                - 0x18 - count (5)
-                - 0x20 - Item[0]
-                  - 0x18 - descriptionLocId (figure these out)
+          - 0x150 - fighterDefinition
+            - 0x18 - characterDefinitionId (2851000800) moongirl?
+            - 0x20 - battleCommands
+              - 0x18 - count (5)
+              - 0x20 - Item[0]
+                - 0x18 - descriptionLocId (figure these out)
         - 0x30 - Item[2] (Player 2)
           - 0xC8 - dead
-            - 0x150 - fighterDefinition
-              - 0x18 - characterDefinitionId (2851000848) sunboy?
-              - 0x20 - battleCommands
-                - 0x18 - count (5)
-                - 0x20 - Item[0]
-                  - 0x18 - descriptionLocId (figure these out)
+          - 0x150 - fighterDefinition
+            - 0x18 - characterDefinitionId (2851000848) sunboy?
+            - 0x20 - battleCommands
+              - 0x18 - count (5)
+              - 0x20 - Item[0]
+                - 0x18 - descriptionLocId (figure these out)
         - 0x38 - Item[3] (Player 3) ...
     - 0x130 - enemyTargets (List<EnemyTarget?>)
       - 0x10 _items
@@ -102,3 +108,11 @@ Combat Manager
 
 EnemyId - 1697522736960 - arcane sentry
 EnemyId - 1697522736960 - crystal tulip
+
+Battle Commands (nameLocId)
+2764425937664 - Attack
+
+Player Definition Ids
+2766743860064 - Sunboy
+2766744460816 - Cyclops
+2766744431856 - Moongirl

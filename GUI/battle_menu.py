@@ -22,6 +22,10 @@ class BattleMenu(Menu):
         combat_manager.update()
         imgui.text(f"Encounter Done: {combat_manager.encounter_done}")
         if not combat_manager.encounter_done:
+            imgui.text(
+                f"Battle Command Has Focus: {combat_manager.battle_command_has_focus}"
+            )
+            imgui.text(f"Battle Command Index: {combat_manager.battle_command_index}")
             imgui.text(f"Small Live Mana: {combat_manager.small_live_mana}")
             imgui.text(f"Big Live Mana: {combat_manager.big_live_mana}")
             # 4 seems to be the max enemies and players on screen

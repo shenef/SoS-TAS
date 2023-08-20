@@ -60,6 +60,8 @@ class CombatManager:
         self.encounter_done = True
         self.small_live_mana = None
         self.big_live_mana = None
+        self.battle_command_has_focus = False
+        self.battle_command_index = None
 
     def update(self):
         try:
@@ -81,11 +83,29 @@ class CombatManager:
                 self._read_live_mana()
                 self._read_players()
                 self._read_enemies()
+                self._read_battle_commands()
             else:
                 self.__init__()
 
         except Exception:
             return
+
+    # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
+    def _read_battle_commands(self):
+        if self.memory.ready_for_updates():
+            battle_command_selector = self.memory.follow_pointer(
+                self.base, [self.current_encounter_base, 0xF8, 0x50, 0x60, 0x0]
+            )
+            if battle_command_selector:
+                has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
+                selected_item_index = self.memory.read_longlong(
+                    battle_command_selector + 0x40
+                )
+                self.battle_command_has_focus = has_focus
+                self.battle_command_index = selected_item_index
+                return
+        self.battle_command_has_focus = False
+        self.battle_command_index = None
 
     def _read_encounter_done(self):
         if self.memory.ready_for_updates():
