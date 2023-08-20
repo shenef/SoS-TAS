@@ -62,6 +62,8 @@ class CombatManager:
         self.big_live_mana = None
         self.battle_command_has_focus = False
         self.battle_command_index = None
+        self.skill_command_has_focus = False
+        self.skill_command_index = None
 
     def update(self):
         try:
@@ -84,6 +86,7 @@ class CombatManager:
                 self._read_players()
                 self._read_enemies()
                 self._read_battle_commands()
+                self._read_skill_commands()
             else:
                 self.__init__()
 
@@ -98,14 +101,42 @@ class CombatManager:
             )
             if battle_command_selector:
                 has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
-                selected_item_index = self.memory.read_longlong(
-                    battle_command_selector + 0x40
-                )
+
                 self.battle_command_has_focus = has_focus
-                self.battle_command_index = selected_item_index
+                if has_focus:
+                    selected_item_index = self.memory.read_longlong(
+                        battle_command_selector + 0x40
+                    )
+                    self.battle_command_index = selected_item_index
+                else:
+                    self.battle_command_index = None
                 return
         self.battle_command_has_focus = False
         self.battle_command_index = None
+
+    # Skill Commands are the menu of the "skills" command (ie Healing Light, Sunball)
+    def _read_skill_commands(self):
+        if self.memory.ready_for_updates():
+            skill_command_selector = self.memory.follow_pointer(
+                self.base, [self.current_encounter_base, 0xF8, 0x50, 0x58, 0x0]
+            )
+            if skill_command_selector:
+                has_focus = self.memory.read_bool(skill_command_selector + 0x3C)
+                selected_item_index = self.memory.read_longlong(
+                    skill_command_selector + 0x40
+                )
+                self.skill_command_has_focus = has_focus
+                self.skill_command_index = selected_item_index
+                if has_focus:
+                    selected_item_index = self.memory.read_longlong(
+                        skill_command_selector + 0x40
+                    )
+                    self.skill_command_index = selected_item_index
+                else:
+                    self.skill_command_index = None
+                return
+        self.skill_command_has_focus = False
+        self.skill_command_index = None
 
     def _read_encounter_done(self):
         if self.memory.ready_for_updates():

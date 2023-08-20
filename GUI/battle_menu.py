@@ -12,6 +12,8 @@ combat_manager = CombatManager()
 
 
 class BattleMenu(Menu):
+    # 4 seems to be the max enemies and players on screen
+    # This may change outside the demo
     COLUMN_MAX = 4
 
     def __init__(self, window: Window) -> None:
@@ -26,10 +28,14 @@ class BattleMenu(Menu):
                 f"Battle Command Has Focus: {combat_manager.battle_command_has_focus}"
             )
             imgui.text(f"Battle Command Index: {combat_manager.battle_command_index}")
+            imgui.text(
+                f"Skill Command Has Focus: {combat_manager.skill_command_has_focus}"
+            )
+            imgui.text(f"Skill Command Index: {combat_manager.skill_command_index}")
             imgui.text(f"Small Live Mana: {combat_manager.small_live_mana}")
             imgui.text(f"Big Live Mana: {combat_manager.big_live_mana}")
-            # 4 seems to be the max enemies and players on screen
-            # This may change outside the demo
+            imgui.separator()
+
             imgui.columns(self.COLUMN_MAX)
 
             if len(combat_manager.enemies):
