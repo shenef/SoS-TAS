@@ -99,7 +99,7 @@ class CombatManager:
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     if hex(item) != "0x0":
                         definition_id = self.memory.read_longlong(item + 0x70)
-                        selected = self.memory.read_int(item + 0x78)
+                        selected = self.memory.read_bool(item + 0x78)
 
                         hp_text_field = self.memory.follow_pointer(item, [0x28, 0x0])
                         current_hp = self.memory.read_int(hp_text_field + 0x54)
