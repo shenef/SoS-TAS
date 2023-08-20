@@ -46,6 +46,7 @@ class CombatPlayer:
         self.selected = False
         self.definition_id = None
         self.enabled = None
+        self.mana_charge_count = None
 
 
 class CombatManager:
@@ -57,6 +58,8 @@ class CombatManager:
         self.players = []
         self.current_encounter_base = None
         self.encounter_done = True
+        self.small_live_mana = None
+        self.big_live_mana = None
 
     def update(self):
         try:
@@ -75,6 +78,7 @@ class CombatManager:
 
                 # Update fields
                 self._read_encounter_done()
+                self._read_live_mana()
                 self._read_players()
                 self._read_enemies()
             else:
@@ -93,6 +97,20 @@ class CombatManager:
                 self.encounter_done = done
                 return
         self.counter_done = True
+
+    def _read_live_mana(self):
+        if self.memory.ready_for_updates():
+            small_live_mana = self.memory.follow_pointer(
+                self.base, [self.current_encounter_base, 0x60, 0x20, 0x0]
+            )
+            big_live_mana = self.memory.follow_pointer(
+                self.base, [self.current_encounter_base, 0x60, 0x28, 0x0]
+            )
+            if small_live_mana and big_live_mana:
+                self.small_live_mana = self.memory.read_int(small_live_mana + 0x18)
+                self.big_live_mana = self.memory.read_int(big_live_mana + 0x18)
+                return
+        self.size = 0
 
     def _read_players(self):
         if self.memory.ready_for_updates():
@@ -119,6 +137,12 @@ class CombatManager:
 
                         portrait = self.memory.follow_pointer(item, [0x68, 0x0])
                         enabled = self.memory.read_bool(portrait + 0x20)
+                        live_mana_handler = self.memory.follow_pointer(
+                            item, [0x68, 0x28, 0x118, 0x0]
+                        )
+                        mana_charge_count = self.memory.read_int(
+                            live_mana_handler + 0x58
+                        )
 
                         mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
                         current_mp = self.memory.read_int(mp_text_field + 0x54)
@@ -128,6 +152,7 @@ class CombatManager:
                         player.definition_id = definition_id
                         player.selected = selected
                         player.enabled = enabled
+                        player.mana_charge_count = mana_charge_count
                         players.append(player)
 
                     address += 0x8
