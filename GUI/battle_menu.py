@@ -20,6 +20,7 @@ class BattleMenu(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
         combat_manager.update()
+        imgui.text(f"Encounter Done: {combat_manager.encounter_done}")
         # 4 seems to be the max enemies and players on screen
         # This may change outside the demo
         imgui.columns(self.COLUMN_MAX)

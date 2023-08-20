@@ -56,6 +56,7 @@ class CombatManager:
         self.enemies = []
         self.players = []
         self.current_encounter_base = None
+        self.encounter_done = True
 
     def update(self):
         try:
@@ -73,6 +74,7 @@ class CombatManager:
                     )
 
                 # Update fields
+                self._read_encounter_done()
                 self._read_players()
                 self._read_enemies()
             else:
@@ -80,6 +82,17 @@ class CombatManager:
 
         except Exception:
             return
+
+    def _read_encounter_done(self):
+        if self.memory.ready_for_updates():
+            current_encounter = self.memory.follow_pointer(
+                self.base, [self.current_encounter_base, 0x0]
+            )
+            if current_encounter:
+                done = self.memory.read_bool(current_encounter + 0x110)
+                self.encounter_done = done
+                return
+        self.counter_done = True
 
     def _read_players(self):
         if self.memory.ready_for_updates():
