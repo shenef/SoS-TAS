@@ -1,5 +1,6 @@
 import config
 from GUI import Menu, MenuManager, Window
+from GUI.battle_menu import BattleMenu
 from GUI.debug_menu import DebugMenu
 from GUI.tools.nav_helper import NavHelper
 from log_init import initialize_logging
@@ -29,6 +30,7 @@ if __name__ == "__main__":
             ),
             DebugMenu(window=gui),
             NavHelper(window=gui),
+            BattleMenu(window=gui),
         ],
         refresh_rate=config_ui.get("refresh_rate", 60),
     )

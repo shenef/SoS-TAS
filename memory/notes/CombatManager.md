@@ -17,6 +17,21 @@ Combat Manager
         - 0x50 - comboPointsPanel (ComboPointsPanel)
           - 0x40 - comboPointerMeter (ComboPointsMeter)
             - 0x3C - currentComboPoints (float) 0 - 3
+    - 0xE0 - controller
+      - 0x80 - battleUI
+        - 0x40 - playerPanelsList
+          - 0x10 - _items
+            - 0x18 - Count
+            - 0x20 - Item[0] - 0x08 width
+              - 0x28 - hpTextField
+                - 0x50 - currentvalue (the animations current value when losing health)
+                - 0x54 - targetValue (the final value, after animation)
+              - 0x30 - actionPointsTextField (MP)
+                - 0x50 - currentvalue (the animations current value when losing mp)
+                - 0x54 - targetValue (the final value, after animation)
+              - 0x70 - characterDefinitionId (do these vary between reloads?)
+              - 0x78 - selected (is active character for menus)
+
     - 0x120 - playerActors (Generic.List<PlayerCombatActor>)
       - 0x10 - _items
         - 0x18 - count
