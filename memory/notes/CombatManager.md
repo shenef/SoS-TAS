@@ -100,6 +100,5 @@ Combat Manager
             -
 
 
-Spell Lock Damage Types
-2 - Sword
-8 - Moon
+EnemyId - 1697522736960 - arcane sentry
+EnemyId - 1697522736960 - crystal tulip

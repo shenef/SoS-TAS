@@ -5,14 +5,16 @@ from memory.core import mem_handle
 
 class CombatDamageType(Enum):
     NONE = 0
-    _unknown = 1
+    Any = 1
     Sword = 2
-    _unknown2 = 3
-    _unknown3 = 4
-    _unknown4 = 5
-    _unknown5 = 6
-    _unknown6 = 7
+    Sun = 4
     Moon = 8
+    Eclipse = 16
+    Poison = 32
+    Arcane = 64
+    Stun = 128
+    Blunt = 256
+    Magical = 252
 
 
 class CombatSpellLock:
@@ -31,6 +33,9 @@ class CombatEnemyTarget:
         self.max_hp = None
         self.current_hp = None
         self.casting_data = CombatCastingData()
+        self.turns_to_action = None
+        self.total_spell_locks = 0
+        self.spell_locks = []
 
 
 class CombatPlayer:
@@ -132,12 +137,34 @@ class CombatManager:
             if items:
                 count = self.memory.read_int(items + 0x18)
                 address = 0x20
+
                 for _x in range(count):
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     if hex(item) != "0x0":
                         current_hp = self.memory.read_int(item + 0x6C)
+                        casting_data = self.memory.follow_pointer(
+                            items, [address, 0x58, 0x118, 0x0]
+                        )
+                        turns_to_action = self.memory.read_short(casting_data + 0x24)
+                        total_spell_locks = self.memory.read_short(casting_data + 0x28)
+
+                        spell_locks = []
+                        spell_locks_addr = 0x20
+
+                        for _s in range(total_spell_locks):
+                            spell_locks_base = self.memory.follow_pointer(
+                                casting_data, [0x18, 0x10, spell_locks_addr, 0x0]
+                            )
+                            lock = self.memory.read_int(spell_locks_base + 0x38)
+                            spell_locks.append(CombatDamageType(lock))
+                            spell_locks_addr += 0x8
+
                         enemy = CombatEnemyTarget()
                         enemy.current_hp = current_hp
+                        enemy.turns_to_action = turns_to_action
+                        enemy.total_spell_locks = total_spell_locks
+                        enemy.spell_locks = spell_locks
+
                         enemies.append(enemy)
                     address += 0x8
 

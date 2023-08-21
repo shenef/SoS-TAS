@@ -118,6 +118,12 @@ class SoSMemory:
         except Exception:
             return None
 
+    def read_short(self, ptr):
+        try:
+            return self.pm.read_short(ptr)
+        except Exception:
+            return None
+
     def read_longlong(self, ptr):
         try:
             return self.pm.read_longlong(ptr)
