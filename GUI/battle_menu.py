@@ -43,7 +43,10 @@ class BattleMenu(Menu):
                     imgui.text(f"Enemy {idx}:")
                     imgui.text(f"hp: {e.current_hp}")
                     imgui.text(f"next action: {e.turns_to_action}")
+                    targeted = e.unique_id == combat_manager.selected_target_guid
+                    imgui.text(f"Targeted: {targeted}")
                     imgui.text(f"LOCKS: {e.total_spell_locks}")
+
                     for lock in e.spell_locks:
                         imgui.text(f"{lock.name}")
                     imgui.next_column()

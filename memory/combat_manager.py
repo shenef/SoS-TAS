@@ -34,6 +34,7 @@ class CombatEnemyTarget:
         self.current_hp = None
         self.casting_data = CombatCastingData()
         self.turns_to_action = None
+        self.unique_id = None
         self.total_spell_locks = 0
         self.spell_locks = []
 
@@ -54,6 +55,7 @@ class CombatManager:
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
+        self.selector_base = None
         self.enemies = []
         self.players = []
         self.current_encounter_base = None
@@ -64,34 +66,33 @@ class CombatManager:
         self.battle_command_index = None
         self.skill_command_has_focus = False
         self.skill_command_index = None
+        self.selected_target_guid = None
 
     def update(self):
-        try:
-            self.memory.update()
+        # try:
+        self.memory.update()
 
-            if self.memory.ready_for_updates():
-                if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "CombatManager"
-                    )
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.current_encounter_base = self.memory.get_field(
-                        self.fields_base, "currentEncounter"
-                    )
+        if self.memory.ready_for_updates():
+            if self.base is None or self.fields_base is None:
+                singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
+                self.base = self.memory.get_class_base(singleton_ptr)
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                self.current_encounter_base = self.memory.get_field(
+                    self.fields_base, "currentEncounter"
+                )
 
-                # Update fields
-                self._read_encounter_done()
-                self._read_live_mana()
-                self._read_players()
-                self._read_enemies()
-                self._read_battle_commands()
-                self._read_skill_commands()
-            else:
-                self.__init__()
+            # Update fields
+            self._read_encounter_done()
+            self._read_live_mana()
+            self._read_players()
+            self._read_enemies()
+            self._read_battle_commands()
+            self._read_skill_commands()
+        else:
+            self.__init__()
 
-        except Exception:
-            return
+    # except Exception:
+    #     return
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self):
@@ -195,6 +196,29 @@ class CombatManager:
                             live_mana_handler + 0x58
                         )
 
+                        target_unique_id_base = self.memory.follow_pointer(
+                            item,
+                            [
+                                0x68,
+                                0x28,
+                                0x150,
+                                0x30,
+                                0x90,
+                                0x80,
+                                0x40,
+                                0x80,
+                                0x58,
+                                0xF0,
+                                0xD8,
+                                0x18,
+                                0x0,
+                            ],
+                        )
+
+                        selected_target_guid = self.memory.read_guid(
+                            target_unique_id_base + 0x14
+                        )
+
                         mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
                         current_mp = self.memory.read_int(mp_text_field + 0x54)
                         player = CombatPlayer()
@@ -205,6 +229,7 @@ class CombatManager:
                         player.enabled = enabled
                         player.mana_charge_count = mana_charge_count
                         players.append(player)
+                        self.selected_target_guid = selected_target_guid
 
                     address += 0x8
 
@@ -234,6 +259,10 @@ class CombatManager:
                         casting_data = self.memory.follow_pointer(
                             items, [address, 0x58, 0x118, 0x0]
                         )
+                        unique_id = self.memory.follow_pointer(
+                            items, [address, 0x58, 0xF0, 0xD8, 0x18, 0x0]
+                        )
+                        enemy_unique_id = self.memory.read_guid(unique_id + 0x14)
                         turns_to_action = self.memory.read_short(casting_data + 0x24)
                         total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
@@ -250,6 +279,7 @@ class CombatManager:
 
                         enemy = CombatEnemyTarget()
                         enemy.current_hp = current_hp
+                        enemy.unique_id = enemy_unique_id
                         enemy.turns_to_action = turns_to_action
                         enemy.total_spell_locks = total_spell_locks
                         enemy.spell_locks = spell_locks
