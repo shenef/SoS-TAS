@@ -26,26 +26,21 @@ class CombatCastingData:
         self.spell_locks = []
 
 
-class CombatEnemy:
-    def __init__(self, params=dict):
+class CombatEnemyTarget:
+    def __init__(self):
         self.max_hp = None
-        self.dead = params["dead"]
-        self.current_hp = params["current_hp"]
-        self.speed = None
-        self.base_physical_defense = None
-        self.base_physical_attack = None
-        self.base_magic_attack = None
+        self.current_hp = None
         self.casting_data = CombatCastingData()
 
 
 class CombatPlayer:
     def __init__(self, params=dict):
         self.max_hp = None
-        self.current_hp = params["current_hp"]
-        self.current_mp = params["current_mp"]
-        self.selected = params["selected"]
-        self.definition_id = params["definition_id"]
-        self.enabled = params["enabled"]
+        self.current_hp = None
+        self.current_mp = None
+        self.selected = False
+        self.definition_id = None
+        self.enabled = None
 
 
 class CombatManager:
@@ -109,15 +104,14 @@ class CombatManager:
 
                         mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
                         current_mp = self.memory.read_int(mp_text_field + 0x54)
-                        players.append(
-                            {
-                                "current_hp": current_hp,
-                                "current_mp": current_mp,
-                                "definition_id": definition_id,
-                                "selected": selected,
-                                "enabled": enabled,
-                            }
-                        )
+                        player = CombatPlayer()
+                        player.current_hp = current_hp
+                        player.current_mp = current_mp
+                        player.definition_id = definition_id
+                        player.selected = selected
+                        player.enabled = enabled
+                        players.append(player)
+
                     address += 0x8
 
             self.players = players
@@ -141,8 +135,10 @@ class CombatManager:
                 for _x in range(count):
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     if hex(item) != "0x0":
-                        hp = self.memory.read_int(item + 0x6C)
-                        enemies.append({"current_hp": hp})
+                        current_hp = self.memory.read_int(item + 0x6C)
+                        enemy = CombatEnemyTarget()
+                        enemy.current_hp = current_hp
+                        enemies.append(enemy)
                     address += 0x8
 
             self.enemies = enemies

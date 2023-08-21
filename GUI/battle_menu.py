@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 combat_manager = CombatManager()
 
+COLUMN_MAX = 4
+
 
 class BattleMenu(Menu):
     def __init__(self, window: Window) -> None:
@@ -20,29 +22,29 @@ class BattleMenu(Menu):
         combat_manager.update()
         # 4 seems to be the max enemies and players on screen
         # This may change outside the demo
-        imgui.columns(4)
+        imgui.columns(COLUMN_MAX)
 
         if len(combat_manager.enemies):
             for idx, e in enumerate(combat_manager.enemies):
                 imgui.text(f"Enemy {idx}:")
-                imgui.text(f"hp: {e['current_hp']}")
+                imgui.text(f"hp: {e.current_hp}")
                 imgui.next_column()
 
-            columns_remaining = 4 - len(combat_manager.enemies)
+            columns_remaining = COLUMN_MAX - len(combat_manager.enemies)
             for _r in range(columns_remaining):
                 imgui.next_column()
             imgui.separator()
 
         if len(combat_manager.players):
             for e in combat_manager.players:
-                imgui.text(f"{e['definition_id']}")
-                imgui.text(f"hp: {e['current_hp']}")
-                imgui.text(f"mp: {e['current_mp']}")
-                imgui.text(f"selected: {e['selected']}")
-                imgui.text(f"enabled: {e['enabled']}")
+                imgui.text(f"{e.definition_id}")
+                imgui.text(f"hp: {e.current_hp}")
+                imgui.text(f"mp: {e.current_mp}")
+                imgui.text(f"selected: {e.selected}")
+                imgui.text(f"enabled: {e.enabled}")
                 imgui.next_column()
 
-            columns_remaining = 4 - len(combat_manager.players)
+            columns_remaining = COLUMN_MAX - len(combat_manager.players)
             for _r in range(columns_remaining):
                 imgui.next_column()
         ret = False
