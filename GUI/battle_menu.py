@@ -30,8 +30,8 @@ class BattleMenu(Menu):
                 imgui.text(f"hp: {e.current_hp}")
                 imgui.text(f"next action: {e.turns_to_action}")
                 imgui.text(f"LOCKS: {e.total_spell_locks}")
-                for l in e.spell_locks:
-                    imgui.text(f"{l.name}")
+                for lock in e.spell_locks:
+                    imgui.text(f"{lock.name}")
                 imgui.next_column()
 
             columns_remaining = COLUMN_MAX - len(combat_manager.enemies)
