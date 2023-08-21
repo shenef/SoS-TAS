@@ -105,14 +105,6 @@ Combat Manager
             - 0x28 - totalSpellLocks
             -
 
-
-EnemyId - 1697522736960 - arcane sentry
-EnemyId - 1697522736960 - crystal tulip
-
-Battle Commands (nameLocId)
-2764425937664 - Attack
-
-Player Definition Ids
-2766743860064 - Sunboy
-2766744460816 - Cyclops
-2766744431856 - Moongirl
+Enemy GUIDs
+Arcane Sentry: 013ecd2381fd8574c910cb58203eb2df
+Crystal Tulip: 90c4097a7ecb8d6439bdc8d7a48b8992
