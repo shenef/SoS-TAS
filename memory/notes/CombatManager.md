@@ -1,0 +1,110 @@
+
+- TODO: Character HP
+- TODO: Boost (AP) on ground
+- Cutscenes
+  - There is information on cutsceneRunner and encounterCutscenes, this is probably for boss fights, and we'll need this information to proceed when its a blocker.
+- Timed Attacks
+  - Theres a bit of information on timed attacks, we just need to know how to approach it, i believe we can get move times, when an enemy is using a move and precalculate how long we need to time before a timing attack or block, as it seems like the animation travel is static based on the code.
+- Spell Locks
+  - for the bomb characters in the demo, breaking a spell lock will kill it - need to find records for that.
+- Loot, did it drop and should we grab it?
+
+Combat Manager
+  - 0xF0 - currentEncounter (Encounter)
+    - 0x110 - encounterDone (bool)
+    - 0x168 - inGameHud (InGameHud)
+      - 0x60 - playerBattleUI (PlayerBattleUI)
+        - 0x50 - comboPointsPanel (ComboPointsPanel)
+          - 0x40 - comboPointerMeter (ComboPointsMeter)
+            - 0x3C - currentComboPoints (float) 0 - 3
+    - 0xE0 - controller
+      - 0x80 - battleUI
+        - 0x40 - playerPanelsList
+          - 0x10 - _items
+            - 0x18 - Count
+            - 0x20 - Item[0] - 0x08 width
+              - 0x28 - hpTextField
+                - 0x50 - currentvalue (the animations current value when losing health)
+                - 0x54 - targetValue (the final value, after animation)
+              - 0x30 - actionPointsTextField (MP)
+                - 0x50 - currentvalue (the animations current value when losing mp)
+                - 0x54 - targetValue (the final value, after animation)
+              - 0x70 - characterDefinitionId (do these vary between reloads?)
+              - 0x78 - selected (is active character for menus)
+      - 0xF8 - stateMachine
+        - 0x50 - currentState
+          - 0x60 - battleCommandSelector
+            - 0x3C - hasFocus
+            - 0x40 - selectedItemIndex
+      - 0x88 turnsElapsed
+    - 0x60 - liveManaHandler (boost point things)
+      - 0x20 - smallLiveManaParticles (shards on ground)
+        - 0x18 - _size (count of particles)
+      - 0x20 - bigLiveManaParticles (when combining) - only non-zero when combined trigger is held
+        - 0x18 - _size (count of orbs)
+    - 0x120 - playerActors (Generic.List<PlayerCombatActor>)
+      - 0x10 - _items
+        - 0x18 - count
+        - 0x20 - Item[0] (Player 0)
+          - 0xC8 - dead
+          - 0x150 - fighterDefinition
+            - 0x18 - characterDefinitionId (2851000752) cyclops?
+            - 0x20 - battleCommands
+              - 0x18 - count (5)
+              - 0x20 - Item[0]
+                - 0x18 - descriptionLocId (figure these out)
+        - 0x28 - Item[1] (Player 1)
+          - 0xC8 - dead
+          - 0x150 - fighterDefinition
+            - 0x18 - characterDefinitionId (2851000800) moongirl?
+            - 0x20 - battleCommands
+              - 0x18 - count (5)
+              - 0x20 - Item[0]
+                - 0x18 - descriptionLocId (figure these out)
+        - 0x30 - Item[2] (Player 2)
+          - 0xC8 - dead
+          - 0x150 - fighterDefinition
+            - 0x18 - characterDefinitionId (2851000848) sunboy?
+            - 0x20 - battleCommands
+              - 0x18 - count (5)
+              - 0x20 - Item[0]
+                - 0x18 - descriptionLocId (figure these out)
+        - 0x38 - Item[3] (Player 3) ...
+    - 0x130 - enemyTargets (List<EnemyTarget?>)
+      - 0x10 _items
+        - 0x18 count (4?)
+        - 0x20 - item[0]
+          - 0x6C - currentHP
+          - 0x60 - dead (dead enemies seem to disappear from the list)
+        - 0x58 - owner (EnemyController?)
+          - 0xB0 - isPlayer (0)
+          - 0xF0 - enemy (Enemy)
+            - 0x100 - enemyData
+              - 0x20 - HP (39)
+              - 0x24 - speed (0)
+              - 0x28 - basePhysicalDefense (75)
+              - 0x2C - basePhysicalAttack (10)
+              - 0x30 - baseMagicAttack (20)
+              - 0x34 - baseMagicDefense (50)
+              - 0x5C - enemyLevel
+              - 0x60 - xpData
+                - 0x18 - baseXP (4)
+                - 0x1C - underLevelXPIncrease (1)
+                - 0x20 - overLevelXPReduction (2)
+          - 0x118 - castingData
+            - 0x18 - spellLocks (they drop their pointer when disabled to 0x0)
+              - 0x10 - _items
+                - 0x18 - count (0-x)
+                  - 0x20 - item[0] (and so on)
+                    - 0x18 icon - TODO: check status here?
+                    - 0x20 disabled icon  
+                    - 0x28 nameLocId (localization id, RE)
+                    - 0x38 damageType (the type of attack, RE)
+                - 
+            - 0x24 - turnsToAction
+            - 0x28 - totalSpellLocks
+            -
+
+Enemy GUIDs
+Arcane Sentry: 013ecd2381fd8574c910cb58203eb2df
+Crystal Tulip: 90c4097a7ecb8d6439bdc8d7a48b8992

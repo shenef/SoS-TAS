@@ -1,4 +1,5 @@
 # Libraries and Core Files
+import codecs
 import logging
 
 import pymem
@@ -115,6 +116,27 @@ class SoSMemory:
     def read_int(self, ptr):
         try:
             return self.pm.read_int(ptr)
+        except Exception:
+            return None
+
+    def read_short(self, ptr):
+        try:
+            return self.pm.read_short(ptr)
+        except Exception:
+            return None
+
+    def read_guid(self, ptr):
+        try:
+            string_bytes = self.pm.read_bytes(ptr, 71)
+
+            return codecs.decode(string_bytes, "UTF-8")
+
+        except Exception:
+            return None
+
+    def read_longlong(self, ptr):
+        try:
+            return self.pm.read_longlong(ptr)
         except Exception:
             return None
 
