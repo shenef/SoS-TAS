@@ -1,8 +1,8 @@
 from control import sos_ctrl
 from engine.seq.move import SeqMove
-from memory.combat_manager import CombatManager
+from memory.combat_manager import combat_manager_handle
 
-combat_manager = CombatManager()
+combat_manager = combat_manager_handle()
 
 
 # TODO: Temporary code, moves along path, pausing while combat is active
