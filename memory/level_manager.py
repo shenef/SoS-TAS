@@ -53,3 +53,11 @@ class LevelManager:
         value = self.memory.read_string(ptr + 0x14, length * 2)
         if value:
             self.scene_name = value
+
+
+_level_manager_mem = LevelManager()
+_level_manager_mem.update()
+
+
+def handle() -> LevelManager:
+    return _level_manager_mem
