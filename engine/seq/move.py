@@ -85,11 +85,19 @@ class SeqHoldInPlace(SeqDelay):
         return f"Waiting({self.name}) at {self.target}... {self.timer:.2f}/{self.timeout:.2f}"
 
 
+class Jump:
+    def __init__(self) -> None:
+        pass
+
+    def __repr__(self) -> str:
+        return "Jump/Climb"
+
+
 class SeqMove(SeqBase):
     def __init__(
         self,
         name: str,
-        coords: list[Vec3],
+        coords: list[Vec3 | Jump],
         precision: float = 0.2,
         running: bool = True,
         func=None,
@@ -132,8 +140,12 @@ class SeqMove(SeqBase):
             return
 
         ctrl = sos_ctrl()
+        if isinstance(target, Jump):
+            logger.debug(f"Checkpoint reached {self.step}. Pressing A to jump/climb")
+            ctrl.confirm()
+            self.step = self.step + 1
         # If arrived, go to next coordinate in the list
-        if Vec3.is_close(player_pos, target, self.precision):
+        elif Vec3.is_close(player_pos, target, self.precision):
             logger.debug(
                 f"Checkpoint reached {self.step}. Player: {player_pos} Target: {target}"
             )
@@ -164,3 +176,13 @@ class SeqMove(SeqBase):
         target = self.coords[self.step]
         step = self.step + 1
         return f"{self.name}[{step}/{num_coords}]: {target}"
+
+
+class SeqClimb(SeqMove):
+    def move_function(self, player_pos: Vec3, target_pos: Vec3):
+        move_to(
+            player=Vec2(player_pos.x, player_pos.y),
+            target=Vec2(target_pos.x, target_pos.y),
+            running=self.running,
+            invert=self.invert,
+        )
