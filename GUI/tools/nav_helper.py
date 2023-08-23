@@ -60,7 +60,6 @@ class NavHelper(Menu):
 
         imgui.same_line()
         _, self.is_run = imgui.checkbox("Run", self.is_run)
-        move_speed = 1.0 if self.is_run else 0.5
 
         if imgui.button("Stop (timed)"):
             self.moving = False
@@ -80,7 +79,7 @@ class NavHelper(Menu):
             move_to(
                 player=Vec2(player_pos.x, player_pos.z),
                 target=Vec2(self.target_locked.x, self.target_locked.z),
-                speed=move_speed,
+                running=self.is_run,
             )
             if Vec3.is_close(player_pos, self.target_locked, precision=self.precision):
                 self.moving = False

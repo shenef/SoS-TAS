@@ -13,10 +13,11 @@ player_party_manager = PlayerPartyManager()
 
 
 def move_to(
-    player: Vec2, target: Vec2, speed: float = 1.0, invert: bool = False
+    player: Vec2, target: Vec2, running: bool = True, invert: bool = False
 ) -> None:
     ctrl = sos_ctrl()
 
+    speed = 1.0 if running else 0.5
     joy = speed * (target - player).normalized
 
     if invert:
@@ -54,11 +55,11 @@ class SeqHoldInPlace(SeqDelay):
         target: Vec3,
         timeout_in_s: float,
         precision: float = 0.1,
-        speed: float = 1.0,
+        running: bool = True,
     ):
         self.target = target
         self.precision = precision
-        self.speed = speed
+        self.running = running
         self.timer = 0
         super().__init__(name=name, timeout_in_s=timeout_in_s)
 
@@ -67,7 +68,7 @@ class SeqHoldInPlace(SeqDelay):
         player_pos = player_party_manager.position
         # If arrived, go to next coordinate in the list
         if not Vec3.is_close(player_pos, self.target, precision=self.precision):
-            move_to(player=player_pos, target=self.target, speed=self.speed)
+            move_to(player=player_pos, target=self.target, running=self.running)
             return False
         # Stay still
         ctrl = sos_ctrl()
@@ -90,7 +91,7 @@ class SeqMove(SeqBase):
         name: str,
         coords: list[Vec3],
         precision: float = 0.2,
-        speed: float = 1.0,
+        running: bool = True,
         func=None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
@@ -98,7 +99,7 @@ class SeqMove(SeqBase):
         self.step = 0
         self.coords = coords
         self.precision = precision
-        self.speed = speed
+        self.running = running
         self.emergency_skip = emergency_skip
         self.invert = invert
         super().__init__(name, func=func)
@@ -115,7 +116,7 @@ class SeqMove(SeqBase):
         move_to(
             player=Vec2(player_pos.x, player_pos.z),
             target=Vec2(target_pos.x, target_pos.z),
-            speed=self.speed,
+            running=self.running,
             invert=self.invert,
         )
 
