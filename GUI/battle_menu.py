@@ -21,6 +21,9 @@ class BattleMenu(Menu):
 
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
+
+        imgui.set_window_collapsed(1, condition=imgui.ONCE)
+
         combat_manager.update()
         imgui.text(f"Encounter Done: {combat_manager.encounter_done}")
         if not combat_manager.encounter_done:

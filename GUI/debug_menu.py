@@ -20,6 +20,8 @@ class DebugMenu(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
+        imgui.set_window_collapsed(1, condition=imgui.ONCE)
+
         player_party_manager.update()
         title_sequence_manager.update()
 
