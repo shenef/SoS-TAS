@@ -89,7 +89,12 @@ class NavHelper(Menu):
 
         if imgui.button("Copy target to clipboard"):
             imgui.core.set_clipboard_text(
-                f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f})"
+                f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
+            )
+
+        if imgui.button("Copy current to clipboard"):
+            imgui.core.set_clipboard_text(
+                f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
             )
 
         ret = False
