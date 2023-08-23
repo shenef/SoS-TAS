@@ -4,6 +4,7 @@ import imgui
 
 from GUI.GUI import Window
 from GUI.menu import Menu
+from memory.level_manager import LevelManager
 from memory.player_party_manager import PlayerPartyManager
 from memory.title_sequence_manager import TitleSequenceManager
 
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 player_party_manager = PlayerPartyManager()
 title_sequence_manager = TitleSequenceManager()
+level_manager = LevelManager()
 
 
 class DebugMenu(Menu):
@@ -22,6 +24,7 @@ class DebugMenu(Menu):
 
         player_party_manager.update()
         title_sequence_manager.update()
+        level_manager.update()
 
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_party_manager.position.x}")
