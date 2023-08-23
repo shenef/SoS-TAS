@@ -19,7 +19,7 @@ title_sequence_manager = TitleSequenceManager()
 
 class NavHelper(Menu):
     def __init__(self, window: Window) -> None:
-        super().__init__(window, title="(WIP)Navigation helper")
+        super().__init__(window, title="Navigation helper")
         self.target = Vec3(0, 0, 0)
         self.target_locked = Vec3(0, 0, 0)
         self.moving = False
@@ -33,25 +33,50 @@ class NavHelper(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
+        imgui.set_window_size(190, 210, condition=imgui.FIRST_USE_EVER)
+
         player_party_manager.update()
 
-        imgui.text("Target Coordinates:")
-        _, self.target.x = imgui.input_float(label="x", value=self.target.x, step=0.001)
-        _, self.target.y = imgui.input_float(label="y", value=self.target.y, step=0.001)
-        _, self.target.z = imgui.input_float(label="z", value=self.target.z, step=0.001)
+        mstate_v = player_party_manager.movement_state.value
+        mstate_m = player_party_manager.movement_state.name
+
         player_pos = Vec3(
             player_party_manager.position.x or 0,
             player_party_manager.position.y or 0,
             player_party_manager.position.z or 0,
         )
-        distance = Vec3.dist(self.target, player_pos)
-        imgui.text(f"Distance: {distance:.3f}\n")
 
-        # TODO: Implement buttons
-        if imgui.button("Set current as target"):
+        imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
+
+        imgui.separator()
+
+        imgui.text("Player Coordinates")
+        imgui.text(f"x: {player_party_manager.position.x:.3f}")
+        imgui.text(f"y: {player_party_manager.position.y:.3f}")
+        imgui.text(f"z: {player_party_manager.position.z:.3f}")
+        if imgui.button("Set as target"):
             self.target = player_pos
+        if imgui.button("Copy to clipboard"):
+            imgui.core.set_clipboard_text(
+                f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
+            )
 
-        _, self.precision = imgui.slider_float("Precision", self.precision, 0.0, 1.0)
+        distance = Vec3.dist(self.target, player_pos)
+        imgui.text(f"Distance to target: {distance:.3f}\n")
+
+        imgui.separator()
+
+        imgui.text("Target Coordinates:")
+        _, self.target.x = imgui.input_float(label="x", value=self.target.x, step=0.001)
+        _, self.target.y = imgui.input_float(label="y", value=self.target.y, step=0.001)
+        _, self.target.z = imgui.input_float(label="z", value=self.target.z, step=0.001)
+
+        if imgui.button("Copy to clipboard"):
+            imgui.core.set_clipboard_text(
+                f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
+            )
+
+        imgui.separator()
 
         if imgui.button("Navigate to target"):
             self.moving = True
@@ -60,6 +85,12 @@ class NavHelper(Menu):
 
         imgui.same_line()
         _, self.is_run = imgui.checkbox("Run", self.is_run)
+
+        _, self.precision = imgui.slider_float("Precision", self.precision, 0.001, 1.0)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("Set the navigation precision\nCTRL+Click to edit")
+
+        imgui.separator()
 
         if imgui.button("Stop (timed)"):
             self.moving = False
@@ -85,12 +116,7 @@ class NavHelper(Menu):
                 self.moving = False
                 sos_ctrl().set_neutral()
 
-        imgui.set_window_size(190, 210, condition=imgui.FIRST_USE_EVER)
-
-        if imgui.button("Copy target to clipboard"):
-            imgui.core.set_clipboard_text(
-                f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f})"
-            )
+        imgui.show_test_window()
 
         ret = False
         if not top_level and imgui.button("Back"):

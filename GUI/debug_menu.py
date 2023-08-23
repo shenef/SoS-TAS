@@ -25,19 +25,10 @@ class DebugMenu(Menu):
         player_party_manager.update()
         title_sequence_manager.update()
 
-        imgui.text("Player Coordinates")
-        imgui.text(f"x: {player_party_manager.position.x}")
-        imgui.text(f"y: {player_party_manager.position.y}")
-        imgui.text(f"z: {player_party_manager.position.z}")
-
         title_cursor_position = title_sequence_manager._read_title_cursor_position()
         imgui.text(
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
-
-        mstate_v = player_party_manager.movement_state.value
-        mstate_m = player_party_manager.movement_state.name
-        imgui.text(f"Movement State: {mstate_v} {mstate_m}")
 
         ret = False
         if not top_level and imgui.button("Back"):
