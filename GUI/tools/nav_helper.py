@@ -23,7 +23,7 @@ class NavHelper(Menu):
         self.target = Vec3(0, 0, 0)
         self.target_locked = Vec3(0, 0, 0)
         self.moving = False
-        self.move_speed = 1.0
+        self.is_run = True
         self.precision = 0.3
         self.stop = False
         self.stop_time = 0
@@ -51,14 +51,16 @@ class NavHelper(Menu):
         if imgui.button("Set current as target"):
             self.target = player_pos
 
-        _, self.move_speed = imgui.slider_float("Move speed", self.move_speed, 0.0, 1.0)
-
         _, self.precision = imgui.slider_float("Precision", self.precision, 0.0, 1.0)
 
         if imgui.button("Navigate to target"):
             self.moving = True
             self.stop = False
             self.target_locked = self.target
+
+        imgui.same_line()
+        _, self.is_run = imgui.checkbox("Run", self.is_run)
+        move_speed = 1.0 if self.is_run else 0.5
 
         if imgui.button("Stop (timed)"):
             self.moving = False
@@ -78,7 +80,7 @@ class NavHelper(Menu):
             move_to(
                 player=Vec2(player_pos.x, player_pos.z),
                 target=Vec2(self.target_locked.x, self.target_locked.z),
-                speed=self.move_speed,
+                speed=move_speed,
             )
             if Vec3.is_close(player_pos, self.target_locked, precision=self.precision):
                 self.moving = False
