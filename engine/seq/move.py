@@ -12,10 +12,12 @@ logger = logging.getLogger(__name__)
 player_party_manager = PlayerPartyManager()
 
 
-def move_to(player: Vec2, target: Vec2, precision: float, invert: bool = False) -> None:
+def move_to(
+    player: Vec2, target: Vec2, speed: float = 1.0, invert: bool = False
+) -> None:
     ctrl = sos_ctrl()
 
-    joy = (target - player).normalized
+    joy = speed * (target - player).normalized
 
     if invert:
         joy = Vec2(-joy.x, -joy.y)
@@ -47,10 +49,16 @@ class SeqManualUntilClose(SeqBase):
 
 class SeqHoldInPlace(SeqDelay):
     def __init__(
-        self, name: str, target: Vec3, timeout_in_s: float, precision: float = 0.1
+        self,
+        name: str,
+        target: Vec3,
+        timeout_in_s: float,
+        precision: float = 0.1,
+        speed: float = 1.0,
     ):
         self.target = target
         self.precision = precision
+        self.speed = speed
         self.timer = 0
         super().__init__(name=name, timeout_in_s=timeout_in_s)
 
@@ -59,7 +67,7 @@ class SeqHoldInPlace(SeqDelay):
         player_pos = player_party_manager.position
         # If arrived, go to next coordinate in the list
         if not Vec3.is_close(player_pos, self.target, precision=self.precision):
-            move_to(player=player_pos, target=self.target, precision=self.precision)
+            move_to(player=player_pos, target=self.target, speed=self.speed)
             return False
         # Stay still
         ctrl = sos_ctrl()
@@ -82,6 +90,7 @@ class SeqMove(SeqBase):
         name: str,
         coords: list[Vec3],
         precision: float = 0.2,
+        speed: float = 1.0,
         func=None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
@@ -89,6 +98,7 @@ class SeqMove(SeqBase):
         self.step = 0
         self.coords = coords
         self.precision = precision
+        self.speed = speed
         self.emergency_skip = emergency_skip
         self.invert = invert
         super().__init__(name, func=func)
@@ -105,7 +115,7 @@ class SeqMove(SeqBase):
         move_to(
             player=Vec2(player_pos.x, player_pos.z),
             target=Vec2(target_pos.x, target_pos.z),
-            precision=self.precision,
+            speed=self.speed,
             invert=self.invert,
         )
 

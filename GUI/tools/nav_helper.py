@@ -23,10 +23,11 @@ class NavHelper(Menu):
         self.target = Vec3(0, 0, 0)
         self.target_locked = Vec3(0, 0, 0)
         self.moving = False
+        self.move_speed = 1.0
+        self.precision = 0.3
         self.stop = False
         self.stop_time = 0
 
-    _PRECISION = 0.3
     _STOP_TIMEOUT = 2
 
     def execute(self, top_level: bool) -> bool:
@@ -38,17 +39,27 @@ class NavHelper(Menu):
         _, self.target.x = imgui.input_float(label="x", value=self.target.x, step=0.001)
         _, self.target.y = imgui.input_float(label="y", value=self.target.y, step=0.001)
         _, self.target.z = imgui.input_float(label="z", value=self.target.z, step=0.001)
-        imgui.text("\n")
+        player_pos = Vec3(
+            player_party_manager.position.x or 0,
+            player_party_manager.position.y or 0,
+            player_party_manager.position.z or 0,
+        )
+        distance = Vec3.dist(self.target, player_pos)
+        imgui.text(f"Distance: {distance:.3f}\n")
 
         # TODO: Implement buttons
         if imgui.button("Set current as target"):
-            self.target.x = player_party_manager.position.x or 0
-            self.target.y = player_party_manager.position.y or 0
-            self.target.z = player_party_manager.position.z or 0
+            self.target = player_pos
+
+        _, self.move_speed = imgui.slider_float("Move speed", self.move_speed, 0.0, 1.0)
+
+        _, self.precision = imgui.slider_float("Precision", self.precision, 0.0, 1.0)
+
         if imgui.button("Navigate to target"):
             self.moving = True
             self.stop = False
-            self.target_locked = Vec3(self.target.x, self.target.y, self.target.z)
+            self.target_locked = self.target
+
         if imgui.button("Stop (timed)"):
             self.moving = False
             self.stop = True
@@ -59,22 +70,26 @@ class NavHelper(Menu):
             now = time.time()
             difftime = now - self.stop_time
             imgui.same_line()
-            imgui.text(f"{self._STOP_TIMEOUT - difftime:.3}")
+            imgui.text(f"{self._STOP_TIMEOUT - difftime:.3f}")
             if difftime >= self._STOP_TIMEOUT:
                 self.stop = False
 
         if self.moving:
-            player_pos = player_party_manager.position
             move_to(
                 player=Vec2(player_pos.x, player_pos.z),
                 target=Vec2(self.target_locked.x, self.target_locked.z),
-                precision=self._PRECISION,
+                speed=self.move_speed,
             )
-            if Vec3.is_close(player_pos, self.target_locked, precision=self._PRECISION):
+            if Vec3.is_close(player_pos, self.target_locked, precision=self.precision):
                 self.moving = False
                 sos_ctrl().set_neutral()
 
         imgui.set_window_size(190, 210, condition=imgui.FIRST_USE_EVER)
+
+        if imgui.button("Copy target to clipboard"):
+            imgui.core.set_clipboard_text(
+                f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f})"
+            )
 
         ret = False
         if not top_level and imgui.button("Back"):
