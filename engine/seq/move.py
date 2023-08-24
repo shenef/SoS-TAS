@@ -26,6 +26,34 @@ def move_to(
     ctrl.set_joystick(joy)
 
 
+class SeqHoldDirectionUntilClose(SeqBase):
+    def __init__(
+        self, name: str, target: Vec3, joy_dir: Vec2, precision: float = 1.0, func=None
+    ):
+        self.target = target
+        self.joy_dir = joy_dir
+        self.precision = precision
+        super().__init__(name, func)
+
+    def execute(self, delta: float) -> bool:
+        player_party_manager.update()  # TODO: Move away?
+        player_pos = player_party_manager.position
+        if player_pos.x is None:
+            return False
+
+        ctrl = sos_ctrl()
+        ctrl.set_joystick(self.joy_dir)
+        # If arrived, go to next coordinate in the list
+        if Vec3.is_close(player_pos, self.target, self.precision):
+            logger.debug(f"Target reached: {self.target}")
+            ctrl.set_neutral()
+            return True
+        return False
+
+    def __repr__(self) -> str:
+        return f"{self.name}: Holding joystick dir {self.joy_dir} until reaching {self.target}"
+
+
 # Temp testing
 class SeqManualUntilClose(SeqBase):
     def __init__(self, name: str, target: Vec3, precision: float = 0.2, func=None):
@@ -85,20 +113,18 @@ class SeqHoldInPlace(SeqDelay):
         return f"Waiting({self.name}) at {self.target}... {self.timer:.2f}/{self.timeout:.2f}"
 
 
-class Jump:
-    def __init__(self) -> None:
-        pass
-
+class InteractMove(Vec3):
     def __repr__(self) -> str:
-        return "Jump/Climb"
+        return f"InteractMove({super().__repr__()})"
 
 
 class SeqMove(SeqBase):
     def __init__(
         self,
         name: str,
-        coords: list[Vec3 | Jump],
+        coords: list[Vec3 | InteractMove],
         precision: float = 0.2,
+        tap_rate: float = 0.1,
         running: bool = True,
         func=None,
         emergency_skip: Callable[[], bool] | None = None,
@@ -110,6 +136,10 @@ class SeqMove(SeqBase):
         self.running = running
         self.emergency_skip = emergency_skip
         self.invert = invert
+        # Interact variables
+        self.confirm_state = False
+        self.confirm_timer = 0
+        self.tap_rate = tap_rate
         super().__init__(name, func=func)
 
     def reset(self) -> None:
@@ -128,7 +158,7 @@ class SeqMove(SeqBase):
             invert=self.invert,
         )
 
-    def navigate_to_checkpoint(self) -> None:
+    def navigate_to_checkpoint(self, delta: float) -> None:
         # Move towards target
         if self.step >= len(self.coords):
             return
@@ -140,23 +170,25 @@ class SeqMove(SeqBase):
             return
 
         ctrl = sos_ctrl()
-        if isinstance(target, Jump):
-            logger.debug(f"Checkpoint reached {self.step}. Pressing A to jump/climb")
-            ctrl.confirm()
-            self.step = self.step + 1
+        if isinstance(target, InteractMove):
+            self.confirm_timer += delta
+            if self.confirm_timer >= self.tap_rate / 2:
+                self.confirm_state = not self.confirm_state
+                ctrl.toggle_confirm(self.confirm_state)
         # If arrived, go to next coordinate in the list
-        elif Vec3.is_close(player_pos, target, self.precision):
+        if Vec3.is_close(player_pos, target, self.precision):
             logger.debug(
                 f"Checkpoint reached {self.step}. Player: {player_pos} Target: {target}"
             )
             self.step = self.step + 1
             if self.step >= len(self.coords):
                 ctrl.set_neutral()
+                ctrl.toggle_confirm(False)
         else:
             self.move_function(player_pos=player_pos, target_pos=target)
 
     def execute(self, delta: float) -> bool:
-        self.navigate_to_checkpoint()
+        self.navigate_to_checkpoint(delta)
 
         done = self._nav_done()
 
