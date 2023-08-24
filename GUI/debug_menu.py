@@ -4,6 +4,7 @@ import imgui
 
 from GUI.GUI import Window
 from GUI.menu import Menu
+from memory.level_manager import level_manager_handle
 from memory.player_party_manager import player_party_manager_handle
 from memory.title_sequence_manager import title_sequence_manager_handle
 
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
 title_sequence_manager = title_sequence_manager_handle()
+level_manager = level_manager_handle()
 
 
 class DebugMenu(Menu):
@@ -22,6 +24,11 @@ class DebugMenu(Menu):
 
         player_party_manager.update()
         title_sequence_manager.update()
+        level_manager.update()
+
+        imgui.text("Level Info")
+        imgui.text(f"Scene Name: {level_manager.scene_name}")
+        imgui.text(f"Scene GUID: {level_manager.current_level}")
 
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_party_manager.position.x}")
