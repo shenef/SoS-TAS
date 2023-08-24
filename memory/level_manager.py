@@ -44,7 +44,7 @@ class LevelManager:
         length = self.memory.read_int(ptr + 0x10)
         value = self.memory.read_string(ptr + 0x14, length * 2)
         if value:
-            self.current_level = value
+            self.current_level = value.replace("\x00", "")
 
     def _read_main_scene_name(self):
         # LevelManager -> LevelLoader -> mainSceneName
@@ -52,7 +52,7 @@ class LevelManager:
         length = self.memory.read_int(ptr + 0x10)
         value = self.memory.read_string(ptr + 0x14, length * 2)
         if value:
-            self.scene_name = value
+            self.scene_name = value.replace("\x00", "")
 
 
 _level_manager_mem = LevelManager()

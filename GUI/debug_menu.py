@@ -26,6 +26,10 @@ class DebugMenu(Menu):
         title_sequence_manager.update()
         level_manager.update()
 
+        imgui.text("Level Info")
+        imgui.text(f"Scene Name: {level_manager.scene_name}")
+        imgui.text(f"Scene GUID: {level_manager.current_level}")
+
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_party_manager.position.x}")
         imgui.text(f"y: {player_party_manager.position.y}")
