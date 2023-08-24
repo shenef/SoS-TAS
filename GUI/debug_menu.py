@@ -18,6 +18,7 @@ level_manager = level_manager_handle()
 class DebugMenu(Menu):
     def __init__(self, window: Window) -> None:
         super().__init__(window, title="Debug menu")
+        self.show_metrics = False
 
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
@@ -36,6 +37,12 @@ class DebugMenu(Menu):
         imgui.text(
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
+
+        _, self.show_metrics = imgui.checkbox(
+            "Show performance metrics", self.show_metrics
+        )
+        if self.show_metrics:
+            imgui.show_metrics_window()
 
         ret = False
         if not top_level and imgui.button("Back"):
