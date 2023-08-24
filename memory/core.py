@@ -134,6 +134,15 @@ class SoSMemory:
         except Exception:
             return None
 
+    def read_string(self, ptr, length):
+        try:
+            string_bytes = self.pm.read_bytes(ptr, length)
+
+            return codecs.decode(string_bytes, "UTF-8")
+
+        except Exception:
+            return None
+
     def read_longlong(self, ptr):
         try:
             return self.pm.read_longlong(ptr)

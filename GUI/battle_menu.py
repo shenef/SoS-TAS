@@ -4,11 +4,11 @@ import imgui
 
 from GUI.GUI import Window
 from GUI.menu import Menu
-from memory.combat_manager import CombatManager
+from memory.combat_manager import combat_manager_handle
 
 logger = logging.getLogger(__name__)
 
-combat_manager = CombatManager()
+combat_manager = combat_manager_handle()
 
 
 class BattleMenu(Menu):

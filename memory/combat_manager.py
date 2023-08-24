@@ -292,3 +292,11 @@ class CombatManager:
             self.enemies = enemies
             return
         self.enemies = []
+
+
+_combat_manager = CombatManager()
+_combat_manager.update()
+
+
+def combat_manager_handle() -> CombatManager:
+    return _combat_manager

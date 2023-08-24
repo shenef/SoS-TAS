@@ -71,3 +71,11 @@ class PlayerPartyManager:
                     self.movement_state = PlayerMovementState.Idle
                 case _:
                     self.movement_state = PlayerMovementState.NONE
+
+
+_player_party_manager_mem = PlayerPartyManager()
+_player_party_manager_mem.update()
+
+
+def player_party_manager_handle() -> PlayerPartyManager:
+    return _player_party_manager_mem
