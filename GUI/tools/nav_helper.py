@@ -8,13 +8,13 @@ from engine.mathlib import Vec2, Vec3
 from engine.seq.move import move_to
 from GUI.GUI import Window
 from GUI.menu import Menu
-from memory.player_party_manager import PlayerPartyManager
-from memory.title_sequence_manager import TitleSequenceManager
+from memory.player_party_manager import player_party_manager_handle
+from memory.title_sequence_manager import title_sequence_manager_handle
 
 logger = logging.getLogger(__name__)
 
-player_party_manager = PlayerPartyManager()
-title_sequence_manager = TitleSequenceManager()
+player_party_manager = player_party_manager_handle()
+title_sequence_manager = title_sequence_manager_handle()
 
 
 class NavHelper(Menu):
@@ -51,9 +51,9 @@ class NavHelper(Menu):
         imgui.separator()
 
         imgui.text("Player Coordinates")
-        imgui.text(f"x: {player_party_manager.position.x:.3f}")
-        imgui.text(f"y: {player_party_manager.position.y:.3f}")
-        imgui.text(f"z: {player_party_manager.position.z:.3f}")
+        imgui.text(f"x: {player_pos.x:.3f}")
+        imgui.text(f"y: {player_pos.y:.3f}")
+        imgui.text(f"z: {player_pos.z:.3f}")
         if imgui.button("Set as target"):
             self.target = player_pos
         if imgui.button("Copy to clipboard"):
@@ -115,8 +115,6 @@ class NavHelper(Menu):
             if Vec3.is_close(player_pos, self.target_locked, precision=self.precision):
                 self.moving = False
                 sos_ctrl().set_neutral()
-
-        imgui.show_test_window()
 
         ret = False
         if not top_level and imgui.button("Back"):
