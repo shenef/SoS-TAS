@@ -3,7 +3,7 @@ import logging
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
 from GUI.menu import Menu
-from route.demo import DemoBrisk, DemoPlateau, DemoWorldBriskToTower
+from route.demo import DemoBrisk, DemoPlateau, DemoWizardLab, DemoWorldBriskToTower
 from route.start import SoSStartGame
 
 logger = logging.getLogger("SYSTEM")
@@ -28,6 +28,7 @@ class PerformTAS(Menu):
                 DemoPlateau(),
                 DemoBrisk(),
                 DemoWorldBriskToTower(),
+                DemoWizardLab(),
                 SeqLog(name="SYSTEM", text="SoS TAS done!"),
             ],
         )
