@@ -127,3 +127,11 @@ class TitleSequenceManager:
             self.pressed_start = value
             return
         self.pressed_start = False
+
+
+_title_sequence_manager = TitleSequenceManager()
+_title_sequence_manager.update()
+
+
+def title_sequence_manager_handle() -> TitleSequenceManager:
+    return _title_sequence_manager

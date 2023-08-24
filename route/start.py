@@ -4,7 +4,10 @@ from engine.seq.base import SeqBase, SeqIf, SeqList
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.time import SeqDelay, SeqHoldConfirm
 from log_init import reset_logging_time_reference
-from memory.title_sequence_manager import TitleCursorPosition, TitleSequenceManager
+from memory.title_sequence_manager import (
+    TitleCursorPosition,
+    title_sequence_manager_handle,
+)
 
 
 def start_timer():
@@ -12,7 +15,7 @@ def start_timer():
     blackboard().start()
 
 
-title_sequence_manager = TitleSequenceManager()
+title_sequence_manager = title_sequence_manager_handle()
 
 
 class SeqIfNewGame(SeqIf):

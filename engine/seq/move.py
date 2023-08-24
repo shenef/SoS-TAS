@@ -5,11 +5,11 @@ from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
 from engine.seq.time import SeqDelay
-from memory.player_party_manager import PlayerPartyManager
+from memory.player_party_manager import player_party_manager_handle
 
 logger = logging.getLogger(__name__)
 
-player_party_manager = PlayerPartyManager()
+player_party_manager = player_party_manager_handle()
 
 
 def move_to(

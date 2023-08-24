@@ -5,13 +5,13 @@ import imgui
 from GUI.GUI import Window
 from GUI.menu import Menu
 from memory.level_manager import level_manager_handle
-from memory.player_party_manager import PlayerPartyManager
-from memory.title_sequence_manager import TitleSequenceManager
+from memory.player_party_manager import player_party_manager_handle
+from memory.title_sequence_manager import title_sequence_manager_handle
 
 logger = logging.getLogger(__name__)
 
-player_party_manager = PlayerPartyManager()
-title_sequence_manager = TitleSequenceManager()
+player_party_manager = player_party_manager_handle()
+title_sequence_manager = title_sequence_manager_handle()
 level_manager = level_manager_handle()
 
 

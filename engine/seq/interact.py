@@ -2,9 +2,9 @@
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
-from memory.player_party_manager import PlayerMovementState, PlayerPartyManager
+from memory.player_party_manager import PlayerMovementState, player_party_manager_handle
 
-player_party_manager = PlayerPartyManager()
+player_party_manager = player_party_manager_handle()
 
 
 class SeqTurboMashUntilIdle(SeqBase):
