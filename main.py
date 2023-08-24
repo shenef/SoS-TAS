@@ -11,7 +11,6 @@ if __name__ == "__main__":
     config_data = config.open_config()
     initialize_logging(config_data)
     config_logging = config_data.get("logging", {})
-    config_ui = config_data.get("ui", {})
 
     gui = Window()
 
@@ -32,7 +31,6 @@ if __name__ == "__main__":
             NavHelper(window=gui),
             BattleMenu(window=gui),
         ],
-        refresh_rate=config_ui.get("refresh_rate", 60),
     )
     menu_manager.run()
 
