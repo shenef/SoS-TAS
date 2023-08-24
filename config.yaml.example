@@ -2,11 +2,6 @@
 saveslot              : 0       # 0 for new game or 1-9 for load game
 checkpoint            : ""      # When loading game, what checkpoint should the TAS jump to?
 
-# User Interface
-ui:
-  refresh_rate        : 60      # Determines how often (per second) the TAS window refreshes.
-                                # Setting this too high can cause performance issues.
-
 # Logging
 logging:
   color_log           : True    # Colors the console output. May not work on some systems.
