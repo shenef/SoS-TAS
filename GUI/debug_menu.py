@@ -4,7 +4,7 @@ import imgui
 
 from GUI.GUI import Window
 from GUI.menu import Menu
-from memory.level_manager import LevelManager
+from memory.level_manager import level_manager_handle
 from memory.player_party_manager import PlayerPartyManager
 from memory.title_sequence_manager import TitleSequenceManager
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 player_party_manager = PlayerPartyManager()
 title_sequence_manager = TitleSequenceManager()
-level_manager = LevelManager()
+level_manager = level_manager_handle()
 
 
 class DebugMenu(Menu):

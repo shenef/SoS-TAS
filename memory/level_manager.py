@@ -59,5 +59,5 @@ _level_manager_mem = LevelManager()
 _level_manager_mem.update()
 
 
-def handle() -> LevelManager:
+def level_manager_handle() -> LevelManager:
     return _level_manager_mem
