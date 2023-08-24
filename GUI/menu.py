@@ -1,5 +1,4 @@
 import logging
-import time
 
 import imgui
 
@@ -39,10 +38,9 @@ class Menu:
 
 
 class MenuManager:
-    def __init__(self, window: Window, root_menus: list[Menu], refresh_rate) -> None:
+    def __init__(self, window: Window, root_menus: list[Menu]) -> None:
         self.window = window
         self.root_menus = root_menus
-        self.refresh_rate = refresh_rate
 
     def run(self) -> None:
         while self.window.is_open():
@@ -50,4 +48,3 @@ class MenuManager:
             for menu in self.root_menus:
                 menu.run(top_level=True)
             self.window.end_frame()
-            time.sleep(1 / self.refresh_rate)
