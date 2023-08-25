@@ -11,8 +11,9 @@ if __name__ == "__main__":
     config_data = config.open_config()
     initialize_logging(config_data)
     config_logging = config_data.get("logging", {})
+    config_ui = config_data.get("ui", {})
 
-    gui = Window()
+    gui = Window(config_ui)
 
     # The menu manager will capture control until the GUI window is closed
     # It allows for navigating between submenus and starting the TAS
