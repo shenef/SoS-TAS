@@ -7,6 +7,15 @@ from memory.player_party_manager import PlayerMovementState, player_party_manage
 player_party_manager = player_party_manager_handle()
 
 
+class SeqInteract(SeqBase):
+    def __init__(self, name: str = "Interact"):
+        super().__init__(name)
+
+    def execute(self, delta: float) -> bool:
+        sos_ctrl().confirm()
+        return True
+
+
 class SeqTurboMashUntilIdle(SeqBase):
     _TOGGLE_TIME = 0.05
 

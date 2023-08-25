@@ -11,14 +11,6 @@ from engine.mathlib import Vec2
 logger = logging.getLogger(__name__)
 
 
-_FPS = 30.0
-_FRAME_TIME = 1.0 / _FPS
-
-
-def wait_frames(frames: float):
-    time.sleep(frames * _FRAME_TIME)
-
-
 # Game functions
 class Buttons(IntEnum):
     CONFIRM = VgButtons.A
@@ -33,9 +25,9 @@ class Buttons(IntEnum):
 
 
 class SoSController:
-    def __init__(self, delay: int):
+    def __init__(self, delay: float):
         self.ctrl = ctrl_handle()
-        self.delay = delay  # In frames
+        self.delay = delay  # In seconds
         self.dpad = self.DPad(ctrl=self.ctrl, delay=self.delay)
 
     # Wrappers
@@ -70,27 +62,27 @@ class SoSController:
 
         def tap_up(self):
             self.up()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
             self.none()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
         def tap_down(self):
             self.down()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
             self.none()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
         def tap_left(self):
             self.left()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
             self.none()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
         def tap_right(self):
             self.right()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
             self.none()
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
     def toggle_cancel(self, state: bool):
         self.set_button(x_key=Buttons.CANCEL, value=1 if state else 0)
@@ -106,41 +98,55 @@ class SoSController:
 
     def confirm(self, tapping=False):
         self.set_button(x_key=Buttons.CONFIRM, value=1)
-        wait_frames(self.delay)
+        time.sleep(self.delay)
         self.set_button(x_key=Buttons.CONFIRM, value=0)
         if tapping:
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
     def cancel(self, tapping=False):
         self.set_button(x_key=Buttons.CANCEL, value=1)
-        wait_frames(self.delay)
+        time.sleep(self.delay)
         self.set_button(x_key=Buttons.CANCEL, value=0)
         if tapping:
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
     def bracelet(self, tapping=False):
         self.set_button(x_key=Buttons.BRACELET, value=1)
-        wait_frames(self.delay)
+        time.sleep(self.delay)
         self.set_button(x_key=Buttons.BRACELET, value=0)
         if tapping:
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
     def menu(self, tapping=False):
         self.set_button(x_key=Buttons.MENU, value=1)
-        wait_frames(self.delay)
+        time.sleep(self.delay)
         self.set_button(x_key=Buttons.MENU, value=0)
         if tapping:
-            wait_frames(self.delay)
+            time.sleep(self.delay)
 
     def start(self, tapping=False):
         self.set_button(x_key=Buttons.PAUSE, value=1)
-        wait_frames(self.delay)
+        time.sleep(self.delay)
         self.set_button(x_key=Buttons.PAUSE, value=0)
         if tapping:
-            wait_frames(self.delay)
+            time.sleep(self.delay)
+
+    def shift_left(self, tapping=False):
+        self.set_button(x_key=Buttons.SHIFT_LEFT, value=1)
+        time.sleep(self.delay)
+        self.set_button(x_key=Buttons.SHIFT_LEFT, value=0)
+        if tapping:
+            time.sleep(self.delay)
+
+    def shift_right(self, tapping=False):
+        self.set_button(x_key=Buttons.SHIFT_RIGHT, value=1)
+        time.sleep(self.delay)
+        self.set_button(x_key=Buttons.SHIFT_RIGHT, value=0)
+        if tapping:
+            time.sleep(self.delay)
 
 
-_controller = SoSController(delay=4)
+_controller = SoSController(delay=0.1)
 
 
 def sos_ctrl():

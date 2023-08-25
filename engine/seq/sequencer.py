@@ -75,6 +75,7 @@ class SequencerEngine:
         imgui.text(f"[{timestamp}]{pause_str}")
 
     def _render(self) -> None:
+        imgui.text(f"TAS version: {TAS_VERSION_STRING}")
         # Render timer and gamestate tree
         self._print_timer()
         imgui.text_wrapped(f"Gamestate:\n  {self.root}")
@@ -89,7 +90,7 @@ class SequencerEngine:
 
     # Execute and render TAS progress
     def run(self) -> bool:
-        self.window.start_window(f"Sea of Stars TAS {TAS_VERSION_STRING}")
+        self.window.start_window("Sea of Stars TAS")
         imgui.set_window_position(5, 5, condition=imgui.ONCE)
         imgui.set_window_size(590, 180, condition=imgui.FIRST_USE_EVER)
 

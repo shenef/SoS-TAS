@@ -1,5 +1,5 @@
 from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
-from engine.seq.interact import SeqTurboMashUntilIdle
+from engine.seq.interact import SeqInteract, SeqTurboMashUntilIdle
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
     InteractMove,
@@ -32,4 +32,5 @@ __all__ = [
     "SeqClimb",
     "SeqHoldDirectionUntilClose",
     "SeqTurboMashUntilIdle",
+    "SeqInteract",
 ]
