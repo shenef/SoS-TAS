@@ -42,7 +42,7 @@ def create_glfw_window(window_name="Sea of Stars TAS", width=600, height=720):
 
 
 class Window:
-    def __init__(self) -> None:
+    def __init__(self, config: dict) -> None:
         super().__init__()
 
         self.backgroundColor = (0, 0, 0, 1)
@@ -52,6 +52,8 @@ class Window:
         gl.glClearColor(*self.backgroundColor)
         imgui.create_context()
         self.impl = GlfwRenderer(self.window)
+        vsync = config.get("vsync", True)
+        glfw.swap_interval(1 if vsync else 0)
 
     def is_open(self) -> bool:
         return not glfw.window_should_close(self.window)
