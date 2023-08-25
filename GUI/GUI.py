@@ -85,7 +85,6 @@ class Window:
 
     def start_window(self, title: str) -> None:
         imgui.begin(title, True)
-        imgui.show_metrics_window()
 
     # Finalize window
     def end_window(self) -> None:

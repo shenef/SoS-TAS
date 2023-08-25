@@ -19,6 +19,7 @@ class DebugMenu(Menu):
     def __init__(self, window: Window) -> None:
         super().__init__(window, title="Debug menu")
         self.show_metrics = False
+        self.show_test = False
 
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
@@ -40,6 +41,10 @@ class DebugMenu(Menu):
         )
         if self.show_metrics:
             imgui.show_metrics_window()
+
+        _, self.show_test = imgui.checkbox("Show UI test window", self.show_test)
+        if self.show_test:
+            imgui.show_test_window()
 
         ret = False
         if not top_level and imgui.button("Back"):
