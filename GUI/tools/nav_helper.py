@@ -35,8 +35,6 @@ class NavHelper(Menu):
 
         imgui.set_window_size(190, 210, condition=imgui.FIRST_USE_EVER)
 
-        player_party_manager.update()
-
         mstate_v = player_party_manager.movement_state.value
         mstate_m = player_party_manager.movement_state.name
 

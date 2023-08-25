@@ -6,6 +6,12 @@ import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
+from memory.combat_manager import combat_manager_handle
+from memory.core import mem_handle
+from memory.level_manager import level_manager_handle
+from memory.player_party_manager import player_party_manager_handle
+from memory.title_sequence_manager import title_sequence_manager_handle
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,8 +47,21 @@ def create_glfw_window(window_name="Sea of Stars TAS", width=600, height=720):
     return window
 
 
+def update_memory():
+    mem_handle().update()
+    if mem_handle().ready_for_updates:
+        level_manager_handle().update()
+        scene_name = level_manager_handle().scene_name
+        loading = level_manager_handle().loading
+        if scene_name == "TitleScreen":
+            title_sequence_manager_handle().update()
+        elif scene_name is not None and loading is False:
+            player_party_manager_handle().update()
+            combat_manager_handle().update()
+
+
 class Window:
-    def __init__(self) -> None:
+    def __init__(self, config: dict) -> None:
         super().__init__()
 
         self.backgroundColor = (0, 0, 0, 1)
@@ -52,17 +71,21 @@ class Window:
         gl.glClearColor(*self.backgroundColor)
         imgui.create_context()
         self.impl = GlfwRenderer(self.window)
+        vsync = config.get("vsync", True)
+        glfw.swap_interval(1 if vsync else 0)
 
     def is_open(self) -> bool:
         return not glfw.window_should_close(self.window)
 
     def start_frame(self) -> None:
         glfw.poll_events()
+        update_memory()
         self.impl.process_inputs()
         imgui.new_frame()
 
     def start_window(self, title: str) -> None:
         imgui.begin(title, True)
+        imgui.show_metrics_window()
 
     # Finalize window
     def end_window(self) -> None:

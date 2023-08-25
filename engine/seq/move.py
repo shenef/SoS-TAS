@@ -36,7 +36,6 @@ class SeqHoldDirectionUntilClose(SeqBase):
         super().__init__(name, func)
 
     def execute(self, delta: float) -> bool:
-        player_party_manager.update()  # TODO: Move away?
         player_pos = player_party_manager.position
         if player_pos.x is None:
             return False
@@ -68,7 +67,6 @@ class SeqManualUntilClose(SeqBase):
         ctrl.dpad.none()
         ctrl.set_neutral()
         # Check if we have reached the goal
-        player_party_manager.update()
         player_pos = player_party_manager.position
         return Vec3.is_close(player_pos, self.target, precision=self.precision)
 
@@ -92,7 +90,6 @@ class SeqHoldInPlace(SeqDelay):
         super().__init__(name=name, timeout_in_s=timeout_in_s)
 
     def execute(self, delta: float) -> bool:
-        player_party_manager.update()
         player_pos = player_party_manager.position
         # If arrived, go to next coordinate in the list
         if not Vec3.is_close(player_pos, self.target, precision=self.precision):
@@ -164,7 +161,6 @@ class SeqMove(SeqBase):
             return
         target = self.coords[self.step]
 
-        player_party_manager.update()
         player_pos = player_party_manager.position
         if player_pos.x is None:
             return

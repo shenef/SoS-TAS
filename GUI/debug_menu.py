@@ -25,15 +25,12 @@ class DebugMenu(Menu):
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
 
-        player_party_manager.update()
-        title_sequence_manager.update()
-        level_manager.update()
-
         imgui.text("Level Info")
         imgui.text(f"Scene Name: {level_manager.scene_name}")
         imgui.text(f"Scene GUID: {level_manager.current_level}")
+        imgui.text(f"Loading: {level_manager.loading}")
 
-        title_cursor_position = title_sequence_manager._read_title_cursor_position()
+        title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
