@@ -100,7 +100,8 @@ class SoSMemory:
         static_table = self.get_static_table(parent)
         if static_table is None or static_table == 0x0:
             return None
-        # This is probably not necessary but it ensures it should fit
+        # This casting is probably not necessary but it ensures it should fit so it doesn't crash
+        # when trying to debug pointer locations while building memory managers.
         # TODO: Try returning only static_table + instance_ptr at a later date.
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 

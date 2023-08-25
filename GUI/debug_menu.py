@@ -32,7 +32,7 @@ class DebugMenu(Menu):
         imgui.text(f"y: {player_party_manager.position.y}")
         imgui.text(f"z: {player_party_manager.position.z}")
 
-        title_cursor_position = title_sequence_manager._read_title_cursor_position()
+        title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )

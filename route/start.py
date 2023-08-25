@@ -68,7 +68,7 @@ class SeqNavigateMainMenu(SeqBase):
         self.target_state = target_state
 
     def execute(self, delta: float) -> bool:
-        if title_sequence_manager._read_title_cursor_position() == self.target_state:
+        if title_sequence_manager.title_cursor_position == self.target_state:
             # We have selected the correct item
             return True
         # Else, we haven't selected the correct item yet, tap down

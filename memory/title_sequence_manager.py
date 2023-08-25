@@ -64,9 +64,6 @@ class TitleSequenceManager:
             # print(f"Title Sequence Manager Reloading {type(_e)}")
             self.__init__()
 
-    def _read_title_cursor_position(self):
-        return self.title_cursor_position
-
     def _read_continue_selected(self):
         # titleScreen -> continueButton -> selected
         ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0x78, 0x148])
