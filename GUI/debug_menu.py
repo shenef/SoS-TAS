@@ -35,7 +35,7 @@ class DebugMenu(Menu):
 
         title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
-            f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
+            f"Title Cursor Position: {title_cursor_position.name} ({title_cursor_position.value})"
         )
 
         GUI_helper.add_spacer()
