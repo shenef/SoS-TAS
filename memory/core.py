@@ -15,6 +15,7 @@ class SoSMemory:
         self.assemblies = None
         self.image = None
         self.type_info_definition_table = None
+        self.ready_for_updates = False
         self.offsets = {
             "monoassembly_image": 0x0,
             "monoassembly_aname": 0x18,
@@ -31,9 +32,10 @@ class SoSMemory:
             "monoclassfield_offset": 0x18,
         }
 
-    def ready_for_updates(self):
-        return (
+    def _set_ready_for_updates(self):
+        ready = (
             self.pm is not None
+            and self.pm.process_handle is not None
             and self.assemblies is not None
             and self.type_info_definition_table is not None
             and self.module is not None
@@ -41,12 +43,15 @@ class SoSMemory:
             and self.image is not None
         )
 
+        self.ready_for_updates = ready
+
     def update(self):
         try:
             if self.pm is not None and not self.pm.base_address:
                 self.__init__()
+                return
 
-            if not self.ready_for_updates():
+            if not self.ready_for_updates:
                 pm = pymem.Pymem("SeaOfStars.exe")
                 self.pm = pm
 
@@ -63,91 +68,71 @@ class SoSMemory:
                 self._assemblies_trg_sig()
                 self._type_info_definition_table_trg_sig()
                 self.get_image()
+                self._set_ready_for_updates()
 
-        except Exception:
+        except Exception as e:
+            print(f"Memory Core Reloading {type(e)}")
             self.__init__()
 
     def get_singleton_by_class_name(self, class_name):
         local_class = self.get_class(class_name)
+        if local_class is None or local_class == 0x0:
+            return None
         parent = self.get_parent(local_class)
+        if parent is None or parent == 0x0:
+            return None
         instance_ptr = self.get_field(parent, "instance")
+        if instance_ptr is None or instance_ptr == 0x0:
+            return None
         static_table = self.get_static_table(parent)
+        if static_table is None or static_table == 0x0:
+            return None
         # The bitwise AND is probably not necessary here
         # but i'll try removing it when more stuff is added
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 
     def get_pointer(self, root, offsets):
         """Follow the pointer from the application and add the last offset."""
-        try:
-            addr = self.pm.read_longlong(self.base_addr + root)
-            last = offsets.pop()
-            for i in offsets:
-                addr = self.pm.read_longlong(addr + i)
+        addr = self.pm.read_longlong(self.base_addr + root)
+        last = offsets.pop()
+        for i in offsets:
+            addr = self.pm.read_longlong(addr + i)
 
-            return addr + last
-
-        except Exception:
-            return None
+        return addr + last
 
     def follow_pointer(self, base, offsets):
         """Follow an existing pointer and add the last offset."""
-        try:
-            last = offsets.pop()
-            addr = base
-            for i in offsets:
-                addr = self.pm.read_longlong(addr + i)
+        last = offsets.pop()
+        addr = base
+        for i in offsets:
+            addr = self.pm.read_longlong(addr + i)
 
-            return addr + last
-        except Exception:
-            return None
+        return addr + last
 
     def read_float(self, ptr):
-        try:
-            return self.pm.read_float(ptr)
-        except Exception:
-            return 0.0
+        return self.pm.read_float(ptr)
 
     def read_bool(self, ptr, default=False):
-        try:
-            return self.pm.read_bool(ptr)
-        except Exception:
-            return default
+        return self.pm.read_bool(ptr)
 
     def read_int(self, ptr):
-        try:
-            return self.pm.read_int(ptr)
-        except Exception:
-            return None
+        return self.pm.read_int(ptr)
 
     def read_short(self, ptr):
-        try:
-            return self.pm.read_short(ptr)
-        except Exception:
-            return None
+        return self.pm.read_short(ptr)
 
     def read_guid(self, ptr):
-        try:
-            string_bytes = self.pm.read_bytes(ptr, 71)
+        string_bytes = self.pm.read_bytes(ptr, 71)
 
-            return codecs.decode(string_bytes, "UTF-8")
-
-        except Exception:
-            return None
+        return codecs.decode(string_bytes, "UTF-8")
 
     def read_string(self, ptr, length):
-        try:
-            string_bytes = self.pm.read_bytes(ptr, length)
+        string_bytes = self.pm.read_bytes(ptr, length)
 
-            return codecs.decode(string_bytes, "UTF-8")
-
-        except Exception:
-            return None
+        return codecs.decode(string_bytes, "UTF-8")
 
     def read_longlong(self, ptr):
-        try:
-            return self.pm.read_longlong(ptr)
-        except Exception:
-            return None
+        return self.pm.read_longlong(ptr)
 
     def get_class(self, class_name):
         record = None
@@ -166,6 +151,7 @@ class SoSMemory:
     def get_field(self, class_ptr, field_name):
         record = None
         unity_fields = self._get_fields(class_ptr)
+
         for item in unity_fields:
             ptr = pymem.memory.read_longlong(
                 self.pm.process_handle, item + self.offsets["monoclassfield_name"]
@@ -286,6 +272,7 @@ class SoSMemory:
         type_count = pymem.memory.read_int(
             self.pm.process_handle, self.image + self.offsets["monoimage_typecount"]
         )
+
         inner_handle = pymem.memory.read_longlong(
             self.pm.process_handle,
             self.image + self.offsets["monoimage_metadatahandle"],
@@ -299,6 +286,7 @@ class SoSMemory:
         classes = []
         for i in range(0, type_count):
             i_class = pymem.memory.read_ulonglong(self.pm.process_handle, ptr + (i * 8))
+
             if i_class:
                 classes.append(i_class)
         return classes

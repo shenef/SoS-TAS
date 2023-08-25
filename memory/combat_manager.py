@@ -51,6 +51,8 @@ class CombatPlayer:
 
 
 class CombatManager:
+    NULL_POINTER = 0xFFFFFFFF
+
     def __init__(self):
         self.memory = mem_handle()
         self.base = None
@@ -59,7 +61,7 @@ class CombatManager:
         self.enemies = []
         self.players = []
         self.current_encounter_base = None
-        self.encounter_done = True
+        self.encounter_done = None
         self.small_live_mana = None
         self.big_live_mana = None
         self.battle_command_has_focus = False
@@ -69,35 +71,46 @@ class CombatManager:
         self.selected_target_guid = None
 
     def update(self):
-        if self.memory.ready_for_updates():
-            if self.base is None or self.fields_base is None:
-                singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
+        try:
+            if self.memory.ready_for_updates:
+                if self.base is None or self.fields_base is None:
+                    self.encounter_done = True
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "CombatManager"
+                    )
+                    if singleton_ptr is None:
+                        return
+                    self.base = self.memory.get_class_base(singleton_ptr)
+                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                    self.current_encounter_base = self.memory.get_field(
+                        self.fields_base, "currentEncounter"
+                    )
 
-                self.base = self.memory.get_class_base(singleton_ptr)
-                if self.base == 0x0:
-                    return
+                else:
+                    self._read_encounter_done()
+                    if self.encounter_done is True:
+                        return
+                    self._read_live_mana()
+                    self._read_players()
+                    self._read_enemies()
+                    self._read_battle_commands()
+                    self._read_skill_commands()
 
-                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-
-            else:
-                # Update fields
-                self.current_encounter_base = self.memory.get_field(
-                    self.fields_base, "currentEncounter"
-                )
-
-                self._read_encounter_done()
-                self._read_live_mana()
-                self._read_players()
-                self._read_enemies()
-                self._read_battle_commands()
-                self._read_skill_commands()
+        except Exception as _e:
+            # print(f"Combat Manager Reloading - {type(e)}")
+            self.__init__()
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self):
-        if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates and self.current_encounter_base is not None:
             battle_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0xF8, 0x50, 0x60, 0x0]
             )
+            if battle_command_selector == self.NULL_POINTER:
+                self.battle_command_has_focus = False
+                self.battle_command_index = None
+                return
+
             if battle_command_selector:
                 has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
 
@@ -115,30 +128,38 @@ class CombatManager:
 
     # Skill Commands are the menu of the "skills" command (ie Healing Light, Sunball)
     def _read_skill_commands(self):
-        if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates and self.current_encounter_base is not None:
             skill_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0xF8, 0x50, 0x58, 0x0]
             )
+            if skill_command_selector == self.NULL_POINTER:
+                self.skill_command_has_focus = False
+                self.skill_command_index = None
+                return
             if skill_command_selector:
-                has_focus = self.memory.read_bool(skill_command_selector + 0x3C)
-                selected_item_index = self.memory.read_longlong(
-                    skill_command_selector + 0x40
-                )
-                self.skill_command_has_focus = has_focus
-                self.skill_command_index = selected_item_index
-                if has_focus:
+                try:
+                    has_focus = self.memory.read_bool(skill_command_selector + 0x3C)
                     selected_item_index = self.memory.read_longlong(
                         skill_command_selector + 0x40
                     )
+                    self.skill_command_has_focus = has_focus
                     self.skill_command_index = selected_item_index
-                else:
+                    if has_focus:
+                        selected_item_index = self.memory.read_longlong(
+                            skill_command_selector + 0x40
+                        )
+                        self.skill_command_index = selected_item_index
+                    else:
+                        self.skill_command_index = None
+                    return
+                except Exception:
+                    self.skill_command_has_focus = False
                     self.skill_command_index = None
-                return
         self.skill_command_has_focus = False
         self.skill_command_index = None
 
     def _read_encounter_done(self):
-        if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates and self.current_encounter_base is not None:
             current_encounter = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x0]
             )
@@ -146,27 +167,37 @@ class CombatManager:
                 done = self.memory.read_bool(current_encounter + 0x110)
                 self.encounter_done = done
                 return
-        self.counter_done = True
+        self.encounter_done = True
 
     def _read_live_mana(self):
-        if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates and self.current_encounter_base is not None:
             small_live_mana = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x60, 0x20, 0x0]
             )
+            if small_live_mana == self.NULL_POINTER:
+                self.small_live_mana = 0
+                self.big_live_mana = 0
+                return
             big_live_mana = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x60, 0x28, 0x0]
             )
+            if big_live_mana == self.NULL_POINTER:
+                self.small_live_mana = 0
+                self.big_live_mana = 0
+                return
             if small_live_mana and big_live_mana:
                 self.small_live_mana = self.memory.read_int(small_live_mana + 0x18)
                 self.big_live_mana = self.memory.read_int(big_live_mana + 0x18)
                 return
-        self.size = 0
 
     def _read_players(self):
-        if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates and self.current_encounter_base is not None:
             player_panels_list = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0xE0, 0x80, 0x40, 0x0]
             )
+            if player_panels_list == self.NULL_POINTER:
+                self.players = []
+                return
             # item is a list of pointers of size 0x08
             items = self.memory.follow_pointer(
                 player_panels_list,
@@ -176,6 +207,7 @@ class CombatManager:
             if items:
                 count = self.memory.read_int(items + 0x18)
                 address = 0x20
+
                 for _x in range(count):
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     if hex(item) != "0x0":
@@ -193,26 +225,32 @@ class CombatManager:
                         mana_charge_count = self.memory.read_int(
                             live_mana_handler + 0x58
                         )
-
-                        target_unique_id_base = self.memory.follow_pointer(
-                            item,
-                            [
-                                0x68,
-                                0x28,
-                                0x150,
-                                0x30,
-                                0x90,
-                                0x80,
-                                0x40,
-                                0x80,
-                                0x58,
-                                0xF0,
-                                0xD8,
-                                0x18,
-                                0x0,
-                            ],
-                        )
-
+                        try:
+                            target_unique_id_base = self.memory.follow_pointer(
+                                item,
+                                [
+                                    0x68,
+                                    0x28,
+                                    0x150,
+                                    0x30,
+                                    0x90,
+                                    0x80,
+                                    0x40,
+                                    0x80,
+                                    0x58,
+                                    0xF0,
+                                    0xD8,
+                                    0x18,
+                                    0x0,
+                                ],
+                            )
+                        except Exception:
+                            return
+                        if (
+                            target_unique_id_base is self.NULL_POINTER
+                            or target_unique_id_base is None
+                        ):
+                            continue
                         selected_target_guid = self.memory.read_guid(
                             target_unique_id_base + 0x14
                         )
@@ -236,7 +274,7 @@ class CombatManager:
         self.players = []
 
     def _read_enemies(self):
-        if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates and self.current_encounter_base is not None:
             enemy_targets = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x130, 0x0]
             )
@@ -265,15 +303,20 @@ class CombatManager:
                         total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
                         spell_locks = []
-                        spell_locks_addr = 0x20
+                        try:
+                            spell_locks_addr = 0x20
 
-                        for _s in range(total_spell_locks):
-                            spell_locks_base = self.memory.follow_pointer(
-                                casting_data, [0x18, 0x10, spell_locks_addr, 0x0]
-                            )
-                            lock = self.memory.read_int(spell_locks_base + 0x38)
-                            spell_locks.append(CombatDamageType(lock))
-                            spell_locks_addr += 0x8
+                            for _s in range(total_spell_locks):
+                                spell_locks_base = self.memory.follow_pointer(
+                                    casting_data, [0x18, 0x10, spell_locks_addr, 0x0]
+                                )
+
+                                lock = self.memory.read_int(spell_locks_base + 0x38)
+                                spell_locks.append(CombatDamageType(lock))
+
+                                spell_locks_addr += 0x8
+                        except Exception:
+                            spell_locks = []
 
                         enemy = CombatEnemyTarget()
                         enemy.current_hp = current_hp
@@ -291,7 +334,6 @@ class CombatManager:
 
 
 _combat_manager = CombatManager()
-_combat_manager.update()
 
 
 def combat_manager_handle() -> CombatManager:

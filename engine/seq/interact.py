@@ -17,7 +17,6 @@ class SeqTurboMashUntilIdle(SeqBase):
 
     # Mash through cutscene while holding the turbo button
     def execute(self, delta: float) -> bool:
-        player_party_manager.update()
         self.timer = self.timer + delta
 
         sos_ctrl().toggle_turbo(state=True)

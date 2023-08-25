@@ -6,7 +6,11 @@ import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
+from memory.combat_manager import combat_manager_handle
 from memory.core import mem_handle
+from memory.level_manager import level_manager_handle
+from memory.player_party_manager import player_party_manager_handle
+from memory.title_sequence_manager import title_sequence_manager_handle
 
 logger = logging.getLogger(__name__)
 
@@ -60,9 +64,18 @@ class Window:
 
     def start_frame(self) -> None:
         glfw.poll_events()
-        self.impl.process_inputs()
         mem_handle().update()
+        if mem_handle().ready_for_updates:
+            level_manager_handle().update()
+            scene_name = level_manager_handle().scene_name
+            loading = level_manager_handle().loading
+            if scene_name == "TitleScreen":
+                title_sequence_manager_handle().update()
+            elif scene_name is not None and loading is False:
+                player_party_manager_handle().update()
+                combat_manager_handle().update()
 
+        self.impl.process_inputs()
         imgui.new_frame()
 
     def start_window(self, title: str) -> None:

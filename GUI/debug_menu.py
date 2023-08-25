@@ -22,13 +22,10 @@ class DebugMenu(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        player_party_manager.update()
-        title_sequence_manager.update()
-        level_manager.update()
-
         imgui.text("Level Info")
         imgui.text(f"Scene Name: {level_manager.scene_name}")
         imgui.text(f"Scene GUID: {level_manager.current_level}")
+        imgui.text(f"Loading: {level_manager.loading}")
 
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_party_manager.position.x}")

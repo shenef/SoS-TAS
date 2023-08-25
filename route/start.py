@@ -68,7 +68,6 @@ class SeqNavigateMainMenu(SeqBase):
         self.target_state = target_state
 
     def execute(self, delta: float) -> bool:
-        title_sequence_manager.update()
         if title_sequence_manager._read_title_cursor_position() == self.target_state:
             # We have selected the correct item
             return True

@@ -33,8 +33,6 @@ class NavHelper(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        player_party_manager.update()
-
         imgui.text("Target Coordinates:")
         _, self.target.x = imgui.input_float(label="x", value=self.target.x, step=0.001)
         _, self.target.y = imgui.input_float(label="y", value=self.target.y, step=0.001)
