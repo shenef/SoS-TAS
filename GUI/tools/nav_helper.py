@@ -6,7 +6,7 @@ import imgui
 from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.move import move_to
-from GUI.GUI import Window
+from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
 from memory.player_party_manager import player_party_manager_handle
 from memory.title_sequence_manager import title_sequence_manager_handle
@@ -46,7 +46,7 @@ class NavHelper(Menu):
 
         imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
 
-        imgui.separator()
+        GUI_helper.add_spacer()
 
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_pos.x:.3f}")
@@ -62,7 +62,7 @@ class NavHelper(Menu):
         distance = Vec3.dist(self.target, player_pos)
         imgui.text(f"Distance to target: {distance:.3f}\n")
 
-        imgui.separator()
+        GUI_helper.add_spacer()
 
         imgui.text("Target Coordinates:")
         _, self.target.x = imgui.input_float(label="x", value=self.target.x, step=0.001)
@@ -74,7 +74,7 @@ class NavHelper(Menu):
                 f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
             )
 
-        imgui.separator()
+        GUI_helper.add_spacer()
 
         if imgui.button("Navigate to target"):
             self.moving = True
@@ -88,7 +88,7 @@ class NavHelper(Menu):
         if imgui.is_item_hovered():
             imgui.set_tooltip("Set the navigation precision\nCTRL+Click to edit")
 
-        imgui.separator()
+        GUI_helper.add_spacer()
 
         if imgui.button("Stop (timed)"):
             self.moving = False

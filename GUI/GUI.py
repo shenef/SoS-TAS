@@ -104,3 +104,21 @@ class Window:
     def close(self) -> None:
         self.impl.shutdown()
         glfw.terminate()
+
+
+class GUI_helper:
+    """
+    This class provides helper functions for creating GUI elements.
+
+    Methods:
+        add_spacer():
+            Adds a horizontal line with some padding."""
+
+    def __init__(self):
+        super().__init__()
+
+    def add_spacer():
+        """Adds a horizontal line with some padding."""
+        imgui.spacing()
+        imgui.separator()
+        imgui.spacing()

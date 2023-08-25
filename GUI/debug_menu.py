@@ -2,7 +2,7 @@ import logging
 
 import imgui
 
-from GUI.GUI import Window
+from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
 from memory.level_manager import level_manager_handle
 from memory.player_party_manager import player_party_manager_handle
@@ -31,10 +31,14 @@ class DebugMenu(Menu):
         imgui.text(f"Scene GUID: {level_manager.current_level}")
         imgui.text(f"Loading: {level_manager.loading}")
 
+        GUI_helper.add_spacer()
+
         title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
+
+        GUI_helper.add_spacer()
 
         _, self.show_metrics = imgui.checkbox(
             "Show performance metrics", self.show_metrics
