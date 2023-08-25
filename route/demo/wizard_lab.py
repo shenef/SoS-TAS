@@ -2,6 +2,7 @@ import logging
 
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    SeqCheckpoint,
     SeqHoldDirectionUntilClose,
     SeqList,
     SeqLog,
@@ -47,11 +48,15 @@ class DemoWizardLab(SeqList):
                 # Cutscene
                 SeqTurboMashUntilIdle(name="Pirate leaves"),
                 # TODO: Push block with bracelet
+                # Checkpoint: Brisk
+                SeqCheckpoint(checkpoint_name="wizard_lab1"),
                 # TODO: Climb up above archway
                 # TODO: Pick up green crystal
                 # TODO: Go down to altar and go to right pedistal
                 # TODO: Place green crystal on right pedistal (first slot, can mash?)
                 # TODO: Move to green portal and go inside
                 # TODO: Navigate green area
+                # TODO: A lot
+                SeqCheckpoint(checkpoint_name="wizard_lab_boss"),
             ],
         )
