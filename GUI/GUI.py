@@ -114,9 +114,6 @@ class GUI_helper:
         add_spacer():
             Adds a horizontal line with some padding."""
 
-    def __init__(self):
-        super().__init__()
-
     def add_spacer():
         """Adds a horizontal line with some padding."""
         imgui.spacing()
