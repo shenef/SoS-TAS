@@ -77,7 +77,7 @@ class SequencerEngine:
     def _render(self) -> None:
         # Render timer and gamestate tree
         self._print_timer()
-        imgui.text(f"Gamestate:\n  {self.root}")
+        imgui.text_wrapped(f"Gamestate:\n  {self.root}")
 
         if imgui.button("Pause"):
             if self.paused:
