@@ -5,6 +5,7 @@ from engine.mathlib import Vec3
 from engine.seq import (
     InteractMove,
     SeqClimb,
+    SeqInteract,
     SeqList,
     SeqLog,
     SeqMove,
@@ -29,8 +30,13 @@ class DemoPlateau(SeqList):
                         Vec3(-435.754, -6.679, -85.519),
                         Vec3(-436.293, -6.998, -86.561),
                         InteractMove(-441.924, -14.998, -92.082),
-                        Vec3(-429.614, -14.998, -107.907),
-                        InteractMove(-428.178, -22.990, -109.326),
+                        Vec3(-426.310, -14.998, -98.160),
+                    ],
+                ),
+                SeqClimb(
+                    name="Slide down ladder",
+                    coords=[
+                        InteractMove(-425.293, -22.998, -98.917),
                     ],
                 ),
                 # TODO: Manual Fight here
@@ -60,6 +66,12 @@ class DemoPlateau(SeqList):
                         InteractMove(-441.888, -16.998, -135.417),
                         Vec3(-434.682, -16.998, -131.155),
                         InteractMove(-419.919, -14.998, -116.391),
+                    ],
+                ),
+                SeqInteract("Press pillar trigger"),
+                SeqMove(
+                    name="Leave plateau",
+                    coords=[
                         Vec3(-407.820, -14.998, -129.990),
                         Vec3(-398.300, -14.990, -141.200),
                     ],

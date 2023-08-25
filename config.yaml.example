@@ -2,6 +2,11 @@
 saveslot              : 0       # 0 for new game or 1-9 for load game
 checkpoint            : ""      # When loading game, what checkpoint should the TAS jump to?
 
+# Valid checkpoints (Demo Any%):
+#   brisk
+#   wizard_lab1
+#   wizard_lab_boss
+
 # User Interface
 ui:
   vsync               : True    # Caps framerate at monitor refresh rate
