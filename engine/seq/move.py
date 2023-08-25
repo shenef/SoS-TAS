@@ -36,7 +36,6 @@ class SeqHoldDirectionUntilClose(SeqBase):
         super().__init__(name, func)
 
     def execute(self, delta: float) -> bool:
-        player_party_manager.update()  # TODO: Move away?
         player_pos = player_party_manager.position
         if player_pos.x is None:
             return False
