@@ -19,12 +19,18 @@ class PerformTAS(Menu):
         saveslot = config_data.get("saveslot", 0)
         checkpoint = config_data.get("checkpoint", "NONE")
 
+        # This sequence navigates the main menu into the game
+        self.start_game_sequencer = SequencerEngine(
+            window=window,
+            config=config_data,
+            root=SoSStartGame(saveslot=saveslot),
+        )
+
         # This is the root node of the TAS
         TAS_root = SeqList(
             name="Sea of Stars Any%",
             # func=setup_memory,
             children=[
-                SoSStartGame(saveslot=saveslot),
                 DemoPlateau(),
                 DemoBrisk(),
                 DemoWorldBriskToTower(),
@@ -47,4 +53,6 @@ class PerformTAS(Menu):
             logger.error(f"Couldn't find checkpoint '{checkpoint}'")
 
     def run(self) -> bool:
+        if not self.start_game_sequencer.done:
+            return self.start_game_sequencer.run()
         return self.sequencer.run()
