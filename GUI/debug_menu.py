@@ -22,20 +22,17 @@ class DebugMenu(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        player_party_manager.update()
-        title_sequence_manager.update()
-        level_manager.update()
-
         imgui.text("Level Info")
         imgui.text(f"Scene Name: {level_manager.scene_name}")
         imgui.text(f"Scene GUID: {level_manager.current_level}")
+        imgui.text(f"Loading: {level_manager.loading}")
 
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_party_manager.position.x}")
         imgui.text(f"y: {player_party_manager.position.y}")
         imgui.text(f"z: {player_party_manager.position.z}")
 
-        title_cursor_position = title_sequence_manager._read_title_cursor_position()
+        title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
             f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
         )
