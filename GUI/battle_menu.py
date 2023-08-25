@@ -21,6 +21,11 @@ class BattleMenu(Menu):
 
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
+
+        imgui.set_window_collapsed(1, condition=imgui.ONCE)
+        imgui.set_window_position(0, 420, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_size(600, 300, condition=imgui.FIRST_USE_EVER)
+
         imgui.text(f"Encounter Done: {combat_manager.encounter_done}")
         if not combat_manager.encounter_done:
             imgui.text(
@@ -47,7 +52,7 @@ class BattleMenu(Menu):
                     imgui.text(f"LOCKS: {enemy.total_spell_locks}")
 
                     for lock in enemy.spell_locks:
-                        imgui.text(f"{lock.name}")
+                        imgui.bullet_text(f"{lock.name}")
                     imgui.next_column()
 
                 columns_remaining = self.COLUMN_MAX - len(combat_manager.enemies)

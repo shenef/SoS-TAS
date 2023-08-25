@@ -2,7 +2,7 @@ import logging
 
 import imgui
 
-from GUI.GUI import Window
+from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
 from memory.level_manager import level_manager_handle
 from memory.player_party_manager import player_party_manager_handle
@@ -18,28 +18,38 @@ level_manager = level_manager_handle()
 class DebugMenu(Menu):
     def __init__(self, window: Window) -> None:
         super().__init__(window, title="Debug menu")
+        self.show_metrics = False
+        self.show_test = False
 
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
+
+        imgui.set_window_collapsed(1, condition=imgui.ONCE)
+        imgui.set_window_position(300, 80, condition=imgui.FIRST_USE_EVER)
 
         imgui.text("Level Info")
         imgui.text(f"Scene Name: {level_manager.scene_name}")
         imgui.text(f"Scene GUID: {level_manager.current_level}")
         imgui.text(f"Loading: {level_manager.loading}")
 
-        imgui.text("Player Coordinates")
-        imgui.text(f"x: {player_party_manager.position.x}")
-        imgui.text(f"y: {player_party_manager.position.y}")
-        imgui.text(f"z: {player_party_manager.position.z}")
+        GUI_helper.add_spacer()
 
         title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
-            f"\nTitle Cursor Position: {title_cursor_position.value} {title_cursor_position.name}"
+            f"Title Cursor Position: {title_cursor_position.name} ({title_cursor_position.value})"
         )
 
-        mstate_v = player_party_manager.movement_state.value
-        mstate_m = player_party_manager.movement_state.name
-        imgui.text(f"Movement State: {mstate_v} {mstate_m}")
+        GUI_helper.add_spacer()
+
+        _, self.show_metrics = imgui.checkbox(
+            "Show performance metrics", self.show_metrics
+        )
+        if self.show_metrics:
+            imgui.show_metrics_window()
+
+        _, self.show_test = imgui.checkbox("Show UI test window", self.show_test)
+        if self.show_test:
+            imgui.show_test_window()
 
         ret = False
         if not top_level and imgui.button("Back"):

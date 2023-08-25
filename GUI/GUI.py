@@ -85,7 +85,6 @@ class Window:
 
     def start_window(self, title: str) -> None:
         imgui.begin(title, True)
-        imgui.show_metrics_window()
 
     # Finalize window
     def end_window(self) -> None:
@@ -105,3 +104,18 @@ class Window:
     def close(self) -> None:
         self.impl.shutdown()
         glfw.terminate()
+
+
+class GUI_helper:
+    """
+    This class provides helper functions for creating GUI elements.
+
+    Methods:
+        add_spacer():
+            Adds a horizontal line with some padding."""
+
+    def add_spacer():
+        """Adds a horizontal line with some padding."""
+        imgui.spacing()
+        imgui.separator()
+        imgui.spacing()
