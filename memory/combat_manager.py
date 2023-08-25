@@ -69,32 +69,28 @@ class CombatManager:
         self.selected_target_guid = None
 
     def update(self):
-        try:
-            self.memory.update()
+        if self.memory.ready_for_updates():
+            if self.base is None or self.fields_base is None:
+                singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
 
-            if self.memory.ready_for_updates():
-                if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "CombatManager"
-                    )
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.current_encounter_base = self.memory.get_field(
-                        self.fields_base, "currentEncounter"
-                    )
+                self.base = self.memory.get_class_base(singleton_ptr)
+                if self.base == 0x0:
+                    return
 
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+
+            else:
                 # Update fields
+                self.current_encounter_base = self.memory.get_field(
+                    self.fields_base, "currentEncounter"
+                )
+
                 self._read_encounter_done()
                 self._read_live_mana()
                 self._read_players()
                 self._read_enemies()
                 self._read_battle_commands()
                 self._read_skill_commands()
-            else:
-                self.__init__()
-
-        except Exception:
-            return
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self):

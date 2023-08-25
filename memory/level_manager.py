@@ -12,13 +12,16 @@ class LevelManager:
         self.current_level = None
 
     def update(self):
-        try:
-            self.memory.update()
-            if self.memory.ready_for_updates():
+        if self.memory.ready_for_updates():
+            if self.base is None or self.fields_base is None:
                 singleton_ptr = self.memory.get_singleton_by_class_name("LevelManager")
 
                 self.base = self.memory.get_class_base(singleton_ptr)
+                if self.base == 0x0:
+                    return
                 self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+            else:
+                # Update fields
                 self.current_level_base = self.memory.get_field(
                     self.fields_base, "currentLevel"
                 )
@@ -26,16 +29,9 @@ class LevelManager:
                     self.fields_base, "levelLoader"
                 )
 
-                # Update fields
                 self.title_position_set = False
                 self._read_current_level()
                 self._read_main_scene_name()
-
-            else:
-                self.__init__()
-
-        except Exception:
-            return
 
     def _read_current_level(self):
         # LevelManager -> currentLevel

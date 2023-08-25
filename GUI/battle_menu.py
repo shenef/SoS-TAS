@@ -38,7 +38,7 @@ class BattleMenu(Menu):
 
             imgui.columns(self.COLUMN_MAX)
 
-            if len(combat_manager.enemies):
+            if combat_manager.enemies is not []:
                 for idx, e in enumerate(combat_manager.enemies):
                     imgui.text(f"Enemy {idx}:")
                     imgui.text(f"hp: {e.current_hp}")
@@ -56,7 +56,7 @@ class BattleMenu(Menu):
                     imgui.next_column()
                 imgui.separator()
 
-            if len(combat_manager.players):
+            if combat_manager.players is not []:
                 for e in combat_manager.players:
                     imgui.text(f"{e.definition_id}")
                     imgui.text(f"hp: {e.current_hp}")

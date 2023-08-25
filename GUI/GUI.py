@@ -6,6 +6,8 @@ import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
+from memory.core import mem_handle
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,10 +61,13 @@ class Window:
     def start_frame(self) -> None:
         glfw.poll_events()
         self.impl.process_inputs()
+        mem_handle().update()
+
         imgui.new_frame()
 
     def start_window(self, title: str) -> None:
         imgui.begin(title, True)
+        imgui.show_metrics_window()
 
     # Finalize window
     def end_window(self) -> None:

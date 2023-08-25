@@ -22,25 +22,23 @@ class PlayerPartyManager:
         self.movement_state = PlayerMovementState.NONE
 
     def update(self):
-        try:
-            self.memory.update()
+        if self.memory.ready_for_updates():
+            if self.base is None or self.fields_base is None:
+                singleton_ptr = self.memory.get_singleton_by_class_name(
+                    "PlayerPartyManager"
+                )
+                self.base = self.memory.get_class_base(singleton_ptr)
 
-            if self.memory.ready_for_updates():
-                if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "PlayerPartyManager"
-                    )
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.leader = self.memory.get_field(self.fields_base, "leader")
+                if self.base == 0x0:
+                    return
 
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+
+            else:
                 # Update fields
+                self.leader = self.memory.get_field(self.fields_base, "leader")
                 self._read_position()
                 self._read_movement_state()
-            else:
-                self.__init__()
-        except Exception:
-            return
 
     def _read_position(self):
         if self.memory.ready_for_updates():
