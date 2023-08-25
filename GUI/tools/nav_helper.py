@@ -33,7 +33,9 @@ class NavHelper(Menu):
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_size(190, 210, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_position(0, 80, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_size(240, 410, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_collapsed(1, condition=imgui.ONCE)
 
         mstate_v = player_party_manager.movement_state.value
         mstate_m = player_party_manager.movement_state.name

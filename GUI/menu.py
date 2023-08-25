@@ -19,6 +19,7 @@ class Menu:
     # Return True when done
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
+        imgui.set_window_position(5, 5, condition=imgui.ONCE)
         for child in self.children:
             if imgui.button(child.title):
                 self.active = child

@@ -90,6 +90,8 @@ class SequencerEngine:
     # Execute and render TAS progress
     def run(self) -> bool:
         self.window.start_window(f"Sea of Stars TAS {TAS_VERSION_STRING}")
+        imgui.set_window_position(5, 5, condition=imgui.ONCE)
+        imgui.set_window_size(590, 180, condition=imgui.FIRST_USE_EVER)
 
         self._update()
         self._render()

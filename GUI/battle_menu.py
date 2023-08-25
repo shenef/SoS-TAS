@@ -23,6 +23,8 @@ class BattleMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
+        imgui.set_window_position(0, 420, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_size(600, 300, condition=imgui.FIRST_USE_EVER)
 
         imgui.text(f"Encounter Done: {combat_manager.encounter_done}")
         if not combat_manager.encounter_done:

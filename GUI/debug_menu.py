@@ -25,6 +25,7 @@ class DebugMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
+        imgui.set_window_position(300, 80, condition=imgui.FIRST_USE_EVER)
 
         imgui.text("Level Info")
         imgui.text(f"Scene Name: {level_manager.scene_name}")
