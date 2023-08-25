@@ -47,6 +47,19 @@ def create_glfw_window(window_name="Sea of Stars TAS", width=600, height=720):
     return window
 
 
+def update_memory():
+    mem_handle().update()
+    if mem_handle().ready_for_updates:
+        level_manager_handle().update()
+        scene_name = level_manager_handle().scene_name
+        loading = level_manager_handle().loading
+        if scene_name == "TitleScreen":
+            title_sequence_manager_handle().update()
+        elif scene_name is not None and loading is False:
+            player_party_manager_handle().update()
+            combat_manager_handle().update()
+
+
 class Window:
     def __init__(self) -> None:
         super().__init__()
@@ -64,17 +77,7 @@ class Window:
 
     def start_frame(self) -> None:
         glfw.poll_events()
-        mem_handle().update()
-        if mem_handle().ready_for_updates:
-            level_manager_handle().update()
-            scene_name = level_manager_handle().scene_name
-            loading = level_manager_handle().loading
-            if scene_name == "TitleScreen":
-                title_sequence_manager_handle().update()
-            elif scene_name is not None and loading is False:
-                player_party_manager_handle().update()
-                combat_manager_handle().update()
-
+        update_memory()
         self.impl.process_inputs()
         imgui.new_frame()
 

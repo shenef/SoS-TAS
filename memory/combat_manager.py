@@ -100,9 +100,12 @@ class CombatManager:
             # print(f"Combat Manager Reloading - {type(e)}")
             self.__init__()
 
+    def _should_update(self):
+        return self.memory.ready_for_updates and self.current_encounter_base is not None
+
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self):
-        if self.memory.ready_for_updates and self.current_encounter_base is not None:
+        if self._should_update():
             battle_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0xF8, 0x50, 0x60, 0x0]
             )
@@ -128,7 +131,7 @@ class CombatManager:
 
     # Skill Commands are the menu of the "skills" command (ie Healing Light, Sunball)
     def _read_skill_commands(self):
-        if self.memory.ready_for_updates and self.current_encounter_base is not None:
+        if self._should_update():
             skill_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0xF8, 0x50, 0x58, 0x0]
             )
@@ -159,7 +162,7 @@ class CombatManager:
         self.skill_command_index = None
 
     def _read_encounter_done(self):
-        if self.memory.ready_for_updates and self.current_encounter_base is not None:
+        if self._should_update():
             current_encounter = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x0]
             )
@@ -170,7 +173,7 @@ class CombatManager:
         self.encounter_done = True
 
     def _read_live_mana(self):
-        if self.memory.ready_for_updates and self.current_encounter_base is not None:
+        if self._should_update():
             small_live_mana = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x60, 0x20, 0x0]
             )
@@ -191,7 +194,7 @@ class CombatManager:
                 return
 
     def _read_players(self):
-        if self.memory.ready_for_updates and self.current_encounter_base is not None:
+        if self._should_update():
             player_panels_list = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0xE0, 0x80, 0x40, 0x0]
             )
@@ -208,7 +211,7 @@ class CombatManager:
                 count = self.memory.read_int(items + 0x18)
                 address = 0x20
 
-                for _x in range(count):
+                for _item in range(count):
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     if hex(item) != "0x0":
                         definition_id = self.memory.read_longlong(item + 0x70)
@@ -274,7 +277,7 @@ class CombatManager:
         self.players = []
 
     def _read_enemies(self):
-        if self.memory.ready_for_updates and self.current_encounter_base is not None:
+        if self._should_update():
             enemy_targets = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x130, 0x0]
             )
@@ -288,7 +291,7 @@ class CombatManager:
                 count = self.memory.read_int(items + 0x18)
                 address = 0x20
 
-                for _x in range(count):
+                for _item in range(count):
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     if hex(item) != "0x0":
                         current_hp = self.memory.read_int(item + 0x6C)
@@ -306,7 +309,7 @@ class CombatManager:
                         try:
                             spell_locks_addr = 0x20
 
-                            for _s in range(total_spell_locks):
+                            for _spell_lock in range(total_spell_locks):
                                 spell_locks_base = self.memory.follow_pointer(
                                     casting_data, [0x18, 0x10, spell_locks_addr, 0x0]
                                 )

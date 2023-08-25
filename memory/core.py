@@ -32,6 +32,8 @@ class SoSMemory:
             "monoclassfield_offset": 0x18,
         }
 
+    # Helper for setting the `read_for_updates` field to allow depdencies to
+    # ensure all the modules for the core are loaded
     def _set_ready_for_updates(self):
         ready = (
             self.pm is not None
@@ -74,6 +76,17 @@ class SoSMemory:
             # print(f"Memory Core Reloading {type(_e)}")
             self.__init__()
 
+    # This is a helper function designed to facilitate in finding instanced/dynamically allocated
+    # objects. This is used most of the time for classes that inherit from a generic class such
+    # as Manager<T>
+    #
+    # The process is as follows
+    # Find the Class
+    # Find the parent address (usually 0x10)
+    # Find the instance field on the parent, which points to the dynamically allocated instance
+    # Find the parent static table address
+    # Return the sum of that static table_address on the parent and the instance field on the parent
+    # to get the offset from the base image where that instance will be allocated
     def get_singleton_by_class_name(self, class_name):
         local_class = self.get_class(class_name)
         if local_class is None or local_class == 0x0:
@@ -87,25 +100,35 @@ class SoSMemory:
         static_table = self.get_static_table(parent)
         if static_table is None or static_table == 0x0:
             return None
-        # The bitwise AND is probably not necessary here
-        # but i'll try removing it when more stuff is added
+        # This is probably not necessary but it ensures it should fit
+        # TODO: Try returning only static_table + instance_ptr at a later date.
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 
+    # Get pointer will return the pointer, but not access it. This function does this
+    # by mutating the `offset` list, by calling `pop()` to retreive/remove the last element
+    # following the 64-bit pointers and attaching the last address at the end so it does not
+    # follow the pointer and only gets the address where it can be followed later.
+    #
+    # This is to ensure specific fields can be used as a base for other classes for
+    # performance or if the user wants to reuse the pointer base address.
     def get_pointer(self, root, offsets):
-        """Follow the pointer from the application and add the last offset."""
         addr = self.pm.read_longlong(self.base_addr + root)
         last = offsets.pop()
-        for i in offsets:
-            addr = self.pm.read_longlong(addr + i)
+        for offset in offsets:
+            addr = self.pm.read_longlong(addr + offset)
 
         return addr + last
 
+    # This function allows you to follow an existing pointer created by get_pointer.
+    # The purpose is to allow for performance allowing reusability from an existing pointer address
+    # Unlike get_pointer, this function doesn't access the base before reading the offsets, however
+    # like get_pointer, it does mutate the `offset` array by popping the last value and attaching
+    # it at the end, so it can either be read from or used in another follow_pointer.
     def follow_pointer(self, base, offsets):
-        """Follow an existing pointer and add the last offset."""
         last = offsets.pop()
         addr = base
-        for i in offsets:
-            addr = self.pm.read_longlong(addr + i)
+        for offset in offsets:
+            addr = self.pm.read_longlong(addr + offset)
 
         return addr + last
 
@@ -121,6 +144,10 @@ class SoSMemory:
     def read_short(self, ptr):
         return self.pm.read_short(ptr)
 
+    # Reads the garbled string utf-8 field provided by Sea Of Stars
+    # For example, for "TitleScreen" you may see:
+    # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
+    # To "fix" this string, you will need to run value.replace("\x00", "")
     def read_guid(self, ptr):
         string_bytes = self.pm.read_bytes(ptr, 71)
 
@@ -134,6 +161,7 @@ class SoSMemory:
     def read_longlong(self, ptr):
         return self.pm.read_longlong(ptr)
 
+    # Scans the module/image class list for a specific class name by string.
     def get_class(self, class_name):
         record = None
         unity_classes = self._get_image_classes()
@@ -148,6 +176,7 @@ class SoSMemory:
                 break
         return record
 
+    # Gets a pointer to a named field for a provided class pointer
     def get_field(self, class_ptr, field_name):
         record = None
         unity_fields = self._get_fields(class_ptr)
@@ -166,28 +195,34 @@ class SoSMemory:
             )
         return None
 
+    # Get the static table pointer for a provided class pointer. This is an array of pointers
+    # to each static field on the class.
     def get_static_table(self, class_ptr):
         return pymem.memory.read_longlong(
             self.pm.process_handle, class_ptr + self.offsets["monoclass_static_fields"]
         )
 
+    # This is used to get the parent class of a type. This should
+    # only be used in specific circumstances, like finding the Generic class to
+    # find an instanced class. See get_singleton_by_class_name for its usage.
     def get_parent(self, class_ptr):
         return pymem.memory.read_longlong(
             self.pm.process_handle, class_ptr + self.offsets["monoclass_parent"]
         )
 
     # This is used to get the fields lookup base of the class
-    # > use this if you are looking up field offsets
+    # Provides the field offset relative to the base class.
     def get_class_fields_base(self, class_ptr):
         return pymem.memory.read_longlong(
             self.pm.process_handle, self.get_class_base(class_ptr)
         )
 
     # This is used to get the actual base of the class
-    # > use this is you are following pointers
+    # This can be used as the base when following pointer + field offsets
     def get_class_base(self, class_ptr):
         return pymem.memory.read_longlong(self.pm.process_handle, class_ptr)
 
+    # Scans for the assemblies signature for the specific version of unity for SoS
     def _assemblies_trg_sig(self):
         if self.assemblies is None:
             # "48 FF C5 80 3C ?? 00 75 ?? 48 8B 1D"
@@ -204,6 +239,7 @@ class SoSMemory:
                 address + 0x4 + pymem.memory.read_int(self.pm.process_handle, address)
             )
 
+    # Scans for the type info definition table signature for the specific version of unity for SoS
     def _type_info_definition_table_trg_sig(self):
         if self.type_info_definition_table is None:
             # "48 83 3C ?? 00 75 ?? 8B C? E8"
@@ -218,6 +254,7 @@ class SoSMemory:
                 address + 0x4 + pymem.memory.read_int(self.pm.process_handle, address)
             )
 
+    # Gets the Assembly-CSharp image where the games code lives so it can be used as a module base
     def get_image(self, assembly_name="Assembly-CSharp"):
         assemblies = pymem.memory.read_longlong(self.pm.process_handle, self.assemblies)
 
@@ -251,6 +288,7 @@ class SoSMemory:
 
         self.image = image
 
+    # Get the pointers for each field in a class pointer
     def _get_fields(self, class_ptr):
         field_count = (
             pymem.memory.read_longlong(
@@ -264,10 +302,11 @@ class SoSMemory:
         )
         fields = []
         struct_size = self.offsets["monoclassfield_structsize"] & 0xFFFFFFFFFFFFFFFF
-        for i in range(0, field_count):
-            fields.append(fields_ptr + (i * struct_size))
+        for field in range(0, field_count):
+            fields.append(fields_ptr + (field * struct_size))
         return fields
 
+    # Get all Unity Types/Classes in the provided module/dll
     def _get_image_classes(self):
         type_count = pymem.memory.read_int(
             self.pm.process_handle, self.image + self.offsets["monoimage_typecount"]
@@ -284,11 +323,13 @@ class SoSMemory:
 
         ptr = ptr + (metadata_handle * 8)
         classes = []
-        for i in range(0, type_count):
-            i_class = pymem.memory.read_ulonglong(self.pm.process_handle, ptr + (i * 8))
+        for field in range(0, type_count):
+            field_class = pymem.memory.read_ulonglong(
+                self.pm.process_handle, ptr + (field * 8)
+            )
 
-            if i_class:
-                classes.append(i_class)
+            if field_class:
+                classes.append(field_class)
         return classes
 
 
