@@ -49,6 +49,10 @@ class TASMenu(Menu):
         else:
             logger.error(f"Couldn't find checkpoint '{self.checkpoint}'")
 
+    def custom_gui(self):
+        # Override to inject some custom parameters to the run
+        pass
+
     def execute(self, top_level: bool) -> bool:
         self.window.start_window(self.title)
         imgui.set_window_position(5, 5, condition=imgui.ONCE)
@@ -85,6 +89,8 @@ class TASMenu(Menu):
             _, self.run_start_sequence = imgui.checkbox(
                 "Should run start sequence", self.run_start_sequence
             )
+
+            self.custom_gui()
 
             if imgui.button("Start TAS"):
                 if self.run_start_sequence:
