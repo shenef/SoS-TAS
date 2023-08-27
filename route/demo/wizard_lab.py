@@ -1,9 +1,16 @@
 import logging
 
+from engine.combat import (
+    SeqCombatManual,
+)
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    InteractMove,
+    SeqBracelet,
     SeqCheckpoint,
+    SeqDelay,
     SeqHoldDirectionUntilClose,
+    SeqInteract,
     SeqList,
     SeqLog,
     SeqMove,
@@ -13,12 +20,11 @@ from engine.seq import (
 logger = logging.getLogger(__name__)
 
 
-class DemoWizardLab(SeqList):
+class DemoWizardLabEnterTower(SeqList):
     def __init__(self):
         super().__init__(
-            name="Wizard Lab",
+            name="Enter tower",
             children=[
-                SeqLog(name="SYSTEM", text="We have arrived at the tower!"),
                 SeqMove(
                     name="Move to cutscene",
                     coords=[
@@ -47,15 +53,215 @@ class DemoWizardLab(SeqList):
                 ),
                 # Cutscene
                 SeqTurboMashUntilIdle(name="Pirate leaves"),
-                # TODO: Push block with bracelet
-                # Checkpoint: Brisk
+                SeqMove(
+                    name="Move to block",
+                    coords=[
+                        Vec3(-3.831, 1.002, 15.133),
+                        Vec3(-3.831, 1.002, 17.216),
+                    ],
+                ),
+                SeqBracelet("Push block north"),
+                SeqMove(
+                    name="Move to block",
+                    coords=[
+                        Vec3(-6.202, 1.002, 27.352),
+                        Vec3(-5.454, 1.002, 27.401),
+                    ],
+                ),
+                SeqBracelet("Push block east"),
+                SeqMove(
+                    name="Move to block",
+                    coords=[
+                        Vec3(-1.966, 1.002, 24.339),
+                        Vec3(-1.966, 1.002, 25.815),
+                    ],
+                ),
+                SeqBracelet("Push block north"),
+                SeqMove(
+                    name="Go to chest",
+                    coords=[
+                        InteractMove(-1.806, 6.002, 32.876),
+                        InteractMove(7.100, 6.002, 33.171),
+                    ],
+                ),
+                SeqTurboMashUntilIdle(name="Pick up green crystal"),
+                SeqMove(
+                    name="Go to altar",
+                    coords=[
+                        InteractMove(8.006, 1.002, 28.253),
+                        Vec3(10.713, 1.002, 19.558),
+                        Vec3(9.590, 1.002, 13.294),
+                        Vec3(4.452, 1.002, 13.294),
+                        Vec3(4.452, 2.954, 16.809),
+                        Vec3(6.216, 2.954, 18.675),
+                    ],
+                ),
+                # Place green crystal
+                SeqInteract(),
+                SeqDelay(name="Menu", timeout_in_s=1.0),
+                SeqInteract(),
+                SeqMove(
+                    name="Go towards portal",
+                    coords=[
+                        Vec3(3.976, 2.947, 15.920),
+                        Vec3(3.225, 1.010, 13.016),
+                        Vec3(-1.145, 1.002, 13.016),
+                        Vec3(-3.187, 1.002, 19.657),
+                    ],
+                ),
+                # Checkpoint: Wizard lab
                 SeqCheckpoint(checkpoint_name="wizard_lab1"),
-                # TODO: Climb up above archway
-                # TODO: Pick up green crystal
-                # TODO: Go down to altar and go to right pedistal
-                # TODO: Place green crystal on right pedistal (first slot, can mash?)
-                # TODO: Move to green portal and go inside
-                # TODO: Navigate green area
+                SeqMove(
+                    name="Go to portal",
+                    coords=[
+                        Vec3(-3.187, 1.002, 24.928),
+                        Vec3(3.932, 1.002, 29.996),
+                    ],
+                ),
+            ],
+        )
+
+
+class DemoWizardLabGreenArea(SeqList):
+    def __init__(self):
+        super().__init__(
+            name="Green area",
+            children=[
+                SeqHoldDirectionUntilClose(
+                    name="Enter green portal",
+                    target=Vec3(-80.000, 1.002, -29.498),
+                    joy_dir=Vec2(0, 1),
+                ),
+                # TODO: Manual Fight here
+                SeqCombatManual(
+                    name="Move to fight (MASH combat)",
+                    coords=[
+                        Vec3(-80.000, 1.002, -21.742),
+                        Vec3(-84.648, 1.002, -11.011),
+                        Vec3(-84.905, 1.260, -4.096),
+                    ],
+                ),
+                SeqDelay("Activate floor plate", timeout_in_s=0.5),
+                SeqMove(
+                    name="Puzzles",
+                    coords=[
+                        # Puzzles
+                        Vec3(-83.248, 1.010, -5.665),
+                        InteractMove(-83.455, 1.002, -16.232),
+                        Vec3(-87.502, 1.002, -20.988),
+                        InteractMove(-96.415, 1.002, -20.949),
+                        InteractMove(-97.350, 6.002, -12.533),
+                        Vec3(-92.874, 6.260, -3.122),
+                        Vec3(-95.545, 6.010, -10.632),
+                        Vec3(-95.545, 6.002, -12.540),
+                        # Jump on platforms
+                        InteractMove(-88.460, 6.002, -12.460),
+                        InteractMove(-88.336, 6.002, -15.605),
+                        Vec3(-82.583, 1.002, -17.950),
+                        InteractMove(-73.460, 2.002, -17.950),
+                        InteractMove(-73.477, 6.002, -12.533),
+                        Vec3(-78.803, 6.002, -7.156),
+                        InteractMove(-81.784, 1.002, -4.457),
+                        # Floor block
+                        Vec3(-85.120, 1.252, -4.049),
+                        Vec3(-84.457, 1.010, -10.810),
+                        Vec3(-77.946, 1.002, -13.459),
+                        InteractMove(-76.533, 4.002, -13.459),
+                        InteractMove(-76.533, 6.002, -8.654),
+                        InteractMove(-78.839, 6.002, -3.181),
+                    ],
+                ),
+                SeqTurboMashUntilIdle(name="Pick up blue crystal"),
+                SeqMove(
+                    name="Leave room",
+                    coords=[
+                        InteractMove(-78.839, 1.010, -10.512),
+                        Vec3(-80.122, 1.002, -17.544),
+                        Vec3(-80.122, 1.002, -30.838),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Leave green portal",
+                    target=Vec3(4.000, 1.002, 28.775),
+                    joy_dir=Vec2(0, -1),
+                ),
+            ],
+        )
+
+
+class DemoWizardLabPlaceBlueCrystal(SeqList):
+    def __init__(self):
+        super().__init__(
+            name="Set blue crystal",
+            children=[
+                SeqMove(
+                    name="Go to altar",
+                    coords=[
+                        Vec3(10.241, 1.002, 22.438),
+                        Vec3(10.241, 1.002, 15.016),
+                        Vec3(7.136, 1.002, 13.094),
+                        Vec3(4.574, 1.002, 13.549),
+                        Vec3(4.518, 2.954, 16.710),
+                        Vec3(6.298, 2.946, 17.999),
+                    ],
+                ),
+                # Remove green crystal
+                SeqInteract(),
+                SeqDelay(name="Menu", timeout_in_s=1.0),
+                SeqInteract(),
+                SeqDelay(name="Menu", timeout_in_s=1.0),
+                # Place blue crystal
+                SeqInteract(),
+                SeqDelay(name="Menu", timeout_in_s=1.0),
+                SeqInteract(),
+                SeqMove(
+                    name="Go towards portal",
+                    coords=[
+                        Vec3(3.976, 2.947, 15.920),
+                        Vec3(3.225, 1.010, 13.016),
+                        Vec3(-1.145, 1.002, 13.016),
+                        Vec3(-3.187, 1.002, 19.657),
+                    ],
+                ),
+                # Checkpoint: Wizard lab
+                SeqCheckpoint(checkpoint_name="wizard_lab2"),
+                SeqMove(
+                    name="Go to portal",
+                    coords=[
+                        Vec3(-3.187, 1.002, 24.928),
+                        Vec3(3.932, 1.002, 29.996),
+                    ],
+                ),
+            ],
+        )
+
+
+class DemoWizardLabBlueArea(SeqList):
+    def __init__(self):
+        super().__init__(
+            name="Blue area",
+            children=[
+                SeqHoldDirectionUntilClose(
+                    name="Enter blue portal",
+                    target=Vec3(239.500, 1.002, -48.833),
+                    joy_dir=Vec2(0, 1),
+                ),
+                # TODO: Route blue room
+            ],
+        )
+
+
+class DemoWizardLab(SeqList):
+    def __init__(self):
+        super().__init__(
+            name="Wizard Lab",
+            children=[
+                SeqLog(name="SYSTEM", text="We have arrived at the tower!"),
+                DemoWizardLabEnterTower(),
+                # Enter green portal
+                DemoWizardLabGreenArea(),
+                DemoWizardLabPlaceBlueCrystal(),
+                DemoWizardLabBlueArea(),
                 # TODO: A lot
                 SeqCheckpoint(checkpoint_name="wizard_lab_boss"),
             ],

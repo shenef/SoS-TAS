@@ -42,7 +42,7 @@ class TASMenu(Menu):
 
     def init_saveslot(self):
         # Potentially advance the TAS to a particular checkpoint
-        if self.load_game_checkbox or self.saveslot == 0:
+        if not self.load_game_checkbox or self.saveslot == 0:
             logger.info("Starting TAS from the beginning")
         elif self.sequencer.advance_to_checkpoint(checkpoint=self.checkpoint):
             logger.info(f"Advanced TAS to checkpoint '{self.checkpoint}'")

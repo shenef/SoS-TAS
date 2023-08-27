@@ -40,6 +40,17 @@ class SoSController:
     def set_neutral(self):
         self.ctrl.set_neutral()
 
+    def release_buttons(self):
+        self.ctrl.set_button(x_key=VgButtons.A, value=0)
+        self.ctrl.set_button(x_key=VgButtons.B, value=0)
+        self.ctrl.set_button(x_key=VgButtons.X, value=0)
+        self.ctrl.set_button(x_key=VgButtons.Y, value=0)
+        self.ctrl.set_button(x_key=VgButtons.SHOULDER_L, value=0)
+        self.ctrl.set_button(x_key=VgButtons.SHOULDER_R, value=0)
+        self.ctrl.set_button(x_key=VgButtons.START, value=0)
+        self.ctrl.set_button(x_key=VgButtons.TRIG_L, value=0)
+        self.ctrl.set_button(x_key=VgButtons.TRIG_R, value=0)
+
     class DPad:
         def __init__(self, ctrl: VgTranslator, delay: float):
             self.ctrl = ctrl
