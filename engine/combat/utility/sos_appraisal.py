@@ -17,4 +17,6 @@ class SoSAppraisalType(Enum):
 
 class SoSAppraisal(Appraisal):
     def __init__(self):
+        super().__init__()
+        self.complete = False
         self.type = SoSAppraisalType.NONE

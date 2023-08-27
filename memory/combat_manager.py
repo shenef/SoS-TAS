@@ -1,3 +1,4 @@
+import contextlib
 from enum import Enum
 
 from memory.core import mem_handle
@@ -55,6 +56,7 @@ class CombatPlayer:
         self.physical_attack = None
         self.selected = False
         self.definition_id = None
+        self.dead = False
         self.character = CombatCharacter.NONE
         self.enabled = None
         self.mana_charge_count = None
@@ -75,6 +77,7 @@ class CombatManager:
         self.selector_base = None
         self.enemies = []
         self.players = []
+        self.selected_character = CombatCharacter.NONE
         self.current_encounter_base = None
         self.encounter_done = None
         self.small_live_mana = None
@@ -106,11 +109,12 @@ class CombatManager:
                     self._read_encounter_done()
                     if self.encounter_done is True:
                         return
-                    self._read_live_mana()
+
                     self._read_players()
                     self._read_enemies()
                     self._read_battle_commands()
                     self._read_skill_commands()
+                    self._read_live_mana()
 
         except Exception as _e:
             # print(f"Combat Manager Reloading - {type(e)}")
@@ -240,6 +244,7 @@ class CombatManager:
     # Reads information about players, see details below:
     def _read_players(self):
         if self._should_update():
+            selected_character = CombatCharacter.NONE
             player_panels_list = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
             )
@@ -280,6 +285,8 @@ class CombatManager:
                     character_definition_ptr = self.memory.follow_pointer(
                         item, [0x68, 0x28, 0xF0, 0x0]
                     )
+                    dead_ptr = self.memory.follow_pointer(item, [0x68, 0x28])
+                    dead = self.memory.read_bool(dead_ptr + 0xC8)
 
                     definition_id = self.memory.read_string(
                         character_definition_ptr + 0x11, 11
@@ -321,9 +328,11 @@ class CombatManager:
                         item, [0x68, 0x38, 0x148, 0x0]
                     )
                     mana_charge_count = self.memory.read_int(live_mana_handler + 0x58)
+                    target_unique_id_base = None
                     # A try is used here, because this pointer tends to fall out in quick
                     # play. This just returns safely and attempts again.
-                    try:
+                    selected_target_guid = ""
+                    with contextlib.suppress(Exception):
                         target_unique_id_base = self.memory.follow_pointer(
                             item,
                             [
@@ -342,29 +351,48 @@ class CombatManager:
                                 0x0,
                             ],
                         )
-                    except Exception:
-                        return
 
                     # This check was added due to the pointer not falling off in time, referencing
                     # an enemy that just died
-                    if (
-                        target_unique_id_base is self.NULL_POINTER
-                        or target_unique_id_base is None
-                    ):
-                        continue
-
-                    selected_target_guid = self.memory.read_guid(
-                        target_unique_id_base + 0x14
-                    )
+                    try:
+                        selected_target_guid = self.memory.read_guid(
+                            target_unique_id_base + 0x14
+                        )
+                    except Exception:
+                        selected_target_guid = ""
 
                     mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
+<<<<<<< HEAD
                     current_mp = self.memory.read_int(mp_text_field + 0x58)
+=======
+                    current_mp = self.memory.read_int(mp_text_field + 0x54)
+
+                    # if the current player is selected, set it to the main combat manager state
+                    # this will help us prevent scanning lists later on
+                    if selected:
+                        selected_character = character
+
+>>>>>>> 50036da (MVP mash battle with AI)
                     player = CombatPlayer()
+
+                    # TODO: hardcode these for now - we need to extract these players into
+                    # something more global and only update them as required.
+                    match character:
+                        case CombatCharacter.Zale:
+                            player.physical_attack = 20
+                        case CombatCharacter.Valere:
+                            player.physical_attack = 22
+                        case CombatCharacter.Garl:
+                            player.physical_attack = 26
+                        case _:
+                            player.physical_attack = 1
+
                     player.current_hp = current_hp
                     player.current_mp = current_mp
                     player.definition_id = definition_id
                     player.character = character
                     player.selected = selected
+                    player.dead = dead
                     player.enabled = enabled
                     player.mana_charge_count = mana_charge_count
                     players.append(player)
@@ -373,6 +401,7 @@ class CombatManager:
                     address += self.ITEM_OBJECT_OFFSET
 
             self.players = players
+            self.selected_character = selected_character
             return
         self.players = []
 

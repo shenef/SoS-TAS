@@ -1,4 +1,4 @@
+from engine.combat.combat_and_move import SeqCombatAndMove
 from engine.combat.manual import SeqCombatManual
-from engine.combat.mash import SeqCombatMash
 
-__all__ = ["SeqCombatManual", "SeqCombatMash"]
+__all__ = ["SeqCombatManual", "SeqCombatAndMove"]

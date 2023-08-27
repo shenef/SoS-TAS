@@ -1,3 +1,4 @@
+from control import sos_ctrl
 from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
@@ -8,6 +9,16 @@ class SoSConsideration(Consideration):
     # Generates a list of appraisals for a character.
     def generate_appraisals(self):
         return self._default_appraisals() + self._character_appraisals()
+
+    # if the selected character is NONE or we are on the selected character, considered valid'
+    # and do nothing else here.
+    def valid(self, selected_character, action):
+        return selected_character is CombatCharacter.NONE or self.on_selected_character(
+            selected_character, action
+        )
+
+    def on_selected_character(self, selected_character, action):
+        return selected_character is action.consideration.actor.character
 
     # Generates default appraisals generic to every consideration
     # TODO: Add items?
@@ -35,7 +46,7 @@ class SoSConsideration(Consideration):
     # for the value and returning an Action
     def calculate_actions(self):
         # if the actor isn't enabled, return no actions
-        if not self.actor.enabled:
+        if not self.actor.enabled or self.actor.dead:
             return []
 
         actions = []
@@ -45,6 +56,7 @@ class SoSConsideration(Consideration):
         return actions
 
     # execute on selecting the consideration to perform the appraisal
-    def execute(self, _handle):
+    def execute(self):
         # This should select the character based on the memory
-        pass
+        # just press left for now
+        sos_ctrl().dpad.tap_left()

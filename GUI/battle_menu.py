@@ -38,6 +38,7 @@ class BattleMenu(Menu):
             imgui.text(f"Skill Command Index: {combat_manager.skill_command_index}")
             imgui.text(f"Small Live Mana: {combat_manager.small_live_mana}")
             imgui.text(f"Big Live Mana: {combat_manager.big_live_mana}")
+            imgui.text(f"Selected Character: {combat_manager.selected_character.value}")
             imgui.separator()
 
             imgui.columns(self.COLUMN_MAX)
