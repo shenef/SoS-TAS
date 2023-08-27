@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 class Appraisal:
     def __init__(self):
         self.value = 0
+        self.complete = False
 
     def execute(self):
         logger.debug("No appraiser execution defined.")

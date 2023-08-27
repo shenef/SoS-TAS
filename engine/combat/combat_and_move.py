@@ -41,10 +41,9 @@ class SeqCombatAndMove(SeqMove):
             self.reasoner = SoSReasoner(combat_manager)
 
         if (
-            self.action is None
-            and combat_manager.selected_character is not CombatCharacter.NONE
-        ):
-            # print("No action exists, executing one one")
+            self.action is None or self.appraisal.complete
+        ) and combat_manager.selected_character is not CombatCharacter.NONE:
+            print("No action exists, executing one one")
             self.action = self.reasoner.execute()
 
         # For some reason the action isn't set, so bail out.
@@ -87,10 +86,7 @@ class SeqCombatAndMove(SeqMove):
         # if consideration executed
 
         # Check if we have control
-
-        # # TODO: let the action consume itself - this is just for testing
-        # self.action = None
-        return True
+        return combat_manager.encounter_done is True
 
     def __repr__(self) -> str:
         return f"Mashing confirm while waiting for encounter ({self.name})..."
