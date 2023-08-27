@@ -1,6 +1,6 @@
 import logging
 
-from engine.combat import SeqCombatManual
+from engine.combat import SeqCombatMash
 from engine.mathlib import Vec3
 from engine.seq import (
     InteractMove,
@@ -39,9 +39,9 @@ class DemoPlateau(SeqList):
                         InteractMove(-425.293, -22.998, -98.917),
                     ],
                 ),
-                # TODO: Manual Fight here
-                SeqCombatManual(
-                    name="Move to ladder (MANUAL combat)",
+                # TODO: Mash Only Fight here
+                SeqCombatMash(
+                    name="Move to ladder (MASH combat)",
                     coords=[
                         Vec3(-416.966, -22.998, -96.962),
                     ],
