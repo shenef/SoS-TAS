@@ -32,7 +32,6 @@ class SeqCombatMash(SeqMove):
     def execute_combat(self, delta: float) -> bool:
         self.timer = self.timer + delta
 
-        sos_ctrl().toggle_turbo(state=True)
         if self.timer > self._TOGGLE_TIME:
             self.timer = 0
             self.state = not self.state

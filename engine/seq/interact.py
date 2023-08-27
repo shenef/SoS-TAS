@@ -2,11 +2,9 @@
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
-from memory.combat_manager import combat_manager_handle
 from memory.player_party_manager import PlayerMovementState, player_party_manager_handle
 
 player_party_manager = player_party_manager_handle()
-combat_manager = combat_manager_handle()
 
 
 class SeqInteract(SeqBase):
