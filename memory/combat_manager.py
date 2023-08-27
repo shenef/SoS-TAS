@@ -39,13 +39,23 @@ class CombatEnemyTarget:
         self.spell_locks = []
 
 
+class CombatCharacter(Enum):
+    NONE = 0
+    Zale = 1
+    Valere = 2
+    Garl = 3
+    _SPOILERS = 4
+
+
 class CombatPlayer:
     def __init__(self, params=dict):
         self.max_hp = None
         self.current_hp = None
         self.current_mp = None
+        self.physical_attack = None
         self.selected = False
         self.definition_id = None
+        self.character = CombatCharacter.NONE
         self.enabled = None
         self.mana_charge_count = None
 

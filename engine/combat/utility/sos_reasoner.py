@@ -1,0 +1,29 @@
+from engine.combat.utility.core.reasoner import Reasoner
+from engine.combat.utility.sos_consideration import SoSConsideration
+
+
+class SoSReasoner(Reasoner):
+    def __init__(self, combat_manager_handle):
+        self.combat_manager_handle = combat_manager_handle
+        self.considerations = self.generate_considerations(
+            combat_manager_handle.players
+        )
+
+    def generate_considerations(self, players):
+        considerations = []
+        for player in players:
+            considerations.append(SoSConsideration(player))
+        return considerations
+
+    def _select_action(self):
+        # go through each consideration and calculate its value
+        # TODO: Optimize, do not calculate values for dead/disabled characters
+        actions = []
+        for consideration in self.considerations:
+            calculated_actions = consideration.calculate_actions()
+            actions.extend(calculated_actions)
+
+        # sort and return the results by their value in desc order
+        actions.sort(key=lambda action: action.appraisal.value, reverse=True)
+
+        return actions[0]
