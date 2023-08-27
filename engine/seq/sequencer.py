@@ -40,6 +40,7 @@ class SequencerEngine:
         # Restore controls to neutral state
         ctrl.dpad.none()
         ctrl.set_neutral()
+        ctrl.release_buttons()
         self.paused = True
         logger.info("------------------------")
         logger.info("  TAS EXECUTION PAUSED  ")
