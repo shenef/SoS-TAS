@@ -1,3 +1,4 @@
+from control import sos_ctrl
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from engine.mathlib import Vec3
 from engine.seq.move import InteractMove, SeqMove
@@ -31,36 +32,34 @@ class SeqCombatAndMove(SeqMove):
 
     # Mash through cutscene while holding the turbo button
     def execute_combat(self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+        ctrl.set_neutral()
         self.timer = self.timer + delta
         # if combat is done, just exit
         if combat_manager.encounter_done is True:
-            return True
+            return False
 
         # if reasoner doesn't exist, add it.
         if combat_manager.encounter_done is False and self.reasoner is None:
             self.reasoner = SoSReasoner(combat_manager)
 
+        # if we dont have an action or the current appraisal is complete,
+        # we make a new one.
+        # we also check if battle command has focus, so it doesn't start executing before
+        # we have control
         if (
-            self.action is None or self.appraisal.complete
-        ) and combat_manager.selected_character is not CombatCharacter.NONE:
-            print("No action exists, executing one one")
+            (self.action is None or self.action.appraisal.complete)
+            and combat_manager.selected_character is not CombatCharacter.NONE
+            and combat_manager.battle_command_has_focus
+        ):
+            # print("No action exists, executing one one")
             self.action = self.reasoner.execute()
+            return False
 
         # For some reason the action isn't set, so bail out.
         if self.action is None:
-            return True
-
-        # do we need to navigate to an action?
-        # if we are on the selected character, run the appraisal:
-        if self.action.consideration.on_selected_character(
-            combat_manager.selected_character, self.action
-        ):
-            # print("We're on our character, execute the appraisal")
-            self.action.appraisal.execute()
-            if self.action.appraisal.complete:
-                # print("appraisal is complete, reset action")
-                self.action = None
-                return True
+            # print("baling out because self action is nil")
+            return False
 
         # if the consideration doesn't believe the situation is valid, execute it.
         # This will put the cursor on the character it should be on.
@@ -73,7 +72,17 @@ class SeqCombatAndMove(SeqMove):
         if not consideration_valid:
             # print("Consideration is not valid, move cursor")
             self.action.consideration.execute()
+            return False
 
+        # do we need to navigate to an action?
+        # if we are on the selected character, run the appraisal:
+        if consideration_valid:
+            # print("Try to execute the appraisal")
+            self.action.appraisal.execute()
+            if self.action.appraisal.complete:
+                # print("appraisal is complete, reset action")
+                self.action = None
+            return False
         # are we waiting for an attack to complete?
 
         # is an enemy attacking - do we need to defend?
