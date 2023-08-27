@@ -16,6 +16,15 @@ class SeqInteract(SeqBase):
         return True
 
 
+class SeqBracelet(SeqBase):
+    def __init__(self, name: str = "Bracelet"):
+        super().__init__(name)
+
+    def execute(self, delta: float) -> bool:
+        sos_ctrl().bracelet()
+        return True
+
+
 class SeqTurboMashUntilIdle(SeqBase):
     _TOGGLE_TIME = 0.05
 
