@@ -62,7 +62,7 @@ class BattleMenu(Menu):
 
             if combat_manager.players is not []:
                 for player in combat_manager.players:
-                    imgui.text(f"{player.definition_id}")
+                    imgui.text(f"{player.character.value}")
                     imgui.text(f"hp: {player.current_hp}")
                     imgui.text(f"mp: {player.current_mp}")
                     imgui.text(f"selected: {player.selected}")

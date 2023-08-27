@@ -40,11 +40,11 @@ class CombatEnemyTarget:
 
 
 class CombatCharacter(Enum):
-    NONE = 0
-    Zale = 1
-    Valere = 2
-    Garl = 3
-    _SPOILERS = 4
+    NONE = "None"
+    Zale = "Zale"
+    Valere = "Valere"
+    Garl = "Garl"
+    _SPOILERS = "_SPOILERS"
 
 
 class CombatPlayer:
@@ -243,6 +243,7 @@ class CombatManager:
             player_panels_list = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
             )
+
             if player_panels_list == self.NULL_POINTER:
                 self.players = []
                 return
@@ -262,6 +263,7 @@ class CombatManager:
                 address = self.ITEM_INDEX_0_ADDRESS
 
                 for _item in range(count):
+                    character = CombatCharacter.NONE
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     # There will be times when there is an empty pointer in a list of items,
                     # This checks for that case and skips that record.
@@ -275,7 +277,30 @@ class CombatManager:
                     if hex(item) == "0x0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue
+                    character_definition_ptr = self.memory.follow_pointer(
+                        item, [0x68, 0x28, 0xF0, 0x0]
+                    )
 
+                    definition_id = self.memory.read_string(
+                        character_definition_ptr + 0x11, 11
+                    )
+
+                    # Definition IDS are stored as some goofy serialized utf encoded string
+                    # We just do our best with the values that are provided to
+                    # Determine the character we are looking at
+                    match definition_id:
+                        case str(x) if "Z" in x:
+                            character = CombatCharacter.Zale
+                        case str(x) if "V" in x:
+                            character = CombatCharacter.Valere
+                        case str(x) if "G" in x:
+                            character = CombatCharacter.Garl
+                        case "_SPOILERS":
+                            character = CombatCharacter._SPOILERS
+                        case _:
+                            character = CombatCharacter.NONE
+
+<<<<<<< HEAD
                     definition_id = self.memory.read_longlong(item + 0x70)
 
                     # If the character isn't loaded, ignore.
@@ -283,6 +308,8 @@ class CombatManager:
                         address += self.ITEM_OBJECT_OFFSET
                         continue
 
+=======
+>>>>>>> 6c39215 (do the best we can to determine the CombatCharacter enum)
                     selected = self.memory.read_bool(item + 0x78)
 
                     hp_text_field = self.memory.follow_pointer(item, [0x28, 0x0])
@@ -336,6 +363,7 @@ class CombatManager:
                     player.current_hp = current_hp
                     player.current_mp = current_mp
                     player.definition_id = definition_id
+                    player.character = character
                     player.selected = selected
                     player.enabled = enabled
                     player.mana_charge_count = mana_charge_count

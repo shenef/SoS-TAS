@@ -1,4 +1,3 @@
-from control import sos_ctrl
 from engine.mathlib import Vec3
 from engine.seq.move import InteractMove, SeqMove
 from memory.combat_manager import combat_manager_handle
@@ -32,16 +31,15 @@ class SeqCombatMash(SeqMove):
     def execute_combat(self, delta: float) -> bool:
         self.timer = self.timer + delta
 
-        if self.timer > self._TOGGLE_TIME:
-            self.timer = 0
-            self.state = not self.state
-            sos_ctrl().toggle_confirm(self.state)
+        # if self.timer > self._TOGGLE_TIME:
+        #     self.timer = 0
+        #     self.state = not self.state
+        #     sos_ctrl().toggle_confirm(self.state)
+
+        # Do we have
 
         # Check if we have control
-        done = combat_manager.encounter_done is True
-        if done:
-            sos_ctrl().toggle_turbo(state=False)
-        return done
+        return combat_manager.encounter_done is True
 
     def __repr__(self) -> str:
         return f"Mashing confirm while waiting for encounter ({self.name})..."
