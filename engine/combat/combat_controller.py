@@ -17,7 +17,7 @@ class CombatController:
 
         # if combat is done, just exit
         if combat_manager.encounter_done is True:
-          return True
+            return True
 
         # if we dont have an action or the current appraisal is complete,
         # we make a new one.

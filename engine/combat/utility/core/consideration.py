@@ -1,5 +1,7 @@
-from typing import Self, List
+from typing import Self
+
 from engine.combat.utility.core.appraisal import Appraisal
+
 
 class Consideration:
     def __init__(self, actor):
@@ -8,7 +10,7 @@ class Consideration:
         self.appraisals = self.generate_appraisals()
 
     # Generates a list of appraisals for a character.
-    def generate_appraisals(self) -> List[Appraisal]:
+    def generate_appraisals(self) -> list[Appraisal]:
         return []
 
     # use to assign a new value based on whatever the current state is
