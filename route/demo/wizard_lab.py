@@ -154,11 +154,22 @@ class DemoWizardLabGreenArea(SeqList):
                         Vec3(-92.874, 6.260, -3.122),
                         Vec3(-95.545, 6.010, -10.632),
                         Vec3(-95.545, 6.002, -12.540),
+                    ],
+                ),
+                SeqMove(
+                    name="Platforms",
+                    precision=0.5,  # Low precision to prevent turning the wrong way
+                    coords=[
                         # Jump on platforms
                         InteractMove(-88.460, 6.002, -12.460),
-                        InteractMove(-88.336, 6.002, -15.605),
-                        Vec3(-82.583, 1.002, -17.950),
-                        InteractMove(-73.460, 2.002, -17.950),
+                        InteractMove(-88.460, 6.002, -15.614),
+                        InteractMove(-85.332, 1.002, -18.017),
+                    ],
+                ),
+                SeqMove(
+                    name="Puzzles",
+                    coords=[
+                        InteractMove(-73.460, 2.002, -18.017),
                         InteractMove(-73.477, 6.002, -12.533),
                         Vec3(-78.803, 6.002, -7.156),
                         InteractMove(-81.784, 1.002, -4.457),
