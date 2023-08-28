@@ -4,12 +4,12 @@ from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec3
 from engine.seq import (
     InteractMove,
+    SeqAmulet,
     SeqClimb,
     SeqInteract,
     SeqList,
     SeqLog,
     SeqMove,
-    SeqAmulet,
     SeqTurboMashUntilIdle,
 )
 

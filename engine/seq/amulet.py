@@ -1,15 +1,14 @@
-from engine.combat.combat_controller import CombatController
-from engine.mathlib import Vec3
-from engine.seq import InteractMove, SeqBase
-from memory.combat_manager import combat_manager_handle
-from control import sos_ctrl
 import time
+
+from control import sos_ctrl
+from engine.seq import SeqBase
+from memory.combat_manager import combat_manager_handle
+
 combat_manager = combat_manager_handle()
 
 
 # TODO: Temporary code, moves along path, pausing while combat is active
 class SeqAmulet(SeqBase):
-
     def __init__(
         self,
         name: str,
@@ -22,7 +21,6 @@ class SeqAmulet(SeqBase):
 
     # Override
     def execute(self, delta: float) -> bool:
-        
         step = self.steps.pop(0)
         print(step)
 
