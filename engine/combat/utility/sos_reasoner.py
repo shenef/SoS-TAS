@@ -28,7 +28,6 @@ class SoSReasoner(Reasoner):
             calculated_actions = consideration.calculate_actions()
             actions.extend(calculated_actions)
 
-        print(actions)
         if actions == []:
             return None
         # sort and return the results by their value in desc order

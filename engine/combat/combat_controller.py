@@ -32,7 +32,7 @@ class CombatController:
             and combat_manager.selected_character is not CombatCharacter.NONE
             and combat_manager.battle_command_has_focus
         ):
-            print("No action exists, executing one one")
+            # print("No action exists, executing one one")
             self.action = self.reasoner.execute()
             return False
 
@@ -50,17 +50,17 @@ class CombatController:
             combat_manager.selected_character, self.action
         )
         if not consideration_valid:
-            print("Consideration is not valid, move cursor")
+            # print("Consideration is not valid, move cursor")
             self.action.consideration.execute()
             return False
 
         # do we need to navigate to an action?
         # if we are on the selected character, run the appraisal:
         if consideration_valid:
-            print("Try to execute the appraisal")
+            # print("Try to execute the appraisal")
             self.action.appraisal.execute()
             if self.action.appraisal.complete:
-                print("appraisal is complete, reset action")
+                # print("appraisal is complete, reset action")
                 self.action = None
             return False
 
