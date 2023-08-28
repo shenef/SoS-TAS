@@ -1,7 +1,7 @@
 import time
 
 from control import sos_ctrl
-from engine.seq import SeqBase
+from engine.seq.base import SeqBase
 from memory.combat_manager import combat_manager_handle
 
 combat_manager = combat_manager_handle()
