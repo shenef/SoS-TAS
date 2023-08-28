@@ -13,10 +13,12 @@ from engine.seq.move import (
     SeqManualUntilClose,
     SeqMove,
 )
+from engine.seq.amulet import SeqAmulet
 from engine.seq.sequencer import SequencerEngine
 from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqMashDelay, SeqTurboMashDelay
 
 __all__ = [
+    "SeqAmulet",
     "SequencerEngine",
     "SeqDebug",
     "SeqLog",

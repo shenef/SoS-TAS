@@ -9,6 +9,7 @@ from engine.seq import (
     SeqList,
     SeqLog,
     SeqMove,
+    SeqAmulet,
     SeqTurboMashUntilIdle,
 )
 
@@ -33,6 +34,7 @@ class DemoPlateau(SeqList):
                         Vec3(-426.310, -14.998, -98.160),
                     ],
                 ),
+                SeqAmulet(name="Do Amulet Sequence"),
                 SeqClimb(
                     name="Slide down ladder",
                     coords=[
