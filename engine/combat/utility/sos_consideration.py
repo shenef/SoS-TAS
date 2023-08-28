@@ -46,9 +46,6 @@ class SoSConsideration(Consideration):
     # for the value and returning an Action
     def calculate_actions(self):
         # if the actor isn't enabled, return no actions
-        if not self.actor.enabled or self.actor.dead:
-            return []
-
         actions = []
         for appraisal in self.appraisals:
             # TODO: calculate this for every enemy.

@@ -5,14 +5,13 @@ from engine.combat.utility.sos_consideration import SoSConsideration
 class SoSReasoner(Reasoner):
     def __init__(self, combat_manager_handle):
         self.combat_manager_handle = combat_manager_handle
-        self.considerations = self.generate_considerations(
-            self.combat_manager_handle.players
-        )
+        self.considerations = []
 
     def generate_considerations(self, players):
         considerations = []
         for player in players:
-            considerations.append(SoSConsideration(player))
+            if not player.dead and player.enabled:
+                considerations.append(SoSConsideration(player))
         return considerations
 
     def execute(self):
@@ -29,6 +28,7 @@ class SoSReasoner(Reasoner):
             calculated_actions = consideration.calculate_actions()
             actions.extend(calculated_actions)
 
+        print(actions)
         if actions == []:
             return None
         # sort and return the results by their value in desc order
