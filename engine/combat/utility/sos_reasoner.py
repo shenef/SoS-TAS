@@ -9,7 +9,7 @@ class SoSReasoner(Reasoner):
         self.combat_manager_handle = combat_manager_handle
         self.considerations = []
 
-    def generate_considerations(self, players: List(CombatPlayer)) -> List[Consideration]:
+    def generate_considerations(self, players: List[CombatPlayer]) -> List[Consideration]:
         considerations = []
         for player in players:
             if not player.dead and player.enabled:
