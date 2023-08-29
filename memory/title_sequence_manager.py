@@ -86,7 +86,7 @@ class TitleSequenceManager:
         ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xA0, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
-            self.title_cursor_position = TitleCursorPosition.NewGame
+            self.title_cursor_position = TitleCursorPosition.NewGamePlus
             self.title_position_set = True
 
     def _read_load_game_selected(self):
