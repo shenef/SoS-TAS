@@ -10,7 +10,6 @@ class TitleCursorPosition(Enum):
     NewGamePlus = auto()
     LoadGame = auto()
     Options = auto()
-    HowToPlay = auto()
     Quit = auto()
 
 
