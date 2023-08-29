@@ -63,7 +63,7 @@ class LevelManager:
 
     def _read_main_scene_name(self):
         # LevelManager -> LevelLoader -> mainSceneName
-        ptr = self.memory.follow_pointer(self.base, [self.level_loader_base, 0x30, 0x0])
+        ptr = self.memory.follow_pointer(self.base, [self.level_loader_base, 0x38, 0x0])
         if ptr is None or ptr == 0x0:
             return
         length = self.memory.read_int(ptr + 0x10)
