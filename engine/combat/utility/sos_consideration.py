@@ -2,27 +2,28 @@ from control import sos_ctrl
 from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
+from engine.combat.utility.core.appraisal import Appraisal
 from memory.combat_manager import CombatCharacter
-
+from typing import List
 
 class SoSConsideration(Consideration):
     # Generates a list of appraisals for a character.
-    def generate_appraisals(self):
+    def generate_appraisals(self) -> List[Appraisal]:
         return self._default_appraisals() + self._character_appraisals()
 
     # if the selected character is NONE or we are on the selected character, considered valid'
     # and do nothing else here.
-    def valid(self, selected_character, action):
+    def valid(self, selected_character: CombatCharacter, action: Action) -> bool:
         return selected_character is CombatCharacter.NONE or self.on_selected_character(
             selected_character, action
         )
 
-    def on_selected_character(self, selected_character, action):
+    def on_selected_character(self, selected_character, action) -> bool:
         return selected_character is action.consideration.actor.character
 
     # Generates default appraisals generic to every consideration
     # TODO: Add items?
-    def _default_appraisals(self):
+    def _default_appraisals(self) -> List[Appraisal]:
         basic_attack = BasicAttack()
         # TODO: Dont use this as the value.
         basic_attack.value = self.actor.physical_attack
@@ -30,7 +31,7 @@ class SoSConsideration(Consideration):
         return [basic_attack]
 
     # TODO: Actually make character appraisals. For now we're just doing basic attacks
-    def _character_appraisals(self):
+    def _character_appraisals(self) -> List[Appraisal]:
         match self.actor.character:
             case CombatCharacter.Zale:
                 return []
@@ -44,7 +45,7 @@ class SoSConsideration(Consideration):
     # TODO: Actually calculate appraisals and dont just use
     # physical attack. This will require parsing all of the appraisals
     # for the value and returning an Action
-    def calculate_actions(self):
+    def calculate_actions(self) -> [Action]:
         # if the actor isn't enabled, return no actions
         actions = []
         for appraisal in self.appraisals:

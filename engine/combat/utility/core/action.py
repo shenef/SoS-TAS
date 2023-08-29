@@ -11,7 +11,4 @@ class Action:
         self.appraisal = appraisal
 
     def execute(self):
-        if self.consideration:
-            self.consideration.execute()
-        if self.appraisal:
-            self.appraisal.execute()
+        pass

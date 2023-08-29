@@ -49,7 +49,7 @@ class CombatCharacter(Enum):
 
 
 class CombatPlayer:
-    def __init__(self, params=dict):
+    def __init__(self):
         self.max_hp = None
         self.current_hp = None
         self.current_mp = None

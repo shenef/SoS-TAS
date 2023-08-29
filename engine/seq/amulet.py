@@ -42,7 +42,8 @@ class SeqAmulet(SeqBase):
             case "exit":
                 sos_ctrl().cancel()
                 return True
-        return False
+            case _:
+                return False
 
     def __repr__(self) -> str:
         return f"Amulet sequence ({self.name})..."

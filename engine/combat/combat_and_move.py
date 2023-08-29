@@ -17,7 +17,7 @@ class SeqCombatAndMove(SeqMove):
     ):
         super().__init__(name, coords)
         self.timer = 0.0
-        self.combat_controller = None
+        self.combat_controller = CombatController()
 
     # Override
     def navigate_to_checkpoint(self, delta: float) -> None:
@@ -25,14 +25,7 @@ class SeqCombatAndMove(SeqMove):
             # If there is no active fight, move along the designated path
             super().navigate_to_checkpoint(delta)
         else:
-            self.execute_combat(delta)
-
-    # Mash through cutscene while holding the turbo button
-    def execute_combat(self, delta: float) -> bool:
-        if self.combat_controller is None:
-            self.combat_controller = CombatController()
-        self.combat_controller.execute_combat()
-        return combat_manager.encounter_done is True
+            self.combat_controller.execute_combat()
 
     def __repr__(self) -> str:
-        return f"Mashing confirm while waiting for encounter ({self.name})..."
+        return f"Executing Combat Sequence ({self.name})..."

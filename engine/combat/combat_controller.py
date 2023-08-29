@@ -7,7 +7,7 @@ combat_manager = combat_manager_handle()
 
 class CombatController:
     def __init__(self):
-        self.reasoner = None
+        self.reasoner = SoSReasoner(combat_manager)
         self.action = None
         self.ctrl = sos_ctrl()
 
@@ -17,11 +17,7 @@ class CombatController:
 
         # if combat is done, just exit
         if combat_manager.encounter_done is True:
-            return False
-
-        # if reasoner doesn't exist, add it.
-        if combat_manager.encounter_done is False and self.reasoner is None:
-            self.reasoner = SoSReasoner(combat_manager)
+          return True
 
         # if we dont have an action or the current appraisal is complete,
         # we make a new one.
@@ -56,13 +52,11 @@ class CombatController:
 
         # do we need to navigate to an action?
         # if we are on the selected character, run the appraisal:
-        if consideration_valid:
-            # print("Try to execute the appraisal")
-            self.action.appraisal.execute()
-            if self.action.appraisal.complete:
-                # print("appraisal is complete, reset action")
-                self.action = None
-            return False
+        # print("Try to execute the appraisal")
+        self.action.appraisal.execute()
+        if self.action.appraisal.complete:
+            # print("appraisal is complete, reset action")
+            self.action = None
 
         return False
         # are we waiting for an attack to complete?
