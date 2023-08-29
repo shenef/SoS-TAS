@@ -63,6 +63,7 @@ class PlayerPartyManager:
 
     def _read_movement_state(self):
         if self.memory.ready_for_updates:
+            # leader -> stateMachine -> currentState
             ptr = self.memory.follow_pointer(self.base, [self.leader, 0x88, 0x50, 0x8C])
 
             match self.memory.read_int(ptr):
