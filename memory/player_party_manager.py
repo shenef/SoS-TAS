@@ -44,13 +44,13 @@ class PlayerPartyManager:
                     self._read_position()
                     self._read_movement_state()
             except Exception as _e:
-                # print(f"PlayerPartyManager Reloading {type(_e)}")
+                print(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
 
     def _read_position(self):
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
-            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x78, 0x7C])
+            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x90, 0x84])
             if ptr:
                 x = self.memory.read_float(ptr + 0x0)
                 y = self.memory.read_float(ptr + 0x4)
@@ -63,7 +63,8 @@ class PlayerPartyManager:
 
     def _read_movement_state(self):
         if self.memory.ready_for_updates:
-            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x70, 0x50, 0x84])
+            # leader -> stateMachine -> currentState
+            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x88, 0x50, 0x8C])
 
             match self.memory.read_int(ptr):
                 case 0:
