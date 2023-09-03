@@ -6,6 +6,7 @@ from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
 from GUI.menu import Menu
 from route.demo import DemoBrisk, DemoPlateau, DemoWizardLab, DemoWorldBriskToTower
+from route.evermist_island import EvermistIsland
 from route.start import SoSStartGame
 
 logger = logging.getLogger("SYSTEM")
@@ -144,6 +145,7 @@ class SoSAnyPercentMenu(TASMenu):
         TAS_root = SeqList(
             name="Sea of Stars Any%",
             children=[
+                EvermistIsland(),
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )

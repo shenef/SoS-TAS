@@ -5,7 +5,7 @@ from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
 from engine.seq.time import SeqDelay
-from memory.player_party_manager import player_party_manager_handle
+from memory.player_party_manager import PlayerMovementState, player_party_manager_handle
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +24,26 @@ def move_to(
         joy = Vec2(-joy.x, -joy.y)
 
     ctrl.set_joystick(joy)
+
+
+class SeqHoldDirectionUntilLostControl(SeqBase):
+    def __init__(self, name: str, joy_dir: Vec2, precision: float = 1.0, func=None):
+        self.joy_dir = joy_dir
+        self.precision = precision
+        super().__init__(name, func)
+
+    def execute(self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+        # Check if we have lost control
+        if player_party_manager.movement_state == PlayerMovementState.NONE:
+            ctrl.set_neutral()
+            return True
+        # Hold direction
+        ctrl.set_joystick(self.joy_dir)
+        return False
+
+    def __repr__(self) -> str:
+        return f"{self.name}: Holding joystick dir {self.joy_dir} until control lost"
 
 
 class SeqHoldDirectionUntilClose(SeqBase):
