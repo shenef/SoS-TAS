@@ -6,7 +6,6 @@ from engine.seq import (
     SeqBase,
     SeqDebug,
     SeqDelay,
-    SeqHoldConfirm,
     SeqIf,
     SeqInteract,
     SeqList,
@@ -130,7 +129,6 @@ class SoSStartGame(SeqList):
                 ),
                 # TODO: The SoS window will not recognize input unless it is in focus!
                 SeqDelay("MANUAL: Focus SoS window!", timeout_in_s=5.0),
-                SeqHoldConfirm("Holding A to activate controller", timeout_in_s=10.0),
                 SeqDebug(name="SYSTEM", text="Press start to activate main menu."),
                 SeqMenuStartButton(),
                 SeqDelay(name="Menu", timeout_in_s=2.0),
