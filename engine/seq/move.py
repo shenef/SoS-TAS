@@ -73,6 +73,14 @@ class SeqHoldDirectionUntilClose(SeqBase):
         return f"{self.name}: Holding joystick dir {self.joy_dir} until reaching {self.target}"
 
 
+class SeqAwaitLostControl(SeqBase):
+    def execute(self, delta: float) -> bool:
+        return player_party_manager.movement_state == PlayerMovementState.NONE
+
+    def __repr__(self) -> str:
+        return f"{self.name}: Holding until control lost"
+
+
 # Temp testing
 class SeqManualUntilClose(SeqBase):
     def __init__(self, name: str, target: Vec3, precision: float = 0.2, func=None):
