@@ -9,6 +9,7 @@ from engine.seq.interact import (
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
     InteractMove,
+    SeqAwaitLostControl,
     SeqClimb,
     SeqHoldDirectionUntilClose,
     SeqHoldDirectionUntilLostControl,
@@ -39,6 +40,7 @@ __all__ = [
     "SeqMove",
     "SeqClimb",
     "SeqHoldDirectionUntilLostControl",
+    "SeqAwaitLostControl",
     "SeqHoldDirectionUntilClose",
     "SeqTurboMashUntilIdle",
     "SeqTurboMashSkipCutsceneUntilIdle",

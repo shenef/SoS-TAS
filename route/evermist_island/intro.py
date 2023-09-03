@@ -1,13 +1,19 @@
 import logging
+from enum import Enum, auto
+
+import imgui
 
 from engine.combat import SeqCombatMash
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     InteractMove,
+    SeqAwaitLostControl,
+    SeqBase,
     SeqCheckpoint,
     SeqClimb,
     SeqHoldDirectionUntilClose,
     SeqHoldDirectionUntilLostControl,
+    SeqIf,
     SeqInteract,
     SeqList,
     SeqLog,
@@ -254,14 +260,271 @@ class IntroMooncradle(SeqList):
                         Vec3(94.005, -11.998, -133.576),
                     ],
                 ),
-                SeqCheckpoint("intro_dorms"),
-                # TODO: Need to know if we are playing Valere or Zale
+            ],
+        )
+
+
+class MainCharacter(Enum):
+    NONE = auto()
+    VALERE = auto()
+    ZALE = auto()
+
+
+_selected_char = MainCharacter.NONE
+
+
+def _set_main_char(mc: MainCharacter) -> None:
+    global _selected_char
+    _selected_char = mc
+
+
+class SeqManualSelectCharacter(SeqBase):
+    def execute(self, delta: float) -> bool:
+        imgui.text("MANUAL: Please select the active main character:")
+        if imgui.button("Valere"):
+            _set_main_char(MainCharacter.VALERE)
+            return True
+        if imgui.button("Zale"):
+            _set_main_char(MainCharacter.ZALE)
+            return True
+        return False
+
+
+class SeqIfMainCharacterValere(SeqIf):
+    def condition(self) -> bool:
+        return _selected_char == MainCharacter.VALERE
+
+
+class IntroZenithAcademy(SeqList):
+    def __init__(self):
+        super().__init__(
+            name="Mooncradle",
+            children=[
+                # TODO: Need to know if we are playing Valere or Zale (this should not be manual)
+                SeqManualSelectCharacter(),
+                SeqIfMainCharacterValere(
+                    name="Main Character",
+                    # Valere branch: Go left
+                    when_true=SeqMove(
+                        name="Valere path",
+                        coords=[
+                            Vec3(94.005, -11.998, -133.576),
+                            Vec3(86.621, -14.998, -135.924),
+                            Vec3(84.091, -14.960, -140.766),
+                            Vec3(82.085, -18.998, -147.421),
+                            Vec3(78.360, -18.998, -147.465),
+                        ],
+                    ),
+                    # Zale branch: Go right
+                    when_false=SeqMove(
+                        name="Zale path",
+                        coords=[
+                            Vec3(94.005, -11.998, -133.576),
+                            Vec3(100.395, -14.998, -134.377),
+                            Vec3(104.751, -14.998, -139.367),
+                            Vec3(106.596, -18.998, -147.793),
+                            Vec3(109.640, -18.998, -147.793),
+                        ],
+                    ),
+                ),
+                SeqInteract("Sleep"),
+                SeqTurboMashUntilIdle(name="Train with Brugaves"),
+                # TODO: Does this work with Zale as well?
                 SeqMove(
-                    name="Dorms",
+                    name="Leave training area",
                     coords=[
-                        Vec3(94.005, -11.998, -133.576),
+                        InteractMove(-11.000, -14.998, -143.700),
                     ],
                 ),
+                SeqHoldDirectionUntilClose(
+                    name="Leave training area",
+                    target=Vec3(248.762, 5.002, 56.959),
+                    joy_dir=Vec2(1, -1),
+                ),
+                SeqMove(
+                    name="Move to Erlina",
+                    coords=[
+                        Vec3(253.865, 5.002, 56.959),
+                        Vec3(257.891, 5.002, 58.706),
+                        Vec3(260.734, 5.002, 58.706),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to Erlina",
+                    target=Vec3(16.980, -8.998, -135.817),
+                    joy_dir=Vec2(1, -1),
+                ),
+                SeqMove(
+                    name="Move to Erlina",
+                    coords=[
+                        Vec3(32.789, -8.930, -151.592),
+                        Vec3(32.789, -8.990, -176.218),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to Erlina",
+                    target=Vec3(273.146, 5.002, 47.521),
+                    joy_dir=Vec2(0, -1),
+                ),
+                SeqHoldDirectionUntilLostControl(
+                    name="Move to Erlina",
+                    joy_dir=Vec2(0, -1),
+                ),
+                SeqTurboMashUntilIdle(name="Train with Erlina"),
+                SeqAwaitLostControl(name="Train with Erlina"),
+                SeqTurboMashUntilIdle(name="Sewing"),
+                SeqMove(
+                    name="Move to main area",
+                    coords=[
+                        Vec3(91.571, -18.998, -156.374),
+                        Vec3(88.287, -18.998, -156.374),
+                        Vec3(88.123, -14.990, -134.677),
+                        Vec3(94.382, -11.998, -133.426),
+                        Vec3(94.382, -11.998, -129.766),
+                        Vec3(81.351, -7.998, -129.428),
+                        Vec3(72.903, -7.998, -133.028),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to main area",
+                    target=Vec3(295.354, 5.002, 64.422),
+                    joy_dir=Vec2(-1, -1),
+                ),
+                SeqMove(
+                    name="Move to main area",
+                    coords=[
+                        Vec3(292.408, 5.002, 62.065),
+                        Vec3(286.460, 5.002, 59.299),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to main area",
+                    target=Vec3(50.042, -8.998, -134.778),
+                    joy_dir=Vec2(-1, -1),
+                ),
+                SeqAwaitLostControl(name="Eavesdrop"),
+                SeqTurboMashUntilIdle(name="Eavesdrop"),
+                SeqIfMainCharacterValere(
+                    name="Main Character",
+                    # Valere branch: Go left
+                    when_true=SeqMove(
+                        name="Valere path",
+                        coords=[
+                            Vec3(82.936, -18.998, -147.362),
+                            Vec3(84.538, -14.990, -138.768),
+                            Vec3(89.372, -14.998, -133.939),
+                        ],
+                    ),
+                    # Zale branch: Go right
+                    when_false=SeqMove(
+                        name="Zale path",
+                        coords=[
+                            Vec3(106.395, -18.998, -147.455),
+                            Vec3(104.039, -14.998, -137.504),
+                            Vec3(99.935, -14.998, -133.890),
+                        ],
+                    ),
+                ),
+                SeqMove(
+                    name="Move to main area",
+                    coords=[
+                        Vec3(94.014, -11.998, -133.488),
+                        Vec3(93.947, -11.998, -129.872),
+                        Vec3(80.214, -7.998, -129.872),
+                        Vec3(73.745, -7.998, -132.473),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to main area",
+                    target=Vec3(295.354, 5.002, 64.422),
+                    joy_dir=Vec2(-1, -1),
+                ),
+                SeqMove(
+                    name="Move to main area",
+                    coords=[
+                        Vec3(292.408, 5.002, 62.065),
+                        Vec3(286.460, 5.002, 59.299),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to main area",
+                    target=Vec3(49.334, -8.998, -135.486),
+                    joy_dir=Vec2(-1, -1),
+                ),
+                SeqMove(
+                    name="Move to south area",
+                    coords=[
+                        Vec3(33.021, -8.932, -151.461),
+                        Vec3(33.021, -8.990, -176.434),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to south area",
+                    target=Vec3(273.463, 5.002, 48.071),
+                    joy_dir=Vec2(0, -1),
+                ),
+                SeqHoldDirectionUntilLostControl(
+                    name="I smell cookies",
+                    joy_dir=Vec2(0, -1),
+                ),
+                SeqTurboMashUntilIdle(name="Cookies!!!"),
+                SeqIfMainCharacterValere(
+                    name="Main Character",
+                    # Valere branch: Go left
+                    when_true=SeqMove(
+                        name="Valere path",
+                        coords=[
+                            Vec3(91.478, -18.998, -156.476),
+                            Vec3(88.309, -18.998, -156.476),
+                            Vec3(88.127, -14.998, -134.674),
+                        ],
+                    ),
+                    # Zale branch: Go right
+                    when_false=SeqMove(
+                        name="Zale path",
+                        coords=[
+                            Vec3(97.745, -18.998, -156.127),
+                            Vec3(100.573, -18.998, -156.149),
+                            Vec3(101.496, -14.998, -142.680),
+                            Vec3(100.851, -14.998, -134.661),
+                        ],
+                    ),
+                ),
+                SeqMove(
+                    name="Move to main area",
+                    coords=[
+                        Vec3(94.014, -11.998, -133.488),
+                        Vec3(93.947, -11.998, -129.872),
+                        Vec3(80.214, -7.998, -129.872),
+                        Vec3(73.745, -7.998, -132.473),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Move to main area",
+                    target=Vec3(295.354, 5.002, 64.422),
+                    joy_dir=Vec2(-1, -1),
+                ),
+                SeqMove(
+                    name="Move to Moraine",
+                    coords=[
+                        Vec3(43.613, -8.998, -141.418),
+                        Vec3(35.035, -8.998, -141.418),
+                        Vec3(32.954, -8.998, -136.402),
+                    ],
+                ),
+                SeqInteract("Headmaster Moraine"),
+                SeqTurboMashUntilIdle(name="Brugaves and Erlina return"),
+                SeqMove(
+                    name="Move to Erlina",
+                    coords=[
+                        Vec3(31.747, -8.998, -141.005),
+                    ],
+                ),
+                SeqInteract("Erlina"),
+                # TODO: Tap down, skip tutorial (x2)
+                # TODO: Go to Brugaves, skip tutorials (x2)
+                # TODO: Go to Moraine, skip-mash
+                # TODO: Jump into pit
             ],
         )
 
@@ -273,5 +536,7 @@ class EvermistIsland(SeqList):
             children=[
                 IntroMountainTrail(),
                 IntroMooncradle(),
+                SeqCheckpoint("intro_dorms"),
+                IntroZenithAcademy(),
             ],
         )
