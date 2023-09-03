@@ -8,10 +8,12 @@ from engine.seq import (
     SeqClimb,
     SeqHoldDirectionUntilClose,
     SeqHoldDirectionUntilLostControl,
+    SeqInteract,
     SeqList,
     SeqLog,
     SeqManualUntilClose,
     SeqMove,
+    SeqTurboMashSkipCutsceneUntilIdle,
     SeqTurboMashUntilIdle,
 )
 
@@ -143,7 +145,123 @@ class IntroMooncradle(SeqList):
                     target=Vec3(-13.969, -11.998, 38.757),
                     joy_dir=Vec2(0, -1),
                 ),
-                # TODO: Continue routing Mooncradle
+                SeqMove(
+                    name="Move to cliff",
+                    coords=[
+                        Vec3(-13.969, -11.998, 36.392),
+                        Vec3(-12.504, -11.998, 34.927),
+                        Vec3(-9.406, -11.998, 34.927),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb",
+                    coords=[
+                        InteractMove(-9.500, -6.998, 36.467),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to cliff",
+                    coords=[
+                        Vec3(-13.482, -6.998, 40.543),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb",
+                    coords=[
+                        InteractMove(-13.500, -0.998, 41.467),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to cutscene",
+                    coords=[
+                        Vec3(-9.222, -0.820, 53.985),
+                        Vec3(-7.318, 1.010, 62.634),
+                        Vec3(3.432, 1.002, 73.327),
+                        Vec3(17.958, 1.002, 76.578),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl(
+                    name="Move to cutscene",
+                    joy_dir=Vec2(1, 0.2),
+                ),
+                # Hold B as well to skip cutscene
+                SeqTurboMashSkipCutsceneUntilIdle(name="Meeting Brugaves and Erlina"),
+                SeqMove(
+                    name="Move to exit",
+                    coords=[
+                        Vec3(31.471, 1.002, 114.862),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Go to world map",
+                    target=Vec3(109.500, 2.002, 61.998),
+                    joy_dir=Vec2(0, 1),
+                ),
+                # Navigate world map to Forbidden Cave
+                SeqMove(
+                    name="Move to Forbidden Cave",
+                    coords=[
+                        Vec3(109.500, 2.002, 64.000),
+                        Vec3(108.000, 2.002, 64.000),
+                        Vec3(108.000, 2.002, 66.500),
+                    ],
+                ),
+                SeqInteract("Enter Forbidden Cave"),
+                # Move to cutscene
+                SeqMove(
+                    name="Move to entrance",
+                    coords=[
+                        Vec3(14.000, 1.002, 17.396),
+                    ],
+                ),
+                SeqInteract("Door"),
+                SeqTurboMashUntilIdle(name="Wait for control"),
+                # Forbidden Cave
+                SeqHoldDirectionUntilLostControl(
+                    name="Move to cutscene",
+                    joy_dir=Vec2(0, 1),
+                ),
+                SeqTurboMashUntilIdle(name="Garl nooo"),
+                # Zenith Academy
+                SeqMove(
+                    name="Move to dorms",
+                    coords=[
+                        Vec3(48.690, -8.990, -136.717),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Enter dorms",
+                    target=Vec3(285.500, 5.002, 58.000),
+                    joy_dir=Vec2(1, 1),
+                ),
+                SeqMove(
+                    name="Move to dorms",
+                    coords=[
+                        Vec3(290.419, 5.002, 61.872),
+                        Vec3(295.647, 5.002, 63.663),
+                    ],
+                ),
+                SeqHoldDirectionUntilClose(
+                    name="Enter dorms",
+                    target=Vec3(72.657, -7.998, -133.640),
+                    joy_dir=Vec2(1, 1),
+                ),
+                SeqMove(
+                    name="Dorms",
+                    coords=[
+                        Vec3(82.104, -7.998, -129.590),
+                        Vec3(94.005, -11.998, -129.590),
+                        Vec3(94.005, -11.998, -133.576),
+                    ],
+                ),
+                SeqCheckpoint("intro_dorms"),
+                # TODO: Need to know if we are playing Valere or Zale
+                SeqMove(
+                    name="Dorms",
+                    coords=[
+                        Vec3(94.005, -11.998, -133.576),
+                    ],
+                ),
             ],
         )
 

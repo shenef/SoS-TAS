@@ -51,3 +51,17 @@ class SeqTurboMashUntilIdle(SeqBase):
 
     def __repr__(self) -> str:
         return f"Mashing confirm while waiting for control ({self.name})..."
+
+
+class SeqTurboMashSkipCutsceneUntilIdle(SeqTurboMashUntilIdle):
+    # Mash through cutscene while holding the turbo button
+    def execute(self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+        ctrl.toggle_cancel(state=True)
+        if super().execute(delta):
+            ctrl.toggle_cancel(state=False)
+            return True
+        return False
+
+    def __repr__(self) -> str:
+        return f"Mashing confirm and holding cancel while waiting for control ({self.name})..."
