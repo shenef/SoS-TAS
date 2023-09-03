@@ -2,11 +2,7 @@
 saveslot              : 0       # 0 for new game or 1-9 for load game
 checkpoint            : ""      # When loading game, what checkpoint should the TAS jump to?
 
-# Valid checkpoints (Demo Any%):
-#   brisk               - Market, after leaving tavern
-#   wizard_lab1         - Green crystal placed in right slot
-#   wizard_lab2         - Blue crystal placed in right slot
-#   wizard_lab_boss     - All crystals placed (White portal)
+# Valid checkpoints (SoS Any%):
 
 # User Interface
 ui:

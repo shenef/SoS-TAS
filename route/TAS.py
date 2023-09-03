@@ -107,20 +107,44 @@ class TASMenu(Menu):
 
 class SoSDemoAnyPercentMenu(TASMenu):
     def __init__(self, window: Window, config_data: dict) -> None:
-        super().__init__(window, config_data, title="Sea of Stars Any%")
+        super().__init__(window, config_data, title="Sea of Stars Demo Any%")
 
     # Override
     def init_TAS(self):
         # This is the root node of the TAS
         TAS_root = SeqList(
             name="Sea of Stars Demo Any%",
-            # func=setup_memory,
             children=[
                 DemoPlateau(),
                 DemoBrisk(),
                 DemoWorldBriskToTower(),
                 DemoWizardLab(),
                 SeqLog(name="SYSTEM", text="SoS Demo Any% TAS done!"),
+            ],
+        )
+        # This initializes the sequencer engine that will execute the TAS
+        self.sequencer = SequencerEngine(
+            window=self.window, config=self.config_data, root=TAS_root
+        )
+
+    def custom_gui(self):
+        # Override to inject some custom parameters to the run
+        imgui.text_wrapped(
+            "Warning! The Demo TAS probably won't work, due to memory layout changes compared to the full game."  # noqa E501
+        )
+
+
+class SoSAnyPercentMenu(TASMenu):
+    def __init__(self, window: Window, config_data: dict) -> None:
+        super().__init__(window, config_data, title="Sea of Stars Any%")
+
+    # Override
+    def init_TAS(self):
+        # This is the root node of the TAS
+        TAS_root = SeqList(
+            name="Sea of Stars Any%",
+            children=[
+                SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
