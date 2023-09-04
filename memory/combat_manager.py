@@ -104,7 +104,8 @@ class CombatManager:
                 self._read_players()
                 self._read_enemies()
                 self._read_battle_commands()
-                self._read_skill_commands()
+                if not self.battle_command_has_focus:
+                    self._read_skill_commands()
                 self._read_live_mana()
 
     # except Exception as _e:
@@ -121,7 +122,7 @@ class CombatManager:
     def _read_battle_commands(self):
         if self._should_update():
             battle_command_selector = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0xF8, 0x50, 0x60, 0x0]
+                self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
             )
             # Checks if we lost access to the selector pointer for a breif period as the UI changes.
             if battle_command_selector == self.NULL_POINTER:
@@ -153,7 +154,7 @@ class CombatManager:
     def _read_skill_commands(self):
         if self._should_update():
             skill_command_selector = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
+                self.base, [self.current_encounter_base, 0x138, 0x50, 0x78, 0x0]
             )
             # Checks if we lost access to the selector pointer for a breif period as the UI changes.
             if skill_command_selector == self.NULL_POINTER:
