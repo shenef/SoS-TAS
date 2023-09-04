@@ -6,17 +6,20 @@ class PlayerPartyCharacter(Enum):
     Zale = "Zale"
     Valere = "Valere"
     Garl = "Garl"
-    _SPOILERS = "_SPOILERS"
+    Serai = "Serai"
+    Reshan = "Reshan"
 
     def parse_definition_id(definition_id):
-        match definition_id:
-            case str(x) if "Z" in x:
-                return PlayerPartyCharacter.Zale
-            case str(x) if "V" in x:
-                return PlayerPartyCharacter.Valere
-            case str(x) if "G" in x:
-                return PlayerPartyCharacter.Garl
-            case str(x) if "S" in x:
-                return PlayerPartyCharacter._SPOILERS
-            case str(x) if "R" in x:
-                return PlayerPartyCharacter._SPOILERS
+        asciidata = definition_id.encode("ascii", "ignore")
+
+        if asciidata == b"Z\x00A\x00L\x00E\x00":
+            return PlayerPartyCharacter.Zale
+        if asciidata == b"V\x00A\x00L\x00E\x00":
+            return PlayerPartyCharacter.Valere
+        if asciidata == b"G\x00A\x00R\x00L\x00":
+            return PlayerPartyCharacter.Valere
+        if asciidata == b"S\x00E\x00R\x00A\x00":
+            return PlayerPartyCharacter.Serai
+        if asciidata == b"R\x00E\x00S\x00H\x00":
+            return PlayerPartyCharacter.Reshan
+        return PlayerPartyCharacter.NONE

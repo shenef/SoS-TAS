@@ -82,36 +82,34 @@ class CombatManager:
         self.selected_target_guid = None
 
     def update(self):
-        try:
-            if self.memory.ready_for_updates:
-                if self.base is None or self.fields_base is None:
-                    self.encounter_done = True
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "CombatManager"
-                    )
+        # try:
+        if self.memory.ready_for_updates:
+            if self.base is None or self.fields_base is None:
+                self.encounter_done = True
+                singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
 
-                    if singleton_ptr is None:
-                        return
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.current_encounter_base = self.memory.get_field(
-                        self.fields_base, "currentEncounter"
-                    )
+                if singleton_ptr is None:
+                    return
+                self.base = self.memory.get_class_base(singleton_ptr)
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                self.current_encounter_base = self.memory.get_field(
+                    self.fields_base, "currentEncounter"
+                )
 
-                else:
-                    self._read_encounter_done()
-                    if self.encounter_done is True:
-                        return
+            else:
+                self._read_encounter_done()
+                if self.encounter_done is True:
+                    return
 
-                    self._read_players()
-                    self._read_enemies()
-                    self._read_battle_commands()
-                    self._read_skill_commands()
-                    self._read_live_mana()
+                self._read_players()
+                self._read_enemies()
+                self._read_battle_commands()
+                self._read_skill_commands()
+                self._read_live_mana()
 
-        except Exception as _e:
-            # print(f"Combat Manager Reloading - {type(e)}")
-            self.__init__()
+    # except Exception as _e:
+    #     # print(f"Combat Manager Reloading - {type(e)}")
+    #     self.__init__()
 
     # Helper function for updating itself and ensuring an internal function doesn't run without
     # the base. This is different than other modules as an attempt to improve performance of the
@@ -263,6 +261,7 @@ class CombatManager:
                 for _item in range(count):
                     character = PlayerPartyCharacter.NONE
                     item = self.memory.follow_pointer(items, [address, 0x0])
+
                     # There will be times when there is an empty pointer in a list of items,
                     # This checks for that case and skips that record.
                     # For example:
@@ -271,26 +270,31 @@ class CombatManager:
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
                     #    - 0x20 - Item[0] -> Pointer 0x00000000
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
+
                     # TODO: Switch "0x0" to another NULL_POINTER type of 0x00000000
                     if hex(item) == "0x0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue
-                    character_definition_ptr = self.memory.follow_pointer(
-                        item, [0x68, 0x28, 0xF0, 0x0]
-                    )
+
+                    # Check if the character definition id is 0, and return as the
+                    # character cannot be queried against
+                    character_definition_id = self.memory.read_longlong(item + 0x70)
+
+                    # If the character isn't loaded, ignore.
+                    if character_definition_id == 0:
+                        address += self.ITEM_OBJECT_OFFSET
+                        continue
+
                     dead_ptr = self.memory.follow_pointer(item, [0x68, 0x28])
                     dead = self.memory.read_bool(dead_ptr + 0xC8)
-
-                    definition_id = self.memory.read_string(
-                        character_definition_ptr + 0x11, 11
-                    )
+                    definition_id_ptr = self.memory.follow_pointer(item, [0x70, 0x0])
+                    # 4 Chars * 2 for utf
+                    definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)
 
                     # Definition IDS are stored as some goofy serialized utf encoded string
                     # We just do our best with the values that are provided to
                     # Determine the character we are looking at
-                    self.leader_character = PlayerPartyCharacter.parse_definition_id(
-                        definition_id
-                    )
+                    character = PlayerPartyCharacter.parse_definition_id(definition_id)
 
                     selected = self.memory.read_bool(item + 0x78)
 
@@ -299,6 +303,7 @@ class CombatManager:
 
                     portrait = self.memory.follow_pointer(item, [0x68, 0x0])
                     enabled = self.memory.read_bool(portrait + 0x30)
+
                     live_mana_handler = self.memory.follow_pointer(
                         item, [0x68, 0x38, 0x148, 0x0]
                     )

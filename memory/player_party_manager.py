@@ -84,7 +84,7 @@ class PlayerPartyManager:
         if self.memory.ready_for_updates:
             # base -> leaderId
             ptr = self.memory.follow_pointer(self.base, [0x88, 0x0])
-            definition_id = self.memory.read_string(ptr + 0x11, 11)
+            definition_id = self.memory.read_string(ptr + 0x14, 8)
 
             # Definition IDS are stored as some goofy serialized utf encoded string
             # We just do our best with the values that are provided to
