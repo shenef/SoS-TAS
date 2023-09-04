@@ -2,23 +2,29 @@ target-version = "py311"
 line-length = 100
 select = [
   # https://beta.ruff.rs/docs/rules/
-  "A",      # flake8-builtins
-  "B",      # bugbear
-  "D200",   # pydocstyle fits-on-one-line
-  "E",      # pycodestyle
-  "F",      # pyflakes
-  "I",      # isort
-  "PL",     # pylint
-  "RET",    # flake8-return
-  "SIM",    # flake8-simplify
-  "TRY302", # tryceratops useless-try-except
-  "TRY401", # tryceratops verbose-log-message
-  "UP",     # pyupgrade
+  "A",        # flake8-builtins
+  # "ARG",    # flake8-unused-arguments - wait for code changes to calm down
+  "B",        # bugbear
+  "D200",     # pydocstyle fits-on-one-line
+  "E",        # pycodestyle
+  # "ERA",    # eradicate (removes commented out code) - wait for code changes to calm down
+  "F",        # pyflakes
+  "I",        # isort
+  "PL",       # pylint
+  "RET",      # flake8-return
+  "SIM",      # flake8-simplify
+  "T20",      # flake8-print (no print statements)
+  "TRY302",   # tryceratops useless-try-except
+  "TRY401",   # tryceratops verbose-log-message
+  "UP",       # pyupgrade
 ]
 ignore = [
-  "PLR0911",
-  "PLR0912",
-  "PLR0913",
-  "PLR0915",
-  "PLW0603",
+  "PLR0911",  # too-many-return-statements
+  "PLR0912",  # too-many-branches
+  "PLR0913",  # too-many-arguments
+  "PLR0915",  # too-many-statements
+  "PLW0603",  # global-statement
+]
+unfixable = [
+  "ERA"       # has a bunch of false positives when auto-fixing
 ]

@@ -45,8 +45,8 @@ class PlayerPartyManager:
                     self._read_position()
                     self._read_movement_state()
                     self._read_leader_character()
-            except Exception as _e:
-                # print(f"PlayerPartyManager Reloading {type(_e)}")
+            except Exception:
+                # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
 
     def _read_position(self):

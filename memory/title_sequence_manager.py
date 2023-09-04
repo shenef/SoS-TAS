@@ -60,8 +60,8 @@ class TitleSequenceManager:
 
                 if not self.title_position_set:
                     self.title_cursor_position = TitleCursorPosition.NONE
-        except Exception as _e:
-            # print(f"Title Sequence Manager Reloading {type(_e)}")
+        except Exception:
+            # logger.debug(f"Title Sequence Manager Reloading {type(_e)}")
             self.__init__()
 
     def _read_continue_selected(self):

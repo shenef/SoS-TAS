@@ -110,8 +110,8 @@ class CombatManager:
                         self._read_skill_commands()
                     self._read_live_mana()
 
-        except Exception as _e:
-            # print(f"Combat Manager Reloading - {type(e)}")
+        except Exception:
+            # logger.debug(f"Combat Manager Reloading - {type(e)}")
             self.__init__()
 
     # Helper function for updating itself and ensuring an internal function doesn't run without
