@@ -130,21 +130,26 @@ class CombatManager:
                 self.battle_command_index = None
                 return
 
-            if battle_command_selector:
-                # Checks an address to see if the battle command menu is visible
-                # and read the index for it if it is available, otherwise set it
-                # back to a NoneType for safety
-                has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
+            try:
+                if battle_command_selector:
+                    # Checks an address to see if the battle command menu is visible
+                    # and read the index for it if it is available, otherwise set it
+                    # back to a NoneType for safety
+                    has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
 
-                self.battle_command_has_focus = has_focus
-                if has_focus:
-                    selected_item_index = self.memory.read_longlong(
-                        battle_command_selector + 0x40
-                    )
-                    self.battle_command_index = selected_item_index
-                else:
-                    self.battle_command_index = None
-                return
+                    self.battle_command_has_focus = has_focus
+                    if has_focus:
+                        selected_item_index = self.memory.read_longlong(
+                            battle_command_selector + 0x40
+                        )
+                        self.battle_command_index = selected_item_index
+                    else:
+                        self.battle_command_index = None
+                    return
+            except Exception:
+                # Not sure what to do here until i figure out the state machines...
+                self.battle_command_has_focus = False
+                self.battle_command_index = None
         self.battle_command_has_focus = False
         self.battle_command_index = None
 
