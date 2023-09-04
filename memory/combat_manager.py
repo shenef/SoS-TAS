@@ -307,16 +307,6 @@ class CombatManager:
                         case str(x) if "R" in x:
                             character = CombatCharacter._SPOILERS
 
-<<<<<<< HEAD
-                    definition_id = self.memory.read_longlong(item + 0x70)
-
-                    # If the character isn't loaded, ignore.
-                    if definition_id == 0:
-                        address += self.ITEM_OBJECT_OFFSET
-                        continue
-
-=======
->>>>>>> 6c39215 (do the best we can to determine the CombatCharacter enum)
                     selected = self.memory.read_bool(item + 0x78)
 
                     hp_text_field = self.memory.follow_pointer(item, [0x28, 0x0])
@@ -362,9 +352,7 @@ class CombatManager:
                         selected_target_guid = ""
 
                     mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
-<<<<<<< HEAD
-                    current_mp = self.memory.read_int(mp_text_field + 0x58)
-=======
+
                     current_mp = self.memory.read_int(mp_text_field + 0x54)
 
                     # if the current player is selected, set it to the main combat manager state
@@ -372,7 +360,6 @@ class CombatManager:
                     if selected:
                         selected_character = character
 
->>>>>>> 50036da (MVP mash battle with AI)
                     player = CombatPlayer()
 
                     # TODO: hardcode these for now - we need to extract these players into
