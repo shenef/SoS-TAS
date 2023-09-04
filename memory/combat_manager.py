@@ -453,6 +453,9 @@ class CombatManager:
                                 casting_data, [0x18, 0x10, spell_locks_addr, 0x0]
                             )
 
+                            if spell_locks_base == 0x0:
+                                continue
+
                             lock = self.memory.read_int(spell_locks_base + 0x40)
                             spell_locks.append(CombatDamageType(lock))
 
