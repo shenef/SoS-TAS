@@ -2,7 +2,8 @@ import logging
 
 from control import sos_ctrl
 from engine.combat.utility.sos_appraisal import SoSAppraisal, SoSAppraisalType
-from memory.combat_manager import CombatCharacter, combat_manager_handle
+from memory.combat_manager import combat_manager_handle
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class BasicAttack(SoSAppraisal):
             and not combat_manager.battle_command_has_focus
             and combat_manager.battle_command_index is None
             and combat_manager.selected_target_guid != ""
-            and combat_manager.selected_character != CombatCharacter.NONE
+            and combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             # TODO: Find better timing, or add a delay for this confirm...
             ctrl.confirm()
@@ -57,7 +58,7 @@ class BasicAttack(SoSAppraisal):
         # TODO: Find a variable we can use to determine if the gamestead is ready to progress.
         if (
             self.step == self.STEP_2
-            and combat_manager.selected_character != CombatCharacter.NONE
+            and combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             logger.debug(
                 f"{combat_manager.selected_character.value} :: !! Retrying enemy attack confirm"
@@ -67,7 +68,7 @@ class BasicAttack(SoSAppraisal):
 
         if (
             self.step == self.STEP_2
-            and combat_manager.selected_character == CombatCharacter.NONE
+            and combat_manager.selected_character == PlayerPartyCharacter.NONE
         ):
             logger.debug(
                 f"{combat_manager.selected_character.value} :: Basic Attack Complete"

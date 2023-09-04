@@ -1,7 +1,8 @@
 import unittest
 
 from engine.combat.utility.sos_reasoner import SoSReasoner
-from memory.combat_manager import CombatCharacter, CombatManager, CombatPlayer
+from memory.combat_manager import CombatManager, CombatPlayer
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 # This test file is simply for testing Utilty AI outside of the game
 # so time isn't wasted restarting the game on guesses
@@ -13,7 +14,7 @@ zale = CombatPlayer()
 zale.current_mp = 6
 zale.physical_attack = 9
 zale.selected = False
-zale.character = CombatCharacter.Zale
+zale.character = PlayerPartyCharacter.Zale
 zale.definition_id = "zale"
 zale.enabled = True
 
@@ -21,7 +22,7 @@ valere = CombatPlayer()
 valere.current_mp = 6
 valere.physical_attack = 10
 valere.selected = False
-valere.character = CombatCharacter.Valere
+valere.character = PlayerPartyCharacter.Valere
 valere.definition_id = "valere"
 valere.enabled = True
 
@@ -29,7 +30,7 @@ garl = CombatPlayer()
 garl.current_mp = 6
 garl.physical_attack = 12
 garl.selected = False
-garl.character = CombatCharacter.Garl
+garl.character = PlayerPartyCharacter.Garl
 garl.definition_id = "garl"
 garl.enabled = True
 
@@ -54,14 +55,20 @@ class TestCombatUtility(unittest.TestCase):
     def test_consideration_selection(self):
         reasoner = SoSReasoner(combat_manager)
         action = reasoner._select_action()
-        self.assertEqual(action.consideration.actor.character, CombatCharacter.Garl)
+        self.assertEqual(
+            action.consideration.actor.character, PlayerPartyCharacter.Garl
+        )
 
         # With garl disabled, it should always pick valere
         garl.enabled = False
         action = reasoner._select_action()
-        self.assertEqual(action.consideration.actor.character, CombatCharacter.Valere)
+        self.assertEqual(
+            action.consideration.actor.character, PlayerPartyCharacter.Valere
+        )
 
         # With valere disabled as well, it will pick zale
         valere.enabled = False
         action = reasoner._select_action()
-        self.assertEqual(action.consideration.actor.character, CombatCharacter.Zale)
+        self.assertEqual(
+            action.consideration.actor.character, PlayerPartyCharacter.Zale
+        )

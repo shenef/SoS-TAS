@@ -1,8 +1,8 @@
 from enum import Enum
 
 from engine.mathlib import Vec3
-from memory.combat_manager import CombatCharacter
 from memory.core import mem_handle
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
 # PlayerDefaultState.EState
@@ -21,33 +21,33 @@ class PlayerPartyManager:
         self.position = Vec3(None, None, None)
         self.leader = None
         self.movement_state = PlayerMovementState.NONE
-        self.leader_character = CombatCharacter.NONE
+        self.leader_character = PlayerPartyCharacter.NONE
 
     def update(self):
         if self.memory.ready_for_updates:
-            try:
-                if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "PlayerPartyManager"
-                    )
-                    if singleton_ptr is None:
-                        return
+            # try:
+            if self.base is None or self.fields_base is None:
+                singleton_ptr = self.memory.get_singleton_by_class_name(
+                    "PlayerPartyManager"
+                )
+                if singleton_ptr is None:
+                    return
 
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    if self.base == 0x0:
-                        return
+                self.base = self.memory.get_class_base(singleton_ptr)
+                if self.base == 0x0:
+                    return
 
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
 
-                else:
-                    # Update fields
-                    self.leader = self.memory.get_field(self.fields_base, "leader")
-                    self._read_position()
-                    self._read_movement_state()
-                    self._read_leader_character()
-            except Exception as _e:
-                print(f"PlayerPartyManager Reloading {type(_e)}")
-                self.__init__()
+            else:
+                # Update fields
+                self.leader = self.memory.get_field(self.fields_base, "leader")
+                self._read_position()
+                self._read_movement_state()
+                self._read_leader_character()
+        # except Exception as _e:
+        #     print(f"PlayerPartyManager Reloading {type(_e)}")
+        #     self.__init__()
 
     def _read_position(self):
         if self.memory.ready_for_updates:
@@ -89,19 +89,9 @@ class PlayerPartyManager:
             # Definition IDS are stored as some goofy serialized utf encoded string
             # We just do our best with the values that are provided to
             # Determine the character we are looking at
-            match definition_id:
-                case str(x) if "Z" in x:
-                    self.leader_character = CombatCharacter.Zale
-                case str(x) if "V" in x:
-                    self.leader_character = CombatCharacter.Valere
-                case str(x) if "G" in x:
-                    self.leader_character = CombatCharacter.Garl
-                case str(x) if "S" in x:
-                    self.leader_character = CombatCharacter._SPOILERS
-                case str(x) if "R" in x:
-                    self.leader_character = CombatCharacter._SPOILERS
-                case _:
-                    self.leader_character = CombatCharacter.NONE
+            self.leader_character = PlayerPartyCharacter.parse_definition_id(
+                definition_id
+            )
 
 
 _player_party_manager_mem = PlayerPartyManager()

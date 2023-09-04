@@ -3,7 +3,7 @@ from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
-from memory.combat_manager import CombatCharacter
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
 class SoSConsideration(Consideration):
@@ -13,9 +13,10 @@ class SoSConsideration(Consideration):
 
     # if the selected character is NONE or we are on the selected character, considered valid'
     # and do nothing else here.
-    def valid(self, selected_character: CombatCharacter, action: Action) -> bool:
-        return selected_character is CombatCharacter.NONE or self.on_selected_character(
-            selected_character, action
+    def valid(self, selected_character: PlayerPartyCharacter, action: Action) -> bool:
+        return (
+            selected_character is PlayerPartyCharacter.NONE
+            or self.on_selected_character(selected_character, action)
         )
 
     def on_selected_character(self, selected_character, action) -> bool:
@@ -33,11 +34,11 @@ class SoSConsideration(Consideration):
     # TODO: Actually make character appraisals. For now we're just doing basic attacks
     def _character_appraisals(self) -> list[Appraisal]:
         match self.actor.character:
-            case CombatCharacter.Zale:
+            case PlayerPartyCharacter.Zale:
                 return []
-            case CombatCharacter.Valere:
+            case PlayerPartyCharacter.Valere:
                 return []
-            case CombatCharacter.Garl:
+            case PlayerPartyCharacter.Garl:
                 return []
             case _:
                 return []

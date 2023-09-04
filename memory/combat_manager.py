@@ -2,6 +2,7 @@ import contextlib
 from enum import Enum
 
 from memory.core import mem_handle
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
 class CombatDamageType(Enum):
@@ -40,14 +41,6 @@ class CombatEnemyTarget:
         self.spell_locks = []
 
 
-class CombatCharacter(Enum):
-    NONE = "None"
-    Zale = "Zale"
-    Valere = "Valere"
-    Garl = "Garl"
-    _SPOILERS = "_SPOILERS"
-
-
 class CombatPlayer:
     def __init__(self):
         self.max_hp = None
@@ -57,7 +50,7 @@ class CombatPlayer:
         self.selected = False
         self.definition_id = None
         self.dead = False
-        self.character = CombatCharacter.NONE
+        self.character = PlayerPartyCharacter.NONE
         self.enabled = None
         self.mana_charge_count = None
 
@@ -77,7 +70,7 @@ class CombatManager:
         self.selector_base = None
         self.enemies = []
         self.players = []
-        self.selected_character = CombatCharacter.NONE
+        self.selected_character = PlayerPartyCharacter.NONE
         self.current_encounter_base = None
         self.encounter_done = None
         self.small_live_mana = None
@@ -244,7 +237,7 @@ class CombatManager:
     # Reads information about players, see details below:
     def _read_players(self):
         if self._should_update():
-            selected_character = CombatCharacter.NONE
+            selected_character = PlayerPartyCharacter.NONE
             player_panels_list = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
             )
@@ -268,7 +261,7 @@ class CombatManager:
                 address = self.ITEM_INDEX_0_ADDRESS
 
                 for _item in range(count):
-                    character = CombatCharacter.NONE
+                    character = PlayerPartyCharacter.NONE
                     item = self.memory.follow_pointer(items, [address, 0x0])
                     # There will be times when there is an empty pointer in a list of items,
                     # This checks for that case and skips that record.
@@ -295,17 +288,9 @@ class CombatManager:
                     # Definition IDS are stored as some goofy serialized utf encoded string
                     # We just do our best with the values that are provided to
                     # Determine the character we are looking at
-                    match definition_id:
-                        case str(x) if "Z" in x:
-                            character = CombatCharacter.Zale
-                        case str(x) if "V" in x:
-                            character = CombatCharacter.Valere
-                        case str(x) if "G" in x:
-                            character = CombatCharacter.Garl
-                        case str(x) if "S" in x:
-                            character = CombatCharacter._SPOILERS
-                        case str(x) if "R" in x:
-                            character = CombatCharacter._SPOILERS
+                    self.leader_character = PlayerPartyCharacter.parse_definition_id(
+                        definition_id
+                    )
 
                     selected = self.memory.read_bool(item + 0x78)
 
@@ -365,11 +350,11 @@ class CombatManager:
                     # TODO: hardcode these for now - we need to extract these players into
                     # something more global and only update them as required.
                     match character:
-                        case CombatCharacter.Zale:
+                        case PlayerPartyCharacter.Zale:
                             player.physical_attack = 20
-                        case CombatCharacter.Valere:
+                        case PlayerPartyCharacter.Valere:
                             player.physical_attack = 22
-                        case CombatCharacter.Garl:
+                        case PlayerPartyCharacter.Garl:
                             player.physical_attack = 26
                         case _:
                             player.physical_attack = 1
