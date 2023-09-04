@@ -1,6 +1,7 @@
 from enum import Enum
 
 from engine.mathlib import Vec3
+from memory.combat_manager import CombatCharacter
 from memory.core import mem_handle
 
 
@@ -20,6 +21,7 @@ class PlayerPartyManager:
         self.position = Vec3(None, None, None)
         self.leader = None
         self.movement_state = PlayerMovementState.NONE
+        self.leader_character = CombatCharacter.NONE
 
     def update(self):
         if self.memory.ready_for_updates:
@@ -32,7 +34,6 @@ class PlayerPartyManager:
                         return
 
                     self.base = self.memory.get_class_base(singleton_ptr)
-
                     if self.base == 0x0:
                         return
 
@@ -43,6 +44,7 @@ class PlayerPartyManager:
                     self.leader = self.memory.get_field(self.fields_base, "leader")
                     self._read_position()
                     self._read_movement_state()
+                    self._read_leader_character()
             except Exception as _e:
                 print(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
@@ -77,6 +79,29 @@ class PlayerPartyManager:
                     self.movement_state = PlayerMovementState.Idle
                 case _:
                     self.movement_state = PlayerMovementState.NONE
+
+    def _read_leader_character(self):
+        if self.memory.ready_for_updates:
+            # leader -> playerCombatActor -> characterDefinitionId
+            ptr = self.memory.follow_pointer(self.base, [0x88, 0x0])
+            definition_id = self.memory.read_string(ptr + 0x11, 11)
+
+            # Definition IDS are stored as some goofy serialized utf encoded string
+            # We just do our best with the values that are provided to
+            # Determine the character we are looking at
+            match definition_id:
+                case str(x) if "Z" in x:
+                    self.leader_character = CombatCharacter.Zale
+                case str(x) if "V" in x:
+                    self.leader_character = CombatCharacter.Valere
+                case str(x) if "G" in x:
+                    self.leader_character = CombatCharacter.Garl
+                case str(x) if "S" in x:
+                    self.leader_character = CombatCharacter._SPOILERS
+                case str(x) if "R" in x:
+                    self.leader_character = CombatCharacter._SPOILERS
+                case _:
+                    self.leader_character = CombatCharacter.NONE
 
 
 _player_party_manager_mem = PlayerPartyManager()

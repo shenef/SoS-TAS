@@ -33,6 +33,9 @@ class DebugMenu(Menu):
         imgui.text(f"Loading: {level_manager.loading}")
 
         GUI_helper.add_spacer()
+        imgui.text(f"Current Leader: {player_party_manager.leader_character.value}")
+
+        GUI_helper.add_spacer()
 
         title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(

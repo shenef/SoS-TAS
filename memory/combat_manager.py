@@ -302,10 +302,10 @@ class CombatManager:
                             character = CombatCharacter.Valere
                         case str(x) if "G" in x:
                             character = CombatCharacter.Garl
-                        case "_SPOILERS":
+                        case str(x) if "S" in x:
                             character = CombatCharacter._SPOILERS
-                        case _:
-                            character = CombatCharacter.NONE
+                        case str(x) if "R" in x:
+                            character = CombatCharacter._SPOILERS
 
 <<<<<<< HEAD
                     definition_id = self.memory.read_longlong(item + 0x70)
