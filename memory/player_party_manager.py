@@ -2,6 +2,7 @@ from enum import Enum
 
 from engine.mathlib import Vec3
 from memory.core import mem_handle
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
 # PlayerDefaultState.EState
@@ -20,6 +21,7 @@ class PlayerPartyManager:
         self.position = Vec3(None, None, None)
         self.leader = None
         self.movement_state = PlayerMovementState.NONE
+        self.leader_character = PlayerPartyCharacter.NONE
 
     def update(self):
         if self.memory.ready_for_updates:
@@ -32,7 +34,6 @@ class PlayerPartyManager:
                         return
 
                     self.base = self.memory.get_class_base(singleton_ptr)
-
                     if self.base == 0x0:
                         return
 
@@ -43,8 +44,9 @@ class PlayerPartyManager:
                     self.leader = self.memory.get_field(self.fields_base, "leader")
                     self._read_position()
                     self._read_movement_state()
+                    self._read_leader_character()
             except Exception as _e:
-                print(f"PlayerPartyManager Reloading {type(_e)}")
+                # print(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
 
     def _read_position(self):
@@ -77,6 +79,19 @@ class PlayerPartyManager:
                     self.movement_state = PlayerMovementState.Idle
                 case _:
                     self.movement_state = PlayerMovementState.NONE
+
+    def _read_leader_character(self):
+        if self.memory.ready_for_updates:
+            # base -> leaderId
+            ptr = self.memory.follow_pointer(self.base, [0x88, 0x0])
+            definition_id = self.memory.read_string(ptr + 0x14, 8)
+
+            # Definition IDS are stored as some goofy serialized utf encoded string
+            # We just do our best with the values that are provided to
+            # Determine the character we are looking at
+            self.leader_character = PlayerPartyCharacter.parse_definition_id(
+                definition_id
+            )
 
 
 _player_party_manager_mem = PlayerPartyManager()

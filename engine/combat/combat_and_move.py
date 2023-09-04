@@ -1,4 +1,4 @@
-from control import sos_ctrl
+from engine.combat.combat_controller import CombatController
 from engine.mathlib import Vec3
 from engine.seq.move import InteractMove, SeqMove
 from memory.combat_manager import combat_manager_handle
@@ -7,7 +7,7 @@ combat_manager = combat_manager_handle()
 
 
 # TODO: Temporary code, moves along path, pausing while combat is active
-class SeqCombatMash(SeqMove):
+class SeqCombatAndMove(SeqMove):
     _TOGGLE_TIME = 0.05
 
     def __init__(
@@ -16,8 +16,8 @@ class SeqCombatMash(SeqMove):
         coords: list[Vec3 | InteractMove],
     ):
         super().__init__(name, coords)
-        self.state = False
         self.timer = 0.0
+        self.combat_controller = CombatController()
 
     # Override
     def navigate_to_checkpoint(self, delta: float) -> None:
@@ -25,23 +25,7 @@ class SeqCombatMash(SeqMove):
             # If there is no active fight, move along the designated path
             super().navigate_to_checkpoint(delta)
         else:
-            # Manual control, do nothing
-            self.execute_combat(delta)
-
-    # Mash through cutscene while holding the turbo button
-    def execute_combat(self, delta: float) -> bool:
-        self.timer = self.timer + delta
-
-        if self.timer > self._TOGGLE_TIME:
-            self.timer = 0
-            self.state = not self.state
-            sos_ctrl().toggle_confirm(self.state)
-
-        # Check if we have control
-        done = combat_manager.encounter_done is True
-        if done:
-            sos_ctrl().toggle_turbo(state=False)
-        return done
+            self.combat_controller.execute_combat()
 
     def __repr__(self) -> str:
-        return f"Mashing confirm while waiting for encounter ({self.name})..."
+        return f"Executing Combat Sequence ({self.name})..."

@@ -1,9 +1,10 @@
 import logging
 
-from engine.combat import SeqCombatMash
+from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec3
 from engine.seq import (
     InteractMove,
+    SeqAmulet,
     SeqClimb,
     SeqInteract,
     SeqList,
@@ -33,15 +34,15 @@ class DemoPlateau(SeqList):
                         Vec3(-426.310, -14.998, -98.160),
                     ],
                 ),
+                SeqAmulet(name="Do Amulet Sequence"),
                 SeqClimb(
                     name="Slide down ladder",
                     coords=[
                         InteractMove(-425.293, -22.998, -98.917),
                     ],
                 ),
-                # TODO: Mash Only Fight here
-                SeqCombatMash(
-                    name="Move to ladder (MASH combat)",
+                SeqCombatAndMove(
+                    name="Move to ladder (AI combat)",
                     coords=[
                         Vec3(-416.966, -22.998, -96.962),
                     ],

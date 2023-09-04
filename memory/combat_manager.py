@@ -1,6 +1,8 @@
+import contextlib
 from enum import Enum
 
 from memory.core import mem_handle
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
 class CombatDamageType(Enum):
@@ -40,12 +42,15 @@ class CombatEnemyTarget:
 
 
 class CombatPlayer:
-    def __init__(self, params=dict):
+    def __init__(self):
         self.max_hp = None
         self.current_hp = None
         self.current_mp = None
+        self.physical_attack = None
         self.selected = False
         self.definition_id = None
+        self.dead = False
+        self.character = PlayerPartyCharacter.NONE
         self.enabled = None
         self.mana_charge_count = None
 
@@ -65,6 +70,7 @@ class CombatManager:
         self.selector_base = None
         self.enemies = []
         self.players = []
+        self.selected_character = PlayerPartyCharacter.NONE
         self.current_encounter_base = None
         self.encounter_done = None
         self.small_live_mana = None
@@ -96,11 +102,13 @@ class CombatManager:
                     self._read_encounter_done()
                     if self.encounter_done is True:
                         return
-                    self._read_live_mana()
+
                     self._read_players()
                     self._read_enemies()
                     self._read_battle_commands()
-                    self._read_skill_commands()
+                    if not self.battle_command_has_focus:
+                        self._read_skill_commands()
+                    self._read_live_mana()
 
         except Exception as _e:
             # print(f"Combat Manager Reloading - {type(e)}")
@@ -116,7 +124,7 @@ class CombatManager:
     def _read_battle_commands(self):
         if self._should_update():
             battle_command_selector = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0xF8, 0x50, 0x60, 0x0]
+                self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
             )
             # Checks if we lost access to the selector pointer for a breif period as the UI changes.
             if battle_command_selector == self.NULL_POINTER:
@@ -124,21 +132,26 @@ class CombatManager:
                 self.battle_command_index = None
                 return
 
-            if battle_command_selector:
-                # Checks an address to see if the battle command menu is visible
-                # and read the index for it if it is available, otherwise set it
-                # back to a NoneType for safety
-                has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
+            try:
+                if battle_command_selector:
+                    # Checks an address to see if the battle command menu is visible
+                    # and read the index for it if it is available, otherwise set it
+                    # back to a NoneType for safety
+                    has_focus = self.memory.read_bool(battle_command_selector + 0x3C)
 
-                self.battle_command_has_focus = has_focus
-                if has_focus:
-                    selected_item_index = self.memory.read_longlong(
-                        battle_command_selector + 0x40
-                    )
-                    self.battle_command_index = selected_item_index
-                else:
-                    self.battle_command_index = None
-                return
+                    self.battle_command_has_focus = has_focus
+                    if has_focus:
+                        selected_item_index = self.memory.read_longlong(
+                            battle_command_selector + 0x40
+                        )
+                        self.battle_command_index = selected_item_index
+                    else:
+                        self.battle_command_index = None
+                    return
+            except Exception:
+                # Not sure what to do here until i figure out the state machines...
+                self.battle_command_has_focus = False
+                self.battle_command_index = None
         self.battle_command_has_focus = False
         self.battle_command_index = None
 
@@ -148,7 +161,7 @@ class CombatManager:
     def _read_skill_commands(self):
         if self._should_update():
             skill_command_selector = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
+                self.base, [self.current_encounter_base, 0x138, 0x50, 0x78, 0x0]
             )
             # Checks if we lost access to the selector pointer for a breif period as the UI changes.
             if skill_command_selector == self.NULL_POINTER:
@@ -230,9 +243,11 @@ class CombatManager:
     # Reads information about players, see details below:
     def _read_players(self):
         if self._should_update():
+            selected_character = PlayerPartyCharacter.NONE
             player_panels_list = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
             )
+
             if player_panels_list == self.NULL_POINTER:
                 self.players = []
                 return
@@ -252,7 +267,9 @@ class CombatManager:
                 address = self.ITEM_INDEX_0_ADDRESS
 
                 for _item in range(count):
+                    character = PlayerPartyCharacter.NONE
                     item = self.memory.follow_pointer(items, [address, 0x0])
+
                     # There will be times when there is an empty pointer in a list of items,
                     # This checks for that case and skips that record.
                     # For example:
@@ -261,17 +278,31 @@ class CombatManager:
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
                     #    - 0x20 - Item[0] -> Pointer 0x00000000
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
+
                     # TODO: Switch "0x0" to another NULL_POINTER type of 0x00000000
                     if hex(item) == "0x0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue
 
-                    definition_id = self.memory.read_longlong(item + 0x70)
+                    # Check if the character definition id is 0, and return as the
+                    # character cannot be queried against
+                    character_definition_id = self.memory.read_longlong(item + 0x70)
 
                     # If the character isn't loaded, ignore.
-                    if definition_id == 0:
+                    if character_definition_id == 0:
                         address += self.ITEM_OBJECT_OFFSET
                         continue
+
+                    dead_ptr = self.memory.follow_pointer(item, [0x68, 0x28])
+                    dead = self.memory.read_bool(dead_ptr + 0xC8)
+                    definition_id_ptr = self.memory.follow_pointer(item, [0x70, 0x0])
+                    # 4 Chars * 2 for utf
+                    definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)
+
+                    # Definition IDS are stored as some goofy serialized utf encoded string
+                    # We just do our best with the values that are provided to
+                    # Determine the character we are looking at
+                    character = PlayerPartyCharacter.parse_definition_id(definition_id)
 
                     selected = self.memory.read_bool(item + 0x78)
 
@@ -280,13 +311,16 @@ class CombatManager:
 
                     portrait = self.memory.follow_pointer(item, [0x68, 0x0])
                     enabled = self.memory.read_bool(portrait + 0x30)
+
                     live_mana_handler = self.memory.follow_pointer(
                         item, [0x68, 0x38, 0x148, 0x0]
                     )
                     mana_charge_count = self.memory.read_int(live_mana_handler + 0x58)
+                    target_unique_id_base = None
                     # A try is used here, because this pointer tends to fall out in quick
                     # play. This just returns safely and attempts again.
-                    try:
+                    selected_target_guid = ""
+                    with contextlib.suppress(Exception):
                         target_unique_id_base = self.memory.follow_pointer(
                             item,
                             [
@@ -305,28 +339,45 @@ class CombatManager:
                                 0x0,
                             ],
                         )
-                    except Exception:
-                        return
 
                     # This check was added due to the pointer not falling off in time, referencing
                     # an enemy that just died
-                    if (
-                        target_unique_id_base is self.NULL_POINTER
-                        or target_unique_id_base is None
-                    ):
-                        continue
-
-                    selected_target_guid = self.memory.read_guid(
-                        target_unique_id_base + 0x14
-                    )
+                    try:
+                        selected_target_guid = self.memory.read_guid(
+                            target_unique_id_base + 0x14
+                        )
+                    except Exception:
+                        selected_target_guid = ""
 
                     mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
-                    current_mp = self.memory.read_int(mp_text_field + 0x58)
+
+                    current_mp = self.memory.read_int(mp_text_field + 0x54)
+
+                    # if the current player is selected, set it to the main combat manager state
+                    # this will help us prevent scanning lists later on
+                    if selected:
+                        selected_character = character
+
                     player = CombatPlayer()
+
+                    # TODO: hardcode these for now - we need to extract these players into
+                    # something more global and only update them as required.
+                    match character:
+                        case PlayerPartyCharacter.Zale:
+                            player.physical_attack = 20
+                        case PlayerPartyCharacter.Valere:
+                            player.physical_attack = 22
+                        case PlayerPartyCharacter.Garl:
+                            player.physical_attack = 26
+                        case _:
+                            player.physical_attack = 1
+
                     player.current_hp = current_hp
                     player.current_mp = current_mp
                     player.definition_id = definition_id
+                    player.character = character
                     player.selected = selected
+                    player.dead = dead
                     player.enabled = enabled
                     player.mana_charge_count = mana_charge_count
                     players.append(player)
@@ -335,6 +386,7 @@ class CombatManager:
                     address += self.ITEM_OBJECT_OFFSET
 
             self.players = players
+            self.selected_character = selected_character
             return
         self.players = []
 
@@ -400,6 +452,9 @@ class CombatManager:
                             spell_locks_base = self.memory.follow_pointer(
                                 casting_data, [0x18, 0x10, spell_locks_addr, 0x0]
                             )
+
+                            if spell_locks_base == 0x0:
+                                continue
 
                             lock = self.memory.read_int(spell_locks_base + 0x40)
                             spell_locks.append(CombatDamageType(lock))

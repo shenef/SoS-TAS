@@ -1,7 +1,7 @@
 import logging
 
 from engine.combat import (
-    SeqCombatManual,
+    SeqCombatAndMove,
 )
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
@@ -132,9 +132,8 @@ class DemoWizardLabGreenArea(SeqList):
                     target=Vec3(-80.000, 1.002, -29.498),
                     joy_dir=Vec2(0, 1),
                 ),
-                # TODO: Manual Fight here
-                SeqCombatManual(
-                    name="Move to fight (MASH combat)",
+                SeqCombatAndMove(
+                    name="Move to fight (AI combat)",
                     coords=[
                         Vec3(-80.000, 1.002, -21.742),
                         Vec3(-84.648, 1.002, -11.011),
