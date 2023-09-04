@@ -107,7 +107,7 @@ class SeqHoldInPlace(SeqDelay):
         return False
 
     def __repr__(self) -> str:
-        return f"Waiting({self.name}) at {self.target}... {self.timer:.2f}/{self.timeout:.2f}"
+        return f"Waiting ({self.name}) at {self.target}. {self.timer:.2f}/{self.timeout:.2f}"
 
 
 class InteractMove(Vec3):

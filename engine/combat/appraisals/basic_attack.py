@@ -31,9 +31,7 @@ class BasicAttack(SoSAppraisal):
         ):
             ctrl.confirm()
             self.step = self.STEP_1
-            logger.debug(
-                f"{combat_manager.selected_character.value} :: Selected Attack"
-            )
+            logger.debug(f"Selected Attack: {combat_manager.selected_character.value}")
             return
         # Just assume we are targeting something
         # TODO: this will be similar to consideration that cycles through targets
@@ -47,21 +45,21 @@ class BasicAttack(SoSAppraisal):
             and combat_manager.selected_target_guid != ""
             and combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
-            # TODO: Find better timing, or add a delay for this confirm...
+            # TODO: Find better timing, or add a delay for this confirm.
             ctrl.confirm()
             self.step = self.STEP_2
-            logger.debug(f"{combat_manager.selected_character.value} :: Selected Enemy")
+            logger.debug(f"Selected Enemy: {combat_manager.selected_character.value}")
             return
 
         # This step is required because spell lock animations lock the player from selecting a
         # target.
-        # TODO: Find a variable we can use to determine if the gamestead is ready to progress.
+        # TODO: Find a variable we can use to determine if the gamestate is ready to progress.
         if (
             self.step == self.STEP_2
             and combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             logger.debug(
-                f"{combat_manager.selected_character.value} :: !! Retrying enemy attack confirm"
+                f"Retrying enemy attack confirm - {combat_manager.selected_character.value}"
             )
             ctrl.confirm()
             return
@@ -71,7 +69,7 @@ class BasicAttack(SoSAppraisal):
             and combat_manager.selected_character == PlayerPartyCharacter.NONE
         ):
             logger.debug(
-                f"{combat_manager.selected_character.value} :: Basic Attack Complete"
+                f"Basic Attack Complete - {combat_manager.selected_character.value}"
             )
             self.complete = True
             return

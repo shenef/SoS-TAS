@@ -48,4 +48,4 @@ class SeqAmulet(SeqBase):
                 return False
 
     def __repr__(self) -> str:
-        return f"Amulet sequence ({self.name})..."
+        return f"Amulet sequence ({self.name})."

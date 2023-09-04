@@ -28,4 +28,4 @@ class SeqCombatAndMove(SeqMove):
             self.combat_controller.execute_combat()
 
     def __repr__(self) -> str:
-        return f"Executing Combat Sequence ({self.name})..."
+        return f"Executing Combat Sequence ({self.name})."

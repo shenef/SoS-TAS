@@ -126,7 +126,7 @@ class SoSStartGame(SeqList):
                 SeqBase(func=clear_blackboard),
                 SeqLog(
                     name="SYSTEM",
-                    text="Starting Sea of Stars TAS main menu sequence...",
+                    text="Starting Sea of Stars TAS main menu sequence.",
                 ),
                 # TODO: The SoS window will not recognize input unless it is in focus!
                 SeqDelay("MANUAL: Focus SoS window!", timeout_in_s=5.0),
