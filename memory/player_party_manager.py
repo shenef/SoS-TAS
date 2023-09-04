@@ -25,29 +25,29 @@ class PlayerPartyManager:
 
     def update(self):
         if self.memory.ready_for_updates:
-            # try:
-            if self.base is None or self.fields_base is None:
-                singleton_ptr = self.memory.get_singleton_by_class_name(
-                    "PlayerPartyManager"
-                )
-                if singleton_ptr is None:
-                    return
+            try:
+                if self.base is None or self.fields_base is None:
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "PlayerPartyManager"
+                    )
+                    if singleton_ptr is None:
+                        return
 
-                self.base = self.memory.get_class_base(singleton_ptr)
-                if self.base == 0x0:
-                    return
+                    self.base = self.memory.get_class_base(singleton_ptr)
+                    if self.base == 0x0:
+                        return
 
-                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
 
-            else:
-                # Update fields
-                self.leader = self.memory.get_field(self.fields_base, "leader")
-                self._read_position()
-                self._read_movement_state()
-                self._read_leader_character()
-        # except Exception as _e:
-        #     print(f"PlayerPartyManager Reloading {type(_e)}")
-        #     self.__init__()
+                else:
+                    # Update fields
+                    self.leader = self.memory.get_field(self.fields_base, "leader")
+                    self._read_position()
+                    self._read_movement_state()
+                    self._read_leader_character()
+            except Exception as _e:
+                print(f"PlayerPartyManager Reloading {type(_e)}")
+                self.__init__()
 
     def _read_position(self):
         if self.memory.ready_for_updates:
