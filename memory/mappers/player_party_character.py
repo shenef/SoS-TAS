@@ -6,8 +6,8 @@ class PlayerPartyCharacter(Enum):
     Zale = "Zale"
     Valere = "Valere"
     Garl = "Garl"
-    Serai = "Serai"
-    Reshan = "Reshan"
+    Serai = "Seraï"
+    Reshan = "Resh'an"
 
     def parse_definition_id(definition_id):
         asciidata = definition_id.encode("ascii", "ignore")
