@@ -50,4 +50,4 @@ class SeqTurboMashUntilIdle(SeqBase):
         return done
 
     def __repr__(self) -> str:
-        return f"Mashing confirm while waiting for control ({self.name})..."
+        return f"Mashing confirm while waiting for control ({self.name})."

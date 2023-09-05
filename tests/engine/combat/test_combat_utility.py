@@ -4,7 +4,7 @@ from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory.combat_manager import CombatManager, CombatPlayer
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
-# This test file is simply for testing Utilty AI outside of the game
+# This test file is simply for testing Utility AI outside of the game
 # so time isn't wasted restarting the game on guesses
 # Below it mocks some information for use in test
 

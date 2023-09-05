@@ -27,7 +27,7 @@ class SeqDelay(SeqBase):
         return False
 
     def __repr__(self) -> str:
-        return f"Waiting({self.name})... {self.timer:.2f}/{self.timeout:.2f}"
+        return f"Waiting ({self.name}). {self.timer:.2f}/{self.timeout:.2f}"
 
 
 class SeqHoldConfirm(SeqDelay):
@@ -41,7 +41,7 @@ class SeqHoldConfirm(SeqDelay):
         return done
 
     def __repr__(self) -> str:
-        return f"Holding confirm while waiting ({self.name})... {self.timer:.2f}/{self.timeout:.2f}"
+        return f"Holding confirm while waiting ({self.name}). {self.timer:.2f}/{self.timeout:.2f}"
 
 
 class SeqMashDelay(SeqDelay):
@@ -52,7 +52,7 @@ class SeqMashDelay(SeqDelay):
         return self.timer >= self.timeout
 
     def __repr__(self) -> str:
-        return f"Mashing confirm while waiting ({self.name})... {self.timer:.2f}/{self.timeout:.2f}"
+        return f"Mashing confirm while waiting ({self.name}). {self.timer:.2f}/{self.timeout:.2f}"
 
 
 class SeqTurboMashDelay(SeqDelay):
@@ -67,4 +67,4 @@ class SeqTurboMashDelay(SeqDelay):
         return done
 
     def __repr__(self) -> str:
-        return f"Mashing confirm while waiting ({self.name})... {self.timer:.2f}/{self.timeout:.2f}"
+        return f"Mashing confirm while waiting ({self.name}). {self.timer:.2f}/{self.timeout:.2f}"

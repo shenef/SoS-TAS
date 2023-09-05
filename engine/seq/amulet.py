@@ -1,9 +1,11 @@
+import logging
 import time
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
 from memory.combat_manager import combat_manager_handle
 
+logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
 
 
@@ -22,7 +24,7 @@ class SeqAmulet(SeqBase):
     # Override
     def execute(self, delta: float) -> bool:
         step = self.steps.pop(0)
-        print(step)
+        logger.debug(step)
 
         match step:
             case "open_menu":
@@ -46,4 +48,4 @@ class SeqAmulet(SeqBase):
                 return False
 
     def __repr__(self) -> str:
-        return f"Amulet sequence ({self.name})..."
+        return f"Amulet sequence ({self.name})."

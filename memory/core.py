@@ -72,8 +72,8 @@ class SoSMemory:
                 self.get_image()
                 self._set_ready_for_updates()
 
-        except Exception as _e:
-            # print(f"Memory Core Reloading {type(_e)}")
+        except Exception:
+            # logger.debug(f"Memory Core Reloading {type(_e)}")
             self.__init__()
 
     # This is a helper function designed to facilitate in finding instanced/dynamically allocated
