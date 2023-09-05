@@ -68,6 +68,7 @@ class NavHelper(Menu):
         imgui.text(f"z: {boat_pos.z:.3f}")
         imgui.text(f"r1: {boat_manager.rotation_x}")
         imgui.text(f"r2: {boat_manager.rotation_y}")
+        imgui.text(f"speed: {boat_manager.speed:.3f}")
         GUI_helper.add_spacer()
         imgui.text("GameObject Coordinates")
         imgui.text(f"x: {gameobject_pos.x:.3f}")

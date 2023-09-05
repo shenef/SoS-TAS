@@ -9,6 +9,7 @@ class BoatManager:
         self.position = Vec3(None, None, None)
         self.rotation_x = None
         self.rotation_y = None
+        self.speed = 0
 
     def update(self):
         if self.memory.ready_for_updates:
@@ -21,7 +22,6 @@ class BoatManager:
                         return
 
                     self.base = self.memory.get_class_base(singleton_ptr)
-
                     if self.base == 0x0:
                         return
 
@@ -29,6 +29,7 @@ class BoatManager:
                     # Update fields
                     self._read_position()
                     self._read_rotation()
+                    self._read_speed()
             except Exception as _e:
                 # logger.debug(f"BoatManager Reloading {type(_e)}")
                 self.__init__()
@@ -62,6 +63,19 @@ class BoatManager:
 
         self.rotation_x = None
         self.rotation_y = None
+
+    def _read_speed(self):
+        if self.memory.ready_for_updates:
+            # (BoatInstance) k__BackingField -> boatSnapRotation -> pitchRollLocalRotation
+            ptr = self.memory.follow_pointer(self.base, [0x40, 0x0])
+            if ptr:
+                # not sure what these are called, but the values are here.
+                speed = self.memory.read_float(ptr + 0x134)
+
+                self.speed = speed
+                return
+
+        self.speed = 0
 
 
 _boat_manager_mem = BoatManager()
