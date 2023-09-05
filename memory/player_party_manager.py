@@ -74,7 +74,7 @@ class PlayerPartyManager:
                 y = self.memory.read_float(ptr + 0x4)
                 z = self.memory.read_float(ptr + 0x8)
 
-                self.position = Vec3(x, y, z)
+                self.gameobject_position = Vec3(x, y, z)
                 return
 
         self.position = Vec3(None, None, None)
