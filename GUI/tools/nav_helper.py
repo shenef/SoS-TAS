@@ -71,7 +71,7 @@ class NavHelper(Menu):
         _, self.target.y = imgui.input_float(label="y", value=self.target.y, step=0.001)
         _, self.target.z = imgui.input_float(label="z", value=self.target.z, step=0.001)
 
-        if imgui.button("Copy to clipboard"):
+        if imgui.button("Target to clipboard"):
             imgui.core.set_clipboard_text(
                 f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
             )
