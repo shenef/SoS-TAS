@@ -8,12 +8,14 @@ from engine.mathlib import Vec2, Vec3
 from engine.seq.move import move_to
 from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
+from memory.boat_manager import boat_manager_handle
 from memory.player_party_manager import player_party_manager_handle
 from memory.title_sequence_manager import title_sequence_manager_handle
 
 logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
+boat_manager = boat_manager_handle()
 title_sequence_manager = title_sequence_manager_handle()
 
 
@@ -46,10 +48,23 @@ class NavHelper(Menu):
             player_party_manager.position.z or 0,
         )
 
+        boat_pos = Vec3(
+            boat_manager.position.x or 0,
+            boat_manager.position.y or 0,
+            boat_manager.position.z or 0,
+        )
+
         imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
 
         GUI_helper.add_spacer()
+        imgui.text("Boat Coordinates")
+        imgui.text(f"x: {boat_pos.x:.3f}")
+        imgui.text(f"y: {boat_pos.y:.3f}")
+        imgui.text(f"z: {boat_pos.z:.3f}")
+        imgui.text(f"r1: {boat_manager.rotation_x}")
+        imgui.text(f"r2: {boat_manager.rotation_y}")
 
+        GUI_helper.add_spacer()
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_pos.x:.3f}")
         imgui.text(f"y: {player_pos.y:.3f}")
