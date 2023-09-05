@@ -48,6 +48,11 @@ class NavHelper(Menu):
             player_party_manager.position.z or 0,
         )
 
+        gameobject_pos = Vec3(
+            player_party_manager.gameobject_position.x or 0,
+            player_party_manager.gameobject_position.y or 0,
+            player_party_manager.gameobject_position.z or 0,
+        )
         boat_pos = Vec3(
             boat_manager.position.x or 0,
             boat_manager.position.y or 0,
@@ -63,7 +68,11 @@ class NavHelper(Menu):
         imgui.text(f"z: {boat_pos.z:.3f}")
         imgui.text(f"r1: {boat_manager.rotation_x}")
         imgui.text(f"r2: {boat_manager.rotation_y}")
-
+        GUI_helper.add_spacer()
+        imgui.text("GameObject Coordinates")
+        imgui.text(f"x: {gameobject_pos.x:.3f}")
+        imgui.text(f"y: {gameobject_pos.y:.3f}")
+        imgui.text(f"z: {gameobject_pos.z:.3f}")
         GUI_helper.add_spacer()
         imgui.text("Player Coordinates")
         imgui.text(f"x: {player_pos.x:.3f}")

@@ -26,30 +26,30 @@ class PlayerPartyManager:
 
     def update(self):
         if self.memory.ready_for_updates:
-            try:
-                if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "PlayerPartyManager"
-                    )
-                    if singleton_ptr is None:
-                        return
+            # try:
+            if self.base is None or self.fields_base is None:
+                singleton_ptr = self.memory.get_singleton_by_class_name(
+                    "PlayerPartyManager"
+                )
+                if singleton_ptr is None:
+                    return
 
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    if self.base == 0x0:
-                        return
+                self.base = self.memory.get_class_base(singleton_ptr)
+                if self.base == 0x0:
+                    return
 
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
 
-                else:
-                    # Update fields
-                    self.leader = self.memory.get_field(self.fields_base, "leader")
-                    self._read_position()
-                    self._read_gameobject_position()
-                    self._read_movement_state()
-                    self._read_leader_character()
-            except Exception:
-                # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
-                self.__init__()
+            else:
+                # Update fields
+                self.leader = self.memory.get_field(self.fields_base, "leader")
+                self._read_position()
+                self._read_gameobject_position()
+                self._read_movement_state()
+                self._read_leader_character()
+        # except Exception as _e:
+        #     # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
+        #     self.__init__()
 
     def _read_position(self):
         if self.memory.ready_for_updates:
@@ -68,7 +68,14 @@ class PlayerPartyManager:
     def _read_gameobject_position(self):
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
-            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x30, 0x48, 0x1C])
+            gameobject_ptr = self.memory.follow_pointer(
+                self.base, [self.leader, 0x30, 0x0]
+            )
+            if gameobject_ptr == 0x0:
+                self.gameobject_position = Vec3(None, None, None)
+                return
+
+            ptr = self.memory.follow_pointer(gameobject_ptr, [0x48, 0x1C])
             if ptr:
                 x = self.memory.read_float(ptr + 0x0)
                 y = self.memory.read_float(ptr + 0x4)
@@ -77,7 +84,7 @@ class PlayerPartyManager:
                 self.gameobject_position = Vec3(x, y, z)
                 return
 
-        self.position = Vec3(None, None, None)
+        self.gameobject_position = Vec3(None, None, None)
 
     def _read_movement_state(self):
         if self.memory.ready_for_updates:

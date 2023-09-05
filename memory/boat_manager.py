@@ -6,7 +6,6 @@ class BoatManager:
     def __init__(self):
         self.memory = mem_handle()
         self.base = None
-        self.fields_base = None
         self.position = Vec3(None, None, None)
         self.rotation_x = None
         self.rotation_y = None
@@ -14,7 +13,7 @@ class BoatManager:
     def update(self):
         if self.memory.ready_for_updates:
             try:
-                if self.base is None or self.fields_base is None:
+                if self.base is None:
                     singleton_ptr = self.memory.get_singleton_by_class_name(
                         "BoatManager"
                     )
@@ -26,13 +25,11 @@ class BoatManager:
                     if self.base == 0x0:
                         return
 
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-
                 else:
                     # Update fields
                     self._read_position()
                     self._read_rotation()
-            except Exception:
+            except Exception as _e:
                 # logger.debug(f"BoatManager Reloading {type(_e)}")
                 self.__init__()
 
