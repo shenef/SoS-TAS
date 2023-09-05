@@ -8,6 +8,7 @@ from engine.seq.interact import (
 )
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
+    HoldDirection,
     InteractMove,
     SeqAwaitLostControl,
     SeqClimb,
@@ -37,6 +38,7 @@ __all__ = [
     "SeqHoldInPlace",
     "SeqManualUntilClose",
     "InteractMove",
+    "HoldDirection",
     "SeqMove",
     "SeqClimb",
     "SeqHoldDirectionUntilLostControl",

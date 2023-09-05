@@ -143,11 +143,20 @@ class InteractMove(Vec3):
         return f"InteractMove({super().__repr__()})"
 
 
+class HoldDirection(Vec3):
+    def __init__(self, x: float, y: float, z: float, joy_dir: Vec2) -> None:
+        super().__init__(x, y, z)
+        self.joy_dir = joy_dir
+
+    def __repr__(self) -> str:
+        return f"HoldDirection({super().__repr__()}, joy_dir={self.joy_dir})"
+
+
 class SeqMove(SeqBase):
     def __init__(
         self,
         name: str,
-        coords: list[Vec3 | InteractMove],
+        coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 0.2,
         tap_rate: float = 0.1,
         running: bool = True,
@@ -208,6 +217,8 @@ class SeqMove(SeqBase):
             if self.step >= len(self.coords):
                 ctrl.set_neutral()
                 ctrl.toggle_confirm(False)
+        elif isinstance(target, HoldDirection):
+            ctrl.set_joystick(target.joy_dir)
         else:
             self.move_function(player_pos=player_pos, target_pos=target)
 

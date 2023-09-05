@@ -3,11 +3,11 @@ import logging
 from engine.combat import SeqCombatManual
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    HoldDirection,
     InteractMove,
     SeqAwaitLostControl,
     SeqCheckpoint,
     SeqClimb,
-    SeqHoldDirectionUntilClose,
     SeqHoldDirectionUntilLostControl,
     SeqIf,
     SeqInteract,
@@ -68,12 +68,8 @@ class IntroMountainTrail(SeqList):
                         Vec3(-29.087, 13.090, 27.836),
                         Vec3(-34.761, 13.030, 22.203),
                         Vec3(-40.253, 11.002, 22.203),
+                        HoldDirection(-88.500, 10.002, 32.058, joy_dir=Vec2(0, 1)),
                     ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Go inside cavern",
-                    target=Vec3(-88.500, 10.002, 32.058),
-                    joy_dir=Vec2(0, 1),
                 ),
                 SeqMove(
                     name="Move through cavern",
@@ -95,20 +91,12 @@ class IntroMountainTrail(SeqList):
                     target=Vec3(-87.284, 22.002, 44.522),
                     precision=1.0,
                 ),
+                # Use the combat node on the off-chance we run into the slug
                 SeqCombatManual(
-                    name="Fight slug",
-                    coords=[
-                        Vec3(-73.903, 22.002, 34.029),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Go out of cavern",
-                    target=Vec3(-35.819, 21.002, 27.816),
-                    joy_dir=Vec2(0, -1),
-                ),
-                SeqMove(
                     name="Move to campfire",
                     coords=[
+                        Vec3(-73.903, 22.002, 34.029),
+                        HoldDirection(-35.819, 21.002, 27.816, joy_dir=Vec2(0, -1)),
                         Vec3(-32.177, 21.002, 27.816),
                         Vec3(-30.369, 21.002, 32.300),
                         InteractMove(-20.660, 21.002, 32.300),
@@ -136,19 +124,10 @@ class IntroMooncradle(SeqList):
             children=[
                 SeqCheckpoint(checkpoint_name="intro_mooncradle"),
                 SeqMove(
-                    name="Move to cave entrance",
-                    coords=[
-                        Vec3(-68.930, -10.998, 26.150),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Go out of cavern",
-                    target=Vec3(-13.969, -11.998, 38.757),
-                    joy_dir=Vec2(0, -1),
-                ),
-                SeqMove(
                     name="Move to cliff",
                     coords=[
+                        Vec3(-68.930, -10.998, 26.150),
+                        HoldDirection(-13.969, -11.998, 38.757, joy_dir=Vec2(0, -1)),
                         Vec3(-13.969, -11.998, 36.392),
                         Vec3(-12.504, -11.998, 34.927),
                         Vec3(-9.406, -11.998, 34.927),
@@ -188,21 +167,12 @@ class IntroMooncradle(SeqList):
                 # Hold B as well to skip cutscene
                 SeqTurboMashSkipCutsceneUntilIdle(name="Meeting Brugaves and Erlina"),
                 SeqMove(
-                    name="Move to exit",
+                    name="Move to Forbidden Cave",
                     coords=[
                         Vec3(31.373, 1.002, 89.671),
                         Vec3(31.471, 1.002, 114.862),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Go to world map",
-                    target=Vec3(109.500, 2.002, 61.998),
-                    joy_dir=Vec2(0, 1),
-                ),
-                # Navigate world map to Forbidden Cave
-                SeqMove(
-                    name="Move to Forbidden Cave",
-                    coords=[
+                        # Enter world map
+                        HoldDirection(109.500, 2.002, 61.998, joy_dir=Vec2(0, 1)),
                         Vec3(109.500, 2.002, 64.000),
                         Vec3(108.000, 2.002, 64.000),
                         Vec3(108.000, 2.002, 66.500),
@@ -229,28 +199,10 @@ class IntroMooncradle(SeqList):
                     name="Move to dorms",
                     coords=[
                         Vec3(48.690, -8.990, -136.717),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Enter dorms",
-                    target=Vec3(285.500, 5.002, 58.000),
-                    joy_dir=Vec2(1, 1),
-                ),
-                SeqMove(
-                    name="Move to dorms",
-                    coords=[
+                        HoldDirection(285.500, 5.002, 58.000, joy_dir=Vec2(1, 1)),
                         Vec3(290.419, 5.002, 61.872),
                         Vec3(295.647, 5.002, 63.663),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Enter dorms",
-                    target=Vec3(72.657, -7.998, -133.640),
-                    joy_dir=Vec2(1, 1),
-                ),
-                SeqMove(
-                    name="Dorms",
-                    coords=[
+                        HoldDirection(72.657, -7.998, -133.640, joy_dir=Vec2(1, 1)),
                         Vec3(82.104, -7.998, -129.590),
                         Vec3(94.005, -11.998, -129.590),
                         Vec3(94.005, -11.998, -133.576),
@@ -263,7 +215,11 @@ class IntroMooncradle(SeqList):
 class SeqIfMainCharacterValere(SeqIf):
     def condition(self) -> bool:
         leader = player_party_manager_handle().leader_character
-        return leader == PlayerPartyCharacter.Valere
+        if leader == PlayerPartyCharacter.Valere:
+            return True
+        if leader == PlayerPartyCharacter.Zale:
+            return False
+        return None
 
 
 class LoomsToCenter(SeqIfMainCharacterValere):
@@ -325,41 +281,25 @@ class IntroZenithAcademy(SeqList):
                 SeqInteract("Sleep"),
                 SeqTurboMashUntilIdle(name="Train with Brugaves"),
                 SeqMove(
-                    name="Leave training area",
+                    name="Move to Erlina",
                     coords=[
                         Vec3(-17.700, -13.998, -136.900),
                         InteractMove(-11.000, -14.998, -143.700),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Leave training area",
-                    target=Vec3(248.762, 5.002, 56.959),
-                    joy_dir=Vec2(1, -1),
-                ),
-                SeqMove(
-                    name="Move to Erlina",
-                    coords=[
+                        HoldDirection(248.762, 5.002, 56.959, joy_dir=Vec2(1, -1)),
                         Vec3(253.865, 5.002, 56.959),
                         Vec3(257.891, 5.002, 58.706),
                         Vec3(260.734, 5.002, 58.706),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to Erlina",
-                    target=Vec3(16.980, -8.998, -135.817),
-                    joy_dir=Vec2(1, -1),
-                ),
-                SeqMove(
-                    name="Move to Erlina",
-                    coords=[
+                        HoldDirection(16.980, -8.998, -135.817, joy_dir=Vec2(1, -1)),
                         Vec3(32.789, -8.930, -151.592),
                         Vec3(32.789, -8.990, -176.218),
                     ],
                 ),
-                SeqHoldDirectionUntilClose(
+                SeqMove(
                     name="Move to Erlina",
-                    target=Vec3(273.146, 5.002, 47.521),
-                    joy_dir=Vec2(0, -1),
+                    precision=1.0,
+                    coords=[
+                        HoldDirection(273.146, 5.002, 47.521, joy_dir=Vec2(0, -1)),
+                    ],
                 ),
                 SeqHoldDirectionUntilLostControl(
                     name="Move to Erlina",
@@ -376,24 +316,11 @@ class IntroZenithAcademy(SeqList):
                         Vec3(94.382, -11.998, -129.766),
                         Vec3(81.351, -7.998, -129.428),
                         Vec3(72.903, -7.998, -133.028),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to main area",
-                    target=Vec3(295.354, 5.002, 64.422),
-                    joy_dir=Vec2(-1, -1),
-                ),
-                SeqMove(
-                    name="Move to main area",
-                    coords=[
+                        HoldDirection(295.354, 5.002, 64.422, joy_dir=Vec2(-1, -1)),
                         Vec3(292.408, 5.002, 62.065),
                         Vec3(286.460, 5.002, 59.299),
+                        HoldDirection(50.042, -8.998, -134.778, joy_dir=Vec2(-1, -1)),
                     ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to main area",
-                    target=Vec3(50.042, -8.998, -134.778),
-                    joy_dir=Vec2(-1, -1),
                 ),
                 SeqAwaitLostControl(name="Eavesdrop"),
                 SeqTurboMashUntilIdle(name="Eavesdrop"),
@@ -419,42 +346,20 @@ class IntroZenithAcademy(SeqList):
                     ),
                 ),
                 SeqMove(
-                    name="Move to main area",
+                    name="Move to south area",
                     coords=[
                         Vec3(94.014, -11.998, -133.488),
                         Vec3(93.947, -11.998, -129.872),
                         Vec3(80.214, -7.998, -129.872),
                         Vec3(73.745, -7.998, -132.473),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to main area",
-                    target=Vec3(295.354, 5.002, 64.422),
-                    joy_dir=Vec2(-1, -1),
-                ),
-                SeqMove(
-                    name="Move to main area",
-                    coords=[
+                        HoldDirection(295.354, 5.002, 64.422, joy_dir=Vec2(-1, -1)),
                         Vec3(292.408, 5.002, 62.065),
                         Vec3(286.460, 5.002, 59.299),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to main area",
-                    target=Vec3(49.334, -8.998, -135.486),
-                    joy_dir=Vec2(-1, -1),
-                ),
-                SeqMove(
-                    name="Move to south area",
-                    coords=[
+                        HoldDirection(49.334, -8.998, -135.486, joy_dir=Vec2(-1, -1)),
                         Vec3(33.021, -8.932, -151.461),
                         Vec3(33.021, -8.990, -176.434),
+                        HoldDirection(273.463, 5.002, 48.071, joy_dir=Vec2(0, -1)),
                     ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to south area",
-                    target=Vec3(273.463, 5.002, 48.071),
-                    joy_dir=Vec2(0, -1),
                 ),
                 SeqHoldDirectionUntilLostControl(
                     name="I smell cookies",
@@ -463,22 +368,16 @@ class IntroZenithAcademy(SeqList):
                 SeqTurboMashUntilIdle(name="Cookies!!!"),
                 LoomsToCenter("Move to main area"),
                 SeqMove(
-                    name="Move to main area",
+                    name="Move to Moraine",
                     coords=[
                         Vec3(94.014, -11.998, -133.488),
                         Vec3(93.947, -11.998, -129.872),
                         Vec3(80.214, -7.998, -129.872),
                         Vec3(73.745, -7.998, -132.473),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Move to main area",
-                    target=Vec3(295.354, 5.002, 64.422),
-                    joy_dir=Vec2(-1, -1),
-                ),
-                SeqMove(
-                    name="Move to Moraine",
-                    coords=[
+                        HoldDirection(295.354, 5.002, 64.422, joy_dir=Vec2(-1, -1)),
+                        Vec3(292.408, 5.002, 62.065),
+                        Vec3(286.460, 5.002, 59.299),
+                        HoldDirection(49.334, -8.998, -135.486, joy_dir=Vec2(-1, -1)),
                         Vec3(43.613, -8.998, -141.418),
                         Vec3(35.035, -8.998, -141.418),
                         Vec3(32.954, -8.998, -136.402),
