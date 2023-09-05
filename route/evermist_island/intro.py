@@ -1,14 +1,10 @@
 import logging
-from enum import Enum, auto
 
-import imgui
-
-from engine.combat import SeqCombatMash
+from engine.combat import SeqCombatManual
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     InteractMove,
     SeqAwaitLostControl,
-    SeqBase,
     SeqCheckpoint,
     SeqClimb,
     SeqHoldDirectionUntilClose,
@@ -22,6 +18,10 @@ from engine.seq import (
     SeqTurboMashSkipCutsceneUntilIdle,
     SeqTurboMashUntilIdle,
 )
+from memory.player_party_manager import (
+    PlayerPartyCharacter,
+    player_party_manager_handle,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +33,9 @@ class IntroMountainTrail(SeqList):
             children=[
                 SeqTurboMashUntilIdle(name="Wait for control"),
                 SeqLog(name="SYSTEM", text="We have control!"),
-                SeqMove(
-                    name="Move to fight",
+                # TODO: Need to be able to do special ability (mash fails for Zale)
+                SeqCombatManual(
+                    name="Fights",
                     coords=[
                         InteractMove(33.253, 6.002, 20.273),
                         Vec3(37.799, 5.477, 18.084),
@@ -42,12 +43,6 @@ class IntroMountainTrail(SeqList):
                         Vec3(55.897, 6.002, 6.543),
                         InteractMove(56.819, 13.002, 13.466),
                         InteractMove(44.829, 13.010, 25.305),
-                    ],
-                ),
-                # TODO: Need to be able to do special ability (mash fails for Zale)
-                SeqCombatMash(
-                    name="Fight",
-                    coords=[
                         InteractMove(34.500, 13.002, 27.500),
                     ],
                 ),
@@ -100,7 +95,7 @@ class IntroMountainTrail(SeqList):
                     target=Vec3(-87.284, 22.002, 44.522),
                     precision=1.0,
                 ),
-                SeqCombatMash(
+                SeqCombatManual(
                     name="Fight slug",
                     coords=[
                         Vec3(-73.903, 22.002, 34.029),
@@ -195,6 +190,7 @@ class IntroMooncradle(SeqList):
                 SeqMove(
                     name="Move to exit",
                     coords=[
+                        Vec3(31.373, 1.002, 89.671),
                         Vec3(31.471, 1.002, 114.862),
                     ],
                 ),
@@ -264,35 +260,36 @@ class IntroMooncradle(SeqList):
         )
 
 
-class MainCharacter(Enum):
-    NONE = auto()
-    VALERE = auto()
-    ZALE = auto()
-
-
-_selected_char = MainCharacter.NONE
-
-
-def _set_main_char(mc: MainCharacter) -> None:
-    global _selected_char
-    _selected_char = mc
-
-
-class SeqManualSelectCharacter(SeqBase):
-    def execute(self, delta: float) -> bool:
-        imgui.text("MANUAL: Please select the active main character:")
-        if imgui.button("Valere"):
-            _set_main_char(MainCharacter.VALERE)
-            return True
-        if imgui.button("Zale"):
-            _set_main_char(MainCharacter.ZALE)
-            return True
-        return False
-
-
 class SeqIfMainCharacterValere(SeqIf):
     def condition(self) -> bool:
-        return _selected_char == MainCharacter.VALERE
+        leader = player_party_manager_handle().leader_character
+        return leader == PlayerPartyCharacter.Valere
+
+
+class LoomsToCenter(SeqIfMainCharacterValere):
+    def __init__(self, name: str):
+        super().__init__(
+            name,
+            # Valere branch: Go left
+            when_true=SeqMove(
+                name="Valere path",
+                coords=[
+                    Vec3(91.478, -18.998, -156.476),
+                    Vec3(88.309, -18.998, -156.476),
+                    Vec3(88.127, -14.998, -134.674),
+                ],
+            ),
+            # Zale branch: Go right
+            when_false=SeqMove(
+                name="Zale path",
+                coords=[
+                    Vec3(97.745, -18.998, -156.127),
+                    Vec3(100.573, -18.998, -156.149),
+                    Vec3(101.496, -14.998, -142.680),
+                    Vec3(100.851, -14.998, -134.661),
+                ],
+            ),
+        )
 
 
 class IntroZenithAcademy(SeqList):
@@ -300,8 +297,6 @@ class IntroZenithAcademy(SeqList):
         super().__init__(
             name="Mooncradle",
             children=[
-                # TODO: Need to know if we are playing Valere or Zale (this should not be manual)
-                SeqManualSelectCharacter(),
                 SeqIfMainCharacterValere(
                     name="Main Character",
                     # Valere branch: Go left
@@ -329,10 +324,10 @@ class IntroZenithAcademy(SeqList):
                 ),
                 SeqInteract("Sleep"),
                 SeqTurboMashUntilIdle(name="Train with Brugaves"),
-                # TODO: Does this work with Zale as well?
                 SeqMove(
                     name="Leave training area",
                     coords=[
+                        Vec3(-17.700, -13.998, -136.900),
                         InteractMove(-11.000, -14.998, -143.700),
                     ],
                 ),
@@ -373,13 +368,11 @@ class IntroZenithAcademy(SeqList):
                 SeqTurboMashUntilIdle(name="Train with Erlina"),
                 SeqAwaitLostControl(name="Train with Erlina"),
                 SeqTurboMashUntilIdle(name="Sewing"),
+                LoomsToCenter("Move to main area"),
                 SeqMove(
                     name="Move to main area",
                     coords=[
-                        Vec3(91.571, -18.998, -156.374),
-                        Vec3(88.287, -18.998, -156.374),
-                        Vec3(88.123, -14.990, -134.677),
-                        Vec3(94.382, -11.998, -133.426),
+                        Vec3(94.160, -11.998, -133.319),
                         Vec3(94.382, -11.998, -129.766),
                         Vec3(81.351, -7.998, -129.428),
                         Vec3(72.903, -7.998, -133.028),
@@ -468,28 +461,7 @@ class IntroZenithAcademy(SeqList):
                     joy_dir=Vec2(0, -1),
                 ),
                 SeqTurboMashUntilIdle(name="Cookies!!!"),
-                SeqIfMainCharacterValere(
-                    name="Main Character",
-                    # Valere branch: Go left
-                    when_true=SeqMove(
-                        name="Valere path",
-                        coords=[
-                            Vec3(91.478, -18.998, -156.476),
-                            Vec3(88.309, -18.998, -156.476),
-                            Vec3(88.127, -14.998, -134.674),
-                        ],
-                    ),
-                    # Zale branch: Go right
-                    when_false=SeqMove(
-                        name="Zale path",
-                        coords=[
-                            Vec3(97.745, -18.998, -156.127),
-                            Vec3(100.573, -18.998, -156.149),
-                            Vec3(101.496, -14.998, -142.680),
-                            Vec3(100.851, -14.998, -134.661),
-                        ],
-                    ),
-                ),
+                LoomsToCenter("Move to main area"),
                 SeqMove(
                     name="Move to main area",
                     coords=[
