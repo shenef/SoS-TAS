@@ -25,12 +25,12 @@ class TASMenu(Menu):
         self.load_game_checkbox = self.saveslot != 0
         self.run_start_sequence = True
 
-    def init_start_sequence(self):
+    def init_start_sequence(self, saveslot: int):
         # This sequence navigates the main menu into the game
         self.start_game_sequencer = SequencerEngine(
             window=self.window,
             config=self.config_data,
-            root=SoSStartGame(saveslot=self.saveslot),
+            root=SoSStartGame(saveslot=saveslot),
         )
 
     # Override this in subclasses to set the TAS sequence
@@ -41,9 +41,9 @@ class TASMenu(Menu):
             root=SeqLog(name="SYSTEM", text="ERROR, NO TAS SEQUENCE!"),
         )
 
-    def init_saveslot(self):
+    def init_saveslot(self, saveslot: int):
         # Potentially advance the TAS to a particular checkpoint
-        if not self.load_game_checkbox or self.saveslot == 0:
+        if saveslot == 0:
             logger.info("Starting TAS from the beginning")
         elif self.sequencer.advance_to_checkpoint(checkpoint=self.checkpoint):
             logger.info(f"Advanced TAS to checkpoint '{self.checkpoint}'")
@@ -94,10 +94,11 @@ class TASMenu(Menu):
             self.custom_gui()
 
             if imgui.button("Start TAS"):
+                saveslot = self.saveslot if self.load_game_checkbox else 0
                 if self.run_start_sequence:
-                    self.init_start_sequence()
+                    self.init_start_sequence(saveslot)
                 self.init_TAS()
-                self.init_saveslot()
+                self.init_saveslot(saveslot)
                 self.tas_is_running = True
 
             if not top_level and imgui.button("Back"):
