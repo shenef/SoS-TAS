@@ -52,7 +52,7 @@ class PlayerPartyManager:
     def _read_position(self):
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
-            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x90, 0x84])
+            ptr = self.memory.follow_pointer(self.base, [self.leader, 0x30, 0x48, 0x1C])
             if ptr:
                 x = self.memory.read_float(ptr + 0x0)
                 y = self.memory.read_float(ptr + 0x4)
