@@ -47,9 +47,9 @@ class BattleMenu(Menu):
                 for idx, enemy in enumerate(combat_manager.enemies):
                     imgui.text(f"Enemy {idx}:")
                     imgui.text(f"HP: {enemy.current_hp}")
-                    imgui.text(f"Next action: {enemy.turns_to_action}")
                     targeted = enemy.unique_id == combat_manager.selected_target_guid
                     imgui.text(f"Targeted: {targeted}")
+                    imgui.text(f"Next action: {enemy.turns_to_action}")
                     imgui.text(f"Locks: {enemy.total_spell_locks}")
 
                     for lock in enemy.spell_locks:

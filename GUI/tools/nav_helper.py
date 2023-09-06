@@ -62,46 +62,49 @@ class NavHelper(Menu):
         imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
 
         GUI_helper.add_spacer()
-        imgui.text("Boat Coordinates")
-        imgui.text(f"x: {boat_pos.x:.3f}")
-        imgui.text(f"y: {boat_pos.y:.3f}")
-        imgui.text(f"z: {boat_pos.z:.3f}")
-        imgui.text(f"r1: {boat_manager.rotation_x}")
-        imgui.text(f"r2: {boat_manager.rotation_y}")
-        imgui.text(f"speed: {boat_manager.speed:.3f}")
-        GUI_helper.add_spacer()
-        imgui.text("GameObject Coordinates")
-        imgui.text(f"x: {gameobject_pos.x:.3f}")
-        imgui.text(f"y: {gameobject_pos.y:.3f}")
-        imgui.text(f"z: {gameobject_pos.z:.3f}")
-        GUI_helper.add_spacer()
-        imgui.text("Player Coordinates")
-        imgui.text(f"x: {player_pos.x:.3f}")
-        imgui.text(f"y: {player_pos.y:.3f}")
-        imgui.text(f"z: {player_pos.z:.3f}")
-        if imgui.button("Set as target"):
-            self.target = player_pos
-        if imgui.button("Copy to clipboard##1"):
-            imgui.core.set_clipboard_text(
-                f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
+
+        ui_player_coordinates, visible = imgui.collapsing_header(
+            "Player Coordinates", True, flags=32
+        )
+        if ui_player_coordinates and visible:
+            imgui.text(f"x: {player_pos.x:.3f}")
+            imgui.text(f"y: {player_pos.y:.3f}")
+            imgui.text(f"z: {player_pos.z:.3f}")
+            if imgui.button("Set as target"):
+                self.target = player_pos
+            if imgui.button("Copy to clipboard##1"):
+                imgui.core.set_clipboard_text(
+                    f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
+                )
+            GUI_helper.add_spacings(2)
+
+        ui_target_coordinates, visible = imgui.collapsing_header(
+            "Target Coordinates", True, flags=32
+        )
+        if ui_target_coordinates and visible:
+            _, self.target.x = imgui.input_float(
+                label="x", value=self.target.x, step=0.001
+            )
+            _, self.target.y = imgui.input_float(
+                label="y", value=self.target.y, step=0.001
+            )
+            _, self.target.z = imgui.input_float(
+                label="z", value=self.target.z, step=0.001
             )
 
-        distance = Vec3.dist(self.target, player_pos)
-        imgui.text(f"Distance to target: {distance:.3f}\n")
+            distance = Vec3.dist(self.target, player_pos)
+            imgui.text(f"Distance to target: {distance:.3f}\n")
+
+            if imgui.button("Copy to clipboard##2"):
+                imgui.core.set_clipboard_text(
+                    f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
+                )
 
         GUI_helper.add_spacer()
 
-        imgui.text("Target Coordinates:")
-        _, self.target.x = imgui.input_float(label="x", value=self.target.x, step=0.001)
-        _, self.target.y = imgui.input_float(label="y", value=self.target.y, step=0.001)
-        _, self.target.z = imgui.input_float(label="z", value=self.target.z, step=0.001)
-
-        if imgui.button("Copy to clipboard##2"):
-            imgui.core.set_clipboard_text(
-                f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
-            )
-
-        GUI_helper.add_spacer()
+        _, self.precision = imgui.slider_float("Precision", self.precision, 0.001, 1.0)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("Set the navigation precision\nCTRL+Click to edit")
 
         if imgui.button("Navigate to target"):
             self.moving = True
@@ -110,12 +113,6 @@ class NavHelper(Menu):
 
         imgui.same_line()
         _, self.is_run = imgui.checkbox("Run", self.is_run)
-
-        _, self.precision = imgui.slider_float("Precision", self.precision, 0.001, 1.0)
-        if imgui.is_item_hovered():
-            imgui.set_tooltip("Set the navigation precision\nCTRL+Click to edit")
-
-        GUI_helper.add_spacer()
 
         if imgui.button("Stop (timed)"):
             self.moving = False
@@ -140,6 +137,26 @@ class NavHelper(Menu):
             if Vec3.is_close(player_pos, self.target_locked, precision=self.precision):
                 self.moving = False
                 sos_ctrl().set_neutral()
+
+        GUI_helper.add_spacer()
+
+        ui_gameobject_coordinates, visible = imgui.collapsing_header(
+            "GameObject Coordinates", True
+        )
+        if ui_gameobject_coordinates and visible:
+            imgui.text(f"x: {gameobject_pos.x:.3f}")
+            imgui.text(f"y: {gameobject_pos.y:.3f}")
+            imgui.text(f"z: {gameobject_pos.z:.3f}")
+            GUI_helper.add_spacings(2)
+
+        ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True)
+        if ui_boat_coordinates and visible:
+            imgui.text(f"x: {boat_pos.x:.3f}")
+            imgui.text(f"y: {boat_pos.y:.3f}")
+            imgui.text(f"z: {boat_pos.z:.3f}")
+            imgui.text(f"r1: {boat_manager.rotation_x}")
+            imgui.text(f"r2: {boat_manager.rotation_y}")
+            imgui.text(f"speed: {boat_manager.speed:.3f}")
 
         ret = False
         if not top_level and imgui.button("Back"):

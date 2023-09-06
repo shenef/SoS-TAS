@@ -110,7 +110,7 @@ class CombatManager:
                         self._read_skill_commands()
                     self._read_live_mana()
 
-        except Exception:
+        except Exception as e:  # noqa: F841
             # logger.debug(f"Combat Manager Reloading - {type(e)}")
             self.__init__()
 

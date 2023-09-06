@@ -47,7 +47,7 @@ class PlayerPartyManager:
                 self._read_gameobject_position()
                 self._read_movement_state()
                 self._read_leader_character()
-        # except Exception as _e:
+        # except Exception as _e:  # noqa: F841
         #     # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
         #     self.__init__()
 

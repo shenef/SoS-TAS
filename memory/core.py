@@ -72,7 +72,7 @@ class SoSMemory:
                 self.get_image()
                 self._set_ready_for_updates()
 
-        except Exception:
+        except Exception as _e:  # noqa: F841
             # logger.debug(f"Memory Core Reloading {type(_e)}")
             self.__init__()
 

@@ -123,3 +123,8 @@ class GUI_helper:
         imgui.spacing()
         imgui.separator()
         imgui.spacing()
+
+    def add_spacings(n):
+        """Adds multiple imgui.spacing() at once."""
+        for _ in range(n):
+            imgui.spacing()
