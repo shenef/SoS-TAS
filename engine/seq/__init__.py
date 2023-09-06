@@ -3,13 +3,17 @@ from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.interact import (
     SeqBracelet,
     SeqInteract,
+    SeqTurboMashSkipCutsceneUntilIdle,
     SeqTurboMashUntilIdle,
 )
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
+    HoldDirection,
     InteractMove,
+    SeqAwaitLostControl,
     SeqClimb,
     SeqHoldDirectionUntilClose,
+    SeqHoldDirectionUntilLostControl,
     SeqHoldInPlace,
     SeqManualUntilClose,
     SeqMove,
@@ -34,10 +38,14 @@ __all__ = [
     "SeqHoldInPlace",
     "SeqManualUntilClose",
     "InteractMove",
+    "HoldDirection",
     "SeqMove",
     "SeqClimb",
+    "SeqHoldDirectionUntilLostControl",
+    "SeqAwaitLostControl",
     "SeqHoldDirectionUntilClose",
     "SeqTurboMashUntilIdle",
+    "SeqTurboMashSkipCutsceneUntilIdle",
     "SeqInteract",
     "SeqBracelet",
 ]
