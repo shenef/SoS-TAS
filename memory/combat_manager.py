@@ -351,7 +351,7 @@ class CombatManager:
 
                     mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
 
-                    current_mp = self.memory.read_int(mp_text_field + 0x54)
+                    current_mp = self.memory.read_int(mp_text_field + 0x58)
 
                     # if the current player is selected, set it to the main combat manager state
                     # this will help us prevent scanning lists later on
