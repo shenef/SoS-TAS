@@ -41,7 +41,7 @@ class LevelManager:
                     self._read_loading()
                     self._read_current_level()
                     self._read_main_scene_name()
-            except Exception:
+            except Exception as _e:  # noqa: F841
                 # logger.debug(f"Level Manager Reloading {type(_e)}")
                 self.__init__()
 
