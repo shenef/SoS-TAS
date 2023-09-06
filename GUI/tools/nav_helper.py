@@ -72,7 +72,7 @@ class NavHelper(Menu):
             imgui.text(f"z: {player_pos.z:.3f}")
             if imgui.button("Set as target"):
                 self.target = player_pos
-            if imgui.button("Copy to clipboard"):
+            if imgui.button("Copy to clipboard##1"):
                 imgui.core.set_clipboard_text(
                     f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
                 )
@@ -95,7 +95,7 @@ class NavHelper(Menu):
             distance = Vec3.dist(self.target, player_pos)
             imgui.text(f"Distance to target: {distance:.3f}\n")
 
-            if imgui.button("Copy to clipboard"):
+            if imgui.button("Copy to clipboard##2"):
                 imgui.core.set_clipboard_text(
                     f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
                 )

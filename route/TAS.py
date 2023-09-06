@@ -6,6 +6,7 @@ from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
 from GUI.menu import Menu
 from route.demo import DemoBrisk, DemoPlateau, DemoWizardLab, DemoWorldBriskToTower
+from route.evermist_island import EvermistIsland
 from route.start import SoSStartGame
 
 logger = logging.getLogger("SYSTEM")
@@ -24,12 +25,12 @@ class TASMenu(Menu):
         self.load_game_checkbox = self.saveslot != 0
         self.run_start_sequence = True
 
-    def init_start_sequence(self):
+    def init_start_sequence(self, saveslot: int):
         # This sequence navigates the main menu into the game
         self.start_game_sequencer = SequencerEngine(
             window=self.window,
             config=self.config_data,
-            root=SoSStartGame(saveslot=self.saveslot),
+            root=SoSStartGame(saveslot=saveslot),
         )
 
     # Override this in subclasses to set the TAS sequence
@@ -40,9 +41,9 @@ class TASMenu(Menu):
             root=SeqLog(name="SYSTEM", text="ERROR, NO TAS SEQUENCE!"),
         )
 
-    def init_saveslot(self):
+    def init_saveslot(self, saveslot: int):
         # Potentially advance the TAS to a particular checkpoint
-        if not self.load_game_checkbox or self.saveslot == 0:
+        if saveslot == 0:
             logger.info("Starting TAS from the beginning")
         elif self.sequencer.advance_to_checkpoint(checkpoint=self.checkpoint):
             logger.info(f"Advanced TAS to checkpoint '{self.checkpoint}'")
@@ -93,10 +94,11 @@ class TASMenu(Menu):
             self.custom_gui()
 
             if imgui.button("Start TAS"):
+                saveslot = self.saveslot if self.load_game_checkbox else 0
                 if self.run_start_sequence:
-                    self.init_start_sequence()
+                    self.init_start_sequence(saveslot)
                 self.init_TAS()
-                self.init_saveslot()
+                self.init_saveslot(saveslot)
                 self.tas_is_running = True
 
             if not top_level and imgui.button("Back"):
@@ -107,20 +109,45 @@ class TASMenu(Menu):
 
 class SoSDemoAnyPercentMenu(TASMenu):
     def __init__(self, window: Window, config_data: dict) -> None:
-        super().__init__(window, config_data, title="Sea of Stars Any%")
+        super().__init__(window, config_data, title="Sea of Stars Demo Any%")
 
     # Override
     def init_TAS(self):
         # This is the root node of the TAS
         TAS_root = SeqList(
             name="Sea of Stars Demo Any%",
-            # func=setup_memory,
             children=[
                 DemoPlateau(),
                 DemoBrisk(),
                 DemoWorldBriskToTower(),
                 DemoWizardLab(),
                 SeqLog(name="SYSTEM", text="SoS Demo Any% TAS done!"),
+            ],
+        )
+        # This initializes the sequencer engine that will execute the TAS
+        self.sequencer = SequencerEngine(
+            window=self.window, config=self.config_data, root=TAS_root
+        )
+
+    def custom_gui(self):
+        # Override to inject some custom parameters to the run
+        imgui.text_wrapped(
+            "Warning! The Demo TAS probably won't work, due to memory layout changes compared to the full game."  # noqa E501
+        )
+
+
+class SoSAnyPercentMenu(TASMenu):
+    def __init__(self, window: Window, config_data: dict) -> None:
+        super().__init__(window, config_data, title="Sea of Stars Any%")
+
+    # Override
+    def init_TAS(self):
+        # This is the root node of the TAS
+        TAS_root = SeqList(
+            name="Sea of Stars Any%",
+            children=[
+                EvermistIsland(),
+                SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
