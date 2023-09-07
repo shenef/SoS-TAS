@@ -46,7 +46,7 @@ class SoSConsideration(Consideration):
     # TODO: Actually calculate appraisals and dont just use
     # physical attack. This will require parsing all of the appraisals
     # for the value and returning an Action
-    def calculate_actions(self) -> [Action]:
+    def calculate_actions(self) -> list[Action]:
         # if the actor isn't enabled, return no actions
         actions = []
         for appraisal in self.appraisals:

@@ -1,5 +1,6 @@
 from typing import Self
 
+from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 
 
@@ -17,6 +18,9 @@ class Consideration:
     def calculate(self) -> Self:
         self.value = 0
         return self
+
+    def calculate_actions(self) -> list[Action]:
+        return []
 
     # execute on selecting the consideration to perform the appraisal
     def execute(self):
