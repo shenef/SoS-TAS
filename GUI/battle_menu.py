@@ -46,6 +46,10 @@ class BattleMenu(Menu):
             if combat_manager.enemies is not []:
                 for idx, enemy in enumerate(combat_manager.enemies):
                     imgui.text(f"Enemy {idx}:")
+                    if not enemy.name:
+                        imgui.input_text(label=f"guid_enemy_{idx}", value=enemy.guid)
+                    else:
+                        imgui.text(f"Enemy Name: {enemy.name}")
                     imgui.text(f"HP: {enemy.current_hp}")
                     targeted = enemy.unique_id == combat_manager.selected_target_guid
                     imgui.text(f"Targeted: {targeted}")

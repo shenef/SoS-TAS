@@ -2,6 +2,7 @@ import contextlib
 from enum import Enum
 
 from memory.core import mem_handle
+from memory.mappers.enemy_name import EnemyName
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
@@ -34,6 +35,8 @@ class CombatEnemyTarget:
     def __init__(self):
         self.max_hp = None
         self.current_hp = None
+        self.guid = None
+        self.name = None
         self.casting_data = CombatCastingData()
         self.turns_to_action = None
         self.unique_id = None
@@ -343,7 +346,7 @@ class CombatManager:
                     # This check was added due to the pointer not falling off in time, referencing
                     # an enemy that just died
                     try:
-                        selected_target_guid = self.memory.read_guid(
+                        selected_target_guid = self.memory.read_uuid(
                             target_unique_id_base + 0x14
                         )
                     except Exception:
@@ -432,7 +435,11 @@ class CombatManager:
                     unique_id = self.memory.follow_pointer(
                         items, [address, 0x80, 0xF8, 0xF0, 0x18, 0x0]
                     )
-                    enemy_unique_id = self.memory.read_guid(unique_id + 0x14)
+                    guid = self.memory.follow_pointer(
+                        items, [address, 0x80, 0x108, 0x18, 0x0]
+                    )
+                    enemy_guid = self.memory.read_guid(guid + 0x14)
+                    enemy_unique_id = self.memory.read_uuid(unique_id + 0x14)
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
@@ -464,6 +471,8 @@ class CombatManager:
                         spell_locks = []
 
                     enemy = CombatEnemyTarget()
+                    enemy.guid = enemy_guid.replace("\x00", "")
+                    enemy.name = EnemyName().get(enemy.guid)
                     enemy.current_hp = current_hp
                     enemy.unique_id = enemy_unique_id
                     enemy.turns_to_action = turns_to_action
