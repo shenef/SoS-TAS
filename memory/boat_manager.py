@@ -1,4 +1,4 @@
-from engine.mathlib import Vec3
+from engine.mathlib import Quaternion, Vec3
 from memory.core import mem_handle
 
 
@@ -7,9 +7,9 @@ class BoatManager:
         self.memory = mem_handle()
         self.base = None
         self.position = Vec3(None, None, None)
-        self.rotation_x = None
-        self.rotation_y = None
+        self.rotation = Quaternion(None, None, None, None)
         self.speed = 0
+        self.max_speed = 0
 
     def update(self):
         if self.memory.ready_for_updates:
@@ -54,24 +54,26 @@ class BoatManager:
             ptr = self.memory.follow_pointer(self.base, [0x40, 0x60, 0x0])
             if ptr:
                 # not sure what these are called, but the values are here.
-                x = self.memory.read_float(ptr + 0x48)
-                y = self.memory.read_float(ptr + 0x50)
+                x = self.memory.read_float(ptr + 0x44)
+                y = self.memory.read_float(ptr + 0x48)
+                z = self.memory.read_float(ptr + 0x4C)
+                w = self.memory.read_float(ptr + 0x50)
 
-                self.rotation_x = x
-                self.rotation_y = y
+                self.rotation = Quaternion(x, y, z, w)
                 return
 
-        self.rotation_x = None
-        self.rotation_y = None
+        self.rotation = Quaternion(None, None, None, None)
 
     def _read_speed(self):
         if self.memory.ready_for_updates:
             # (BoatInstance) k__BackingField -> boatSnapRotation -> pitchRollLocalRotation
             ptr = self.memory.follow_pointer(self.base, [0x40, 0x0])
             if ptr:
-                # not sure what these are called, but the values are here.
+                #
+                max_speed = self.memory.read_float(ptr + 0x78)
                 speed = self.memory.read_float(ptr + 0x134)
 
+                self.max_speed = max_speed
                 self.speed = speed
                 return
 
