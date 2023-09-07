@@ -82,37 +82,35 @@ class CombatManager:
         self.selected_target_guid = None
 
     def update(self):
-        try:
-            if self.memory.ready_for_updates:
-                if self.base is None or self.fields_base is None:
-                    self.encounter_done = True
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "CombatManager"
-                    )
+        # try:
+        if self.memory.ready_for_updates:
+            if self.base is None or self.fields_base is None:
+                self.encounter_done = True
+                singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
 
-                    if singleton_ptr is None:
-                        return
-                    self.base = self.memory.get_class_base(singleton_ptr)
-                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.current_encounter_base = self.memory.get_field(
-                        self.fields_base, "currentEncounter"
-                    )
+                if singleton_ptr is None:
+                    return
+                self.base = self.memory.get_class_base(singleton_ptr)
+                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                self.current_encounter_base = self.memory.get_field(
+                    self.fields_base, "currentEncounter"
+                )
 
-                else:
-                    self._read_encounter_done()
-                    if self.encounter_done is True:
-                        return
+            else:
+                self._read_encounter_done()
+                if self.encounter_done is True:
+                    return
 
-                    self._read_players()
-                    self._read_enemies()
-                    self._read_battle_commands()
-                    if not self.battle_command_has_focus:
-                        self._read_skill_commands()
-                    self._read_live_mana()
+                self._read_players()
+                self._read_enemies()
+                self._read_battle_commands()
+                if not self.battle_command_has_focus:
+                    self._read_skill_commands()
+                self._read_live_mana()
 
-        except Exception as e:  # noqa: F841
-            # logger.debug(f"Combat Manager Reloading - {type(e)}")
-            self.__init__()
+    # except Exception as e:  # noqa: F841
+    #     # logger.debug(f"Combat Manager Reloading - {type(e)}")
+    #     self.__init__()
 
     # Helper function for updating itself and ensuring an internal function doesn't run without
     # the base. This is different than other modules as an attempt to improve performance of the
@@ -244,9 +242,13 @@ class CombatManager:
     def _read_players(self):
         if self._should_update():
             selected_character = PlayerPartyCharacter.NONE
-            player_panels_list = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
-            )
+            try:
+                player_panels_list = self.memory.follow_pointer(
+                    self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
+                )
+            except Exception:
+                self.players = []
+                return
 
             if player_panels_list == self.NULL_POINTER:
                 self.players = []
