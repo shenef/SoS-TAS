@@ -36,8 +36,9 @@ class BattleMenu(Menu):
                 f"Skill Command has focus: {combat_manager.skill_command_has_focus}"
             )
             imgui.text(f"Skill Command Index: {combat_manager.skill_command_index}")
-            imgui.text(f"Small Live Mana: {combat_manager.small_live_mana}")
-            imgui.text(f"Big Live Mana: {combat_manager.big_live_mana}")
+            imgui.text(f"Live Mana Small: {combat_manager.small_live_mana} |")
+            imgui.same_line()
+            imgui.text(f"Big: {combat_manager.big_live_mana}")
             imgui.text(f"Selected Character: {combat_manager.selected_character.value}")
             imgui.separator()
 
@@ -45,9 +46,25 @@ class BattleMenu(Menu):
 
             if combat_manager.enemies is not []:
                 for idx, enemy in enumerate(combat_manager.enemies):
-                    imgui.text(f"Enemy {idx}:")
-                    imgui.text(f"HP: {enemy.current_hp}")
+                    if not enemy.name:
+                        imgui.text(f"({idx}) guid")
+                        imgui.same_line()
+                        imgui.input_text("", value=enemy.guid)
+                        if imgui.is_item_hovered():
+                            imgui.set_tooltip(
+                                "Enter this data in memory > mappers > enemy_name.py"
+                            )
+                    else:
+                        imgui.text(f"{enemy.name} ({idx}):")
+                    imgui.text(f"HP: {enemy.current_hp}/{enemy.max_hp}")
                     targeted = enemy.unique_id == combat_manager.selected_target_guid
+                    imgui.text(f"pATK: {enemy.physical_attack} |")
+                    imgui.same_line()
+                    imgui.text(f"mATK: {enemy.magic_attack}")
+                    imgui.text(f"pDEF: {enemy.physical_defense} |")
+                    imgui.same_line()
+                    imgui.text(f"mDEF: {enemy.magic_defense}")
+                    imgui.text(f"Speed: {enemy.speed}")
                     imgui.text(f"Targeted: {targeted}")
                     imgui.text(f"Next action: {enemy.turns_to_action}")
                     imgui.text(f"Locks: {enemy.total_spell_locks}")

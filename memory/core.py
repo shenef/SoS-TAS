@@ -145,12 +145,23 @@ class SoSMemory:
     def read_short(self, ptr):
         return self.pm.read_short(ptr)
 
-    # Reads the garbled string utf-8 field provided by Sea Of Stars
+    # Reads the garbled uuid string utf-8 field provided by Sea Of Stars
     # For example, for "TitleScreen" you may see:
+    # this returns as example: 550e8400-e29b-41d4-a716-446655440000
     # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
     # To "fix" this string, you will need to run value.replace("\x00", "")
-    def read_guid(self, ptr):
+    def read_uuid(self, ptr):
         string_bytes = self.pm.read_bytes(ptr, 71)
+
+        return codecs.decode(string_bytes, "UTF-8")
+
+    # Reads the garbled guid string utf-8 field provided by Sea Of Stars
+    # For example, for "TitleScreen" you may see:
+    # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
+    # This returns as example: e6ac627711e4ee44da103c47d1cd5736
+    # To "fix" this string, you will need to run value.replace("\x00", "")
+    def read_guid(self, ptr):
+        string_bytes = self.pm.read_bytes(ptr, 64)
 
         return codecs.decode(string_bytes, "UTF-8")
 

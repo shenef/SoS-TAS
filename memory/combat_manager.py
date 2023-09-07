@@ -2,6 +2,7 @@ import contextlib
 from enum import Enum
 
 from memory.core import mem_handle
+from memory.mappers.enemy_name import EnemyName
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
 
@@ -34,6 +35,13 @@ class CombatEnemyTarget:
     def __init__(self):
         self.max_hp = None
         self.current_hp = None
+        self.physical_attack = None
+        self.physical_defense = None
+        self.magic_attack = None
+        self.magic_defense = None
+        self.speed = None
+        self.guid = None
+        self.name = None
         self.casting_data = CombatCastingData()
         self.turns_to_action = None
         self.unique_id = None
@@ -347,7 +355,7 @@ class CombatManager:
                     # This check was added due to the pointer not falling off in time, referencing
                     # an enemy that just died
                     try:
-                        selected_target_guid = self.memory.read_guid(
+                        selected_target_guid = self.memory.read_uuid(
                             target_unique_id_base + 0x14
                         )
                     except Exception:
@@ -436,7 +444,19 @@ class CombatManager:
                     unique_id = self.memory.follow_pointer(
                         items, [address, 0x80, 0xF8, 0xF0, 0x18, 0x0]
                     )
-                    enemy_unique_id = self.memory.read_guid(unique_id + 0x14)
+                    enemy_data = self.memory.follow_pointer(
+                        items, [address, 0x80, 0x108, 0x0]
+                    )
+
+                    guid = self.memory.follow_pointer(enemy_data, [0x18, 0x0])
+                    max_hp = self.memory.read_int(enemy_data + 0x20)
+                    speed = self.memory.read_int(enemy_data + 0x24)
+                    physical_attack = self.memory.read_int(enemy_data + 0x2C)
+                    physical_defense = self.memory.read_int(enemy_data + 0x28)
+                    magic_attack = self.memory.read_int(enemy_data + 0x30)
+                    magic_defense = self.memory.read_int(enemy_data + 0x34)
+                    enemy_guid = self.memory.read_guid(guid + 0x14)
+                    enemy_unique_id = self.memory.read_uuid(unique_id + 0x14)
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
@@ -468,7 +488,15 @@ class CombatManager:
                         spell_locks = []
 
                     enemy = CombatEnemyTarget()
+                    enemy.guid = enemy_guid.replace("\x00", "")
+                    enemy.name = EnemyName().get(enemy.guid)
                     enemy.current_hp = current_hp
+                    enemy.max_hp = max_hp
+                    enemy.physical_attack = physical_attack
+                    enemy.physical_defense = physical_defense
+                    enemy.magic_attack = magic_attack
+                    enemy.magic_defense = magic_defense
+                    enemy.speed = speed
                     enemy.unique_id = enemy_unique_id
                     enemy.turns_to_action = turns_to_action
                     enemy.total_spell_locks = total_spell_locks
