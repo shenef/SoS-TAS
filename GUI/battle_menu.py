@@ -50,8 +50,13 @@ class BattleMenu(Menu):
                         imgui.input_text(label=f"guid_enemy_{idx}", value=enemy.guid)
                     else:
                         imgui.text(f"Enemy Name: {enemy.name}")
-                    imgui.text(f"HP: {enemy.current_hp}")
+                    imgui.text(f"HP: {enemy.current_hp}/{enemy.max_hp}")
                     targeted = enemy.unique_id == combat_manager.selected_target_guid
+                    imgui.text(f"pATK: {enemy.physical_attack}")
+                    imgui.text(f"mATK: {enemy.magic_attack}")
+                    imgui.text(f"pDEF: {enemy.physical_defense}")
+                    imgui.text(f"mDEF: {enemy.magic_defense}")
+                    imgui.text(f"Speed: {enemy.speed}")
                     imgui.text(f"Targeted: {targeted}")
                     imgui.text(f"Next action: {enemy.turns_to_action}")
                     imgui.text(f"Locks: {enemy.total_spell_locks}")
