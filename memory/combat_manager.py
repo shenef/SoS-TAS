@@ -244,9 +244,13 @@ class CombatManager:
     def _read_players(self):
         if self._should_update():
             selected_character = PlayerPartyCharacter.NONE
-            player_panels_list = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
-            )
+            try:
+                player_panels_list = self.memory.follow_pointer(
+                    self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
+                )
+            except Exception:
+                self.players = []
+                return
 
             if player_panels_list == self.NULL_POINTER:
                 self.players = []
