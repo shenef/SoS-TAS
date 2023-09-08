@@ -16,8 +16,8 @@ class TitleCursorPosition(Enum):
 
 class CharacterSelectButton:
     def __init__(self, character: PlayerPartyCharacter, selected: bool):
-        self.character = character
-        self.selected = selected
+        self.character = PlayerPartyCharacter.NONE
+        self.selected = False
 
 
 class TitleSequenceManager:
