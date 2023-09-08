@@ -276,3 +276,11 @@ class Vec3:
 
     def __repr__(self) -> str:
         return f"[ {self.x:.4f}, {self.y:.4f}, {self.z:.4f} ]"
+
+
+class Quaternion:
+    def __init__(self, x: float, y: float, z: float, w: float) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w

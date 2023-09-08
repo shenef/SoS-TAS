@@ -4,7 +4,7 @@ import time
 import imgui
 
 from control import sos_ctrl
-from engine.mathlib import Vec2, Vec3
+from engine.mathlib import Quaternion, Vec2, Vec3
 from engine.seq.move import move_to
 from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
@@ -52,11 +52,6 @@ class NavHelper(Menu):
             player_party_manager.gameobject_position.x or 0,
             player_party_manager.gameobject_position.y or 0,
             player_party_manager.gameobject_position.z or 0,
-        )
-        boat_pos = Vec3(
-            boat_manager.position.x or 0,
-            boat_manager.position.y or 0,
-            boat_manager.position.z or 0,
         )
 
         imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
@@ -150,13 +145,26 @@ class NavHelper(Menu):
             GUI_helper.add_spacings(2)
 
         ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True)
+        boat_pos = Vec3(
+            boat_manager.position.x or 0,
+            boat_manager.position.y or 0,
+            boat_manager.position.z or 0,
+        )
+        boat_rotation = Quaternion(
+            boat_manager.rotation.x or 0,
+            boat_manager.rotation.y or 0,
+            boat_manager.rotation.z or 0,
+            boat_manager.rotation.w or 0,
+        )
         if ui_boat_coordinates and visible:
             imgui.text(f"x: {boat_pos.x:.3f}")
             imgui.text(f"y: {boat_pos.y:.3f}")
             imgui.text(f"z: {boat_pos.z:.3f}")
-            imgui.text(f"r1: {boat_manager.rotation_x}")
-            imgui.text(f"r2: {boat_manager.rotation_y}")
-            imgui.text(f"speed: {boat_manager.speed:.3f}")
+            imgui.text(f"Rot x: {boat_rotation.x:.3f}")
+            imgui.text(f"Rot y: {boat_rotation.y:.3f}")
+            imgui.text(f"Rot z: {boat_rotation.z:.3f}")
+            imgui.text(f"Rot w: {boat_rotation.w:.3f}")
+            imgui.text(f"speed: {boat_manager.speed:.3f}/{boat_manager.max_speed:.3f}")
 
         ret = False
         if not top_level and imgui.button("Back"):
