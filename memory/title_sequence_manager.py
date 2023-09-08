@@ -41,46 +41,46 @@ class TitleSequenceManager:
         )
 
     def update(self):
-        # try:
-        if self.memory.ready_for_updates:
-            if self.base is None or self.fields_base is None:
-                singleton_ptr = self.memory.get_singleton_by_class_name(
-                    "TitleSequenceManager"
-                )
+        try:
+            if self.memory.ready_for_updates:
+                if self.base is None or self.fields_base is None:
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "TitleSequenceManager"
+                    )
 
-                if singleton_ptr is None:
-                    return
+                    if singleton_ptr is None:
+                        return
 
-                self.base = self.memory.get_class_base(singleton_ptr)
-                if self.base == 0x0:
-                    return
+                    self.base = self.memory.get_class_base(singleton_ptr)
+                    if self.base == 0x0:
+                        return
 
-                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                self.title_screen = self.memory.get_field(
-                    self.fields_base, "titleScreen"
-                )
-                self.character_selection_screen = self.memory.get_field(
-                    self.fields_base, "characterSelectionScreen"
-                )
-            else:
-                # Update fields
-                self.title_position_set = False
-                self._read_load_save_done()
-                self._read_new_game_characters()
-                self._read_pressed_start()
-                self._read_continue_selected()
-                self._read_new_game_selected()
-                self._read_new_game_plus_selected()
-                self._read_load_game_selected()
-                self._read_options_selected()
-                self._read_quit_selected()
+                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                    self.title_screen = self.memory.get_field(
+                        self.fields_base, "titleScreen"
+                    )
+                    self.character_selection_screen = self.memory.get_field(
+                        self.fields_base, "characterSelectionScreen"
+                    )
+                else:
+                    # Update fields
+                    self.title_position_set = False
+                    self._read_load_save_done()
+                    self._read_new_game_characters()
+                    self._read_pressed_start()
+                    self._read_continue_selected()
+                    self._read_new_game_selected()
+                    self._read_new_game_plus_selected()
+                    self._read_load_game_selected()
+                    self._read_options_selected()
+                    self._read_quit_selected()
 
-            if not self.title_position_set:
-                self.title_cursor_position = TitleCursorPosition.NONE
+                if not self.title_position_set:
+                    self.title_cursor_position = TitleCursorPosition.NONE
 
-    # except Exception as _e:  # noqa: F841
-    #     # logger.debug(f"Title Sequence Manager Reloading {type(_e)}")
-    #     self.__init__()
+        except Exception as _e:  # noqa: F841
+            # logger.debug(f"Title Sequence Manager Reloading {type(_e)}")
+            self.__init__()
 
     def _read_new_game_characters(self):
         try:
