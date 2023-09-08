@@ -5,6 +5,7 @@ import imgui
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
 from GUI.menu import Menu
+from route.battle_test import BattleTest
 from route.demo import DemoBrisk, DemoPlateau, DemoWizardLab, DemoWorldBriskToTower
 from route.evermist_island import EvermistIsland
 from route.start import SoSStartGame
@@ -148,6 +149,26 @@ class SoSAnyPercentMenu(TASMenu):
             children=[
                 EvermistIsland(),
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
+            ],
+        )
+        # This initializes the sequencer engine that will execute the TAS
+        self.sequencer = SequencerEngine(
+            window=self.window, config=self.config_data, root=TAS_root
+        )
+
+
+class SoSBattleTestMenu(TASMenu):
+    def __init__(self, window: Window, config_data: dict) -> None:
+        super().__init__(window, config_data, title="Battle Test")
+
+    # Override
+    def init_TAS(self):
+        # This is the root node of the TAS
+        TAS_root = SeqList(
+            name="BattleTest",
+            children=[
+                BattleTest(),
+                SeqLog(name="SYSTEM", text="BattleTest Done!"),
             ],
         )
         # This initializes the sequencer engine that will execute the TAS

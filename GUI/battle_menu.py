@@ -83,6 +83,7 @@ class BattleMenu(Menu):
                     imgui.text(f"{player.character.value}:")
                     imgui.text(f"HP: {player.current_hp}")
                     imgui.text(f"MP: {player.current_mp}")
+                    imgui.text(f"Dead: {player.dead}")
                     imgui.text(f"Selected: {player.selected}")
                     imgui.text(f"Enabled: {player.enabled}")
                     imgui.text(f"Mana Charge: {player.mana_charge_count}")

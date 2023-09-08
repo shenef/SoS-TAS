@@ -305,8 +305,8 @@ class CombatManager:
                         address += self.ITEM_OBJECT_OFFSET
                         continue
 
-                    dead_ptr = self.memory.follow_pointer(item, [0x68, 0x28])
-                    dead = self.memory.read_bool(dead_ptr + 0xC8)
+                    dead_ptr = self.memory.follow_pointer(item, [0x68, 0x38, 0x0])
+                    dead = self.memory.read_bool(dead_ptr + 0xD0)
                     definition_id_ptr = self.memory.follow_pointer(item, [0x70, 0x0])
                     # 4 Chars * 2 for utf
                     definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)

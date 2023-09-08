@@ -1,7 +1,10 @@
+import logging
+
 from control import sos_ctrl
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import PlayerPartyCharacter, combat_manager_handle
 
+logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
 
 
@@ -28,13 +31,13 @@ class CombatController:
             and combat_manager.selected_character is not PlayerPartyCharacter.NONE
             and combat_manager.battle_command_has_focus
         ):
-            # logger.debug("No action exists, executing one one")
+            logger.debug("No action exists, executing one one")
             self.action = self.reasoner.execute()
             return False
 
         # For some reason the action isn't set, so bail out.
         if self.action is None:
-            # logger.debug("baling out because self action is nil")
+            logger.debug("baling out because self action is nil")
             return False
 
         # if the consideration doesn't believe the situation is valid, execute it.
@@ -46,16 +49,16 @@ class CombatController:
             combat_manager.selected_character, self.action
         )
         if not consideration_valid:
-            # logger.debug("Consideration is not valid, move cursor")
+            logger.debug("Consideration is not valid, move cursor")
             self.action.consideration.execute()
             return False
 
         # do we need to navigate to an action?
         # if we are on the selected character, run the appraisal:
-        # logger.debug("Try to execute the appraisal")
+        logger.debug("Try to execute the appraisal")
         self.action.appraisal.execute()
         if self.action.appraisal.complete:
-            # logger.debug("appraisal is complete, reset action")
+            logger.debug("appraisal is complete, reset action")
             self.action = None
 
         return False
