@@ -15,11 +15,8 @@ class SoSReasoner(Reasoner):
     ) -> list[Consideration]:
         considerations = []
         for player in players:
-            print(f"player dead {player.dead}")
-            print(f"player enabled {player.enabled}")
             if not player.dead and player.enabled:
                 considerations.append(SoSConsideration(player))
-        print(considerations)
         return considerations
 
     def execute(self) -> Action:
@@ -32,14 +29,11 @@ class SoSReasoner(Reasoner):
         # go through each consideration and calculate its value
         # TODO: Optimize, do not calculate values for dead/disabled characters
         actions = []
-        print(f"considerations count: {len(self.considerations)}")
         for consideration in self.considerations:
             calculated_actions = consideration.calculate_actions()
-            print(calculated_actions)
             actions.extend(calculated_actions)
 
         if actions == []:
-            print("actions returned none")
             return None
         # sort and return the results by their value in desc order
         actions.sort(key=lambda action: action.appraisal.value, reverse=True)
