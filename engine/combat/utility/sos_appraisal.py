@@ -30,7 +30,6 @@ class SoSAppraisalStep(Enum):
     SelectingEnemySequence = auto()
     ConfirmEnemySequence = auto()
     SelectingPlayerSequence = auto()
-    RetryingConfirm = auto()
     TimingSequence = auto()
     ActionComplete = auto()
 
@@ -53,6 +52,7 @@ class SoSAppraisal(Appraisal):
         self.target_type = SoSTargetType.Enemy
         self.timing_type = SoSTimingType.NONE
         self.step = SoSAppraisalStep.SelectingCommand
+        self.character = PlayerPartyCharacter.NONE
 
     # selects the step to perform based on the current step
     def execute(self):
@@ -68,8 +68,6 @@ class SoSAppraisal(Appraisal):
             case SoSAppraisalStep.ConfirmEnemySequence:
                 self.execute_confirm_enemy_sequence()
             case SoSAppraisalStep.SelectingPlayerSequence:
-                pass
-            case SoSAppraisalStep.RetryingConfirm:
                 pass
             case SoSAppraisalStep.TimingSequence:
                 self.execute_timing_sequence()
@@ -114,6 +112,8 @@ class SoSAppraisal(Appraisal):
             else:
                 logger.debug("Invalid Battle Command")
 
+            # set the character here for use later - since it drops from memory
+            self.character = self.combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
             logger.debug(f"- entering step: {self.step.name}")
             return
@@ -147,11 +147,14 @@ class SoSAppraisal(Appraisal):
             )
 
     def execute_timing_sequence(self):
-        match self.target_type:
+        match self.timing_type:
             case SoSTimingType.OneHit:
                 # wait for timing and press button
-                self.ctrl.confirm()
-                self.step = SoSAppraisalStep.ActionComplete
+                # need a way to bail out if missed timing
+                if self.is_player_timed_attack_ready():
+                    print("Executing Timing Attack")
+                    self.ctrl.confirm()
+                    self.step = SoSAppraisalStep.ActionComplete
             case _:
                 self.step = SoSAppraisalStep.ActionComplete
 
@@ -163,4 +166,10 @@ class SoSAppraisal(Appraisal):
         for enemy in self.combat_manager.enemies:
             if enemy.unique_id == self.combat_manager.selected_target_guid:
                 return True
+        return False
+
+    def is_player_timed_attack_ready(self) -> bool:
+        for player in self.combat_manager.players:
+            if player.character == self.character:
+                return player.timed_attack_ready
         return False

@@ -57,6 +57,7 @@ class CombatPlayer:
         self.physical_attack = None
         self.selected = False
         self.definition_id = None
+        self.timed_attack_ready = False
         self.dead = False
         self.character = PlayerPartyCharacter.NONE
         self.enabled = None
@@ -307,6 +308,19 @@ class CombatManager:
 
                     dead_ptr = self.memory.follow_pointer(item, [0x68, 0x38, 0x0])
                     dead = self.memory.read_bool(dead_ptr + 0xD0)
+
+                    # tracks timed attacks maybe
+                    # timedAttackHandler -> trackingAfterHit
+                    try:
+                        timed_attack_ptr = self.memory.follow_pointer(
+                            dead_ptr, [0x160, 0x0]
+                        )
+                        timed_attack_value = self.memory.read_bool(
+                            timed_attack_ptr + 0x3A
+                        )
+                    except Exception:
+                        timed_attack_value = False
+
                     definition_id_ptr = self.memory.follow_pointer(item, [0x70, 0x0])
                     # 4 Chars * 2 for utf
                     definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)
@@ -317,7 +331,6 @@ class CombatManager:
                     character = PlayerPartyCharacter.parse_definition_id(definition_id)
 
                     selected = self.memory.read_bool(item + 0x78)
-
                     hp_text_field = self.memory.follow_pointer(item, [0x28, 0x0])
                     current_hp = self.memory.read_int(hp_text_field + 0x58)
 
@@ -391,6 +404,7 @@ class CombatManager:
                     player.selected = selected
                     player.dead = dead
                     player.enabled = enabled
+                    player.timed_attack_ready = timed_attack_value
                     player.mana_charge_count = mana_charge_count
                     players.append(player)
                     self.selected_target_guid = selected_target_guid

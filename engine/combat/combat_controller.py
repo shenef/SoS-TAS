@@ -37,7 +37,7 @@ class CombatController:
 
         # For some reason the action isn't set, so bail out.
         if self.action is None:
-            logger.debug("baling out because self action is nil")
+            # logger.debug("baling out because self action is nil")
             return False
 
         # if the consideration doesn't believe the situation is valid, execute it.
