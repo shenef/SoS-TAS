@@ -1,6 +1,6 @@
 import logging
 
-from engine.combat import SeqCombatManual
+from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -34,7 +34,7 @@ class IntroMountainTrail(SeqList):
                 SeqTurboMashUntilIdle(name="Wait for control"),
                 SeqLog(name="SYSTEM", text="We have control!"),
                 # TODO: Need to be able to do special ability (mash fails for Zale)
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Fights",
                     coords=[
                         InteractMove(33.253, 6.002, 20.273),
@@ -92,7 +92,7 @@ class IntroMountainTrail(SeqList):
                     precision=1.0,
                 ),
                 # Use the combat node on the off-chance we run into the slug
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Move to campfire",
                     coords=[
                         Vec3(-73.903, 22.002, 34.029),

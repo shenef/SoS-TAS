@@ -1,11 +1,16 @@
 import logging
 
 from control import sos_ctrl
+from engine.combat.appraisals.valere.crescent_arc import CrescentArc
+from engine.combat.utility.core.action import Action
+from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import PlayerPartyCharacter, combat_manager_handle
+from memory.new_dialog_manager import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
+new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
@@ -21,6 +26,28 @@ class CombatController:
         # if combat is done, just exit
         if combat_manager.encounter_done is True:
             return True
+
+        # if some dialog is on the screen - make it go away
+        if new_dialog_manager.dialog_open:
+            self.ctrl.confirm()
+            # put tutorial state below up here....
+
+            return False
+        # We need to decide how to handle these specific scenarios; via profile
+        # or whatever else, but this is good for now.
+        # Note: It can't be stopped or tested mid encounter.
+        if (
+            not self.action
+            and combat_manager.tutorial_state is CombatTutorialState.SecondEncounter
+        ):
+            # if we're in the "second encounter" combat tutorial after the dialog state
+            # just add an action for using the correct move
+            for player in combat_manager.players:
+                if player.character == PlayerPartyCharacter.Valere:
+                    self.action = Action(SoSConsideration(player), CrescentArc())
+                if player.character == PlayerPartyCharacter.Zale:
+                    # TODO: Add Sunthing
+                    self.action = Action(SoSConsideration(player), CrescentArc())
 
         # if we dont have an action or the current appraisal is complete,
         # we make a new one.
@@ -55,7 +82,7 @@ class CombatController:
 
         # do we need to navigate to an action?
         # if we are on the selected character, run the appraisal:
-        logger.debug("Try to execute the appraisal")
+        # logger.debug("Try to execute the appraisal")
         self.action.appraisal.execute()
         if self.action.appraisal.complete:
             logger.debug("appraisal is complete, reset action")

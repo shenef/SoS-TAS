@@ -27,6 +27,7 @@ class BattleMenu(Menu):
         imgui.set_window_size(600, 300, condition=imgui.FIRST_USE_EVER)
 
         imgui.text(f"Encounter done: {combat_manager.encounter_done}")
+        imgui.text(f"Tutorial State: {combat_manager.tutorial_state.name}")
         if not combat_manager.encounter_done:
             imgui.text(
                 f"Battle Command has focus: {combat_manager.battle_command_has_focus}"

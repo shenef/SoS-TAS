@@ -1,5 +1,5 @@
 import contextlib
-from enum import Enum
+from enum import Enum, auto
 
 from memory.core import mem_handle
 from memory.mappers.enemy_name import EnemyName
@@ -18,6 +18,11 @@ class CombatDamageType(Enum):
     Stun = 128
     Blunt = 256
     Magical = 252
+
+
+class CombatTutorialState(Enum):
+    NONE = auto()
+    SecondEncounter = auto()
 
 
 class CombatSpellLock:
@@ -80,6 +85,7 @@ class CombatManager:
         self.enemies = []
         self.players = []
         self.selected_character = PlayerPartyCharacter.NONE
+        self.tutorial_state = CombatTutorialState.NONE
         self.current_encounter_base = None
         self.encounter_done = None
         self.small_live_mana = None
@@ -102,10 +108,18 @@ class CombatManager:
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)
+
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
                     self.current_encounter_base = self.memory.get_field(
                         self.fields_base, "currentEncounter"
                     )
+                    print(hex(self.base))
+                    # dialog, removeme
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "NewDialogManager"
+                    )
+                    if singleton_ptr is None:
+                        return
 
                 else:
                     self._read_encounter_done()
@@ -114,6 +128,7 @@ class CombatManager:
 
                     self._read_players()
                     self._read_enemies()
+                    self._read_tutorial_state()
                     self._read_battle_commands()
                     if not self.battle_command_has_focus:
                         self._read_skill_commands()
@@ -128,6 +143,35 @@ class CombatManager:
     # combat manager module.
     def _should_update(self):
         return self.memory.ready_for_updates and self.current_encounter_base is not None
+
+    def _read_tutorial_state(self):
+        if self._should_update():
+            try:
+                tutorial_state_ptr = self.memory.follow_pointer(
+                    self.base, [self.current_encounter_base, 0x120, 0x0]
+                )
+
+                moongirl_skill_ptr = self.memory.follow_pointer(
+                    tutorial_state_ptr, [0xB0, 0x18, 0x0]
+                )
+
+                sunboy_skill_ptr = self.memory.follow_pointer(
+                    tutorial_state_ptr, [0xA8, 0x18, 0x0]
+                )
+
+                moongirl_str = self.memory.read_string(moongirl_skill_ptr + 0x14, 8)
+                sunboy_str = self.memory.read_string(sunboy_skill_ptr + 0x14, 8)
+
+                if (
+                    moongirl_str.replace("\x00", "") == "Cres"
+                    or sunboy_str.replace("\x00", "") == "Sunb"
+                ):
+                    self.tutorial_state = CombatTutorialState.SecondEncounter
+                    return
+
+                self.tutorial_state = CombatTutorialState.NONE
+            except Exception:
+                self.tutorial_state = CombatTutorialState.NONE
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self):

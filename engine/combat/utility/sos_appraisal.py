@@ -26,6 +26,7 @@ class SoSAppraisalStep(Enum):
     SelectingCommand = auto()
     ConfirmCommand = auto()
     SelectingSkill = auto()
+    ConfirmSkill = auto()
     SelectingAction = auto()
     SelectingEnemySequence = auto()
     ConfirmEnemySequence = auto()
@@ -49,6 +50,7 @@ class SoSAppraisal(Appraisal):
         self.ctrl.delay = 0.1
         self.complete = False
         self.battle_command = SoSBattleCommand.Attack
+        self.skill_command_index = 0
         self.target_type = SoSTargetType.Enemy
         self.timing_type = SoSTimingType.NONE
         self.step = SoSAppraisalStep.SelectingCommand
@@ -62,7 +64,9 @@ class SoSAppraisal(Appraisal):
             case SoSAppraisalStep.ConfirmCommand:
                 self.execute_confirm_command()
             case SoSAppraisalStep.SelectingSkill:
-                pass
+                self.execute_selecting_skill()
+            case SoSAppraisalStep.ConfirmSkill:
+                self.execute_confirm_skill()
             case SoSAppraisalStep.SelectingEnemySequence:
                 self.execute_selecting_enemy_sequence()
             case SoSAppraisalStep.ConfirmEnemySequence:
@@ -115,6 +119,41 @@ class SoSAppraisal(Appraisal):
             # set the character here for use later - since it drops from memory
             self.character = self.combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
+            logger.debug(f"- entering step: {self.step.name}")
+            return
+
+    def execute_selecting_skill(self):
+        if (
+            self.combat_manager.skill_command_has_focus
+            and self.combat_manager.skill_command_index != self.skill_command_index
+        ):
+            sos_ctrl().dpad.tap_down()
+        else:
+            self.step = SoSAppraisalStep.ConfirmSkill
+            logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
+            return
+
+    def execute_confirm_skill(self):
+        if (
+            self.combat_manager.skill_command_has_focus
+            and self.combat_manager.skill_command_index == self.skill_command_index
+        ):
+            self.ctrl.confirm()
+            # TODO: Add items and whatever else here.
+            # Attack skips to selecting enemy sequence
+            if self.battle_command is SoSBattleCommand.Skill:
+                self.step = SoSAppraisalStep.SelectingEnemySequence
+            elif self.battle_command is SoSBattleCommand.Combo:
+                # combos reflect as skills in the menu
+                self.step = SoSAppraisalStep.SelectingEnemySequence
+            elif self.battle_command is SoSBattleCommand.Item:
+                self.step = SoSAppraisalStep.SelectingPlayerSequence
+            else:
+                logger.debug("Invalid Skill Command")
+
+            # set the character here for use later - since it drops from memory
+
+            logger.debug(f"Confirmed Skill Command: {self.battle_command.name}")
             logger.debug(f"- entering step: {self.step.name}")
             return
 

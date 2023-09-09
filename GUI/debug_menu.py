@@ -9,12 +9,14 @@ from memory import (
     player_party_manager_handle,
     title_sequence_manager_handle,
 )
+from memory.new_dialog_manager import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
 title_sequence_manager = title_sequence_manager_handle()
 level_manager = level_manager_handle()
+new_dialog_manager = new_dialog_manager_handle()
 
 
 class DebugMenu(Menu):
@@ -53,7 +55,8 @@ class DebugMenu(Menu):
         )
 
         GUI_helper.add_spacer()
-
+        imgui.text(f"Dialog Open: {new_dialog_manager.dialog_open}")
+        GUI_helper.add_spacer()
         _, self.show_metrics = imgui.checkbox(
             "Show performance metrics", self.show_metrics
         )

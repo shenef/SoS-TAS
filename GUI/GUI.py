@@ -14,6 +14,7 @@ from memory import (
     player_party_manager_handle,
     title_sequence_manager_handle,
 )
+from memory.new_dialog_manager import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,7 @@ def update_memory():
         elif scene_name is not None and loading is False:
             player_party_manager_handle().update()
             combat_manager_handle().update()
+            new_dialog_manager_handle().update()
             if "WorldMap" in scene_name:
                 boat_manager_handle().update()
 

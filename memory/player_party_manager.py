@@ -37,7 +37,6 @@ class PlayerPartyManager:
                     self.base = self.memory.get_class_base(singleton_ptr)
                     if self.base == 0x0:
                         return
-
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
 
                 else:
