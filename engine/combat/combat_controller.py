@@ -30,24 +30,23 @@ class CombatController:
         # if some dialog is on the screen - make it go away
         if new_dialog_manager.dialog_open:
             self.ctrl.confirm()
-            # put tutorial state below up here....
+            if (
+                not self.action
+                and combat_manager.tutorial_state is CombatTutorialState.SecondEncounter
+            ):
+                # if we're in the "second encounter" combat tutorial after the dialog state
+                # just add an action for using the correct move
+                for player in combat_manager.players:
+                    if player.character == PlayerPartyCharacter.Valere:
+                        self.action = Action(SoSConsideration(player), CrescentArc())
+                    if player.character == PlayerPartyCharacter.Zale:
+                        # TODO: Add Sunthing
+                        self.action = Action(SoSConsideration(player), CrescentArc())
 
             return False
         # We need to decide how to handle these specific scenarios; via profile
         # or whatever else, but this is good for now.
         # Note: It can't be stopped or tested mid encounter.
-        if (
-            not self.action
-            and combat_manager.tutorial_state is CombatTutorialState.SecondEncounter
-        ):
-            # if we're in the "second encounter" combat tutorial after the dialog state
-            # just add an action for using the correct move
-            for player in combat_manager.players:
-                if player.character == PlayerPartyCharacter.Valere:
-                    self.action = Action(SoSConsideration(player), CrescentArc())
-                if player.character == PlayerPartyCharacter.Zale:
-                    # TODO: Add Sunthing
-                    self.action = Action(SoSConsideration(player), CrescentArc())
 
         # if we dont have an action or the current appraisal is complete,
         # we make a new one.

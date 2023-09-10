@@ -119,7 +119,7 @@ class SoSAppraisal(Appraisal):
             # set the character here for use later - since it drops from memory
             self.character = self.combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
-            logger.debug(f"- entering step: {self.step.name}")
+            logger.debug(f"Entering step: {self.step.name}")
             return
 
     def execute_selecting_skill(self):
@@ -154,7 +154,7 @@ class SoSAppraisal(Appraisal):
             # set the character here for use later - since it drops from memory
 
             logger.debug(f"Confirmed Skill Command: {self.battle_command.name}")
-            logger.debug(f"- entering step: {self.step.name}")
+            logger.debug(f"Entering step: {self.step.name}")
             return
 
     def execute_selecting_enemy_sequence(self):
@@ -177,13 +177,11 @@ class SoSAppraisal(Appraisal):
     def execute_confirm_enemy_sequence(self):
         # TODO: Find better timing, or add a delay for this confirm.
         if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
-            logger.debug(f"Confirm - {self.combat_manager.selected_character.value}")
+            logger.debug("Confirming Enemy")
             self.ctrl.confirm()
         else:
             self.step = SoSAppraisalStep.TimingSequence
-            logger.debug(
-                f"Confirmed Target: {self.combat_manager.selected_character.value}"
-            )
+            logger.debug("Confirmed Target")
 
     def execute_timing_sequence(self):
         match self.timing_type:
@@ -191,7 +189,7 @@ class SoSAppraisal(Appraisal):
                 # wait for timing and press button
                 # need a way to bail out if missed timing
                 if self.is_player_timed_attack_ready():
-                    print("Executing Timing Attack")
+                    logger.debug("Executing Timing Attack")
                     self.ctrl.confirm()
                     self.step = SoSAppraisalStep.ActionComplete
             case _:
