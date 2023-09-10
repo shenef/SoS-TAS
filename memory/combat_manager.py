@@ -113,13 +113,6 @@ class CombatManager:
                     self.current_encounter_base = self.memory.get_field(
                         self.fields_base, "currentEncounter"
                     )
-                    print(hex(self.base))
-                    # dialog, removeme
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "NewDialogManager"
-                    )
-                    if singleton_ptr is None:
-                        return
 
                 else:
                     self._read_encounter_done()
