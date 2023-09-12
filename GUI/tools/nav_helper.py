@@ -144,6 +144,10 @@ class NavHelper(Menu):
             imgui.text(f"x: {gameobject_pos.x:.3f}")
             imgui.text(f"y: {gameobject_pos.y:.3f}")
             imgui.text(f"z: {gameobject_pos.z:.3f}")
+            if imgui.button("Copy to clipboard##3"):
+                imgui.core.set_clipboard_text(
+                    f"Vec3({gameobject_pos.x:.3f}, {gameobject_pos.y:.3f}, {gameobject_pos.z:.3f}),"
+                )
             GUI_helper.add_spacings(2)
 
         ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True)
@@ -162,10 +166,18 @@ class NavHelper(Menu):
             imgui.text(f"x: {boat_pos.x:.3f}")
             imgui.text(f"y: {boat_pos.y:.3f}")
             imgui.text(f"z: {boat_pos.z:.3f}")
+            if imgui.button("Copy to clipboard##4"):
+                imgui.core.set_clipboard_text(
+                    f"Vec3({boat_pos.x:.3f}, {boat_pos.y:.3f}, {boat_pos.z:.3f}),"
+                )
             imgui.text(f"Rot x: {boat_rotation.x:.3f}")
             imgui.text(f"Rot y: {boat_rotation.y:.3f}")
             imgui.text(f"Rot z: {boat_rotation.z:.3f}")
             imgui.text(f"Rot w: {boat_rotation.w:.3f}")
+            if imgui.button("Copy to clipboard##5"):
+                imgui.core.set_clipboard_text(
+                    f"Quaternion({boat_rotation.x:.3f}, {boat_rotation.y:.3f}, {boat_rotation.z:.3f}, {boat_rotation.w:.3f}),"  # noqa E501
+                )
             imgui.text(f"speed: {boat_manager.speed:.3f}/{boat_manager.max_speed:.3f}")
 
         ret = False
