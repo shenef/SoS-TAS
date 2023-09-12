@@ -2,7 +2,7 @@ from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
 from engine.combat.utility.core.reasoner import Reasoner
 from engine.combat.utility.sos_consideration import SoSConsideration
-from memory.combat_manager import CombatPlayer
+from memory import CombatPlayer
 
 
 class SoSReasoner(Reasoner):

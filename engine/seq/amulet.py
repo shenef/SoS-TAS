@@ -3,10 +3,8 @@ import time
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
-from memory.combat_manager import combat_manager_handle
 
 logger = logging.getLogger(__name__)
-combat_manager = combat_manager_handle()
 
 
 # TODO: Temporary code, moves along path, pausing while combat is active

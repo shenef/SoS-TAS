@@ -12,7 +12,7 @@ from engine.seq import (
     SeqLog,
 )
 from log_init import reset_logging_time_reference
-from memory.title_sequence_manager import (
+from memory import (
     TitleCursorPosition,
     title_sequence_manager_handle,
 )

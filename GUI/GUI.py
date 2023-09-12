@@ -6,12 +6,14 @@ import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 
-from memory.boat_manager import boat_manager_handle
-from memory.combat_manager import combat_manager_handle
-from memory.core import mem_handle
-from memory.level_manager import level_manager_handle
-from memory.player_party_manager import player_party_manager_handle
-from memory.title_sequence_manager import title_sequence_manager_handle
+from memory import (
+    boat_manager_handle,
+    combat_manager_handle,
+    level_manager_handle,
+    mem_handle,
+    player_party_manager_handle,
+    title_sequence_manager_handle,
+)
 
 logger = logging.getLogger(__name__)
 

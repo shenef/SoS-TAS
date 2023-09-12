@@ -18,7 +18,7 @@ from engine.seq import (
     SeqTurboMashSkipCutsceneUntilIdle,
     SeqTurboMashUntilIdle,
 )
-from memory.player_party_manager import (
+from memory import (
     PlayerPartyCharacter,
     player_party_manager_handle,
 )

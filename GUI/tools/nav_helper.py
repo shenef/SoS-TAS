@@ -8,9 +8,11 @@ from engine.mathlib import Quaternion, Vec2, Vec3
 from engine.seq.move import move_to
 from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
-from memory.boat_manager import boat_manager_handle
-from memory.player_party_manager import player_party_manager_handle
-from memory.title_sequence_manager import title_sequence_manager_handle
+from memory import (
+    boat_manager_handle,
+    player_party_manager_handle,
+    title_sequence_manager_handle,
+)
 
 logger = logging.getLogger(__name__)
 

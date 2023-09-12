@@ -3,7 +3,7 @@ from collections.abc import Callable
 from control import sos_ctrl
 from engine.mathlib import Vec3
 from engine.seq.move import HoldDirection, InteractMove, SeqMove
-from memory.combat_manager import combat_manager_handle
+from memory import combat_manager_handle
 
 combat_manager = combat_manager_handle()
 

@@ -1,7 +1,6 @@
 from control import sos_ctrl
 from engine.combat.utility.sos_reasoner import SoSReasoner
-from memory.combat_manager import combat_manager_handle
-from memory.mappers.player_party_character import PlayerPartyCharacter
+from memory import PlayerPartyCharacter, combat_manager_handle
 
 combat_manager = combat_manager_handle()
 
