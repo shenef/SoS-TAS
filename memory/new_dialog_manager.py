@@ -1,6 +1,10 @@
 from memory.core import mem_handle
 
 
+# NewDialogManager is the internal naming for the class that handles the dialog boxes
+# in the game. This class is used to determine if a dialog box is open or not.
+# This is used to determine if the game is in a state where the player can
+# interact with dialog boxes or not.
 class NewDialogManager:
     def __init__(self):
         self.memory = mem_handle()

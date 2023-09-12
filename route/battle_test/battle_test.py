@@ -6,6 +6,10 @@ from engine.seq import (
 )
 
 
+# BattleTest is intended for testing the Utility AI battle system.
+# It is not intended to be used to run the TAS.
+# This should be run only when the game is in a battle state to start
+# the combat controller and then run the battle test sequence.
 class BattleTest(SeqList):
     def __init__(self):
         super().__init__(

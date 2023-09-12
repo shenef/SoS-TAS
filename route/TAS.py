@@ -175,3 +175,9 @@ class SoSBattleTestMenu(TASMenu):
         self.sequencer = SequencerEngine(
             window=self.window, config=self.config_data, root=TAS_root
         )
+
+    def custom_gui(self):
+        # Override to inject some custom parameters to the run
+        imgui.text_wrapped(
+            "Warning! This mode is only intended for testing the Utility AI comabt system."  # noqa E501
+        )

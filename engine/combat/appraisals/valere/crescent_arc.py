@@ -19,6 +19,3 @@ class CrescentArc(SoSAppraisal):
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         self.skill_command_index = 0
-
-    def execute(self):
-        return super().execute()

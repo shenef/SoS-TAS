@@ -16,6 +16,3 @@ class BasicAttack(SoSAppraisal):
         self.timing_type = SoSTimingType.OneHit
         self.battle_command = SoSBattleCommand.Attack
         self.target_type = SoSTargetType.Enemy
-
-    def execute(self):
-        return super().execute()

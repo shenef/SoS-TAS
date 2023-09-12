@@ -103,18 +103,18 @@ class SoSAppraisal(Appraisal):
             self.ctrl.confirm()
             # TODO: Add items and whatever else here.
             # Attack skips to selecting enemy sequence
-            if self.battle_command is SoSBattleCommand.Attack:
-                self.step = SoSAppraisalStep.SelectingEnemySequence
-            # The rest of these access an additional menu
-            elif self.battle_command is SoSBattleCommand.Skill:
-                self.step = SoSAppraisalStep.SelectingSkill
-            elif self.battle_command is SoSBattleCommand.Combo:
-                # combos reflect as skills in the menu
-                self.step = SoSAppraisalStep.SelectingSkill
-            elif self.battle_command is SoSBattleCommand.Item:
-                self.step = SoSAppraisalStep.SelectingSkill
-            else:
-                logger.debug("Invalid Battle Command")
+            match self.battle_command:
+                case SoSBattleCommand.Attack:
+                    self.step = SoSAppraisalStep.SelectingEnemySequence
+                case SoSBattleCommand.Skill:
+                    self.step = SoSAppraisalStep.SelectingSkill
+                case SoSBattleCommand.Combo:
+                    # combos reflect as skills in the menu
+                    self.step = SoSAppraisalStep.SelectingSkill
+                case SoSBattleCommand.Item:
+                    self.step = SoSAppraisalStep.SelectingSkill
+                case _:
+                    logger.debug("Invalid Battle Command")
 
             # set the character here for use later - since it drops from memory
             self.character = self.combat_manager.selected_character
@@ -141,15 +141,13 @@ class SoSAppraisal(Appraisal):
             self.ctrl.confirm()
             # TODO: Add items and whatever else here.
             # Attack skips to selecting enemy sequence
-            if self.battle_command is SoSBattleCommand.Skill:
-                self.step = SoSAppraisalStep.SelectingEnemySequence
-            elif self.battle_command is SoSBattleCommand.Combo:
-                # combos reflect as skills in the menu
-                self.step = SoSAppraisalStep.SelectingEnemySequence
-            elif self.battle_command is SoSBattleCommand.Item:
-                self.step = SoSAppraisalStep.SelectingPlayerSequence
-            else:
-                logger.debug("Invalid Skill Command")
+            match self.battle_command:
+                case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
+                    self.step = SoSAppraisalStep.SelectingEnemySequence
+                case SoSBattleCommand.Item:
+                    self.step = SoSAppraisalStep.SelectingPlayerSequence
+                case _:
+                    logger.debug("Invalid Skill Command")
 
             # set the character here for use later - since it drops from memory
 
