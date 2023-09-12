@@ -407,8 +407,8 @@ class CombatManager:
                                 ],
                             )
 
-                        # This check was added due to the pointer not falling off in time, referencing
-                        # an enemy that just died
+                        # This check was added due to the pointer not falling off in time,
+                        # referencing an enemy that just died
                         try:
                             selected_attack_target_guid = self.memory.read_uuid(
                                 target_unique_id_base + 0x14
@@ -442,8 +442,8 @@ class CombatManager:
                                 ],
                             )
 
-                        # This check was added due to the pointer not falling off in time, referencing
-                        # an enemy that just died
+                        # This check was added due to the pointer not falling off in time,
+                        # referencing an enemy that just died
                         try:
                             selected_skill_target_guid = self.memory.read_uuid(
                                 target_unique_id_base + 0x14
