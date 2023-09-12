@@ -2,6 +2,7 @@ import logging
 
 from control import sos_ctrl
 from engine.combat.appraisals.valere.crescent_arc import CrescentArc
+from engine.combat.appraisals.zale.sunball import Sunball
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
@@ -111,5 +112,4 @@ class CombatController:
                 if player.character == PlayerPartyCharacter.Valere:
                     self.action = Action(SoSConsideration(player), CrescentArc())
                 if player.character == PlayerPartyCharacter.Zale:
-                    # TODO: Add Sunthing
-                    self.action = Action(SoSConsideration(player), CrescentArc())
+                    self.action = Action(SoSConsideration(player), Sunball())
