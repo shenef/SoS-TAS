@@ -7,13 +7,14 @@ from engine.seq import (
     InteractMove,
     SeqAwaitLostControl,
     SeqCheckpoint,
+    SeqCliffClimb,
+    SeqCliffMove,
     SeqClimb,
     SeqHoldDirectionUntilLostControl,
     SeqIf,
     SeqInteract,
     SeqList,
     SeqLog,
-    SeqManualUntilClose,
     SeqMove,
     SeqTurboMashSkipCutsceneUntilIdle,
     SeqTurboMashUntilIdle,
@@ -85,16 +86,31 @@ class IntroMountainTrail(SeqList):
                         InteractMove(-87.191, 16.000, 44.900),
                     ],
                 ),
-                # TODO: Issue here, position isn't tracked while on the wall
-                SeqManualUntilClose(
-                    name="MANUAL: Go up cliff",
-                    target=Vec3(-87.284, 22.002, 44.522),
-                    precision=1.0,
+                SeqCliffMove(
+                    name="Climb cliff",
+                    coords=[
+                        Vec3(-89.280, 16.000, 45.000),
+                        Vec3(-92.238, 16.000, 47.673),
+                        Vec3(-92.944, 16.000, 48.000),
+                    ],
+                ),
+                SeqCliffClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(-93.016, 22.000, 48.000),
+                    ],
+                ),
+                SeqCliffMove(
+                    name="Climb cliff",
+                    coords=[
+                        Vec3(-88.799, 22.000, 45.000),
+                    ],
                 ),
                 # Use the combat node on the off-chance we run into the slug
                 SeqCombatManual(
                     name="Move to campfire",
                     coords=[
+                        Vec3(-87.284, 22.002, 44.522),
                         Vec3(-73.903, 22.002, 34.029),
                         HoldDirection(-35.819, 21.002, 27.816, joy_dir=Vec2(0, -1)),
                         Vec3(-32.177, 21.002, 27.816),

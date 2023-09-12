@@ -5,7 +5,7 @@ from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
 from engine.seq.time import SeqDelay
-from memory.player_party_manager import PlayerMovementState, player_party_manager_handle
+from memory import PlayerMovementState, player_party_manager_handle
 
 logger = logging.getLogger(__name__)
 
@@ -192,13 +192,16 @@ class SeqMove(SeqBase):
             invert=self.invert,
         )
 
+    def player_position(self) -> Vec3:
+        return player_party_manager.position
+
     def navigate_to_checkpoint(self, delta: float) -> None:
         # Move towards target
         if self.step >= len(self.coords):
             return
         target = self.coords[self.step]
 
-        player_pos = player_party_manager.position
+        player_pos = self.player_position()
         if player_pos.x is None:
             return
 
@@ -253,3 +256,13 @@ class SeqClimb(SeqMove):
             running=self.running,
             invert=self.invert,
         )
+
+
+class SeqCliffMove(SeqMove):
+    def player_position(self) -> Vec3:
+        return player_party_manager.gameobject_position
+
+
+class SeqCliffClimb(SeqClimb):
+    def player_position(self) -> Vec3:
+        return player_party_manager.gameobject_position
