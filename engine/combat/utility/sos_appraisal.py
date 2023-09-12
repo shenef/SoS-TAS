@@ -170,7 +170,6 @@ class SoSAppraisal(Appraisal):
                 selected_target = self.combat_manager.selected_skill_target_guid
             case _:
                 selected_target = ""
-        print(self._enemy_targeted())
         if (
             self._enemy_targeted()
             and not self.combat_manager.battle_command_has_focus

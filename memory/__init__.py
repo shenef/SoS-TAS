@@ -1,5 +1,9 @@
 from memory.boat_manager import boat_manager_handle
-from memory.combat_manager import CombatPlayer, combat_manager_handle
+from memory.combat_manager import (
+    CombatPlayer,
+    CombatTutorialState,
+    combat_manager_handle,
+)
 from memory.core import SoSMemory, mem_handle
 from memory.level_manager import level_manager_handle
 from memory.mappers.enemy_name import EnemyName
@@ -25,4 +29,5 @@ __all__ = [
     "TitleCursorPosition",
     "EnemyName",
     "CombatPlayer",
+    "CombatTutorialState",
 ]

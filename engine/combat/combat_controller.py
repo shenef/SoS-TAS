@@ -6,6 +6,7 @@ from engine.combat.utility.core.action import Action
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
+    CombatTutorialState,
     PlayerPartyCharacter,
     combat_manager_handle,
     level_manager_handle,
