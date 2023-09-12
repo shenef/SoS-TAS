@@ -1,4 +1,5 @@
 import logging
+import math
 from collections.abc import Callable
 from typing import Self
 
@@ -6,11 +7,12 @@ from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
 from engine.seq.time import SeqDelay
-from memory import PlayerMovementState, player_party_manager_handle
+from memory import PlayerMovementState, boat_manager_handle, player_party_manager_handle
 
 logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
+boat_manager = boat_manager_handle()
 
 
 def move_to(
@@ -250,12 +252,15 @@ class SeqMove(SeqBase):
 
         if done:
             logger.info(f"Finished move section: {self.name}")
-            sos_ctrl().set_neutral()
+            self.on_done()
         elif self.emergency_skip and self.emergency_skip():
             logger.warning(f"Finished move section with emergency skip: {self.name}")
             done = True
-            sos_ctrl().set_neutral()
+            self.on_done()
         return done
+
+    def on_done(self: Self) -> None:
+        sos_ctrl().set_neutral()
 
     def __repr__(self: Self) -> str:
         num_coords = len(self.coords)
@@ -284,3 +289,48 @@ class SeqCliffMove(SeqMove):
 class SeqCliffClimb(SeqClimb):
     def player_position(self: Self) -> Vec3:
         return player_party_manager.gameobject_position
+
+
+class SeqBoat(SeqMove):
+    def __init__(
+        self: Self,
+        name: str,
+        coords: list[Vec3 | InteractMove | HoldDirection],
+        precision: float = 1.0,
+        tap_rate: float = 0.1,
+        running: bool = True,
+        func: Callable = None,
+        emergency_skip: Callable[[], bool] | None = None,
+        invert: bool = False,
+    ) -> None:
+        super().__init__(
+            name, coords, precision, tap_rate, running, func, emergency_skip, invert
+        )
+
+    def player_position(self: Self) -> Vec3:
+        return boat_manager.position
+
+    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
+        ctrl = sos_ctrl()
+        # Get the trajectory between the player pos and the target
+        target_vec = target_pos - player_pos
+        target_vec_v2 = Vec2(target_vec.x, target_vec.z)
+
+        # Get the angle to target, and the current angle of the boat
+        target_angle = target_vec_v2.angle
+        boat_angle = boat_manager.rotation.to_yaw()
+
+        diff_angle = target_angle - boat_angle
+
+        left = (diff_angle > 0 and diff_angle < math.pi) or (
+            diff_angle < 0 and diff_angle < -math.pi
+        )
+        joy = Vec2(-1, 0) if left else Vec2(1, 0)
+
+        ctrl.set_joystick(joy)
+        ctrl.toggle_bracelet(state=True)
+
+    def on_done(self: Self) -> None:
+        ctrl = sos_ctrl()
+        ctrl.set_neutral()
+        ctrl.toggle_bracelet(state=False)
