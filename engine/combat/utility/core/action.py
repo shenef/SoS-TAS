@@ -4,9 +4,11 @@
 # The consideration will execute to setup for the action, and
 # then the appraisal will execute.
 
+from engine.combat.utility.core.appraisal import Appraisal
+
 
 class Action:
-    def __init__(self, consideration, appraisal):
+    def __init__(self, consideration, appraisal: Appraisal):
         self.consideration = consideration
         self.appraisal = appraisal
 

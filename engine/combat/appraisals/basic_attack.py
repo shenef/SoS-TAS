@@ -2,8 +2,7 @@ import logging
 
 from control import sos_ctrl
 from engine.combat.utility.sos_appraisal import SoSAppraisal, SoSAppraisalType
-from memory.combat_manager import combat_manager_handle
-from memory.mappers.player_party_character import PlayerPartyCharacter
+from memory import PlayerPartyCharacter, combat_manager_handle
 
 logger = logging.getLogger(__name__)
 

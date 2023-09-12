@@ -3,7 +3,7 @@ from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
-from memory.mappers.player_party_character import PlayerPartyCharacter
+from memory import PlayerPartyCharacter
 
 
 class SoSConsideration(Consideration):

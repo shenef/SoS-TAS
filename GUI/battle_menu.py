@@ -4,7 +4,7 @@ import imgui
 
 from GUI.GUI import Window
 from GUI.menu import Menu
-from memory.combat_manager import combat_manager_handle
+from memory import combat_manager_handle
 
 logger = logging.getLogger(__name__)
 
