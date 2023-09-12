@@ -95,6 +95,7 @@ class CombatController:
     # TODO: This is a hack to get the second encounter tutorial to work for now.
     # This should be refactored once we have a better way to handle this.
     def _handle_alternate_encounters(self):
+        # checks if we are in the second encounter zone and if we are in the tutorial
         if (
             not self.action
             and level_manager.current_level == "72e9f2699f7c8394b93afa1d273ce67a"

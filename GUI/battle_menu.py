@@ -41,8 +41,19 @@ class BattleMenu(Menu):
             imgui.same_line()
             imgui.text(f"Big: {combat_manager.big_live_mana}")
             imgui.text(f"Selected Character: {combat_manager.selected_character.value}")
+            att_target = (
+                combat_manager.selected_attack_target_guid.replace("\x00", "")
+                if combat_manager.selected_attack_target_guid
+                else "None"
+            )
+            imgui.text(f"ATTACK TARGET: {att_target}")
+            skill_target = (
+                combat_manager.selected_skill_target_guid.replace("\x00", "")
+                if combat_manager.selected_skill_target_guid
+                else "None"
+            )
+            imgui.text(f"SKILL TARGET: {skill_target}")
             imgui.separator()
-
             imgui.columns(self.COLUMN_MAX)
 
             if combat_manager.enemies is not []:
@@ -58,7 +69,13 @@ class BattleMenu(Menu):
                     else:
                         imgui.text(f"{enemy.name} ({idx}):")
                     imgui.text(f"HP: {enemy.current_hp}/{enemy.max_hp}")
-                    targeted = enemy.unique_id == combat_manager.selected_target_guid
+                    attack_targeted = (
+                        enemy.unique_id == combat_manager.selected_attack_target_guid
+                    )
+                    skill_targeted = (
+                        enemy.unique_id == combat_manager.selected_skill_target_guid
+                    )
+
                     imgui.text(f"pATK: {enemy.physical_attack} |")
                     imgui.same_line()
                     imgui.text(f"mATK: {enemy.magic_attack}")
@@ -66,7 +83,8 @@ class BattleMenu(Menu):
                     imgui.same_line()
                     imgui.text(f"mDEF: {enemy.magic_defense}")
                     imgui.text(f"Speed: {enemy.speed}")
-                    imgui.text(f"Targeted: {targeted}")
+                    imgui.text(f"Attack Targeted: {attack_targeted}")
+                    imgui.text(f"Skill Targeted: {skill_targeted}")
                     imgui.text(f"Next action: {enemy.turns_to_action}")
                     imgui.text(f"Locks: {enemy.total_spell_locks}")
 

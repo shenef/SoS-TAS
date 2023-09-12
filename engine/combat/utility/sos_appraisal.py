@@ -20,6 +20,7 @@ class SoSBattleCommand(Enum):
 class SoSTimingType(Enum):
     NONE = auto()
     OneHit = auto()
+    Charge = auto()
 
 
 class SoSAppraisalStep(Enum):
@@ -161,16 +162,27 @@ class SoSAppraisal(Appraisal):
         # later until it finds the one where the guid is the same (or the unique id)
         # we should also ensure the target is selected before initiating the action
         # This is simply hovering the target and ensures we can move to the next state
+
+        match self.battle_command:
+            case SoSBattleCommand.Attack:
+                selected_target = self.combat_manager.selected_attack_target_guid
+            case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
+                selected_target = self.combat_manager.selected_skill_target_guid
+            case _:
+                selected_target = ""
+        print(self._enemy_targeted())
         if (
             self._enemy_targeted()
             and not self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index is None
-            and self.combat_manager.selected_target_guid != ""
+            and selected_target != ""
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
-            logger.debug(f"Selected Target: {self.combat_manager.selected_target_guid}")
+            logger.debug("Selected Target")
             return
+        sos_ctrl().dpad.tap_right()
+        return
 
     def execute_confirm_enemy_sequence(self):
         # TODO: Find better timing, or add a delay for this confirm.
@@ -190,6 +202,14 @@ class SoSAppraisal(Appraisal):
                     logger.debug("Executing Timing Attack")
                     self.ctrl.confirm()
                     self.step = SoSAppraisalStep.ActionComplete
+            case SoSTimingType.Charge:
+                # Hold Button until timing ready
+                # need a way to bail out if missed timing
+                sos_ctrl().toggle_confirm(True)
+                if self.is_player_timed_attack_ready():
+                    sos_ctrl().toggle_confirm(False)
+                    logger.debug("Executing Timing Attack")
+                    self.step = SoSAppraisalStep.ActionComplete
             case _:
                 self.step = SoSAppraisalStep.ActionComplete
 
@@ -198,10 +218,20 @@ class SoSAppraisal(Appraisal):
         logger.debug("Action Complete")
 
     def _enemy_targeted(self) -> bool:
-        for enemy in self.combat_manager.enemies:
-            if enemy.unique_id == self.combat_manager.selected_target_guid:
-                return True
-        return False
+        return True
+        # for enemy in self.combat_manager.enemies:
+        #     match self.battle_command:
+        #         case SoSBattleCommand.Attack:
+        #             return (
+        #                 enemy.unique_id
+        #                 == self.combat_manager.selected_attack_target_guid
+        #             )
+        #         case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
+        #             return (
+        #                 enemy.unique_id
+        #                 == self.combat_manager.selected_skill_target_guid
+        #             )
+        # return False
 
     def is_player_timed_attack_ready(self) -> bool:
         for player in self.combat_manager.players:

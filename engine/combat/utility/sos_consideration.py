@@ -1,5 +1,6 @@
 from control import sos_ctrl
 from engine.combat.appraisals.basic_attack import BasicAttack
+from engine.combat.appraisals.zale.sunball import Sunball
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
@@ -35,7 +36,7 @@ class SoSConsideration(Consideration):
     def _character_appraisals(self) -> list[Appraisal]:
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
-                return []
+                return [Sunball(value=100)]
             case PlayerPartyCharacter.Valere:
                 return []
             case PlayerPartyCharacter.Garl:
