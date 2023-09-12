@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from control import sos_ctrl
 from engine.combat.appraisals.valere.crescent_arc import CrescentArc
@@ -21,13 +22,13 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.reasoner = SoSReasoner(combat_manager)
         self.action = None
         self.ctrl = sos_ctrl()
 
     # returns a bool to feed to the sequencer
-    def execute_combat(self) -> bool:
+    def execute_combat(self: Self) -> bool:
         self.ctrl.set_neutral()
 
         # if combat is done, just exit
@@ -99,7 +100,7 @@ class CombatController:
 
     # TODO: This is a hack to get the second encounter tutorial to work for now.
     # This should be refactored once we have a better way to handle this.
-    def _handle_alternate_encounters(self):
+    def _handle_alternate_encounters(self: Self) -> None:
         # checks if we are in the second encounter zone and if we are in the tutorial
         if (
             not self.action

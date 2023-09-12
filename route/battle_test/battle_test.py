@@ -1,3 +1,5 @@
+from typing import Self
+
 from engine.combat import SeqCombatAndMove
 from engine.seq import (
     InteractMove,
@@ -11,7 +13,7 @@ from engine.seq import (
 # This should be run only when the game is in a battle state to start
 # the combat controller and then run the battle test sequence.
 class BattleTest(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="BattleTest",
             children=[
@@ -22,7 +24,7 @@ class BattleTest(SeqList):
 
 
 class BattleTestSequence(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Testing Fight",
             children=[

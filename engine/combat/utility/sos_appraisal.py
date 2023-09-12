@@ -1,5 +1,6 @@
 import logging
 from enum import Enum, auto
+from typing import Self
 
 from control import sos_ctrl
 from engine.combat.utility.core import Appraisal
@@ -43,7 +44,7 @@ class SoSTargetType(Enum):
 
 
 class SoSAppraisal(Appraisal):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__()
 
         self.combat_manager = combat_manager_handle()
@@ -58,7 +59,7 @@ class SoSAppraisal(Appraisal):
         self.character = PlayerPartyCharacter.NONE
 
     # selects the step to perform based on the current step
-    def execute(self):
+    def execute(self: Self) -> None:
         match self.step:
             case SoSAppraisalStep.SelectingCommand:
                 self.execute_selecting_command()
@@ -85,7 +86,7 @@ class SoSAppraisal(Appraisal):
     # if the battle command is already selected, set the appraisal step and
     # confirm
     # if it is not selected, tap down until it is selected
-    def execute_selecting_command(self):
+    def execute_selecting_command(self: Self) -> None:
         if (
             self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index != self.battle_command.value
@@ -94,9 +95,8 @@ class SoSAppraisal(Appraisal):
         else:
             self.step = SoSAppraisalStep.ConfirmCommand
             logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
-            return
 
-    def execute_confirm_command(self):
+    def execute_confirm_command(self: Self) -> None:
         if (
             self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index == self.battle_command.value
@@ -121,9 +121,8 @@ class SoSAppraisal(Appraisal):
             self.character = self.combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
             logger.debug(f"Entering step: {self.step.name}")
-            return
 
-    def execute_selecting_skill(self):
+    def execute_selecting_skill(self: Self) -> None:
         if (
             self.combat_manager.skill_command_has_focus
             and self.combat_manager.skill_command_index != self.skill_command_index
@@ -132,9 +131,8 @@ class SoSAppraisal(Appraisal):
         else:
             self.step = SoSAppraisalStep.ConfirmSkill
             logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
-            return
 
-    def execute_confirm_skill(self):
+    def execute_confirm_skill(self: Self) -> None:
         if (
             self.combat_manager.skill_command_has_focus
             and self.combat_manager.skill_command_index == self.skill_command_index
@@ -154,9 +152,8 @@ class SoSAppraisal(Appraisal):
 
             logger.debug(f"Confirmed Skill Command: {self.battle_command.name}")
             logger.debug(f"Entering step: {self.step.name}")
-            return
 
-    def execute_selecting_enemy_sequence(self):
+    def execute_selecting_enemy_sequence(self: Self) -> None:
         # Just assume we are targeting something for now
         # TODO: this will be similar to consideration that cycles through targets
         # later until it finds the one where the guid is the same (or the unique id)
@@ -181,9 +178,8 @@ class SoSAppraisal(Appraisal):
             logger.debug("Selected Target")
             return
         sos_ctrl().dpad.tap_right()
-        return
 
-    def execute_confirm_enemy_sequence(self):
+    def execute_confirm_enemy_sequence(self: Self) -> None:
         # TODO: Find better timing, or add a delay for this confirm.
         if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
             logger.debug("Confirming Enemy")
@@ -192,7 +188,7 @@ class SoSAppraisal(Appraisal):
             self.step = SoSAppraisalStep.TimingSequence
             logger.debug("Confirmed Target")
 
-    def execute_timing_sequence(self):
+    def execute_timing_sequence(self: Self) -> None:
         match self.timing_type:
             case SoSTimingType.OneHit:
                 # wait for timing and press button
@@ -212,11 +208,11 @@ class SoSAppraisal(Appraisal):
             case _:
                 self.step = SoSAppraisalStep.ActionComplete
 
-    def execute_action_complete(self):
+    def execute_action_complete(self: Self) -> None:
         self.complete = True
         logger.debug("Action Complete")
 
-    def _enemy_targeted(self) -> bool:
+    def _enemy_targeted(self: Self) -> bool:
         return True
         # for enemy in self.combat_manager.enemies:
         #     match self.battle_command:
@@ -232,7 +228,7 @@ class SoSAppraisal(Appraisal):
         #             )
         # return False
 
-    def is_player_timed_attack_ready(self) -> bool:
+    def is_player_timed_attack_ready(self: Self) -> bool:
         for player in self.combat_manager.players:
             if player.character == self.character:
                 return player.timed_attack_ready

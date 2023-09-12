@@ -1,3 +1,6 @@
+from typing import Self
+
+
 class EnemyName:
     NAMES = {
         # Evermist Island: Mountain Trail
@@ -28,5 +31,5 @@ class EnemyName:
         "e79eceacb415fd04f84e6da6f9b23d3d": "BilePile",
     }
 
-    def get(self, guid: str) -> str:
+    def get(self: Self, guid: str) -> str:
         return self.NAMES.get(guid)

@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 import imgui
 
@@ -8,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class Menu:
-    def __init__(self, window: Window, title: str, children: list = None) -> None:
+    def __init__(self: Self, window: Window, title: str, children: list = None) -> None:
         if children is None:
             children = []
         self.window = window
@@ -17,7 +18,7 @@ class Menu:
         self.active = None
 
     # Return True when done
-    def execute(self, top_level: bool) -> bool:
+    def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
         imgui.set_window_position(5, 5, condition=imgui.ONCE)
         for child in self.children:
@@ -29,7 +30,7 @@ class Menu:
         self.window.end_window()
         return ret
 
-    def run(self, top_level: bool = False) -> bool:
+    def run(self: Self, top_level: bool = False) -> bool:
         if self.active is None:
             return self.execute(top_level)
         done = self.active.run()
@@ -39,11 +40,11 @@ class Menu:
 
 
 class MenuManager:
-    def __init__(self, window: Window, root_menus: list[Menu]) -> None:
+    def __init__(self: Self, window: Window, root_menus: list[Menu]) -> None:
         self.window = window
         self.root_menus = root_menus
 
-    def run(self) -> None:
+    def run(self: Self) -> None:
         while self.window.is_open():
             self.window.start_frame()
             for menu in self.root_menus:

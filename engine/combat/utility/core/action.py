@@ -4,13 +4,18 @@
 # The consideration will execute to setup for the action, and
 # then the appraisal will execute.
 
+from typing import Any, Self
+
 from engine.combat.utility.core.appraisal import Appraisal
 
 
 class Action:
-    def __init__(self, consideration, appraisal: Appraisal):
+    # TODO: Fix Any due to circular dependency
+    def __init__(
+        self: Self, consideration: Any, appraisal: Appraisal  # noqa: ANN401
+    ) -> None:
         self.consideration = consideration
         self.appraisal = appraisal
 
-    def execute(self):
+    def execute(self: Self) -> None:
         pass

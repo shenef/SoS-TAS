@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Self
 
 from engine.mathlib import Vec3
 from memory.core import mem_handle
@@ -14,7 +15,7 @@ class PlayerMovementState(Enum):
 
 
 class PlayerPartyManager:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
@@ -24,7 +25,7 @@ class PlayerPartyManager:
         self.movement_state = PlayerMovementState.NONE
         self.leader_character = PlayerPartyCharacter.NONE
 
-    def update(self):
+    def update(self: Self) -> None:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
@@ -50,7 +51,7 @@ class PlayerPartyManager:
                 # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
 
-    def _read_position(self):
+    def _read_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
             ptr = self.memory.follow_pointer(self.base, [self.leader, 0x90, 0x84])
@@ -64,7 +65,7 @@ class PlayerPartyManager:
 
         self.position = Vec3(None, None, None)
 
-    def _read_gameobject_position(self):
+    def _read_gameobject_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
             gameobject_ptr = self.memory.follow_pointer(
@@ -85,7 +86,7 @@ class PlayerPartyManager:
 
         self.gameobject_position = Vec3(None, None, None)
 
-    def _read_movement_state(self):
+    def _read_movement_state(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> stateMachine -> currentState
             ptr = self.memory.follow_pointer(self.base, [self.leader, 0x88, 0x50, 0x8C])
@@ -102,7 +103,7 @@ class PlayerPartyManager:
                 case _:
                     self.movement_state = PlayerMovementState.NONE
 
-    def _read_leader_character(self):
+    def _read_leader_character(self: Self) -> None:
         if self.memory.ready_for_updates:
             # base -> leaderId
             ptr = self.memory.follow_pointer(self.base, [0x88, 0x0])

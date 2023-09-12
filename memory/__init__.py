@@ -1,5 +1,6 @@
 from memory.boat_manager import boat_manager_handle
 from memory.combat_manager import (
+    CombatManager,
     CombatPlayer,
     CombatTutorialState,
     combat_manager_handle,
@@ -28,6 +29,7 @@ __all__ = [
     "PlayerMovementState",
     "TitleCursorPosition",
     "EnemyName",
+    "CombatManager",
     "CombatPlayer",
     "CombatTutorialState",
 ]

@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from engine.combat import (
     SeqCombatAndMove,
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class DemoWizardLabEnterTower(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Enter tower",
             children=[
@@ -123,7 +124,7 @@ class DemoWizardLabEnterTower(SeqList):
 
 
 class DemoWizardLabGreenArea(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Green area",
             children=[
@@ -200,7 +201,7 @@ class DemoWizardLabGreenArea(SeqList):
 
 
 class DemoWizardLabPlaceBlueCrystal(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Set blue crystal",
             children=[
@@ -247,7 +248,7 @@ class DemoWizardLabPlaceBlueCrystal(SeqList):
 
 
 class DemoWizardLabBlueArea(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Blue area",
             children=[
@@ -262,7 +263,7 @@ class DemoWizardLabBlueArea(SeqList):
 
 
 class DemoWizardLab(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Wizard Lab",
             children=[

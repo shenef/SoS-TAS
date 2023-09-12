@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 import imgui
 
@@ -20,12 +21,12 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class DebugMenu(Menu):
-    def __init__(self, window: Window) -> None:
+    def __init__(self: Self, window: Window) -> None:
         super().__init__(window, title="Debug menu")
         self.show_metrics = False
         self.show_test = False
 
-    def execute(self, top_level: bool) -> bool:
+    def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)

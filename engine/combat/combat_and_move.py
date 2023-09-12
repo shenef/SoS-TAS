@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing import Self
 
 from control.sos import sos_ctrl
 from engine.combat.combat_controller import CombatController
@@ -14,16 +15,16 @@ class SeqCombatAndMove(SeqMove):
     _TOGGLE_TIME = 0.05
 
     def __init__(
-        self,
+        self: Self,
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 0.2,
         tap_rate: float = 0.1,
         running: bool = True,
-        func=None,
+        func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
-    ):
+    ) -> None:
         super().__init__(
             name, coords, precision, tap_rate, running, func, emergency_skip, invert
         )
@@ -32,7 +33,7 @@ class SeqCombatAndMove(SeqMove):
         self.encounter_done = True
 
     # Override
-    def navigate_to_checkpoint(self, delta: float) -> None:
+    def navigate_to_checkpoint(self: Self, delta: float) -> None:
         if combat_manager.encounter_done:
             # If there is no active fight, move along the designated path
             super().navigate_to_checkpoint(delta)
@@ -44,5 +45,5 @@ class SeqCombatAndMove(SeqMove):
             self.combat_controller.execute_combat()
         self.encounter_done = combat_manager.encounter_done
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"Executing Combat Sequence ({self.name})."

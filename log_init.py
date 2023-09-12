@@ -1,10 +1,12 @@
 import datetime
 import logging
 import time
+from logging import LogRecord
+from typing import Self
 
 
 # Used to reset time reference at start of run
-def reset_logging_time_reference():
+def reset_logging_time_reference() -> None:
     logging._startTime = time.time()
 
 
@@ -31,7 +33,7 @@ class DeltaTimeFormatter(logging.Formatter):
         logging.CRITICAL: bold_red,
     }
 
-    def format(self, record):  # noqa: A003
+    def format(self: Self, record: LogRecord) -> str:  # noqa: A003
         # Create a timestamp we can use to parse,
         # using the millisecond timestamp since start of program / 1000
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
@@ -49,7 +51,7 @@ class DeltaTimeFormatter(logging.Formatter):
 
 
 # This should be called once in main, before any calls to the logging library
-def initialize_logging(config_data: dict):
+def initialize_logging(config_data: dict) -> None:
     # Defines the format of the colored logs
     color_log_fmt = (
         "%(color)s[%(delta)s] %(name)-16s %(levelname)-8s %(message)s%(color_reset)s"
@@ -125,7 +127,9 @@ def initialize_logging(config_data: dict):
 
 # Method for adding a custom log level. Adapted from:
 # https://stackoverflow.com/questions/2183233/how-to-add-a-custom-loglevel-to-pythons-logging-facility/35804945#35804945
-def _add_log_level(level_name: str, level_num: int, method_name: str | None = None):
+def _add_log_level(
+    level_name: str, level_num: int, method_name: str | None = None
+) -> None:
     """
     Comprehensively adds a new logging level to the `logging` module and the
     currently configured logging class.
@@ -163,11 +167,11 @@ def _add_log_level(level_name: str, level_num: int, method_name: str | None = No
     # This method was inspired by the answers to Stack Overflow post
     # http://stackoverflow.com/q/2183233/2988730, especially
     # http://stackoverflow.com/a/13638084/2988730
-    def log_for_level(self, message, *args, **kwargs):
+    def log_for_level(self: Self, message: str, *args, **kwargs) -> None:
         if self.isEnabledFor(level_num):
             self._log(level_num, message, args, **kwargs)
 
-    def log_to_root(message, *args, **kwargs):
+    def log_to_root(message: str, *args, **kwargs) -> None:
         logging.log(level_num, message, *args, **kwargs)
 
     logging.addLevelName(level_num, level_name)

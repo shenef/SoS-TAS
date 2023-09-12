@@ -1,6 +1,7 @@
 # Libraries and Core Files
 import codecs
 import logging
+from typing import Self
 
 import pymem
 
@@ -8,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class SoSMemory:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.pm = None
         self.module = None
         self.module_base = None
@@ -34,7 +35,7 @@ class SoSMemory:
 
     # Helper for setting the `read_for_updates` field to allow depdencies to
     # ensure all the modules for the core are loaded
-    def _set_ready_for_updates(self):
+    def _set_ready_for_updates(self: Self) -> None:
         ready = (
             self.pm is not None
             and self.pm.process_handle is not None
@@ -47,7 +48,7 @@ class SoSMemory:
 
         self.ready_for_updates = ready
 
-    def update(self):
+    def update(self: Self) -> None:
         try:
             if self.pm is not None and not self.pm.base_address:
                 self.__init__()
@@ -87,7 +88,7 @@ class SoSMemory:
     # Find the parent static table address
     # Return the sum of that static table_address on the parent and the instance field on the parent
     # to get the offset from the base image where that instance will be allocated
-    def get_singleton_by_class_name(self, class_name):
+    def get_singleton_by_class_name(self: Self, class_name: str) -> int:
         local_class = self.get_class(class_name)
         if local_class is None or local_class == 0x0:
             return None
@@ -105,27 +106,12 @@ class SoSMemory:
         # TODO: Try returning only static_table + instance_ptr at a later date.
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 
-    # Get pointer will return the pointer, but not access it. This function does this
-    # by mutating the `offset` list, by calling `pop()` to retreive/remove the last element
-    # following the 64-bit pointers and attaching the last address at the end so it does not
-    # follow the pointer and only gets the address where it can be followed later.
-    #
-    # This is to ensure specific fields can be used as a base for other classes for
-    # performance or if the user wants to reuse the pointer base address.
-    def get_pointer(self, root, offsets):
-        addr = self.pm.read_longlong(self.base_addr + root)
-        last = offsets.pop()
-        for offset in offsets:
-            addr = self.pm.read_longlong(addr + offset)
-
-        return addr + last
-
     # This function allows you to follow an existing pointer created by get_pointer.
     # The purpose is to allow for performance allowing reusability from an existing pointer address
     # Unlike get_pointer, this function doesn't access the base before reading the offsets, however
     # like get_pointer, it does mutate the `offset` array by popping the last value and attaching
     # it at the end, so it can either be read from or used in another follow_pointer.
-    def follow_pointer(self, base, offsets):
+    def follow_pointer(self: Self, base: int, offsets: list[int]) -> int:
         last = offsets.pop()
         addr = base
         for offset in offsets:
@@ -133,16 +119,16 @@ class SoSMemory:
 
         return addr + last
 
-    def read_float(self, ptr):
+    def read_float(self: Self, ptr: int) -> float:
         return self.pm.read_float(ptr)
 
-    def read_bool(self, ptr, default=False):
+    def read_bool(self: Self, ptr: int) -> bool:
         return self.pm.read_bool(ptr)
 
-    def read_int(self, ptr):
+    def read_int(self: Self, ptr: int) -> int:
         return self.pm.read_int(ptr)
 
-    def read_short(self, ptr):
+    def read_short(self: Self, ptr: int) -> int:
         return self.pm.read_short(ptr)
 
     # Reads the garbled uuid string utf-8 field provided by Sea Of Stars
@@ -150,7 +136,7 @@ class SoSMemory:
     # this returns as example: 550e8400-e29b-41d4-a716-446655440000
     # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
     # To "fix" this string, you will need to run value.replace("\x00", "")
-    def read_uuid(self, ptr):
+    def read_uuid(self: Self, ptr: int) -> str:
         string_bytes = self.pm.read_bytes(ptr, 71)
 
         return codecs.decode(string_bytes, "UTF-8")
@@ -160,22 +146,21 @@ class SoSMemory:
     # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
     # This returns as example: e6ac627711e4ee44da103c47d1cd5736
     # To "fix" this string, you will need to run value.replace("\x00", "")
-    def read_guid(self, ptr):
+    def read_guid(self: Self, ptr: int) -> str:
         string_bytes = self.pm.read_bytes(ptr, 64)
 
         return codecs.decode(string_bytes, "UTF-8")
 
-    def read_string(self, ptr, length):
+    def read_string(self: Self, ptr: int, length: int) -> str:
         string_bytes = self.pm.read_bytes(ptr, length)
 
         return codecs.decode(string_bytes, "UTF-8")
 
-    def read_longlong(self, ptr):
+    def read_longlong(self: Self, ptr: int) -> int:
         return self.pm.read_longlong(ptr)
 
     # Scans the module/image class list for a specific class name by string.
-    def get_class(self, class_name):
-        record = None
+    def get_class(self: Self, class_name: str) -> int | None:
         unity_classes = self._get_image_classes()
         for item in unity_classes:
             ptr = pymem.memory.read_longlong(
@@ -184,12 +169,11 @@ class SoSMemory:
 
             name = pymem.memory.read_string(self.pm.process_handle, ptr, 128)
             if name == class_name:
-                record = item
-                break
-        return record
+                return item
+        return None
 
     # Gets a pointer to a named field for a provided class pointer
-    def get_field(self, class_ptr, field_name):
+    def get_field(self: Self, class_ptr: int, field_name: str) -> int | None:
         record = None
         unity_fields = self._get_fields(class_ptr)
 
@@ -209,7 +193,7 @@ class SoSMemory:
 
     # Get the static table pointer for a provided class pointer. This is an array of pointers
     # to each static field on the class.
-    def get_static_table(self, class_ptr):
+    def get_static_table(self: Self, class_ptr: int) -> int:
         return pymem.memory.read_longlong(
             self.pm.process_handle, class_ptr + self.offsets["monoclass_static_fields"]
         )
@@ -217,25 +201,25 @@ class SoSMemory:
     # This is used to get the parent class of a type. This should
     # only be used in specific circumstances, like finding the Generic class to
     # find an instanced class. See get_singleton_by_class_name for its usage.
-    def get_parent(self, class_ptr):
+    def get_parent(self: Self, class_ptr: int) -> int:
         return pymem.memory.read_longlong(
             self.pm.process_handle, class_ptr + self.offsets["monoclass_parent"]
         )
 
     # This is used to get the fields lookup base of the class
     # Provides the field offset relative to the base class.
-    def get_class_fields_base(self, class_ptr):
+    def get_class_fields_base(self: Self, class_ptr: int) -> int:
         return pymem.memory.read_longlong(
             self.pm.process_handle, self.get_class_base(class_ptr)
         )
 
     # This is used to get the actual base of the class
     # This can be used as the base when following pointer + field offsets
-    def get_class_base(self, class_ptr):
+    def get_class_base(self: Self, class_ptr: int) -> int:
         return pymem.memory.read_longlong(self.pm.process_handle, class_ptr)
 
     # Scans for the assemblies signature for the specific version of unity for SoS
-    def _assemblies_trg_sig(self):
+    def _assemblies_trg_sig(self: Self) -> None:
         if self.assemblies is None:
             # "48 FF C5 80 3C ?? 00 75 ?? 48 8B 1D"
             signature = b"\\x48\\xFF\\xC5\\x80\\x3C.\\x00\\x75.\\x48\\x8B\\x1D"
@@ -252,7 +236,7 @@ class SoSMemory:
             )
 
     # Scans for the type info definition table signature for the specific version of unity for SoS
-    def _type_info_definition_table_trg_sig(self):
+    def _type_info_definition_table_trg_sig(self: Self) -> None:
         if self.type_info_definition_table is None:
             # "48 83 3C ?? 00 75 ?? 8B C? E8"
             signature = b"\\x48\\x83\\x3C.\\x00\\x75.\\x8B.\\xe8"
@@ -267,7 +251,7 @@ class SoSMemory:
             )
 
     # Gets the Assembly-CSharp image where the games code lives so it can be used as a module base
-    def get_image(self, assembly_name="Assembly-CSharp"):
+    def get_image(self: Self, assembly_name: str = "Assembly-CSharp") -> int:
         assemblies = pymem.memory.read_longlong(self.pm.process_handle, self.assemblies)
 
         image = None
@@ -301,7 +285,7 @@ class SoSMemory:
         self.image = image
 
     # Get the pointers for each field in a class pointer
-    def _get_fields(self, class_ptr):
+    def _get_fields(self: Self, class_ptr: int) -> list[int]:
         field_count = (
             pymem.memory.read_longlong(
                 self.pm.process_handle,
@@ -312,14 +296,14 @@ class SoSMemory:
         fields_ptr = pymem.memory.read_longlong(
             self.pm.process_handle, class_ptr + self.offsets["monoclass_fields"]
         )
-        fields = []
+        fields: list[int] = []
         struct_size = self.offsets["monoclassfield_structsize"] & 0xFFFFFFFFFFFFFFFF
         for field in range(0, field_count):
             fields.append(fields_ptr + (field * struct_size))
         return fields
 
     # Get all Unity Types/Classes in the provided module/dll
-    def _get_image_classes(self):
+    def _get_image_classes(self: Self) -> list[int]:
         type_count = pymem.memory.read_int(
             self.pm.process_handle, self.image + self.offsets["monoimage_typecount"]
         )
@@ -334,7 +318,7 @@ class SoSMemory:
         )
 
         ptr = ptr + (metadata_handle * 8)
-        classes = []
+        classes: list[int] = []
         for field in range(0, type_count):
             field_class = pymem.memory.read_ulonglong(
                 self.pm.process_handle, ptr + (field * 8)

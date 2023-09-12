@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
@@ -28,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 class IntroMountainTrail(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Mountain Trail",
             children=[
@@ -134,7 +135,7 @@ class IntroMountainTrail(SeqList):
 
 
 class IntroMooncradle(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Mooncradle",
             children=[
@@ -229,7 +230,7 @@ class IntroMooncradle(SeqList):
 
 
 class SeqIfMainCharacterValere(SeqIf):
-    def condition(self) -> bool:
+    def condition(self: Self) -> bool:
         leader = player_party_manager_handle().leader_character
         if leader == PlayerPartyCharacter.Valere:
             return True
@@ -239,7 +240,7 @@ class SeqIfMainCharacterValere(SeqIf):
 
 
 class LoomsToCenter(SeqIfMainCharacterValere):
-    def __init__(self, name: str):
+    def __init__(self: Self, name: str) -> None:
         super().__init__(
             name,
             # Valere branch: Go left
@@ -265,7 +266,7 @@ class LoomsToCenter(SeqIfMainCharacterValere):
 
 
 class IntroZenithAcademy(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Mooncradle",
             children=[
@@ -417,7 +418,7 @@ class IntroZenithAcademy(SeqList):
 
 
 class EvermistIsland(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Evermist Island",
             children=[

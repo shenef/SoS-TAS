@@ -1,5 +1,6 @@
 import logging
 import sys
+from typing import Any, Self
 
 import glfw
 import imgui
@@ -20,7 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 # Create the window that our GUI/visualization will be in
-def create_glfw_window(window_name="Sea of Stars TAS", width=600, height=720):
+def create_glfw_window(
+    window_name: str = "Sea of Stars TAS", width: int = 600, height: int = 720
+) -> Any:  # noqa: ANN401
     if not glfw.init():
         logger.error("Could not initialize OpenGL context")
         sys.exit(1)
@@ -51,7 +54,7 @@ def create_glfw_window(window_name="Sea of Stars TAS", width=600, height=720):
     return window
 
 
-def update_memory():
+def update_memory() -> None:
     mem_handle().update()
     if mem_handle().ready_for_updates:
         level_manager_handle().update()
@@ -69,7 +72,7 @@ def update_memory():
 
 
 class Window:
-    def __init__(self, config: dict) -> None:
+    def __init__(self: Self, config: dict) -> None:
         super().__init__()
 
         self.backgroundColor = (0, 0, 0, 1)
@@ -82,24 +85,24 @@ class Window:
         vsync = config.get("vsync", True)
         glfw.swap_interval(1 if vsync else 0)
 
-    def is_open(self) -> bool:
+    def is_open(self: Self) -> bool:
         return not glfw.window_should_close(self.window)
 
-    def start_frame(self) -> None:
+    def start_frame(self: Self) -> None:
         glfw.poll_events()
         update_memory()
         self.impl.process_inputs()
         imgui.new_frame()
 
-    def start_window(self, title: str) -> None:
+    def start_window(self: Self, title: str) -> None:
         imgui.begin(title, True)
 
     # Finalize window
-    def end_window(self) -> None:
+    def end_window(self: Self) -> None:
         imgui.end()
 
     # Finalize drawing
-    def end_frame(self) -> None:
+    def end_frame(self: Self) -> None:
         imgui.render()
 
         gl.glClearColor(*self.backgroundColor)
@@ -109,7 +112,7 @@ class Window:
         glfw.swap_buffers(self.window)
 
     # Cleanup
-    def close(self) -> None:
+    def close(self: Self) -> None:
         self.impl.shutdown()
         glfw.terminate()
 
@@ -122,13 +125,13 @@ class GUI_helper:
         add_spacer():
             Adds a horizontal line with some padding."""
 
-    def add_spacer():
+    def add_spacer() -> None:
         """Adds a horizontal line with some padding."""
         imgui.spacing()
         imgui.separator()
         imgui.spacing()
 
-    def add_spacings(n):
+    def add_spacings(n: int) -> None:
         """Adds multiple imgui.spacing() at once."""
         for _ in range(n):
             imgui.spacing()

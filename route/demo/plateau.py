@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec3
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class DemoPlateau(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="X'tol's Landing",
             children=[

@@ -1,4 +1,5 @@
 import math
+from typing import Self
 
 from control import sos_ctrl
 from engine.blackboard import blackboard, clear_blackboard
@@ -18,7 +19,7 @@ from memory import (
 )
 
 
-def start_timer():
+def start_timer() -> None:
     reset_logging_time_reference()
     blackboard().start()
 
@@ -28,45 +29,45 @@ title_sequence_manager = title_sequence_manager_handle()
 
 class SeqIfNewGame(SeqIf):
     def __init__(
-        self,
+        self: Self,
         name: str,
         when_true: SeqBase,
         when_false: SeqBase,
         default: bool = True,
         saveslot: int = 0,
-    ):
+    ) -> None:
         super().__init__(name, when_true, when_false, default)
         self.saveslot = saveslot
 
     # saveslot should be 0 for new game, or 1-9 for Load Game
-    def condition(self) -> bool:
+    def condition(self: Self) -> bool:
         return self.saveslot == 0
 
 
 class SeqMenuStartButton(SeqBase):
-    def __init__(self, name: str = "Start button"):
+    def __init__(self: Self, name: str = "Start button") -> None:
         super().__init__(name)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         sos_ctrl().start()
         return True
 
 
 class SeqMenuTapLeft(SeqBase):
-    def __init__(self, name: str = "Tap left"):
+    def __init__(self: Self, name: str = "Tap left") -> None:
         super().__init__(name)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         sos_ctrl().dpad.tap_left()
         return True
 
 
 class SeqNavigateMainMenu(SeqBase):
-    def __init__(self, name: str, target_state: TitleCursorPosition):
+    def __init__(self: Self, name: str, target_state: TitleCursorPosition) -> None:
         super().__init__(name)
         self.target_state = target_state
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         if title_sequence_manager.title_cursor_position == self.target_state:
             # We have selected the correct item
             return True
@@ -76,7 +77,7 @@ class SeqNavigateMainMenu(SeqBase):
 
 
 class SeqNewGameFromMenu(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Select main character",
             children=[
@@ -102,12 +103,12 @@ class SeqNewGameFromMenu(SeqList):
 
 
 class SeqSelectSaveSlot(SeqBase):
-    def __init__(self, name: str, saveslot: int):
+    def __init__(self: Self, name: str, saveslot: int) -> None:
         self.saveslot = saveslot  # should be 1-9
         super().__init__(name)
 
     # Navigate to the saveslot in question by tapping down x times
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         page = math.trunc((self.saveslot - 1) / 3)  # 0-2 (save page)
         vertical = (self.saveslot - 1) % 3  # 0-2 (save slot in page)
         for _ in range(0, page):
@@ -118,7 +119,7 @@ class SeqSelectSaveSlot(SeqBase):
 
 
 class SoSStartGame(SeqList):
-    def __init__(self, saveslot: int):
+    def __init__(self: Self, saveslot: int) -> None:
         super().__init__(
             name="Start game",
             children=[

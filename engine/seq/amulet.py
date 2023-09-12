@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Self
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
@@ -10,9 +11,9 @@ logger = logging.getLogger(__name__)
 # TODO: Temporary code, moves along path, pausing while combat is active
 class SeqAmulet(SeqBase):
     def __init__(
-        self,
+        self: Self,
         name: str,
-    ):
+    ) -> None:
         super().__init__(name)
         self.timer = 0.0
         self.complete = False
@@ -20,7 +21,7 @@ class SeqAmulet(SeqBase):
         self.delay = 0.05
 
     # Override
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         step = self.steps.pop(0)
         logger.debug(step)
 
@@ -45,5 +46,5 @@ class SeqAmulet(SeqBase):
             case _:
                 return False
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"Amulet sequence ({self.name})."

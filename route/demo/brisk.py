@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class DemoBrisk(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="Brisk",
             children=[

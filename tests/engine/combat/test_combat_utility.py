@@ -1,4 +1,5 @@
 import unittest
+from typing import Self
 
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory.combat_manager import CombatManager, CombatPlayer
@@ -39,7 +40,7 @@ combat_manager.players = [zale, valere, garl]
 
 # This is a sanity class for testing the combat controller and the
 class TestCombatUtility(unittest.TestCase):
-    def test_create(self):
+    def test_create(self: Self) -> None:
         reasoner = SoSReasoner(combat_manager)
         # Ensure considerations are generated
         self.assertEqual(len(reasoner.considerations), 3)
@@ -52,7 +53,7 @@ class TestCombatUtility(unittest.TestCase):
     # make a distinction later, but for now, it will just pick whoever
     # has the highest physical attack.
 
-    def test_consideration_selection(self):
+    def test_consideration_selection(self: Self) -> None:
         reasoner = SoSReasoner(combat_manager)
         action = reasoner._select_action()
         self.assertEqual(
