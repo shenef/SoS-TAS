@@ -284,3 +284,29 @@ class Quaternion:
         self.y = y
         self.z = z
         self.w = w
+
+    # https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+    # Section: Quaternion to Euler angles (in 3-2-1 sequence) conversion
+    def to_angles(self) -> Vec3:
+        return Vec3(
+            math.atan2(
+                2 * (self.w * self.x + self.y * self.z),
+                1 - 2 * (self.x * self.x + self.y * self.y),
+            ),
+            math.asin(2 * (self.w * self.y - self.x * self.z)),
+            math.atan2(
+                2 * (self.w * self.z + self.x * self.y),
+                1 - 2 * (self.y * self.y + self.z * self.z),
+            ),
+        )
+
+    # Some math to correct the angle into a range of +-pi
+    #   East = 0
+    #   North = pi/2
+    #   West = +-pi
+    #   South = -pi/2
+    def to_yaw(self) -> float:
+        angles = self.to_angles()
+        if angles.x > 0:
+            return angles.y - math.pi / 2
+        return math.pi - (angles.y + math.pi / 2)

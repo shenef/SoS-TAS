@@ -171,14 +171,7 @@ class NavHelper(Menu):
                 imgui.core.set_clipboard_text(
                     f"Vec3({boat_pos.x:.3f}, {boat_pos.y:.3f}, {boat_pos.z:.3f}),"
                 )
-            imgui.text(f"Rot x: {boat_rotation.x:.3f}")
-            imgui.text(f"Rot y: {boat_rotation.y:.3f}")
-            imgui.text(f"Rot z: {boat_rotation.z:.3f}")
-            imgui.text(f"Rot w: {boat_rotation.w:.3f}")
-            if imgui.button("Copy to clipboard##5"):
-                imgui.core.set_clipboard_text(
-                    f"Quaternion({boat_rotation.x:.3f}, {boat_rotation.y:.3f}, {boat_rotation.z:.3f}, {boat_rotation.w:.3f}),"  # noqa E501
-                )
+            imgui.text(f"Rot (yaw): {boat_rotation.to_yaw():.3f}")
             imgui.text(f"speed: {boat_manager.speed:.3f}/{boat_manager.max_speed:.3f}")
 
         ret = False
