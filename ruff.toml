@@ -3,6 +3,7 @@ line-length = 100
 select = [
   # https://beta.ruff.rs/docs/rules/
   "A",        # flake8-builtins
+  "ANN",      # flake8-annotations
   # "ARG",    # flake8-unused-arguments - wait for code changes to calm down
   "B",        # bugbear
   "D200",     # pydocstyle fits-on-one-line
@@ -24,6 +25,8 @@ ignore = [
   "PLR0913",  # too-many-arguments
   "PLR0915",  # too-many-statements
   "PLW0603",  # global-statement
+  "ANN002",   # Missing type annotation for *{name} (args)
+  "ANN003",   # Missing type annotation for **{name} (kwargs)
 ]
 unfixable = [
   "ERA"       # has a bunch of false positives when auto-fixing
