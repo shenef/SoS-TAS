@@ -4,7 +4,7 @@ from GUI.battle_menu import BattleMenu
 from GUI.debug_menu import DebugMenu
 from GUI.tools.nav_helper import NavHelper
 from log_init import initialize_logging
-from route.TAS import SoSAnyPercentMenu, SoSDemoAnyPercentMenu
+from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu, SoSDemoAnyPercentMenu
 
 if __name__ == "__main__":
     # Read config data from file
@@ -27,6 +27,7 @@ if __name__ == "__main__":
                 children=[
                     SoSAnyPercentMenu(window=gui, config_data=config_data),
                     SoSDemoAnyPercentMenu(window=gui, config_data=config_data),
+                    SoSBattleTestMenu(window=gui, config_data=config_data),
                 ],
             ),
             DebugMenu(window=gui),

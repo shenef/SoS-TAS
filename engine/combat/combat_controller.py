@@ -1,8 +1,23 @@
-from control import sos_ctrl
-from engine.combat.utility.sos_reasoner import SoSReasoner
-from memory import PlayerPartyCharacter, combat_manager_handle
+import logging
 
+from control import sos_ctrl
+from engine.combat.appraisals.valere.crescent_arc import CrescentArc
+from engine.combat.appraisals.zale.sunball import Sunball
+from engine.combat.utility.core.action import Action
+from engine.combat.utility.sos_consideration import SoSConsideration
+from engine.combat.utility.sos_reasoner import SoSReasoner
+from memory import (
+    CombatTutorialState,
+    PlayerPartyCharacter,
+    combat_manager_handle,
+    level_manager_handle,
+    new_dialog_manager_handle,
+)
+
+logger = logging.getLogger(__name__)
+level_manager = level_manager_handle()
 combat_manager = combat_manager_handle()
+new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
@@ -19,6 +34,16 @@ class CombatController:
         if combat_manager.encounter_done is True:
             return True
 
+        # if some dialog is on the screen - make it go away
+        if new_dialog_manager.dialog_open:
+            self.ctrl.confirm()
+            self._handle_alternate_encounters()
+            return False
+
+        # We need to decide how to handle these specific scenarios; via profile
+        # or whatever else, but this is good for now.
+        # Note: It can't be stopped or tested mid encounter.
+
         # if we dont have an action or the current appraisal is complete,
         # we make a new one.
         # we also check if battle command has focus, so it doesn't start executing before
@@ -28,7 +53,7 @@ class CombatController:
             and combat_manager.selected_character is not PlayerPartyCharacter.NONE
             and combat_manager.battle_command_has_focus
         ):
-            # logger.debug("No action exists, executing one one")
+            logger.debug("No action exists, executing one one")
             self.action = self.reasoner.execute()
             return False
 
@@ -46,7 +71,7 @@ class CombatController:
             combat_manager.selected_character, self.action
         )
         if not consideration_valid:
-            # logger.debug("Consideration is not valid, move cursor")
+            logger.debug("Consideration is not valid, move cursor")
             self.action.consideration.execute()
             return False
 
@@ -55,7 +80,7 @@ class CombatController:
         # logger.debug("Try to execute the appraisal")
         self.action.appraisal.execute()
         if self.action.appraisal.complete:
-            # logger.debug("appraisal is complete, reset action")
+            logger.debug("appraisal is complete, reset action")
             self.action = None
 
         return False
@@ -71,3 +96,20 @@ class CombatController:
         # if consideration executed
 
         # Check if we have control
+
+    # TODO: This is a hack to get the second encounter tutorial to work for now.
+    # This should be refactored once we have a better way to handle this.
+    def _handle_alternate_encounters(self):
+        # checks if we are in the second encounter zone and if we are in the tutorial
+        if (
+            not self.action
+            and level_manager.current_level == "72e9f2699f7c8394b93afa1d273ce67a"
+            and combat_manager.tutorial_state is CombatTutorialState.SecondEncounter
+        ):
+            # if we're in the "second encounter" combat tutorial after the dialog state
+            # just add an action for using the correct move
+            for player in combat_manager.players:
+                if player.character == PlayerPartyCharacter.Valere:
+                    self.action = Action(SoSConsideration(player), CrescentArc())
+                if player.character == PlayerPartyCharacter.Zale:
+                    self.action = Action(SoSConsideration(player), Sunball())

@@ -1,5 +1,5 @@
 import contextlib
-from enum import Enum
+from enum import Enum, auto
 
 from memory.core import mem_handle
 from memory.mappers.enemy_name import EnemyName
@@ -18,6 +18,11 @@ class CombatDamageType(Enum):
     Stun = 128
     Blunt = 256
     Magical = 252
+
+
+class CombatTutorialState(Enum):
+    NONE = auto()
+    SecondEncounter = auto()
 
 
 class CombatSpellLock:
@@ -57,6 +62,7 @@ class CombatPlayer:
         self.physical_attack = None
         self.selected = False
         self.definition_id = None
+        self.timed_attack_ready = False
         self.dead = False
         self.character = PlayerPartyCharacter.NONE
         self.enabled = None
@@ -79,6 +85,7 @@ class CombatManager:
         self.enemies = []
         self.players = []
         self.selected_character = PlayerPartyCharacter.NONE
+        self.tutorial_state = CombatTutorialState.NONE
         self.current_encounter_base = None
         self.encounter_done = None
         self.small_live_mana = None
@@ -87,7 +94,8 @@ class CombatManager:
         self.battle_command_index = None
         self.skill_command_has_focus = False
         self.skill_command_index = None
-        self.selected_target_guid = None
+        self.selected_attack_target_guid = None
+        self.selected_skill_target_guid = None
 
     def update(self):
         try:
@@ -108,9 +116,12 @@ class CombatManager:
 
                 else:
                     self._read_encounter_done()
+
                     if self.encounter_done is True:
+                        self.tutorial_state = CombatTutorialState.NONE
                         return
 
+                    self._read_tutorial_state()
                     self._read_players()
                     self._read_enemies()
                     self._read_battle_commands()
@@ -127,6 +138,35 @@ class CombatManager:
     # combat manager module.
     def _should_update(self):
         return self.memory.ready_for_updates and self.current_encounter_base is not None
+
+    def _read_tutorial_state(self):
+        if self._should_update():
+            try:
+                tutorial_state_ptr = self.memory.follow_pointer(
+                    self.base, [self.current_encounter_base, 0x120, 0x0]
+                )
+
+                moongirl_skill_ptr = self.memory.follow_pointer(
+                    tutorial_state_ptr, [0xB0, 0x18, 0x0]
+                )
+
+                sunboy_skill_ptr = self.memory.follow_pointer(
+                    tutorial_state_ptr, [0xA8, 0x18, 0x0]
+                )
+
+                moongirl_str = self.memory.read_string(moongirl_skill_ptr + 0x14, 8)
+                sunboy_str = self.memory.read_string(sunboy_skill_ptr + 0x14, 8)
+
+                if (
+                    moongirl_str.replace("\x00", "") == "Cres"
+                    and sunboy_str.replace("\x00", "") == "Sunb"
+                ):
+                    self.tutorial_state = CombatTutorialState.SecondEncounter
+                    return
+
+                self.tutorial_state = CombatTutorialState.NONE
+            except Exception:
+                self.tutorial_state = CombatTutorialState.NONE
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self):
@@ -305,8 +345,21 @@ class CombatManager:
                         address += self.ITEM_OBJECT_OFFSET
                         continue
 
-                    dead_ptr = self.memory.follow_pointer(item, [0x68, 0x28])
-                    dead = self.memory.read_bool(dead_ptr + 0xC8)
+                    dead_ptr = self.memory.follow_pointer(item, [0x68, 0x38, 0x0])
+                    dead = self.memory.read_bool(dead_ptr + 0xD0)
+
+                    # tracks timed attacks maybe
+                    # timedAttackHandler -> trackingAfterHit
+                    try:
+                        timed_attack_ptr = self.memory.follow_pointer(
+                            dead_ptr, [0x160, 0x0]
+                        )
+                        timed_attack_value = self.memory.read_bool(
+                            timed_attack_ptr + 0x3A
+                        )
+                    except Exception:
+                        timed_attack_value = False
+
                     definition_id_ptr = self.memory.follow_pointer(item, [0x70, 0x0])
                     # 4 Chars * 2 for utf
                     definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)
@@ -317,7 +370,6 @@ class CombatManager:
                     character = PlayerPartyCharacter.parse_definition_id(definition_id)
 
                     selected = self.memory.read_bool(item + 0x78)
-
                     hp_text_field = self.memory.follow_pointer(item, [0x28, 0x0])
                     current_hp = self.memory.read_int(hp_text_field + 0x58)
 
@@ -331,35 +383,73 @@ class CombatManager:
                     target_unique_id_base = None
                     # A try is used here, because this pointer tends to fall out in quick
                     # play. This just returns safely and attempts again.
-                    selected_target_guid = ""
-                    with contextlib.suppress(Exception):
-                        target_unique_id_base = self.memory.follow_pointer(
-                            item,
-                            [
-                                0x68,
-                                0x38,
-                                0x190,
-                                0x30,
-                                0xA8,
-                                0x80,
-                                0x40,
-                                0xA8,
-                                0x80,
-                                0xF8,
-                                0xF0,
-                                0x18,
-                                0x0,
-                            ],
-                        )
 
-                    # This check was added due to the pointer not falling off in time, referencing
-                    # an enemy that just died
-                    try:
-                        selected_target_guid = self.memory.read_uuid(
-                            target_unique_id_base + 0x14
-                        )
-                    except Exception:
-                        selected_target_guid = ""
+                    selected_attack_target_guid = ""
+                    selected_skill_target_guid = ""
+                    if selected:
+                        with contextlib.suppress(Exception):
+                            target_unique_id_base = self.memory.follow_pointer(
+                                item,
+                                [
+                                    0x68,
+                                    0x38,
+                                    0x190,
+                                    0x30,
+                                    0xA8,
+                                    0x80,
+                                    0x40,
+                                    0xA8,
+                                    0x80,
+                                    0xF8,
+                                    0xF0,
+                                    0x18,
+                                    0x0,
+                                ],
+                            )
+
+                        # This check was added due to the pointer not falling off in time,
+                        # referencing an enemy that just died
+                        try:
+                            selected_attack_target_guid = self.memory.read_uuid(
+                                target_unique_id_base + 0x14
+                            )
+                        except Exception:
+                            selected_attack_target_guid = ""
+
+                        # Separate Skill section lookup
+                        # This is currently not correct as it considers the skill target, but gets a
+                        # bit washed out if there are AOE targets.
+                        # TODO:
+                        with contextlib.suppress(Exception):
+                            target_unique_id_base = self.memory.follow_pointer(
+                                item,
+                                [
+                                    0x68,
+                                    0x38,
+                                    0x190,
+                                    0x28,
+                                    0x10,
+                                    0x20,
+                                    0xA8,
+                                    0x80,
+                                    0x40,
+                                    0xA8,
+                                    0x80,
+                                    0xF8,
+                                    0xF0,
+                                    0x18,
+                                    0x0,
+                                ],
+                            )
+
+                        # This check was added due to the pointer not falling off in time,
+                        # referencing an enemy that just died
+                        try:
+                            selected_skill_target_guid = self.memory.read_uuid(
+                                target_unique_id_base + 0x14
+                            )
+                        except Exception:
+                            selected_skill_target_guid = ""
 
                     mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
 
@@ -369,6 +459,8 @@ class CombatManager:
                     # this will help us prevent scanning lists later on
                     if selected:
                         selected_character = character
+                        self.selected_attack_target_guid = selected_attack_target_guid
+                        self.selected_skill_target_guid = selected_skill_target_guid
 
                     player = CombatPlayer()
 
@@ -391,9 +483,9 @@ class CombatManager:
                     player.selected = selected
                     player.dead = dead
                     player.enabled = enabled
+                    player.timed_attack_ready = timed_attack_value
                     player.mana_charge_count = mana_charge_count
                     players.append(player)
-                    self.selected_target_guid = selected_target_guid
 
                     address += self.ITEM_OBJECT_OFFSET
 

@@ -4,8 +4,8 @@ logger = logging.getLogger(__name__)
 
 
 class Appraisal:
-    def __init__(self):
-        self.value = 0
+    def __init__(self, value: int = 0):
+        self.value = value
         self.complete = False
 
     def execute(self):

@@ -27,6 +27,7 @@ class BattleMenu(Menu):
         imgui.set_window_size(600, 300, condition=imgui.FIRST_USE_EVER)
 
         imgui.text(f"Encounter done: {combat_manager.encounter_done}")
+        imgui.text(f"Tutorial State: {combat_manager.tutorial_state.name}")
         if not combat_manager.encounter_done:
             imgui.text(
                 f"Battle Command has focus: {combat_manager.battle_command_has_focus}"
@@ -40,8 +41,19 @@ class BattleMenu(Menu):
             imgui.same_line()
             imgui.text(f"Big: {combat_manager.big_live_mana}")
             imgui.text(f"Selected Character: {combat_manager.selected_character.value}")
+            att_target = (
+                combat_manager.selected_attack_target_guid.replace("\x00", "")
+                if combat_manager.selected_attack_target_guid
+                else "None"
+            )
+            imgui.text(f"ATTACK TARGET: {att_target}")
+            skill_target = (
+                combat_manager.selected_skill_target_guid.replace("\x00", "")
+                if combat_manager.selected_skill_target_guid
+                else "None"
+            )
+            imgui.text(f"SKILL TARGET: {skill_target}")
             imgui.separator()
-
             imgui.columns(self.COLUMN_MAX)
 
             if combat_manager.enemies is not []:
@@ -57,7 +69,13 @@ class BattleMenu(Menu):
                     else:
                         imgui.text(f"{enemy.name} ({idx}):")
                     imgui.text(f"HP: {enemy.current_hp}/{enemy.max_hp}")
-                    targeted = enemy.unique_id == combat_manager.selected_target_guid
+                    attack_targeted = (
+                        enemy.unique_id == combat_manager.selected_attack_target_guid
+                    )
+                    skill_targeted = (
+                        enemy.unique_id == combat_manager.selected_skill_target_guid
+                    )
+
                     imgui.text(f"pATK: {enemy.physical_attack} |")
                     imgui.same_line()
                     imgui.text(f"mATK: {enemy.magic_attack}")
@@ -65,7 +83,8 @@ class BattleMenu(Menu):
                     imgui.same_line()
                     imgui.text(f"mDEF: {enemy.magic_defense}")
                     imgui.text(f"Speed: {enemy.speed}")
-                    imgui.text(f"Targeted: {targeted}")
+                    imgui.text(f"Attack Targeted: {attack_targeted}")
+                    imgui.text(f"Skill Targeted: {skill_targeted}")
                     imgui.text(f"Next action: {enemy.turns_to_action}")
                     imgui.text(f"Locks: {enemy.total_spell_locks}")
 
@@ -83,6 +102,7 @@ class BattleMenu(Menu):
                     imgui.text(f"{player.character.value}:")
                     imgui.text(f"HP: {player.current_hp}")
                     imgui.text(f"MP: {player.current_mp}")
+                    imgui.text(f"Dead: {player.dead}")
                     imgui.text(f"Selected: {player.selected}")
                     imgui.text(f"Enabled: {player.enabled}")
                     imgui.text(f"Mana Charge: {player.mana_charge_count}")
