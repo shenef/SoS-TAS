@@ -17,7 +17,7 @@ class PlayerPartyCharacter(Enum):
         if asciidata == b"V\x00A\x00L\x00E\x00":
             return PlayerPartyCharacter.Valere
         if asciidata == b"G\x00A\x00R\x00L\x00":
-            return PlayerPartyCharacter.Valere
+            return PlayerPartyCharacter.Garl
         if asciidata == b"S\x00E\x00R\x00A\x00":
             return PlayerPartyCharacter.Serai
         if asciidata == b"R\x00E\x00S\x00H\x00":
