@@ -293,24 +293,24 @@ class SeqCliffClimb(SeqClimb):
 
 class SeqBoat(SeqMove):
     def __init__(
-        self,
+        self: Self,
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 1.0,
         tap_rate: float = 0.1,
         running: bool = True,
-        func=None,
+        func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
-    ):
+    ) -> None:
         super().__init__(
             name, coords, precision, tap_rate, running, func, emergency_skip, invert
         )
 
-    def player_position(self) -> Vec3:
+    def player_position(self: Self) -> Vec3:
         return boat_manager.position
 
-    def move_function(self, player_pos: Vec3, target_pos: Vec3):
+    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
         ctrl = sos_ctrl()
         # Get the trajectory between the player pos and the target
         target_vec = target_pos - player_pos
@@ -330,7 +330,7 @@ class SeqBoat(SeqMove):
         ctrl.set_joystick(joy)
         ctrl.toggle_bracelet(state=True)
 
-    def on_done(self) -> None:
+    def on_done(self: Self) -> None:
         ctrl = sos_ctrl()
         ctrl.set_neutral()
         ctrl.toggle_bracelet(state=False)
