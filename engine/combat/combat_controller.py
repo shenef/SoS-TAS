@@ -5,9 +5,12 @@ from engine.combat.appraisals.valere.crescent_arc import CrescentArc
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
-from memory import PlayerPartyCharacter, combat_manager_handle
-from memory.level_manager import level_manager_handle
-from memory.new_dialog_manager import new_dialog_manager_handle
+from memory import (
+    PlayerPartyCharacter,
+    combat_manager_handle,
+    level_manager_handle,
+    new_dialog_manager_handle,
+)
 
 logger = logging.getLogger(__name__)
 level_manager = level_manager_handle()

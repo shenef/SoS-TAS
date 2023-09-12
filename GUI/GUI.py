@@ -11,10 +11,10 @@ from memory import (
     combat_manager_handle,
     level_manager_handle,
     mem_handle,
+    new_dialog_manager_handle,
     player_party_manager_handle,
     title_sequence_manager_handle,
 )
-from memory.new_dialog_manager import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
 

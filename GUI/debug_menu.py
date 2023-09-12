@@ -6,10 +6,10 @@ from GUI.GUI import GUI_helper, Window
 from GUI.menu import Menu
 from memory import (
     level_manager_handle,
+    new_dialog_manager_handle,
     player_party_manager_handle,
     title_sequence_manager_handle,
 )
-from memory.new_dialog_manager import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
 
