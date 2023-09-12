@@ -58,7 +58,7 @@ Combat Manager
       - 0x28 - Item[1] (Player 1)
         - 0xC8 - dead
         - 0x150 - fighterDefinition
-          - 0x18 - characterDefinitionId (2851000800) moongirl?
+          - 0x18 - characterDefinitionId (2851000800) valere?
           - 0x20 - battleCommands
             - 0x18 - count (5)
             - 0x20 - Item[0]
@@ -66,7 +66,7 @@ Combat Manager
       - 0x30 - Item[2] (Player 2)
         - 0xC8 - dead
         - 0x150 - fighterDefinition
-          - 0x18 - characterDefinitionId (2851000848) sunboy?
+          - 0x18 - characterDefinitionId (2851000848) zale?
           - 0x20 - battleCommands
             - 0x18 - count (5)
             - 0x20 - Item[0]

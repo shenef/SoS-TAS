@@ -147,20 +147,20 @@ class CombatManager:
                     self.base, [self.current_encounter_base, 0x120, 0x0]
                 )
 
-                moongirl_skill_ptr = self.memory.follow_pointer(
+                valere_skill_ptr = self.memory.follow_pointer(
                     tutorial_state_ptr, [0xB0, 0x18, 0x0]
                 )
 
-                sunboy_skill_ptr = self.memory.follow_pointer(
+                zale_skill_ptr = self.memory.follow_pointer(
                     tutorial_state_ptr, [0xA8, 0x18, 0x0]
                 )
 
-                moongirl_str = self.memory.read_string(moongirl_skill_ptr + 0x14, 8)
-                sunboy_str = self.memory.read_string(sunboy_skill_ptr + 0x14, 8)
+                valere_str = self.memory.read_string(valere_skill_ptr + 0x14, 8)
+                zale_str = self.memory.read_string(zale_skill_ptr + 0x14, 8)
 
                 if (
-                    moongirl_str.replace("\x00", "") == "Cres"
-                    and sunboy_str.replace("\x00", "") == "Sunb"
+                    valere_str.replace("\x00", "") == "Cres"
+                    and zale_str.replace("\x00", "") == "Sunb"
                 ):
                     self.tutorial_state = CombatTutorialState.SecondEncounter
                     return
