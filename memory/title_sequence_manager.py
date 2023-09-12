@@ -1,7 +1,6 @@
 from enum import Enum, auto
 
-from memory.core import mem_handle
-from memory.mappers.player_party_character import PlayerPartyCharacter
+from memory import PlayerPartyCharacter, mem_handle
 
 
 class TitleCursorPosition(Enum):
@@ -16,8 +15,8 @@ class TitleCursorPosition(Enum):
 
 class CharacterSelectButton:
     def __init__(self, character: PlayerPartyCharacter, selected: bool):
-        self.character = PlayerPartyCharacter.NONE
-        self.selected = False
+        self.character = character
+        self.selected = selected
 
 
 class TitleSequenceManager:
@@ -119,9 +118,9 @@ class TitleSequenceManager:
             selected_character = None
             match selected_character_value:
                 case False:
-                    selected_character = left_character
-                case True:
                     selected_character = right_character
+                case True:
+                    selected_character = left_character
                 case _:
                     selected_character = None
         except Exception:
@@ -134,9 +133,11 @@ class TitleSequenceManager:
             self.character_select_right_button = CharacterSelectButton(
                 right_character, right_selected
             )
+
             self.character_select_left_button = CharacterSelectButton(
                 left_character, left_selected
             )
+
         except Exception:
             self.character_select_left_button = CharacterSelectButton(
                 PlayerPartyCharacter.NONE, False
