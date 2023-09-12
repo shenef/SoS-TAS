@@ -7,7 +7,7 @@ import imgui
 from control import sos_ctrl
 from engine.mathlib import Quaternion, Vec2, Vec3
 from engine.seq.move import move_to
-from GUI.GUI import GUI_helper, Window
+from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
 from memory import (
     boat_manager_handle,
@@ -59,7 +59,7 @@ class NavHelper(Menu):
 
         imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
 
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
 
         ui_player_coordinates, visible = imgui.collapsing_header(
             "Player Coordinates", True, flags=32
@@ -74,7 +74,7 @@ class NavHelper(Menu):
                 imgui.core.set_clipboard_text(
                     f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
                 )
-            GUI_helper.add_spacings(2)
+            LayoutHelper.add_spacings(2)
 
         ui_target_coordinates, visible = imgui.collapsing_header(
             "Target Coordinates", True, flags=32
@@ -98,11 +98,10 @@ class NavHelper(Menu):
                     f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
                 )
 
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
 
         _, self.precision = imgui.slider_float("Precision", self.precision, 0.001, 1.0)
-        if imgui.is_item_hovered():
-            imgui.set_tooltip("Set the navigation precision\nCTRL+Click to edit")
+        LayoutHelper.add_tooltip("Set the navigation precision\nCTRL+Click to edit")
 
         if imgui.button("Navigate to target"):
             self.moving = True
@@ -136,7 +135,7 @@ class NavHelper(Menu):
                 self.moving = False
                 sos_ctrl().set_neutral()
 
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
 
         ui_gameobject_coordinates, visible = imgui.collapsing_header(
             "GameObject Coordinates", True
@@ -149,7 +148,7 @@ class NavHelper(Menu):
                 imgui.core.set_clipboard_text(
                     f"Vec3({gameobject_pos.x:.3f}, {gameobject_pos.y:.3f}, {gameobject_pos.z:.3f}),"
                 )
-            GUI_helper.add_spacings(2)
+            LayoutHelper.add_spacings(2)
 
         ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True)
         boat_pos = Vec3(
