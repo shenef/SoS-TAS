@@ -1,8 +1,10 @@
+from typing import Self
+
 from memory.core import mem_handle
 
 
 class LevelManager:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
@@ -13,7 +15,7 @@ class LevelManager:
         self.current_level = None
         self.loading = None
 
-    def update(self):
+    def update(self: Self) -> None:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
@@ -45,11 +47,11 @@ class LevelManager:
                 # logger.debug(f"Level Manager Reloading {type(_e)}")
                 self.__init__()
 
-    def _read_loading(self):
+    def _read_loading(self: Self) -> None:
         # LevelManager -> loadingLevel
         self.loading = self.memory.read_bool(self.base + self.loading_base)
 
-    def _read_current_level(self):
+    def _read_current_level(self: Self) -> None:
         # LevelManager -> currentLevel
         ptr = self.memory.follow_pointer(self.base, [self.current_level_base, 0x0])
         if ptr is None or ptr == 0x0:
@@ -61,7 +63,7 @@ class LevelManager:
         if value:
             self.current_level = value.replace("\x00", "")
 
-    def _read_main_scene_name(self):
+    def _read_main_scene_name(self: Self) -> None:
         # LevelManager -> LevelLoader -> mainSceneName
         ptr = self.memory.follow_pointer(self.base, [self.level_loader_base, 0x38, 0x0])
         if ptr is None or ptr == 0x0:

@@ -1,3 +1,5 @@
+from typing import Self
+
 from memory.core import mem_handle
 
 
@@ -6,14 +8,14 @@ from memory.core import mem_handle
 # This is used to determine if the game is in a state where the player can
 # interact with dialog boxes or not.
 class NewDialogManager:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
         self.opened_dialog_boxes_base = None
         self.dialog_open = False
 
-    def update(self):
+    def update(self: Self) -> None:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
@@ -36,7 +38,7 @@ class NewDialogManager:
                 # logger.debug(f"New Dialog Manager Reloading {type(_e)}")
                 self.__init__()
 
-    def _read_dialog_box(self):
+    def _read_dialog_box(self: Self) -> None:
         # NewDialogManager -> openedDialogBoxes -> 0x18 -> 0x30 (NewDialogBox)
         dialog_box_pointer = self.memory.follow_pointer(
             self.base, [self.opened_dialog_boxes_base, 0x18, 0x30, 0x0]

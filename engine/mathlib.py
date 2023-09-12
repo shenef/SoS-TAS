@@ -1,28 +1,28 @@
 import math
 from enum import IntEnum
-from typing import NamedTuple
+from typing import NamedTuple, Self
 
 
 class Vec2(NamedTuple):
     x: float
     y: float
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self: Self, other: Self) -> bool:
         return self.x == other.x and self.y == other.y
 
-    def __add__(self, other):
+    def __add__(self: Self, other: Self) -> Self:
         return Vec2(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other):
+    def __sub__(self: Self, other: Self) -> Self:
         return Vec2(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, scalar: float):
+    def __mul__(self: Self, scalar: float) -> Self:
         return Vec2(self.x * scalar, self.y * scalar)
 
-    def __rmul__(self, scalar: float):
+    def __rmul__(self: Self, scalar: float) -> Self:
         return self * scalar
 
-    def close_to(self, other: object, precision: float) -> bool:
+    def close_to(self: Self, other: Self, precision: float) -> bool:
         return (
             self.x < other.x + precision
             and self.x > other.x - precision
@@ -30,7 +30,7 @@ class Vec2(NamedTuple):
             and self.y > other.y - precision
         )
 
-    def rotated(self, rad_angle: float, center=None):
+    def rotated(self: Self, rad_angle: float, center: Self | None = None) -> Self:
         s = math.sin(rad_angle)
         c = math.cos(rad_angle)
         # Move point to center
@@ -43,23 +43,23 @@ class Vec2(NamedTuple):
         return Vec2(xnew, ynew) + center
 
     @property
-    def invert_y(self):
+    def invert_y(self: Self) -> Self:
         return Vec2(self.x, -self.y)
 
     @property
-    def norm(self) -> float:
+    def norm(self: Self) -> float:
         return math.sqrt(self.x * self.x + self.y * self.y)
 
     @property
-    def normalized(self):
+    def normalized(self: Self) -> Self:
         norm = self.norm
         return self if norm == 0 else Vec2(self.x / norm, self.y / norm)
 
     @property
-    def angle(self) -> float:
+    def angle(self: Self) -> float:
         return math.atan2(self.y, self.x)
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"Vec2({self.x:0.3f}, {self.y:0.3f})"
 
 
@@ -75,13 +75,13 @@ class Polar(NamedTuple):
     r: float
     theta: float
 
-    def to_vec2(self) -> Vec2:
+    def to_vec2(self: Self) -> Vec2:
         return Vec2(
             math.cos(self.theta) * self.r,
             math.sin(self.theta) * self.r,
         )
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"Polar({self.r:.3f}, {self.theta:.3f})"
 
 
@@ -127,25 +127,25 @@ class Box2(NamedTuple):
     w: float
     h: float
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"Box[{self.pos}, w: {self.w}, h: {self.h}]"
 
-    def contains(self, pos: Vec2):
+    def contains(self: Self, pos: Vec2) -> bool:
         left, top = self.pos.x, self.pos.y
         right, bottom = self.pos.x + self.w, self.pos.y + self.h
         return pos.x >= left and pos.x <= right and pos.y >= top and pos.y <= bottom
 
     # Top-left, Top-right, Bot-left, Bot-right
-    def tl(self) -> Vec2:
+    def tl(self: Self) -> Vec2:
         return self.pos
 
-    def tr(self) -> Vec2:
+    def tr(self: Self) -> Vec2:
         return Vec2(self.pos.x + self.w, self.pos.y)
 
-    def bl(self) -> Vec2:
+    def bl(self: Self) -> Vec2:
         return Vec2(self.pos.x, self.pos.y + self.h)
 
-    def br(self) -> Vec2:
+    def br(self: Self) -> Vec2:
         return Vec2(self.pos.x + self.w, self.pos.y + self.h)
 
 
@@ -218,68 +218,68 @@ def facing_ch(facing: Facing) -> str:
 
 # https://gist.github.com/tatsy/e14dd18079bca60ac8f78217b77332c1
 class Vec3:
-    def __init__(self, x: float, y: float, z: float) -> None:
+    def __init__(self: Self, x: float, y: float, z: float) -> None:
         self.x = x
         self.y = y
         self.z = z
 
     @staticmethod
-    def dot(v1, v2):
+    def dot(v1: Self, v2: Self) -> float:
         return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 
     @staticmethod
-    def cross(v1, v2):
+    def cross(v1: Self, v2: Self) -> Self:
         x = v1.y * v2.z - v1.z * v2.y
         y = v1.x * v2.x - v1.x * v2.z
         z = v1.z * v2.y - v1.y * v2.x
         return Vec3(x, y, z)
 
     @staticmethod
-    def normalize(v):
+    def normalize(v: Self) -> Self:
         return v / v.norm()
 
     @staticmethod
-    def dist(v1, v2) -> float:
+    def dist(v1: Self, v2: Self) -> float:
         dx = v2.x - v1.x
         dy = v2.y - v1.y
         dz = v2.z - v1.z
         return math.sqrt(dx * dx + dy * dy + dz * dz)
 
     @staticmethod
-    def is_close(v1, v2, precision: float) -> bool:
+    def is_close(v1: Self, v2: Self, precision: float) -> bool:
         return Vec3.dist(v1, v2) <= precision
 
-    def norm(self):
+    def norm(self: Self) -> float:
         return math.sqrt(Vec3.dot(self, self))
 
-    def __add__(self, v):
+    def __add__(self: Self, v: Self) -> Self:
         return Vec3(self.x + v.x, self.y + v.y, self.z + v.z)
 
-    def __neg__(self):
+    def __neg__(self: Self) -> Self:
         return Vec3(-self.x, -self.y, -self.z)
 
-    def __sub__(self, v):
+    def __sub__(self: Self, v: Self) -> Self:
         return self + (-v)
 
-    def __mul__(self, v):
+    def __mul__(self: Self, v: Self | float) -> Self:
         if isinstance(v, Vec3):
             return Vec3(self.x * v.x, self.y * v.y, self.z * v.z)
         return Vec3(self.x * v, self.y * v, self.z * v)
 
-    def __rmul__(self, v):
+    def __rmul__(self: Self, v: Self) -> Self:
         return self.__mul__(v)
 
-    def __div__(self, v):
+    def __div__(self: Self, v: Self | float) -> Self:
         if isinstance(v, Vec3):
             return Vec3(self.x / v.x, self.y / v.y, self.z / v.z)
         return Vec3(self.x / v, self.y / v, self.z / v)
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"[ {self.x:.4f}, {self.y:.4f}, {self.z:.4f} ]"
 
 
 class Quaternion:
-    def __init__(self, x: float, y: float, z: float, w: float) -> None:
+    def __init__(self: Self, x: float, y: float, z: float, w: float) -> None:
         self.x = x
         self.y = y
         self.z = z

@@ -1,5 +1,6 @@
 import contextlib
 from enum import Enum, auto
+from typing import Self
 
 from memory.core import mem_handle
 from memory.mappers.enemy_name import EnemyName
@@ -26,18 +27,18 @@ class CombatTutorialState(Enum):
 
 
 class CombatSpellLock:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.name_loc_id = None
         self.damage_type = CombatDamageType.NONE
 
 
 class CombatCastingData:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.spell_locks = []
 
 
 class CombatEnemyTarget:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.max_hp = None
         self.current_hp = None
         self.physical_attack = None
@@ -55,7 +56,7 @@ class CombatEnemyTarget:
 
 
 class CombatPlayer:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.max_hp = None
         self.current_hp = None
         self.current_mp = None
@@ -77,13 +78,13 @@ class CombatManager:
     ITEM_OBJECT_OFFSET = 0x8
     ITEM_INDEX_0_ADDRESS = 0x20
 
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
         self.selector_base = None
         self.enemies = []
-        self.players = []
+        self.players: list[CombatPlayer] = []
         self.selected_character = PlayerPartyCharacter.NONE
         self.tutorial_state = CombatTutorialState.NONE
         self.current_encounter_base = None
@@ -97,7 +98,7 @@ class CombatManager:
         self.selected_attack_target_guid = None
         self.selected_skill_target_guid = None
 
-    def update(self):
+    def update(self: Self) -> None:
         try:
             if self.memory.ready_for_updates:
                 if self.base is None or self.fields_base is None:
@@ -136,10 +137,10 @@ class CombatManager:
     # Helper function for updating itself and ensuring an internal function doesn't run without
     # the base. This is different than other modules as an attempt to improve performance of the
     # combat manager module.
-    def _should_update(self):
+    def _should_update(self: Self) -> None:
         return self.memory.ready_for_updates and self.current_encounter_base is not None
 
-    def _read_tutorial_state(self):
+    def _read_tutorial_state(self: Self) -> None:
         if self._should_update():
             try:
                 tutorial_state_ptr = self.memory.follow_pointer(
@@ -169,7 +170,7 @@ class CombatManager:
                 self.tutorial_state = CombatTutorialState.NONE
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
-    def _read_battle_commands(self):
+    def _read_battle_commands(self: Self) -> None:
         if self._should_update():
             battle_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
@@ -206,7 +207,7 @@ class CombatManager:
     # Skill Commands are the menu of the "skills" command (ie Healing Light, Sunball)
     # This also applies to combos.
     # TODO: We need a way to differentiate between the combos and skills menu.
-    def _read_skill_commands(self):
+    def _read_skill_commands(self: Self) -> None:
         if self._should_update():
             skill_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x138, 0x50, 0x78, 0x0]
@@ -248,7 +249,7 @@ class CombatManager:
     # `Encounter Done: True`` means there is no battle going on.
     # This makes it a bit frustrating to use in conditional statements, so be wary.
     # TODO: Reverse _read_encounter_done to make it more friendly for use.
-    def _read_encounter_done(self):
+    def _read_encounter_done(self: Self) -> None:
         if self._should_update():
             current_encounter = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x0]
@@ -267,7 +268,7 @@ class CombatManager:
     # deducted, and the big_live_mana field increases by 1. Reversing a big live mana immediately
     # returns 5 back to the small_live_mana field.
     # When a boost is consumed, the player recieved the total big live mana as a mana_charge.
-    def _read_live_mana(self):
+    def _read_live_mana(self: Self) -> None:
         if self._should_update():
             small_live_mana = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x78, 0x20, 0x0]
@@ -289,7 +290,7 @@ class CombatManager:
                 return
 
     # Reads information about players, see details below:
-    def _read_players(self):
+    def _read_players(self: Self) -> None:
         if self._should_update():
             selected_character = PlayerPartyCharacter.NONE
             try:
@@ -494,7 +495,7 @@ class CombatManager:
             return
         self.players = []
 
-    def _read_enemies(self):
+    def _read_enemies(self: Self) -> None:
         if self._should_update():
             enemy_targets = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x180, 0x0]

@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing import Self
 
 from control import sos_ctrl
 from engine.mathlib import Vec3
@@ -11,23 +12,23 @@ combat_manager = combat_manager_handle()
 # TODO: Temporary code, moves along path, pausing while combat is active
 class SeqCombatManual(SeqMove):
     def __init__(
-        self,
+        self: Self,
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 0.2,
         tap_rate: float = 0.1,
         running: bool = True,
-        func=None,
+        func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
-    ):
+    ) -> None:
         super().__init__(
             name, coords, precision, tap_rate, running, func, emergency_skip, invert
         )
         self.encounter_done = True
 
     # Override
-    def navigate_to_checkpoint(self, delta: float) -> None:
+    def navigate_to_checkpoint(self: Self, delta: float) -> None:
         if combat_manager.encounter_done:
             # If there is no active fight, move along the designated path
             super().navigate_to_checkpoint(delta)

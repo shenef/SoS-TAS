@@ -1,6 +1,7 @@
 # Libraries and Core Files
 import logging
 from enum import IntEnum, auto
+from typing import Self
 
 import vgamepad as vg
 
@@ -22,11 +23,11 @@ class Buttons(IntEnum):
 
 
 class VgTranslator:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         logger.info("Setting up emulated Xbox360 controller.")
         self.gamepad = vg.VX360Gamepad()
 
-    def _set_dpad(self, value: int):
+    def _set_dpad(self: Self, value: int) -> None:
         if value == 1:  # d_pad up
             self.gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
         elif value == 2:  # d_pad down  # noqa: PLR2004
@@ -41,7 +42,7 @@ class VgTranslator:
             self.gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
             self.gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
 
-    def set_button(self, x_key: Buttons, value):
+    def set_button(self: Self, x_key: Buttons, value: int | float) -> None:
         match x_key:
             # Dpad movement
             case Buttons.DPAD:
@@ -107,7 +108,7 @@ class VgTranslator:
         # For additional details, review this website:
         # https://pypi.org/project/vgamepad/
 
-    def set_joystick(self, x: float, y: float):
+    def set_joystick(self: Self, x: float, y: float) -> None:
         x = min(x, 1)
         x = max(x, -1)
         y = min(y, 1)
@@ -118,7 +119,7 @@ class VgTranslator:
         except Exception:
             logger.exception()
 
-    def set_neutral(self):
+    def set_neutral(self: Self) -> None:
         self.gamepad.left_joystick_float(x_value_float=0, y_value_float=0)
         self.gamepad.update()
 
@@ -126,5 +127,5 @@ class VgTranslator:
 _controller = VgTranslator()
 
 
-def handle():
+def handle() -> VgTranslator:
     return _controller

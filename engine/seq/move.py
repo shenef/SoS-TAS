@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Callable
+from typing import Self
 
 from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
@@ -27,12 +28,18 @@ def move_to(
 
 
 class SeqHoldDirectionUntilLostControl(SeqBase):
-    def __init__(self, name: str, joy_dir: Vec2, precision: float = 1.0, func=None):
+    def __init__(
+        self: Self,
+        name: str,
+        joy_dir: Vec2,
+        precision: float = 1.0,
+        func: Callable = None,
+    ) -> None:
         self.joy_dir = joy_dir
         self.precision = precision
         super().__init__(name, func)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         ctrl = sos_ctrl()
         # Check if we have lost control
         if player_party_manager.movement_state == PlayerMovementState.NONE:
@@ -42,20 +49,25 @@ class SeqHoldDirectionUntilLostControl(SeqBase):
         ctrl.set_joystick(self.joy_dir)
         return False
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"{self.name}: Holding joystick dir {self.joy_dir} until control lost"
 
 
 class SeqHoldDirectionUntilClose(SeqBase):
     def __init__(
-        self, name: str, target: Vec3, joy_dir: Vec2, precision: float = 1.0, func=None
-    ):
+        self: Self,
+        name: str,
+        target: Vec3,
+        joy_dir: Vec2,
+        precision: float = 1.0,
+        func: Callable = None,
+    ) -> None:
         self.target = target
         self.joy_dir = joy_dir
         self.precision = precision
         super().__init__(name, func)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         player_pos = player_party_manager.position
         if player_pos.x is None:
             return False
@@ -69,26 +81,32 @@ class SeqHoldDirectionUntilClose(SeqBase):
             return True
         return False
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"{self.name}: Holding joystick dir {self.joy_dir} until reaching {self.target}"
 
 
 class SeqAwaitLostControl(SeqBase):
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         return player_party_manager.movement_state == PlayerMovementState.NONE
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"{self.name}: Holding until control lost"
 
 
 # Temp testing
 class SeqManualUntilClose(SeqBase):
-    def __init__(self, name: str, target: Vec3, precision: float = 0.2, func=None):
+    def __init__(
+        self: Self,
+        name: str,
+        target: Vec3,
+        precision: float = 0.2,
+        func: Callable = None,
+    ) -> None:
         self.target = target
         self.precision = precision
         super().__init__(name, func)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         super().execute(delta)
         # Stay still
         ctrl = sos_ctrl()
@@ -98,26 +116,26 @@ class SeqManualUntilClose(SeqBase):
         player_pos = player_party_manager.position
         return Vec3.is_close(player_pos, self.target, precision=self.precision)
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"MANUAL CONTROL({self.name}) until reaching {self.target}"
 
 
 class SeqHoldInPlace(SeqDelay):
     def __init__(
-        self,
+        self: Self,
         name: str,
         target: Vec3,
         timeout_in_s: float,
         precision: float = 0.1,
         running: bool = True,
-    ):
+    ) -> None:
         self.target = target
         self.precision = precision
         self.running = running
         self.timer = 0
         super().__init__(name=name, timeout_in_s=timeout_in_s)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         player_pos = player_party_manager.position
         # If arrived, go to next coordinate in the list
         if not Vec3.is_close(player_pos, self.target, precision=self.precision):
@@ -134,36 +152,36 @@ class SeqHoldInPlace(SeqDelay):
             return True
         return False
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"Waiting ({self.name}) at {self.target}. {self.timer:.2f}/{self.timeout:.2f}"
 
 
 class InteractMove(Vec3):
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"InteractMove({super().__repr__()})"
 
 
 class HoldDirection(Vec3):
-    def __init__(self, x: float, y: float, z: float, joy_dir: Vec2) -> None:
+    def __init__(self: Self, x: float, y: float, z: float, joy_dir: Vec2) -> None:
         super().__init__(x, y, z)
         self.joy_dir = joy_dir
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         return f"HoldDirection({super().__repr__()}, joy_dir={self.joy_dir})"
 
 
 class SeqMove(SeqBase):
     def __init__(
-        self,
+        self: Self,
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 0.2,
         tap_rate: float = 0.1,
         running: bool = True,
-        func=None,
+        func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
-    ):
+    ) -> None:
         self.step = 0
         self.coords = coords
         self.precision = precision
@@ -176,15 +194,15 @@ class SeqMove(SeqBase):
         self.tap_rate = tap_rate
         super().__init__(name, func=func)
 
-    def reset(self) -> None:
+    def reset(self: Self) -> None:
         self.step = 0
 
-    def _nav_done(self) -> bool:
+    def _nav_done(self: Self) -> bool:
         num_coords = len(self.coords)
         # If we are already done with the entire sequence, terminate early
         return self.step >= num_coords
 
-    def move_function(self, player_pos: Vec3, target_pos: Vec3):
+    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
         move_to(
             player=Vec2(player_pos.x, player_pos.z),
             target=Vec2(target_pos.x, target_pos.z),
@@ -192,10 +210,10 @@ class SeqMove(SeqBase):
             invert=self.invert,
         )
 
-    def player_position(self) -> Vec3:
+    def player_position(self: Self) -> Vec3:
         return player_party_manager.position
 
-    def navigate_to_checkpoint(self, delta: float) -> None:
+    def navigate_to_checkpoint(self: Self, delta: float) -> None:
         # Move towards target
         if self.step >= len(self.coords):
             return
@@ -225,7 +243,7 @@ class SeqMove(SeqBase):
         else:
             self.move_function(player_pos=player_pos, target_pos=target)
 
-    def execute(self, delta: float) -> bool:
+    def execute(self: Self, delta: float) -> bool:
         self.navigate_to_checkpoint(delta)
 
         done = self._nav_done()
@@ -239,7 +257,7 @@ class SeqMove(SeqBase):
             sos_ctrl().set_neutral()
         return done
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         num_coords = len(self.coords)
         if self.step >= num_coords:
             return f"{self.name}[{num_coords}/{num_coords}]"
@@ -249,7 +267,7 @@ class SeqMove(SeqBase):
 
 
 class SeqClimb(SeqMove):
-    def move_function(self, player_pos: Vec3, target_pos: Vec3):
+    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
         move_to(
             player=Vec2(player_pos.x, player_pos.y),
             target=Vec2(target_pos.x, target_pos.y),
@@ -259,10 +277,10 @@ class SeqClimb(SeqMove):
 
 
 class SeqCliffMove(SeqMove):
-    def player_position(self) -> Vec3:
+    def player_position(self: Self) -> Vec3:
         return player_party_manager.gameobject_position
 
 
 class SeqCliffClimb(SeqClimb):
-    def player_position(self) -> Vec3:
+    def player_position(self: Self) -> Vec3:
         return player_party_manager.gameobject_position

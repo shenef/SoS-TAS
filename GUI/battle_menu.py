@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 import imgui
 
@@ -16,10 +17,10 @@ class BattleMenu(Menu):
     # If there are more than 4 enemies, it'll just flow over into the player columns.
     COLUMN_MAX = 4
 
-    def __init__(self, window: Window) -> None:
+    def __init__(self: Self, window: Window) -> None:
         super().__init__(window, title="Battle menu")
 
-    def execute(self, top_level: bool) -> bool:
+    def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)

@@ -14,7 +14,7 @@ CONFIG_FILE_PATH = "config.yaml"
 
 
 # TODO: It's not ideal to open this file many times over, but also not a huge problem
-def open_config():
+def open_config() -> dict:
     # Open the config file and parse the yaml contents
     try:
         with open(CONFIG_FILE_PATH) as config_file:

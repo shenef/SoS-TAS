@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from engine.combat.utility.sos_appraisal import (
     SoSAppraisal,
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class CrescentArc(SoSAppraisal):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__()
         self.timing_type = SoSTimingType.OneHit
         self.battle_command = SoSBattleCommand.Skill

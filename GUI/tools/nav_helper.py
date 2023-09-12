@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Self
 
 import imgui
 
@@ -22,7 +23,7 @@ title_sequence_manager = title_sequence_manager_handle()
 
 
 class NavHelper(Menu):
-    def __init__(self, window: Window) -> None:
+    def __init__(self: Self, window: Window) -> None:
         super().__init__(window, title="Navigation helper")
         self.target = Vec3(0, 0, 0)
         self.target_locked = Vec3(0, 0, 0)
@@ -34,7 +35,7 @@ class NavHelper(Menu):
 
     _STOP_TIMEOUT = 2
 
-    def execute(self, top_level: bool) -> bool:
+    def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
         imgui.set_window_position(0, 80, condition=imgui.FIRST_USE_EVER)

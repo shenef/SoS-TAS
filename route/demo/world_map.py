@@ -1,4 +1,5 @@
 import logging
+from typing import Self
 
 from engine.mathlib import Vec3
 from engine.seq import SeqInteract, SeqList, SeqMove
@@ -7,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class DemoWorldBriskToTower(SeqList):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         super().__init__(
             name="World map",
             children=[

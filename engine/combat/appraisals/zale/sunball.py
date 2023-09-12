@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+from typing import Self
 
 from control import sos_ctrl
 from engine.combat.utility.sos_appraisal import (
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class Sunball(SoSAppraisal):
-    def __init__(self, value: int = 0):
+    def __init__(self: Self, value: int = 0) -> None:
         super().__init__()
         self.value = value
         self.timing_type = SoSTimingType.Charge
@@ -26,12 +27,11 @@ class Sunball(SoSAppraisal):
         self.skill_command_index = 1
         self.ability_time = None
 
-    def execute_timing_sequence(self):
+    def execute_timing_sequence(self: Self) -> None:
         if self.ability_time is None:
             # set current time + 3.6 seconds
             ability_timing = timedelta(seconds=3.8)
             self.ability_time = datetime.utcnow() + ability_timing
-
         else:
             sos_ctrl().toggle_confirm(True)
             if self.ability_time <= datetime.utcnow():

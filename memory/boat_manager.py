@@ -1,9 +1,11 @@
+from typing import Self
+
 from engine.mathlib import Quaternion, Vec3
 from memory.core import mem_handle
 
 
 class BoatManager:
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.memory = mem_handle()
         self.base = None
         self.position = Vec3(None, None, None)
@@ -11,7 +13,7 @@ class BoatManager:
         self.speed = 0
         self.max_speed = 0
 
-    def update(self):
+    def update(self: Self) -> None:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None:
@@ -34,7 +36,7 @@ class BoatManager:
                 # logger.debug(f"BoatManager Reloading {type(_e)}")
                 self.__init__()
 
-    def _read_position(self):
+    def _read_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # (BoatInstance) k__BackingField -> boatController -> currentTargetPosition
             ptr = self.memory.follow_pointer(self.base, [0x40, 0x40, 0x84])
@@ -48,7 +50,7 @@ class BoatManager:
 
         self.position = Vec3(None, None, None)
 
-    def _read_rotation(self):
+    def _read_rotation(self: Self) -> None:
         if self.memory.ready_for_updates:
             # (BoatInstance) k__BackingField -> boatSnapRotation -> pitchRollLocalRotation
             ptr = self.memory.follow_pointer(self.base, [0x40, 0x60, 0x0])
@@ -64,7 +66,7 @@ class BoatManager:
 
         self.rotation = Quaternion(None, None, None, None)
 
-    def _read_speed(self):
+    def _read_speed(self: Self) -> None:
         if self.memory.ready_for_updates:
             # (BoatInstance) k__BackingField -> boatSnapRotation -> pitchRollLocalRotation
             ptr = self.memory.follow_pointer(self.base, [0x40, 0x0])

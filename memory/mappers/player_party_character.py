@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Self
 
 
 class PlayerPartyCharacter(Enum):
@@ -9,7 +10,7 @@ class PlayerPartyCharacter(Enum):
     Serai = "Seraï"
     Reshan = "Resh'an"
 
-    def parse_definition_id(definition_id):
+    def parse_definition_id(definition_id: str) -> Self:
         asciidata = definition_id.encode("ascii", "ignore")
 
         if asciidata == b"Z\x00A\x00L\x00E\x00":
