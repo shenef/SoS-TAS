@@ -23,7 +23,7 @@ class Sunball(SoSAppraisal):
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         # This ability is 2nd index until you learn dash strike.. then it's 3rd.
-        self.skill_command_index = 2
+        self.skill_command_index = 1
         self.ability_time = None
 
     def execute_timing_sequence(self):
