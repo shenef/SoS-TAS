@@ -49,10 +49,10 @@ class DebugMenu(Menu):
         left_button = title_sequence_manager.character_select_left_button
         right_button = title_sequence_manager.character_select_right_button
         imgui.text(
-            f"Left Character: {left_button.character.value} Selected: ({left_button.selected})"
+            f"Left Character: {left_button.character and left_button.character.value} Selected: ({left_button.selected})"  # noqa: E501
         )
         imgui.text(
-            f"Right Character: {right_button.character.value} Selected: ({right_button.selected})"
+            f"Right Character: {right_button.character and right_button.character.value} Selected: ({right_button.selected})"  # noqa: E501
         )
 
         LayoutHelper.add_spacer()
