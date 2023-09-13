@@ -5,13 +5,13 @@ from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
-from memory import PlayerPartyCharacter
+from memory import CombatPlayer, PlayerPartyCharacter
 
 
 class SoSConsideration(Consideration):
-    def __init__(self: Self, actor: PlayerPartyCharacter) -> None:
-        super().__init__()
+    def __init__(self: Self, actor: CombatPlayer) -> None:
         self.actor = actor
+        super().__init__()
 
     # Generates a list of appraisals for a character.
     def generate_appraisals(self: Self) -> list[Appraisal]:
@@ -30,7 +30,8 @@ class SoSConsideration(Consideration):
     def on_selected_character(
         self: Self, selected_character: PlayerPartyCharacter, action: Action
     ) -> bool:
-        return selected_character is action.consideration.actor.character
+        actor: CombatPlayer = action.consideration.actor
+        return selected_character is actor.character
 
     # Generates default appraisals generic to every consideration
     # TODO: Add items?
