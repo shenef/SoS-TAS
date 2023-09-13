@@ -3,7 +3,7 @@ from typing import Self
 
 import imgui
 
-from GUI.GUI import GUI_helper, Window
+from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
 from memory import (
     level_manager_handle,
@@ -37,10 +37,10 @@ class DebugMenu(Menu):
         imgui.text(f"Scene GUID: {level_manager.current_level}")
         imgui.text(f"Loading: {level_manager.loading}")
 
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
         imgui.text(f"Current Leader: {player_party_manager.leader_character.value}")
 
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
 
         title_cursor_position = title_sequence_manager.title_cursor_position
         imgui.text(
@@ -55,9 +55,9 @@ class DebugMenu(Menu):
             f"Right Character: {right_button.character.value} Selected: ({right_button.selected})"
         )
 
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
         imgui.text(f"Dialog Open: {new_dialog_manager.dialog_open}")
-        GUI_helper.add_spacer()
+        LayoutHelper.add_spacer()
         _, self.show_metrics = imgui.checkbox(
             "Show performance metrics", self.show_metrics
         )

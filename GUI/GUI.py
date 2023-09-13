@@ -117,13 +117,18 @@ class Window:
         glfw.terminate()
 
 
-class GUI_helper:
+class LayoutHelper:
     """
     This class provides helper functions for creating GUI elements.
 
-    Methods:
-        add_spacer():
-            Adds a horizontal line with some padding."""
+    add_spacer():
+        Adds a horizontal line with some padding.
+
+    add_spacings(n)
+        Adds n imgui.spacing() elements.
+
+    add_tooltip(text)
+        Adds a tooltip to the previous element."""
 
     def add_spacer() -> None:
         """Adds a horizontal line with some padding."""
@@ -135,3 +140,8 @@ class GUI_helper:
         """Adds multiple imgui.spacing() at once."""
         for _ in range(n):
             imgui.spacing()
+
+    def add_tooltip(text: str) -> None:
+        """Adds a tooltip to the previous element."""
+        if imgui.is_item_hovered():
+            imgui.set_tooltip(text)
