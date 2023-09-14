@@ -2,6 +2,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.appraisals.basic_attack import BasicAttack
+from engine.combat.appraisals.valere.moonerang import Moonerang
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
@@ -48,7 +49,7 @@ class SoSConsideration(Consideration):
             case PlayerPartyCharacter.Zale:
                 return []
             case PlayerPartyCharacter.Valere:
-                return []
+                return [Moonerang()]
             case PlayerPartyCharacter.Garl:
                 return []
             case _:

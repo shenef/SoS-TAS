@@ -22,6 +22,7 @@ class SoSTimingType(Enum):
     NONE = auto()
     OneHit = auto()
     Charge = auto()
+    MultiHit = auto()
 
 
 class SoSAppraisalStep(Enum):

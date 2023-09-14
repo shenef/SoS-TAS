@@ -110,6 +110,7 @@ class CombatManager:
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)
+                    print(hex(self.base))
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
                     self.current_encounter_base = self.memory.get_field(
                         self.fields_base, "currentEncounter"
@@ -168,6 +169,46 @@ class CombatManager:
                 self.tutorial_state = CombatTutorialState.NONE
             except Exception:
                 self.tutorial_state = CombatTutorialState.NONE
+
+    def read_projectile_is_current_player(self: Self) -> float:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x128, 0x80, 0x0]
+                )
+
+                return self.memory.read_bool(progress_ptr + 0xB8)
+
+            except Exception:
+                return False
+        return False
+
+    def read_projectile_position(self: Self) -> float:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x118, 0x60, 0x0]
+                )
+
+                return self.memory.read_float(progress_ptr + 0xAC)
+
+            except Exception:
+                return 0.0
+        return 0.0
+
+    def read_back_to_slot(self: Self) -> float:
+        if self._should_update():
+            try:
+                back_to_slot_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
+                back_to_slot = self.memory.read_float(back_to_slot_ptr + 0x161)
+                if back_to_slot:
+                    return True
+
+            except Exception:
+                return False
+        return False
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self: Self) -> None:
