@@ -29,6 +29,13 @@ class EnemyName:
         "40f05ed0202783449a704978e8670c9b": "Tsiclop",
         "c6f57cbee5d9cff4a82778ce36f94fdf": "Sleuth",
         "e79eceacb415fd04f84e6da6f9b23d3d": "BilePile",
+        # Mesa Island: Glacial Peak
+        "a1a5c1333a1e7fe4f98de4d28b3b9900": "Rochecrossidere",
+        "33a6c54c83b68894a93b46c02da7fbc8": "Boulder Douche",
+        # Mesa Island: Autumn Hills
+        "51b36d4dce9be614f95e77477caecace": "Tock",
+        "2c78ebcab00eb2c4daef5082c88503cc": "Grassassin",
+        "c99b902697c6f734f9fc64b421c06728": "Leaf Monster",
     }
 
     def get(self: Self, guid: str) -> str:
