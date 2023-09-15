@@ -56,6 +56,14 @@ class EnemyName:
         "f08a6f708a24d87499439e14326c7a59": "Firecracker",
         "eb913e79ba73fd24c809490043822d62": "BigBuggy",
         "816de006c125b9b4eaa7139bac5c6b77": "Toadcano",
+        # Trek to the center of the world
+        "6db3b04b05f18ae48a952691c0edc99f": "Ant Bruiser",
+        "e0e39853cf0aedc4a87abc25605ea4a6": "GooGoon",
+        "5e1fb9276fd3e714d8fe1a4cfa8681af": "Woodland Spirit",
+        "d788814517a8e1549b0253e534126938": "Rochèvre",
+        "f875c492e9ff81d46917be56218ba834": "Kunus'nuku Acolyte",
+        "d7cdfe62090e94047991a1b9ca612a6d": "Lonzon",
+        "7181b3e6a1edf44409d05e9b51b86f02": "Garnooy",
     }
 
     def get(self: Self, guid: str) -> str:
