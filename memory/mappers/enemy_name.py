@@ -52,6 +52,10 @@ class EnemyName:
         # Skylands
         "4e00be6b55350d64090bff46533eb2aa": "SlingRabbit",
         "9cbcb4063d9b8d8448cf96a2c14a6826": "Braidzard",
+        # Kiln Mountain
+        "f08a6f708a24d87499439e14326c7a59": "Firecracker",
+        "eb913e79ba73fd24c809490043822d62": "BigBuggy",
+        "816de006c125b9b4eaa7139bac5c6b77": "Toadcano",
     }
 
     def get(self: Self, guid: str) -> str:
