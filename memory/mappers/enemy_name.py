@@ -29,6 +29,41 @@ class EnemyName:
         "40f05ed0202783449a704978e8670c9b": "Tsiclop",
         "c6f57cbee5d9cff4a82778ce36f94fdf": "Sleuth",
         "e79eceacb415fd04f84e6da6f9b23d3d": "BilePile",
+        # Mesa Island: Glacial Peak
+        "a1a5c1333a1e7fe4f98de4d28b3b9900": "Rochecrossidere",
+        "33a6c54c83b68894a93b46c02da7fbc8": "Boulder Douche",
+        # Mesa Island: Autumn Hills
+        "51b36d4dce9be614f95e77477caecace": "Tock",
+        "2c78ebcab00eb2c4daef5082c88503cc": "Grassassin",
+        "c99b902697c6f734f9fc64b421c06728": "Leaf Monster",
+        # Mesa Island: Songshroom Marsh
+        "0af340a99d84e2f4a98c5d9b617fe0ea": "Fungtoise",
+        "acf70102f6cc47e41b953fc2c44ad802": "Shroomy Shroomy Knight",
+        # Mesa Island: Clockwork Castle
+        "3e00a15f95b3e1d4cb68e71021579758": "Cukoo Monster",
+        "090c2ec246656b643a5d1e5b0bb3db28": "Clock Zombie",
+        "ffe45f0323cb8924e8296b7cc86d9d1b": "Strife Minion",
+        "a5d39cc10d1848d478b59c892f636e3b": "Dweller of Strife",
+        # The Acolytes
+        "76c4290aa2a896b4cb405e5a2d29b3a0": "One",
+        "73c4c0922e5ae274eb759f86702353a8": "Two",
+        "e77c07b22ee83854e8c006101ef5731f": "Three",
+        "0c831eb6bc1c0c648828b405cb8c0667": "Four",
+        # Skylands
+        "4e00be6b55350d64090bff46533eb2aa": "SlingRabbit",
+        "9cbcb4063d9b8d8448cf96a2c14a6826": "Braidzard",
+        # Kiln Mountain
+        "f08a6f708a24d87499439e14326c7a59": "Firecracker",
+        "eb913e79ba73fd24c809490043822d62": "BigBuggy",
+        "816de006c125b9b4eaa7139bac5c6b77": "Toadcano",
+        # Trek to the center of the world
+        "6db3b04b05f18ae48a952691c0edc99f": "Ant Bruiser",
+        "e0e39853cf0aedc4a87abc25605ea4a6": "GooGoon",
+        "5e1fb9276fd3e714d8fe1a4cfa8681af": "Woodland Spirit",
+        "d788814517a8e1549b0253e534126938": "Rochèvre",
+        "f875c492e9ff81d46917be56218ba834": "Kunus'nuku Acolyte",
+        "d7cdfe62090e94047991a1b9ca612a6d": "Lonzon",
+        "7181b3e6a1edf44409d05e9b51b86f02": "Garnooy",
     }
 
     def get(self: Self, guid: str) -> str:
