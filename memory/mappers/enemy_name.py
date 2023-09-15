@@ -36,6 +36,9 @@ class EnemyName:
         "51b36d4dce9be614f95e77477caecace": "Tock",
         "2c78ebcab00eb2c4daef5082c88503cc": "Grassassin",
         "c99b902697c6f734f9fc64b421c06728": "Leaf Monster",
+        # Mesa Island: Songshroom Marsh
+        "0af340a99d84e2f4a98c5d9b617fe0ea": "Fungtoise",
+        "acf70102f6cc47e41b953fc2c44ad802": "Shroomy Shroomy Knight",
     }
 
     def get(self: Self, guid: str) -> str:
