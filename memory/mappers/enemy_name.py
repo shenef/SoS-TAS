@@ -49,6 +49,9 @@ class EnemyName:
         "73c4c0922e5ae274eb759f86702353a8": "Two",
         "e77c07b22ee83854e8c006101ef5731f": "Three",
         "0c831eb6bc1c0c648828b405cb8c0667": "Four",
+        # Skylands
+        "4e00be6b55350d64090bff46533eb2aa": "SlingRabbit",
+        "9cbcb4063d9b8d8448cf96a2c14a6826": "Braidzard",
     }
 
     def get(self: Self, guid: str) -> str:
