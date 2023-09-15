@@ -2,6 +2,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.appraisals.basic_attack import BasicAttack
+from engine.combat.appraisals.valere.moonerang import Moonerang
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
@@ -15,7 +16,11 @@ class SoSConsideration(Consideration):
 
     # Generates a list of appraisals for a character.
     def generate_appraisals(self: Self) -> list[Appraisal]:
-        return self._default_appraisals() + self._character_appraisals()
+        appraisals = self._default_appraisals() + self._character_appraisals()
+        return list(filter(self._has_resources_for_appraisal, appraisals))
+
+    def _has_resources_for_appraisal(self: Self, appraisal: Appraisal) -> bool:
+        return appraisal.has_resources(self.actor)
 
     # if the selected character is NONE or we are on the selected character, considered valid'
     # and do nothing else here.
@@ -48,7 +53,7 @@ class SoSConsideration(Consideration):
             case PlayerPartyCharacter.Zale:
                 return []
             case PlayerPartyCharacter.Valere:
-                return []
+                return [Moonerang()]
             case PlayerPartyCharacter.Garl:
                 return []
             case _:

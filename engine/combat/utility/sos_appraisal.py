@@ -4,7 +4,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.utility.core import Appraisal
-from memory.combat_manager import combat_manager_handle
+from memory.combat_manager import CombatPlayer, combat_manager_handle
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
@@ -22,6 +22,7 @@ class SoSTimingType(Enum):
     NONE = auto()
     OneHit = auto()
     Charge = auto()
+    MultiHit = auto()
 
 
 class SoSAppraisalStep(Enum):
@@ -43,6 +44,13 @@ class SoSTargetType(Enum):
     Enemy = auto()
 
 
+class SoSResource(Enum):
+    NONE = auto()
+    Mana = auto()
+    ComboPoints = auto()
+    UltimateGuage = auto()
+
+
 class SoSAppraisal(Appraisal):
     def __init__(self: Self) -> None:
         super().__init__()
@@ -57,6 +65,8 @@ class SoSAppraisal(Appraisal):
         self.timing_type = SoSTimingType.NONE
         self.step = SoSAppraisalStep.SelectingCommand
         self.character = PlayerPartyCharacter.NONE
+        self.resource = SoSResource.NONE
+        self.cost = 0
 
     # selects the step to perform based on the current step
     def execute(self: Self) -> None:
@@ -171,7 +181,10 @@ class SoSAppraisal(Appraisal):
             self._enemy_targeted()
             and not self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index is None
-            and selected_target != ""
+            # TODO: Find better pointer to track selected targets - this one isn't doing
+            # what its supposed to so just check if exists to satisfy the result
+            # This will move to something more specific later
+            and selected_target
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
@@ -227,6 +240,18 @@ class SoSAppraisal(Appraisal):
         #                 == self.combat_manager.selected_skill_target_guid
         #             )
         # return False
+
+    def has_resources(self: Self, actor: CombatPlayer) -> bool:
+        match self.resource:
+            case SoSResource.Mana:
+                return actor.current_mp >= self.cost
+            # Not yet implemented
+            # case SoSResource.ComboPoints:
+            #     return actor.combo_points >= self.cost
+            # case SoSResource.UltimateGuage:
+            #     return actor.ultimate_gauge >= self.cost
+            case _:
+                return True
 
     def is_player_timed_attack_ready(self: Self) -> bool:
         for player in self.combat_manager.players:

@@ -97,6 +97,9 @@ class CombatManager:
         self.skill_command_index = None
         self.selected_attack_target_guid = None
         self.selected_skill_target_guid = None
+        # Moonerang
+        self.projectile_hit_count = 0
+        self.projectile_speed = 0.0
 
     def update(self: Self) -> None:
         try:
@@ -129,6 +132,8 @@ class CombatManager:
                     if not self.battle_command_has_focus:
                         self._read_skill_commands()
                     self._read_live_mana()
+                    self.projectile_hit_count = self.read_projectile_hit_count()
+                    self.projectile_speed = self.read_projectile_speed()
 
         except Exception as e:  # noqa: F841
             # logger.debug(f"Combat Manager Reloading - {type(e)}")
@@ -168,6 +173,89 @@ class CombatManager:
                 self.tutorial_state = CombatTutorialState.NONE
             except Exception:
                 self.tutorial_state = CombatTutorialState.NONE
+
+    def read_projectile_is_current_player(self: Self) -> float:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x128, 0x80, 0x0]
+                )
+
+                return self.memory.read_bool(progress_ptr + 0xB8)
+
+            except Exception:
+                return False
+        return False
+
+    def read_projectile_position(self: Self) -> float:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x118, 0x60, 0x0]
+                )
+
+                return self.memory.read_float(progress_ptr + 0xAC)
+
+            except Exception:
+                return 0.0
+        return 0.0
+
+    # How many times the projectile has been sent back to the enemy
+    def read_projectile_bounce_count(self: Self) -> int:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
+
+                return self.memory.read_int(progress_ptr + 0x15C)
+
+            except Exception:
+                return 0
+        return 0
+
+    # how many times the projectile has hit something (usually 1 more than bounce count)
+    def read_projectile_hit_count(self: Self) -> int:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
+
+                return self.memory.read_int(progress_ptr + 0x158)
+
+            except Exception:
+                return 0
+        return 0
+
+        # how many times the projectile has hit something (usually 1 more than bounce count)
+
+    def read_projectile_speed(self: Self) -> int:
+        if self._should_update():
+            try:
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x118, 0x0]
+                )
+
+                return self.memory.read_float(progress_ptr + 0xC8)
+
+            except Exception:
+                return 0.0
+        return 0.0
+
+    def read_back_to_slot(self: Self) -> float:
+        if self._should_update():
+            try:
+                back_to_slot_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
+                back_to_slot = self.memory.read_bool(back_to_slot_ptr + 0x161)
+                if back_to_slot:
+                    return True
+
+            except Exception:
+                return False
+        return False
 
     # Battle Commands are the Main menu of commands (Attack, Skills, Combo, Items)
     def _read_battle_commands(self: Self) -> None:
