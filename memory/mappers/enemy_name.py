@@ -39,6 +39,16 @@ class EnemyName:
         # Mesa Island: Songshroom Marsh
         "0af340a99d84e2f4a98c5d9b617fe0ea": "Fungtoise",
         "acf70102f6cc47e41b953fc2c44ad802": "Shroomy Shroomy Knight",
+        # Mesa Island: Clockwork Castle
+        "3e00a15f95b3e1d4cb68e71021579758": "Cukoo Monster",
+        "090c2ec246656b643a5d1e5b0bb3db28": "Clock Zombie",
+        "ffe45f0323cb8924e8296b7cc86d9d1b": "Strife Minion",
+        "a5d39cc10d1848d478b59c892f636e3b": "Dweller of Strife",
+        # The Acolytes
+        "76c4290aa2a896b4cb405e5a2d29b3a0": "One",
+        "73c4c0922e5ae274eb759f86702353a8": "Two",
+        "e77c07b22ee83854e8c006101ef5731f": "Three",
+        "0c831eb6bc1c0c648828b405cb8c0667": "Four",
     }
 
     def get(self: Self, guid: str) -> str:
