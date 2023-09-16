@@ -17,6 +17,7 @@ from engine.seq import (
     SeqInteract,
     SeqList,
     SeqLog,
+    SeqMashUntilIdle,
     SeqMove,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
@@ -515,8 +516,7 @@ class IntroFinalTrial(SeqList):
                     ],
                 ),
                 SeqInteract("Chest"),
-                SeqDelay("Wait", timeout_in_s=1.0),
-                SeqInteract("Confirm"),
+                SeqMashUntilIdle("Chest"),
                 SeqMove(
                     name="Move to brazier",
                     coords=[
@@ -526,8 +526,75 @@ class IntroFinalTrial(SeqList):
                     ],
                 ),
                 SeqInteract("Brazier"),
-                SeqSkipUntilIdle("Brazier"),
-                # TODO(orkaboy): Drop down and fight
+                SeqMashUntilIdle("Brazier"),
+                SeqCombatAndMove(
+                    name="Fight enemies",
+                    coords=[
+                        Vec3(37.523, -7.998, -335.876),
+                        InteractMove(34.825, -12.998, -338.872),
+                        Vec3(32.868, -12.998, -336.460),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(32.868, -10.140, -336.470),
+                        Vec3(32.881, -2.998, -335.533),
+                    ],
+                ),
+                SeqMove(
+                    name="Jump gaps",
+                    coords=[
+                        Vec3(32.453, -2.998, -323.957),
+                        InteractMove(32.453, -2.998, -316.460),
+                        InteractMove(35.481, -2.998, -316.460),
+                        InteractMove(35.540, -2.998, -313.519),
+                        InteractMove(38.415, -2.998, -313.519),
+                        InteractMove(38.452, -2.998, -309.460),
+                        InteractMove(43.540, -2.998, -309.454),
+                        InteractMove(43.540, -2.998, -304.052),
+                    ],
+                    precision=0.7,
+                ),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(39.416, -2.998, -302.099),
+                        InteractMove(32.931, -2.995, -308.069),
+                        Vec3(24.997, -2.998, -301.194),
+                        Vec3(24.997, -2.998, -296.224),
+                    ],
+                ),
+                SeqInteract("Chest"),
+                SeqMashUntilIdle("Chest"),
+                SeqCombatAndMove(
+                    name="Move to brazier",
+                    coords=[
+                        Vec3(24.954, -2.998, -301.107),
+                        InteractMove(31.489, -2.998, -308.173),
+                        Vec3(32.657, -2.998, -308.173),
+                        InteractMove(39.358, -2.998, -301.492),
+                        Vec3(41.340, -2.998, -297.060),
+                    ],
+                ),
+                SeqInteract("Brazier"),
+                SeqMashUntilIdle("Brazier"),
+                SeqMove(
+                    name="Move to platform",
+                    coords=[
+                        Vec3(39.415, -2.998, -297.149),
+                        Vec3(32.923, -2.998, -292.023),
+                    ],
+                ),
+                SeqInteract("Elevator"),
+                SeqMashUntilIdle("Erlina and Brugaves"),
+                SeqMove(
+                    name="Move to pillar",
+                    coords=[
+                        Vec3(81.996, -9.998, -195.727),
+                    ],
+                ),
+                SeqInteract("Pillar"),
             ],
         )
 
