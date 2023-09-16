@@ -8,7 +8,7 @@ from engine.seq import (
     SeqList,
     SeqLog,
     SeqMove,
-    SeqTurboMashUntilIdle,
+    SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class DemoBrisk(SeqList):
                     ],
                 ),
                 # Armwrestle
-                SeqTurboMashUntilIdle(name="Arm wrestling!!!"),
+                SeqSkipUntilIdle(name="Arm wrestling!!!"),
                 SeqMove(
                     name="Move outside",
                     coords=[

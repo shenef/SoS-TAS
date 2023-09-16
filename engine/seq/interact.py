@@ -40,43 +40,32 @@ class SeqTapDown(SeqBase):
         return True
 
 
-class SeqTurboMashUntilIdle(SeqBase):
+class SeqSkipUntilIdle(SeqBase):
     # Hold confirm through cutscene while holding the turbo button
     def execute(self: Self, delta: float) -> bool:
-        sos_ctrl().toggle_turbo(state=True)
-        sos_ctrl().toggle_confirm(state=True)
+        ctrl = sos_ctrl()
+        ctrl.toggle_turbo(state=True)
+        ctrl.toggle_confirm(state=True)
+        ctrl.toggle_cancel(state=True)
 
         # Check if we have control
         done = self.is_done()
         if done:
-            sos_ctrl().toggle_confirm(state=False)
-            sos_ctrl().toggle_turbo(state=False)
+            ctrl.toggle_confirm(state=False)
+            ctrl.toggle_turbo(state=False)
+            ctrl.toggle_cancel(state=False)
         return done
 
     def is_done(self: Self) -> bool:
         return player_party_manager.movement_state == PlayerMovementState.Idle
 
     def __repr__(self: Self) -> str:
-        return f"Mashing confirm while waiting for control ({self.name})."
+        return f"Holding turbo/confirm/cancel while waiting for control ({self.name})."
 
 
-class SeqTurboMashSkipCutsceneUntilIdle(SeqTurboMashUntilIdle):
-    # Mash through cutscene while holding the turbo button
-    def execute(self: Self, delta: float) -> bool:
-        ctrl = sos_ctrl()
-        ctrl.toggle_cancel(state=True)
-        if super().execute(delta):
-            ctrl.toggle_cancel(state=False)
-            return True
-        return False
-
-    def __repr__(self: Self) -> str:
-        return f"Mashing confirm and holding cancel while waiting for control ({self.name})."
-
-
-class SeqTurboMashSkipCutsceneUntilCombat(SeqTurboMashSkipCutsceneUntilIdle):
+class SeqSkipUntilCombat(SeqSkipUntilIdle):
     def is_done(self: Self) -> bool:
         return combat_manager.encounter_done is False
 
     def __repr__(self: Self) -> str:
-        return f"Mashing confirm and holding cancel while waiting for combat ({self.name})."
+        return f"Holding turbo/confirm/cancel while waiting for combat ({self.name})."

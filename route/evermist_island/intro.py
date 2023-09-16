@@ -18,10 +18,9 @@ from engine.seq import (
     SeqList,
     SeqLog,
     SeqMove,
+    SeqSkipUntilCombat,
+    SeqSkipUntilIdle,
     SeqTapDown,
-    SeqTurboMashSkipCutsceneUntilCombat,
-    SeqTurboMashSkipCutsceneUntilIdle,
-    SeqTurboMashUntilIdle,
 )
 from memory import (
     PlayerPartyCharacter,
@@ -36,7 +35,7 @@ class IntroMountainTrail(SeqList):
         super().__init__(
             name="Mountain Trail",
             children=[
-                SeqTurboMashSkipCutsceneUntilCombat(name="Wait for combat"),
+                SeqSkipUntilCombat(name="Wait for combat"),
                 SeqLog(name="SYSTEM", text="We have control!"),
                 SeqCombatAndMove(
                     name="Fights",
@@ -131,7 +130,7 @@ class IntroMountainTrail(SeqList):
                     name="Go out of cavern",
                     joy_dir=Vec2(1, -0.2),
                 ),
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control"),
             ],
         )
 
@@ -184,7 +183,7 @@ class IntroMooncradle(SeqList):
                     joy_dir=Vec2(1, 0.2),
                 ),
                 # Hold B as well to skip cutscene
-                SeqTurboMashSkipCutsceneUntilIdle(name="Meeting Brugaves and Erlina"),
+                SeqSkipUntilIdle(name="Meeting Brugaves and Erlina"),
                 SeqMove(
                     name="Move to Forbidden Cave",
                     coords=[
@@ -206,13 +205,13 @@ class IntroMooncradle(SeqList):
                     ],
                 ),
                 SeqInteract("Door"),
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control"),
                 # Forbidden Cave
                 SeqHoldDirectionUntilLostControl(
                     name="Move to cutscene",
                     joy_dir=Vec2(0, 1),
                 ),
-                SeqTurboMashUntilIdle(name="Garl nooo"),
+                SeqSkipUntilIdle(name="Garl nooo"),
                 # Zenith Academy
                 SeqMove(
                     name="Move to dorms",
@@ -324,7 +323,7 @@ class IntroZenithAcademy(SeqList):
                 SeqInteract("Sleep"),
                 SeqDelay("Sleep", timeout_in_s=1),
                 SeqInteract("Sleep"),
-                SeqTurboMashUntilIdle(name="Train with Brugaves"),
+                SeqSkipUntilIdle(name="Train with Brugaves"),
                 SeqMove(
                     name="Move to Erlina",
                     coords=[
@@ -350,9 +349,9 @@ class IntroZenithAcademy(SeqList):
                     name="Move to Erlina",
                     joy_dir=Vec2(0, -1),
                 ),
-                SeqTurboMashUntilIdle(name="Train with Erlina"),
+                SeqSkipUntilIdle(name="Train with Erlina"),
                 SeqAwaitLostControl(name="Train with Erlina"),
-                SeqTurboMashUntilIdle(name="Sewing"),
+                SeqSkipUntilIdle(name="Sewing"),
                 LoomsToCenter("Move to main area"),
                 SeqMove(
                     name="Move to main area",
@@ -368,7 +367,7 @@ class IntroZenithAcademy(SeqList):
                     ],
                 ),
                 SeqAwaitLostControl(name="Eavesdrop"),
-                SeqTurboMashUntilIdle(name="Eavesdrop"),
+                SeqSkipUntilIdle(name="Eavesdrop"),
                 SeqIfMainCharacterValere(
                     name="Main Character",
                     # Valere branch: Go left
@@ -410,7 +409,7 @@ class IntroZenithAcademy(SeqList):
                     name="I smell cookies",
                     joy_dir=Vec2(0, -1),
                 ),
-                SeqTurboMashUntilIdle(name="Cookies!!!"),
+                SeqSkipUntilIdle(name="Cookies!!!"),
                 LoomsToCenter("Move to main area"),
                 SeqCheckpoint("intro_dorms2"),
                 SeqMove(
@@ -430,7 +429,7 @@ class IntroZenithAcademy(SeqList):
                     ],
                 ),
                 SeqInteract("Headmaster Moraine"),
-                SeqTurboMashUntilIdle(name="Brugaves and Erlina return"),
+                SeqSkipUntilIdle(name="Brugaves and Erlina return"),
                 SeqMove(
                     name="Move to Erlina",
                     coords=[
@@ -445,7 +444,7 @@ class IntroZenithAcademy(SeqList):
                     ],
                 ),
                 SkipTutorial("Skip Brugaves Tutorial"),
-                SeqTurboMashUntilIdle(name="Clear tutorial screen"),
+                SeqSkipUntilIdle(name="Clear tutorial screen"),
                 SeqMove(
                     name="Move to Moraine",
                     coords=[
@@ -459,7 +458,7 @@ class IntroZenithAcademy(SeqList):
                 SeqInteract("Confirm"),
                 SeqDelay("Wait", timeout_in_s=0.2),
                 SeqInteract("Confirm"),
-                SeqTurboMashUntilIdle(name="Talking to Moraine"),
+                SeqSkipUntilIdle(name="Talking to Moraine"),
                 SeqMove(
                     name="Move to pit",
                     coords=[
@@ -527,7 +526,7 @@ class IntroFinalTrial(SeqList):
                     ],
                 ),
                 SeqInteract("Brazier"),
-                SeqTurboMashUntilIdle("Brazier"),
+                SeqSkipUntilIdle("Brazier"),
                 # TODO(orkaboy): Drop down and fight
             ],
         )
