@@ -3,6 +3,7 @@ from GUI import Menu, MenuManager, Window
 from GUI.battle_menu import BattleMenu
 from GUI.debug_menu import DebugMenu
 from GUI.tools.nav_helper import NavHelper
+from GUI.tools.route_helper import RouteHelper
 from log_init import initialize_logging
 from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu, SoSDemoAnyPercentMenu
 
@@ -32,6 +33,7 @@ if __name__ == "__main__":
             ),
             DebugMenu(window=gui),
             NavHelper(window=gui),
+            RouteHelper(window=gui),
             BattleMenu(window=gui),
         ],
     )
