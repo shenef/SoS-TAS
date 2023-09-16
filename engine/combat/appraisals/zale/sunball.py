@@ -7,6 +7,7 @@ from engine.combat.utility.sos_appraisal import (
     SoSAppraisal,
     SoSAppraisalStep,
     SoSBattleCommand,
+    SoSResource,
     SoSTargetType,
     SoSTimingType,
 )
@@ -26,6 +27,8 @@ class Sunball(SoSAppraisal):
         # This ability is 2nd index until you learn dash strike.. then it's 3rd.
         self.skill_command_index = 1
         self.ability_time = None
+        self.resource = SoSResource.Mana
+        self.cost = 8  # add modifier for mana cost reduction?
 
     def execute_timing_sequence(self: Self) -> None:
         if self.ability_time is None:

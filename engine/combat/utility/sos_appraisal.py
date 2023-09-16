@@ -44,6 +44,13 @@ class SoSTargetType(Enum):
     Enemy = auto()
 
 
+class SoSResource(Enum):
+    NONE = auto()
+    Mana = auto()
+    ComboPoints = auto()
+    UltimateGuage = auto()
+
+
 class SoSAppraisal(Appraisal):
     def __init__(self: Self) -> None:
         super().__init__()
@@ -58,6 +65,8 @@ class SoSAppraisal(Appraisal):
         self.timing_type = SoSTimingType.NONE
         self.step = SoSAppraisalStep.SelectingCommand
         self.character = PlayerPartyCharacter.NONE
+        self.resource = SoSResource.NONE
+        self.cost = 0
 
     # selects the step to perform based on the current step
     def execute(self: Self) -> None:

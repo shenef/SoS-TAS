@@ -6,6 +6,7 @@ from engine.combat.utility.sos_appraisal import (
     SoSAppraisal,
     SoSAppraisalStep,
     SoSBattleCommand,
+    SoSResource,
     SoSTargetType,
     SoSTimingType,
 )
@@ -20,7 +21,7 @@ class Moonerang(SoSAppraisal):
 
     def __init__(self: Self) -> None:
         super().__init__()
-        self.value = 1000
+        self.value = 0
         self.timing_type = SoSTimingType.MultiHit
         self.battle_command = SoSBattleCommand.Skill
         self.target_type = SoSTargetType.Enemy
@@ -28,6 +29,8 @@ class Moonerang(SoSAppraisal):
         # May take significant work to determine this unless we do it manually.
         self.skill_command_index = 1
         self.instruction_done = False
+        self.resource = SoSResource.Mana
+        self.cost = 6
 
     def execute_timing_sequence(self: Self) -> None:
         if self.instruction_done is False:

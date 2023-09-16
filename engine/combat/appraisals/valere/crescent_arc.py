@@ -4,6 +4,7 @@ from typing import Self
 from engine.combat.utility.sos_appraisal import (
     SoSAppraisal,
     SoSBattleCommand,
+    SoSResource,
     SoSTargetType,
     SoSTimingType,
 )
@@ -20,3 +21,5 @@ class CrescentArc(SoSAppraisal):
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         self.skill_command_index = 0
+        self.resource = SoSResource.Mana
+        self.cost = 7
