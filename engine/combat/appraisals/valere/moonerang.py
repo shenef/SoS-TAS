@@ -21,7 +21,7 @@ class Moonerang(SoSAppraisal):
 
     def __init__(self: Self) -> None:
         super().__init__()
-        self.value = 110
+        self.value = 0
         self.timing_type = SoSTimingType.MultiHit
         self.battle_command = SoSBattleCommand.Skill
         self.target_type = SoSTargetType.Enemy
