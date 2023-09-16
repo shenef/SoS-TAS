@@ -1,12 +1,16 @@
 # Libraries and Core Files
-from collections.abc import Callable
 from typing import Self
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
-from memory import PlayerMovementState, player_party_manager_handle
+from memory import (
+    PlayerMovementState,
+    combat_manager_handle,
+    player_party_manager_handle,
+)
 
 player_party_manager = player_party_manager_handle()
+combat_manager = combat_manager_handle()
 
 
 class SeqInteract(SeqBase):
@@ -27,29 +31,30 @@ class SeqBracelet(SeqBase):
         return True
 
 
-class SeqTurboMashUntilIdle(SeqBase):
-    _TOGGLE_TIME = 0.05
+class SeqTapDown(SeqBase):
+    def __init__(self: Self, name: str = "Tap down") -> None:
+        super().__init__(name)
 
-    def __init__(self: Self, name: str = "", func: Callable = None) -> None:
-        super().__init__(name, func)
-        self.state = False
-        self.timer = 0.0
-
-    # Mash through cutscene while holding the turbo button
     def execute(self: Self, delta: float) -> bool:
-        self.timer = self.timer + delta
+        sos_ctrl().dpad.tap_down()
+        return True
 
+
+class SeqTurboMashUntilIdle(SeqBase):
+    # Hold confirm through cutscene while holding the turbo button
+    def execute(self: Self, delta: float) -> bool:
         sos_ctrl().toggle_turbo(state=True)
-        if self.timer > self._TOGGLE_TIME:
-            self.timer = 0
-            self.state = not self.state
-            sos_ctrl().toggle_confirm(self.state)
+        sos_ctrl().toggle_confirm(state=True)
 
         # Check if we have control
-        done = player_party_manager.movement_state == PlayerMovementState.Idle
+        done = self.is_done()
         if done:
+            sos_ctrl().toggle_confirm(state=False)
             sos_ctrl().toggle_turbo(state=False)
         return done
+
+    def is_done(self: Self) -> bool:
+        return player_party_manager.movement_state == PlayerMovementState.Idle
 
     def __repr__(self: Self) -> str:
         return f"Mashing confirm while waiting for control ({self.name})."
@@ -67,3 +72,11 @@ class SeqTurboMashSkipCutsceneUntilIdle(SeqTurboMashUntilIdle):
 
     def __repr__(self: Self) -> str:
         return f"Mashing confirm and holding cancel while waiting for control ({self.name})."
+
+
+class SeqTurboMashSkipCutsceneUntilCombat(SeqTurboMashSkipCutsceneUntilIdle):
+    def is_done(self: Self) -> bool:
+        return combat_manager.encounter_done is False
+
+    def __repr__(self: Self) -> str:
+        return f"Mashing confirm and holding cancel while waiting for combat ({self.name})."
