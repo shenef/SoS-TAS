@@ -1,7 +1,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -595,6 +595,10 @@ class IntroFinalTrial(SeqList):
                     ],
                 ),
                 SeqInteract("Pillar"),
+                SeqSkipUntilCombat("Wyrd"),
+                SeqCombat("Wyrd"),
+                # TODO(orkaboy): Level up
+                # TODO(orkaboy): Leave dungeon
             ],
         )
 
