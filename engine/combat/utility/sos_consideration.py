@@ -39,15 +39,15 @@ class SoSConsideration(Consideration):
         return selected_character is actor.character
 
     # Generates default appraisals generic to every consideration
-    # TODO: Add items?
+    # TODO(eein): Add items?
     def _default_appraisals(self: Self) -> list[Appraisal]:
         basic_attack = BasicAttack()
-        # TODO: Dont use this as the value.
+        # TODO(eein): Dont use this as the value.
         basic_attack.value = self.actor.physical_attack
 
         return [basic_attack]
 
-    # TODO: Actually make character appraisals. For now we're just doing basic attacks
+    # TODO(eein): Actually make character appraisals. For now we're just doing basic attacks
     def _character_appraisals(self: Self) -> list[Appraisal]:
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
@@ -59,14 +59,14 @@ class SoSConsideration(Consideration):
             case _:
                 return []
 
-    # TODO: Actually calculate appraisals and dont just use
+    # TODO(eein): Actually calculate appraisals and dont just use
     # physical attack. This will require parsing all of the appraisals
     # for the value and returning an Action
     def calculate_actions(self: Self) -> list[Action]:
         # if the actor isn't enabled, return no actions
         actions = []
         for appraisal in self.appraisals:
-            # TODO: calculate this for every enemy.
+            # TODO(eein): calculate this for every enemy.
             actions.append(Action(self, appraisal))
         return actions
 
