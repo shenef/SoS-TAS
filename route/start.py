@@ -82,7 +82,7 @@ class SeqNewGameFromMenu(SeqList):
             name="Select main character",
             children=[
                 SeqDelay(name="Wait for select screen", timeout_in_s=10.0),
-                # TODO: Select male/female PC (left/right position is random)?
+                # TODO(orkaboy): Select male/female PC (left/right position is random)?
                 SeqMenuTapLeft(),
                 # Countdown
                 SeqLog(name="SYSTEM", text="Starting in..."),

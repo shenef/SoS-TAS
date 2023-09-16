@@ -9,7 +9,7 @@ from memory import combat_manager_handle
 combat_manager = combat_manager_handle()
 
 
-# TODO: Temporary code, moves along path, pausing while combat is active
+# TODO(orkaboy): Temporary code, moves along path, pausing while combat is active
 class SeqCombatManual(SeqMove):
     def __init__(
         self: Self,

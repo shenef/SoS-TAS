@@ -98,7 +98,7 @@ class CombatController:
 
         # Check if we have control
 
-    # TODO: This is a hack to get the second encounter tutorial to work for now.
+    # TODO(eein): This is a hack to get the second encounter tutorial to work for now.
     # This should be refactored once we have a better way to handle this.
     def _handle_alternate_encounters(self: Self) -> None:
         # checks if we are in the second encounter zone and if we are in the tutorial
