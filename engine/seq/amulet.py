@@ -8,7 +8,6 @@ from engine.seq.base import SeqBase
 logger = logging.getLogger(__name__)
 
 
-# TODO: Temporary code, moves along path, pausing while combat is active
 class SeqAmulet(SeqBase):
     def __init__(
         self: Self,

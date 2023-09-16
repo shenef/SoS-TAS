@@ -10,7 +10,7 @@ from engine.combat.utility.core.appraisal import Appraisal
 
 
 class Action:
-    # TODO: Fix Any due to circular dependency
+    # TODO(eein): Fix Any due to circular dependency
     def __init__(
         self: Self, consideration: Any, appraisal: Appraisal  # noqa: ANN401
     ) -> None:

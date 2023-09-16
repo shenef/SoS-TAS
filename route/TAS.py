@@ -82,9 +82,9 @@ class TASMenu(Menu):
             )
 
             if self.load_game_checkbox:
-                # TODO: Maybe should check for valid range 1-9
+                # TODO(orkaboy): Maybe should check for valid range 1-9
                 _, self.saveslot = imgui.input_int("Save slot 1-9", self.saveslot)
-                # TODO: Maybe should be a dropdown of valid checkpoints
+                # TODO(orkaboy): Maybe should be a dropdown of valid checkpoints
                 _, self.checkpoint = imgui.input_text(
                     "Checkpoint name", self.checkpoint
                 )

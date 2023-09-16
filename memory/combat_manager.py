@@ -294,7 +294,7 @@ class CombatManager:
 
     # Skill Commands are the menu of the "skills" command (ie Healing Light, Sunball)
     # This also applies to combos.
-    # TODO: We need a way to differentiate between the combos and skills menu.
+    # TODO(eein): We need a way to differentiate between the combos and skills menu.
     def _read_skill_commands(self: Self) -> None:
         if self._should_update():
             skill_command_selector = self.memory.follow_pointer(
@@ -313,7 +313,7 @@ class CombatManager:
                     # back to a NoneType for safety. This method is wrapped in a try
                     # as it seems to lose its pointer quite often, especially when the
                     # item menu is open
-                    # TODO: Does the skill_command_selector apply to the items menu as well?
+                    # TODO(eein): Does the skill_command_selector apply to the items menu as well?
                     has_focus = self.memory.read_bool(skill_command_selector + 0x3C)
                     selected_item_index = self.memory.read_longlong(
                         skill_command_selector + 0x40
@@ -336,7 +336,7 @@ class CombatManager:
     # For example:
     # `Encounter Done: True`` means there is no battle going on.
     # This makes it a bit frustrating to use in conditional statements, so be wary.
-    # TODO: Reverse _read_encounter_done to make it more friendly for use.
+    # TODO(eein): Reverse _read_encounter_done to make it more friendly for use.
     def _read_encounter_done(self: Self) -> None:
         if self._should_update():
             current_encounter = self.memory.follow_pointer(
@@ -420,7 +420,7 @@ class CombatManager:
                     #    - 0x20 - Item[0] -> Pointer 0x00000000
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
 
-                    # TODO: Switch "0x0" to another NULL_POINTER type of 0x00000000
+                    # TODO(eein): Switch "0x0" to another NULL_POINTER type of 0x00000000
                     if hex(item) == "0x0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue
@@ -506,9 +506,8 @@ class CombatManager:
                             selected_attack_target_guid = ""
 
                         # Separate Skill section lookup
-                        # This is currently not correct as it considers the skill target, but gets a
-                        # bit washed out if there are AOE targets.
-                        # TODO:
+                        # TODO(eein): This is currently not correct as it considers the
+                        # skill target, but gets a bit washed out if there are AOE targets.
                         with contextlib.suppress(Exception):
                             target_unique_id_base = self.memory.follow_pointer(
                                 item,
@@ -553,7 +552,7 @@ class CombatManager:
 
                     player = CombatPlayer()
 
-                    # TODO: hardcode these for now - we need to extract these players into
+                    # TODO(eein): hardcode these for now - we need to extract these players into
                     # something more global and only update them as required.
                     match character:
                         case PlayerPartyCharacter.Zale:
@@ -613,7 +612,7 @@ class CombatManager:
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
                     #    - 0x20 - Item[0] -> Pointer 0x00000000
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
-                    # TODO: Switch "0x0" to another NULL_POINTER type of 0x00000000
+                    # TODO(eein): Switch "0x0" to another NULL_POINTER type of 0x00000000
                     if hex(item) == "0x0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue

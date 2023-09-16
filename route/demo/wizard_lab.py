@@ -257,7 +257,7 @@ class DemoWizardLabBlueArea(SeqList):
                     target=Vec3(239.500, 1.002, -48.833),
                     joy_dir=Vec2(0, 1),
                 ),
-                # TODO: Route blue room
+                # TODO(orkaboy): Route blue room
             ],
         )
 
@@ -273,7 +273,7 @@ class DemoWizardLab(SeqList):
                 DemoWizardLabGreenArea(),
                 DemoWizardLabPlaceBlueCrystal(),
                 DemoWizardLabBlueArea(),
-                # TODO: A lot
+                # TODO(orkaboy): A lot
                 SeqCheckpoint(checkpoint_name="wizard_lab_boss"),
             ],
         )

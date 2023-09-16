@@ -15,18 +15,20 @@ select = [
   "RET",      # flake8-return
   "SIM",      # flake8-simplify
   "T20",      # flake8-print (no print statements)
+  "TD",       # flake8-todos
   "TRY302",   # tryceratops useless-try-except
   "TRY401",   # tryceratops verbose-log-message
   "UP",       # pyupgrade
 ]
 ignore = [
+  "ANN002",   # Missing type annotation for *{name} (args)
+  "ANN003",   # Missing type annotation for **{name} (kwargs)
   "PLR0911",  # too-many-return-statements
   "PLR0912",  # too-many-branches
   "PLR0913",  # too-many-arguments
   "PLR0915",  # too-many-statements
   "PLW0603",  # global-statement
-  "ANN002",   # Missing type annotation for *{name} (args)
-  "ANN003",   # Missing type annotation for **{name} (kwargs)
+  "TD003",    # missing-todo-link
 ]
 unfixable = [
   "ERA"       # has a bunch of false positives when auto-fixing
