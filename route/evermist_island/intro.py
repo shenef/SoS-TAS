@@ -38,7 +38,6 @@ class IntroMountainTrail(SeqList):
             children=[
                 SeqTurboMashSkipCutsceneUntilCombat(name="Wait for combat"),
                 SeqLog(name="SYSTEM", text="We have control!"),
-                # TODO: Need to be able to do special ability (mash fails for Zale)
                 SeqCombatAndMove(
                     name="Fights",
                     coords=[
