@@ -27,9 +27,21 @@ class Moonerang(SoSAppraisal):
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         self.skill_command_index = 1
+        self.instruction_done = False
 
     def execute_timing_sequence(self: Self) -> None:
-        if combat_manager.read_back_to_slot() is True:
+        if self.instruction_done is False:
+            sos_ctrl().confirm()
+            if combat_manager.read_projectile_hit_count() > 0:
+                self.instruction_done = True
+                return
+
+        if (
+            # if we jump back after a failure
+            combat_manager.read_back_to_slot() is True
+            # or if we kill the boss/enemy
+            or combat_manager.encounter_done is True
+        ):
             self.step = SoSAppraisalStep.ActionComplete
 
         pos = combat_manager.read_projectile_position()

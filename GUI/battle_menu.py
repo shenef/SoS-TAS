@@ -55,6 +55,13 @@ class BattleMenu(Menu):
             )
             imgui.text(f"SKILL TARGET: {skill_target}")
             imgui.separator()
+            imgui.text(
+                f"Moonerang Bounces: {combat_manager.read_projectile_hit_count()}"
+            )
+            imgui.text(
+                f"Moonerang Travel Speed: {combat_manager.read_projectile_speed():.0f}/75"
+            )
+            imgui.separator()
             imgui.columns(self.COLUMN_MAX)
 
             if combat_manager.enemies is not []:

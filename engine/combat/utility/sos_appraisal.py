@@ -172,7 +172,10 @@ class SoSAppraisal(Appraisal):
             self._enemy_targeted()
             and not self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index is None
-            and selected_target != ""
+            # TODO: Find better pointer to track selected targets - this one isn't doing
+            # what its supposed to so just check if exists to satisfy the result
+            # This will move to something more specific later
+            and selected_target
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
