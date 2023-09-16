@@ -3,6 +3,7 @@ from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.interact import (
     SeqBracelet,
     SeqInteract,
+    SeqMashUntilIdle,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
     SeqTapDown,
@@ -49,6 +50,7 @@ __all__ = [
     "SeqHoldDirectionUntilLostControl",
     "SeqAwaitLostControl",
     "SeqHoldDirectionUntilClose",
+    "SeqMashUntilIdle",
     "SeqSkipUntilIdle",
     "SeqSkipUntilCombat",
     "SeqInteract",
