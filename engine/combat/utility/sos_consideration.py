@@ -16,7 +16,11 @@ class SoSConsideration(Consideration):
 
     # Generates a list of appraisals for a character.
     def generate_appraisals(self: Self) -> list[Appraisal]:
-        return self._default_appraisals() + self._character_appraisals()
+        appraisals = self._default_appraisals() + self._character_appraisals()
+        return list(filter(self._has_resources_for_appraisal, appraisals))
+
+    def _has_resources_for_appraisal(self: Self, appraisal: Appraisal) -> bool:
+        return appraisal.has_resources(self.actor)
 
     # if the selected character is NONE or we are on the selected character, considered valid'
     # and do nothing else here.

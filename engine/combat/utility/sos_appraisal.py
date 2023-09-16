@@ -4,7 +4,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.utility.core import Appraisal
-from memory.combat_manager import combat_manager_handle
+from memory.combat_manager import CombatPlayer, combat_manager_handle
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
@@ -240,6 +240,18 @@ class SoSAppraisal(Appraisal):
         #                 == self.combat_manager.selected_skill_target_guid
         #             )
         # return False
+
+    def has_resources(self: Self, actor: CombatPlayer) -> bool:
+        match self.resource:
+            case SoSResource.Mana:
+                return actor.current_mp >= self.cost
+            # Not yet implemented
+            # case SoSResource.ComboPoints:
+            #     return actor.combo_points >= self.cost
+            # case SoSResource.UltimateGuage:
+            #     return actor.ultimate_gauge >= self.cost
+            case _:
+                return True
 
     def is_player_timed_attack_ready(self: Self) -> bool:
         for player in self.combat_manager.players:
