@@ -5,6 +5,7 @@ checkpoint            : ""      # When loading game, what checkpoint should the 
 # Valid checkpoints (SoS Any%):
 #   intro_mooncradle            # First cavern in flashback
 #   intro_dorms                 # First entering dorms of Zenith Academy
+#   intro_dorms2                # Dorms of Zenith Academy, just before final trial
 
 # User Interface
 ui:

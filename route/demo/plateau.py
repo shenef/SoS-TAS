@@ -11,7 +11,7 @@ from engine.seq import (
     SeqList,
     SeqLog,
     SeqMove,
-    SeqTurboMashUntilIdle,
+    SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class DemoPlateau(SeqList):
         super().__init__(
             name="X'tol's Landing",
             children=[
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control"),
                 SeqLog(name="SYSTEM", text="We have control!"),
                 SeqMove(
                     name="Move to fight",
@@ -78,6 +78,6 @@ class DemoPlateau(SeqList):
                         Vec3(-398.300, -14.990, -141.200),
                     ],
                 ),
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control"),
             ],
         )

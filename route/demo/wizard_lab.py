@@ -15,7 +15,7 @@ from engine.seq import (
     SeqList,
     SeqLog,
     SeqMove,
-    SeqTurboMashUntilIdle,
+    SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class DemoWizardLabEnterTower(SeqList):
                     ],
                 ),
                 # Cutscene
-                SeqTurboMashUntilIdle(name="Making a door"),
+                SeqSkipUntilIdle(name="Making a door"),
                 SeqMove(
                     name="Move to entrance",
                     coords=[
@@ -53,7 +53,7 @@ class DemoWizardLabEnterTower(SeqList):
                     ],
                 ),
                 # Cutscene
-                SeqTurboMashUntilIdle(name="Pirate leaves"),
+                SeqSkipUntilIdle(name="Pirate leaves"),
                 SeqMove(
                     name="Move to block",
                     coords=[
@@ -85,7 +85,7 @@ class DemoWizardLabEnterTower(SeqList):
                         InteractMove(7.100, 6.002, 33.171),
                     ],
                 ),
-                SeqTurboMashUntilIdle(name="Pick up green crystal"),
+                SeqSkipUntilIdle(name="Pick up green crystal"),
                 SeqMove(
                     name="Go to altar",
                     coords=[
@@ -182,7 +182,7 @@ class DemoWizardLabGreenArea(SeqList):
                         InteractMove(-78.839, 6.002, -3.181),
                     ],
                 ),
-                SeqTurboMashUntilIdle(name="Pick up blue crystal"),
+                SeqSkipUntilIdle(name="Pick up blue crystal"),
                 SeqMove(
                     name="Leave room",
                     coords=[

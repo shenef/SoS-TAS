@@ -33,7 +33,7 @@ class Sunball(SoSAppraisal):
     def execute_timing_sequence(self: Self) -> None:
         if self.ability_time is None:
             # set current time + 3.6 seconds
-            ability_timing = timedelta(seconds=3.8)
+            ability_timing = timedelta(seconds=2.0)
             self.ability_time = datetime.utcnow() + ability_timing
         else:
             sos_ctrl().toggle_confirm(True)

@@ -1,7 +1,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -11,14 +11,17 @@ from engine.seq import (
     SeqCliffClimb,
     SeqCliffMove,
     SeqClimb,
+    SeqDelay,
     SeqHoldDirectionUntilLostControl,
     SeqIf,
     SeqInteract,
     SeqList,
     SeqLog,
+    SeqMashUntilIdle,
     SeqMove,
-    SeqTurboMashSkipCutsceneUntilIdle,
-    SeqTurboMashUntilIdle,
+    SeqSkipUntilCombat,
+    SeqSkipUntilIdle,
+    SeqTapDown,
 )
 from memory import (
     PlayerPartyCharacter,
@@ -33,20 +36,20 @@ class IntroMountainTrail(SeqList):
         super().__init__(
             name="Mountain Trail",
             children=[
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilCombat(name="Wait for combat"),
                 SeqLog(name="SYSTEM", text="We have control!"),
-                # TODO: Need to be able to do special ability (mash fails for Zale)
                 SeqCombatAndMove(
                     name="Fights",
                     coords=[
-                        InteractMove(33.253, 6.002, 20.273),
-                        Vec3(37.799, 5.477, 18.084),
-                        Vec3(49.640, 6.010, 6.719),
-                        Vec3(55.897, 6.002, 6.543),
-                        InteractMove(56.819, 13.002, 13.466),
-                        InteractMove(44.829, 13.010, 25.305),
-                        InteractMove(34.500, 13.002, 27.500),
+                        InteractMove(31.524, 6.002, 19.951),
+                        Vec3(36.021, 5.842, 19.951),
+                        Vec3(49.921, 6.002, 6.540),
+                        Vec3(54.534, 6.002, 6.543),
+                        InteractMove(55.458, 10.002, 9.467),
+                        Vec3(57.051, 10.002, 12.404),
+                        InteractMove(43.963, 13.010, 25.059),
                     ],
+                    precision=0.2,
                 ),
                 SeqClimb(
                     name="Move down ladder",
@@ -58,18 +61,19 @@ class IntroMountainTrail(SeqList):
                 SeqMove(
                     name="Move to cavern",
                     coords=[
+                        Vec3(31.505, 6.002, 19.783),
                         InteractMove(23.612, 5.001, 11.401),
-                        Vec3(20.193, 5.001, 7.870),
+                        Vec3(19.979, 5.002, 7.421),
                         Vec3(14.948, 5.001, 7.870),
                         Vec3(-3.976, 5.001, 15.624),
                         Vec3(-8.323, 5.001, 17.491),
-                        InteractMove(-7.701, 7.002, 22.365),
-                        InteractMove(-0.783, 9.002, 22.563),
-                        InteractMove(-0.914, 13.002, 26.750),
-                        Vec3(-10.554, 13.002, 27.866),
-                        Vec3(-29.087, 13.090, 27.836),
-                        Vec3(-34.761, 13.030, 22.203),
-                        Vec3(-40.253, 11.002, 22.203),
+                        Vec3(-7.740, 5.002, 21.092),
+                        InteractMove(-5.086, 9.002, 23.746),
+                        Vec3(-1.139, 9.002, 24.543),
+                        InteractMove(-1.223, 13.002, 26.974),
+                        Vec3(-29.325, 13.112, 26.818),
+                        Vec3(-33.072, 13.002, 23.247),
+                        Vec3(-39.808, 11.002, 23.278),
                         HoldDirection(-88.500, 10.002, 32.058, joy_dir=Vec2(0, 1)),
                     ],
                 ),
@@ -129,7 +133,7 @@ class IntroMountainTrail(SeqList):
                     name="Go out of cavern",
                     joy_dir=Vec2(1, -0.2),
                 ),
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control"),
             ],
         )
 
@@ -182,7 +186,7 @@ class IntroMooncradle(SeqList):
                     joy_dir=Vec2(1, 0.2),
                 ),
                 # Hold B as well to skip cutscene
-                SeqTurboMashSkipCutsceneUntilIdle(name="Meeting Brugaves and Erlina"),
+                SeqSkipUntilIdle(name="Meeting Brugaves and Erlina"),
                 SeqMove(
                     name="Move to Forbidden Cave",
                     coords=[
@@ -204,13 +208,13 @@ class IntroMooncradle(SeqList):
                     ],
                 ),
                 SeqInteract("Door"),
-                SeqTurboMashUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control"),
                 # Forbidden Cave
                 SeqHoldDirectionUntilLostControl(
                     name="Move to cutscene",
                     joy_dir=Vec2(0, 1),
                 ),
-                SeqTurboMashUntilIdle(name="Garl nooo"),
+                SeqSkipUntilIdle(name="Garl nooo"),
                 # Zenith Academy
                 SeqMove(
                     name="Move to dorms",
@@ -265,6 +269,30 @@ class LoomsToCenter(SeqIfMainCharacterValere):
         )
 
 
+class SkipTutorial(SeqList):
+    def __init__(self: Self, name: str) -> None:
+        super().__init__(
+            name,
+            children=[
+                SeqInteract("Talk"),
+                SeqDelay("Wait", timeout_in_s=1),
+                SeqInteract("Skip dialog"),
+                SeqDelay("Wait", timeout_in_s=0.2),
+                SeqTapDown(),
+                SeqInteract("Say no"),
+                SeqDelay("Wait", timeout_in_s=1),
+                SeqInteract("Skip dialog"),
+                SeqDelay("Wait", timeout_in_s=0.2),
+                SeqTapDown(),
+                SeqInteract("Say no"),
+                SeqDelay("Wait", timeout_in_s=1),
+                SeqInteract("Skip dialog"),
+                SeqDelay("Wait", timeout_in_s=0.2),
+                SeqInteract("Skip dialog"),
+            ],
+        )
+
+
 class IntroZenithAcademy(SeqList):
     def __init__(self: Self) -> None:
         super().__init__(
@@ -296,7 +324,9 @@ class IntroZenithAcademy(SeqList):
                     ),
                 ),
                 SeqInteract("Sleep"),
-                SeqTurboMashUntilIdle(name="Train with Brugaves"),
+                SeqDelay("Sleep", timeout_in_s=1),
+                SeqInteract("Sleep"),
+                SeqSkipUntilIdle(name="Train with Brugaves"),
                 SeqMove(
                     name="Move to Erlina",
                     coords=[
@@ -322,9 +352,9 @@ class IntroZenithAcademy(SeqList):
                     name="Move to Erlina",
                     joy_dir=Vec2(0, -1),
                 ),
-                SeqTurboMashUntilIdle(name="Train with Erlina"),
+                SeqSkipUntilIdle(name="Train with Erlina"),
                 SeqAwaitLostControl(name="Train with Erlina"),
-                SeqTurboMashUntilIdle(name="Sewing"),
+                SeqSkipUntilIdle(name="Sewing"),
                 LoomsToCenter("Move to main area"),
                 SeqMove(
                     name="Move to main area",
@@ -340,7 +370,7 @@ class IntroZenithAcademy(SeqList):
                     ],
                 ),
                 SeqAwaitLostControl(name="Eavesdrop"),
-                SeqTurboMashUntilIdle(name="Eavesdrop"),
+                SeqSkipUntilIdle(name="Eavesdrop"),
                 SeqIfMainCharacterValere(
                     name="Main Character",
                     # Valere branch: Go left
@@ -382,8 +412,9 @@ class IntroZenithAcademy(SeqList):
                     name="I smell cookies",
                     joy_dir=Vec2(0, -1),
                 ),
-                SeqTurboMashUntilIdle(name="Cookies!!!"),
+                SeqSkipUntilIdle(name="Cookies!!!"),
                 LoomsToCenter("Move to main area"),
+                SeqCheckpoint("intro_dorms2"),
                 SeqMove(
                     name="Move to Moraine",
                     coords=[
@@ -401,18 +432,175 @@ class IntroZenithAcademy(SeqList):
                     ],
                 ),
                 SeqInteract("Headmaster Moraine"),
-                SeqTurboMashUntilIdle(name="Brugaves and Erlina return"),
+                SeqSkipUntilIdle(name="Brugaves and Erlina return"),
                 SeqMove(
                     name="Move to Erlina",
                     coords=[
                         Vec3(31.747, -8.998, -141.005),
                     ],
                 ),
-                SeqInteract("Erlina"),
-                # TODO: Tap down, skip tutorial (x2)
-                # TODO: Go to Brugaves, skip tutorials (x2)
-                # TODO: Go to Moraine, skip-mash
-                # TODO: Jump into pit
+                SkipTutorial("Skip Erlina Tutorial"),
+                SeqMove(
+                    name="Move to Brugaves",
+                    coords=[
+                        Vec3(33.529, -8.932, -141.817),
+                    ],
+                ),
+                SkipTutorial("Skip Brugaves Tutorial"),
+                SeqSkipUntilIdle(name="Clear tutorial screen"),
+                SeqMove(
+                    name="Move to Moraine",
+                    coords=[
+                        Vec3(33.071, -8.998, -136.126),
+                    ],
+                ),
+                SeqInteract("Headmaster Moraine"),
+                SeqDelay("Wait", timeout_in_s=1.0),
+                SeqInteract("Confirm"),
+                SeqDelay("Wait", timeout_in_s=0.2),
+                SeqInteract("Confirm"),
+                SeqDelay("Wait", timeout_in_s=0.2),
+                SeqInteract("Confirm"),
+                SeqSkipUntilIdle(name="Talking to Moraine"),
+                SeqMove(
+                    name="Move to pit",
+                    coords=[
+                        Vec3(30.334, 7.013, 191.537),
+                    ],
+                ),
+                SeqInteract("Jump"),
+            ],
+        )
+
+
+class IntroFinalTrial(SeqList):
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Final trials",
+            children=[
+                SeqMove(
+                    name="Move to ladder",
+                    coords=[
+                        InteractMove(33.059, -12.998, -345.326),
+                        Vec3(37.050, -12.998, -344.937),
+                        Vec3(42.429, -12.998, -350.327),
+                        Vec3(43.500, -12.998, -349.470),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb ladder",
+                    coords=[
+                        InteractMove(43.500, -7.998, -348.533),
+                    ],
+                ),
+                SeqMove(
+                    name="Move near lever",
+                    coords=[
+                        Vec3(41.925, -7.998, -344.613),
+                        Vec3(40.825, -7.998, -338.668),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to lever",
+                    coords=[
+                        Vec3(37.852, -7.998, -334.758),
+                    ],
+                    precision=0.1,
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(41.031, -7.998, -338.552),
+                        Vec3(40.723, -7.998, -341.119),
+                        InteractMove(24.618, -7.998, -341.119),
+                        Vec3(24.618, -7.998, -334.883),
+                    ],
+                ),
+                SeqInteract("Chest"),
+                SeqMashUntilIdle("Chest"),
+                SeqMove(
+                    name="Move to brazier",
+                    coords=[
+                        Vec3(24.567, -7.998, -340.309),
+                        InteractMove(41.214, -7.998, -340.309),
+                        Vec3(41.550, -7.998, -334.885),
+                    ],
+                ),
+                SeqInteract("Brazier"),
+                SeqMashUntilIdle("Brazier"),
+                SeqCombatAndMove(
+                    name="Fight enemies",
+                    coords=[
+                        Vec3(37.523, -7.998, -335.876),
+                        InteractMove(34.825, -12.998, -338.872),
+                        Vec3(32.868, -12.998, -336.460),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(32.868, -10.140, -336.470),
+                        Vec3(32.881, -2.998, -335.533),
+                    ],
+                ),
+                SeqMove(
+                    name="Jump gaps",
+                    coords=[
+                        Vec3(32.453, -2.998, -323.957),
+                        InteractMove(32.453, -2.998, -316.460),
+                        InteractMove(35.481, -2.998, -316.460),
+                        InteractMove(35.540, -2.998, -313.519),
+                        InteractMove(38.415, -2.998, -313.519),
+                        InteractMove(38.452, -2.998, -309.460),
+                        InteractMove(43.540, -2.998, -309.454),
+                        InteractMove(43.540, -2.998, -304.052),
+                    ],
+                    precision=0.7,
+                ),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(39.416, -2.998, -302.099),
+                        InteractMove(32.931, -2.995, -308.069),
+                        Vec3(24.997, -2.998, -301.194),
+                        Vec3(24.997, -2.998, -296.224),
+                    ],
+                ),
+                SeqInteract("Chest"),
+                SeqMashUntilIdle("Chest"),
+                SeqCombatAndMove(
+                    name="Move to brazier",
+                    coords=[
+                        Vec3(24.954, -2.998, -301.107),
+                        InteractMove(31.489, -2.998, -308.173),
+                        Vec3(32.657, -2.998, -308.173),
+                        InteractMove(39.358, -2.998, -301.492),
+                        Vec3(41.340, -2.998, -297.060),
+                    ],
+                ),
+                SeqInteract("Brazier"),
+                SeqMashUntilIdle("Brazier"),
+                SeqMove(
+                    name="Move to platform",
+                    coords=[
+                        Vec3(39.415, -2.998, -297.149),
+                        Vec3(32.923, -2.998, -292.023),
+                    ],
+                ),
+                SeqInteract("Elevator"),
+                SeqMashUntilIdle("Erlina and Brugaves"),
+                SeqMove(
+                    name="Move to pillar",
+                    coords=[
+                        Vec3(81.996, -9.998, -195.727),
+                    ],
+                ),
+                SeqInteract("Pillar"),
+                SeqSkipUntilCombat("Wyrd"),
+                SeqCombat("Wyrd"),
+                # TODO(orkaboy): Level up
+                # TODO(orkaboy): Leave dungeon
             ],
         )
 
@@ -426,5 +614,6 @@ class EvermistIsland(SeqList):
                 IntroMooncradle(),
                 SeqCheckpoint("intro_dorms"),
                 IntroZenithAcademy(),
+                IntroFinalTrial(),
             ],
         )
