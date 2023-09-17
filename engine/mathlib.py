@@ -10,6 +10,9 @@ class Vec2(NamedTuple):
     def __eq__(self: Self, other: Self) -> bool:
         return self.x == other.x and self.y == other.y
 
+    def __hash__(self: Self) -> int:
+        return hash((self.x, self.y))
+
     def __add__(self: Self, other: Self) -> Self:
         return Vec2(self.x + other.x, self.y + other.y)
 
@@ -21,6 +24,11 @@ class Vec2(NamedTuple):
 
     def __rmul__(self: Self, scalar: float) -> Self:
         return self * scalar
+
+    def __truediv__(self: Self, v: Self | float) -> Self:
+        if isinstance(v, Vec2):
+            return Vec2(self.x / v.x, self.y / v.y)
+        return Vec2(self.x / v, self.y / v)
 
     def close_to(self: Self, other: Self, precision: float) -> bool:
         return (
@@ -252,6 +260,12 @@ class Vec3:
     def norm(self: Self) -> float:
         return math.sqrt(Vec3.dot(self, self))
 
+    def __eq__(self: Self, other: Self) -> bool:
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def __hash__(self: Self) -> int:
+        return hash((self.x, self.y, self.z))
+
     def __add__(self: Self, v: Self) -> Self:
         return Vec3(self.x + v.x, self.y + v.y, self.z + v.z)
 
@@ -269,7 +283,7 @@ class Vec3:
     def __rmul__(self: Self, v: Self) -> Self:
         return self.__mul__(v)
 
-    def __div__(self: Self, v: Self | float) -> Self:
+    def __truediv__(self: Self, v: Self | float) -> Self:
         if isinstance(v, Vec3):
             return Vec3(self.x / v.x, self.y / v.y, self.z / v.z)
         return Vec3(self.x / v, self.y / v, self.z / v)
