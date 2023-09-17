@@ -112,7 +112,6 @@ class SoSAppraisal(Appraisal):
             and self.combat_manager.battle_command_index == self.battle_command.value
         ):
             self.ctrl.confirm()
-            # TODO(eein): Add items and whatever else here.
             # Attack skips to selecting enemy sequence
             match self.battle_command:
                 case SoSBattleCommand.Attack:
@@ -148,7 +147,6 @@ class SoSAppraisal(Appraisal):
             and self.combat_manager.skill_command_index == self.skill_command_index
         ):
             self.ctrl.confirm()
-            # TODO(eein): Add items and whatever else here.
             # Attack skips to selecting enemy sequence
             match self.battle_command:
                 case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
@@ -164,11 +162,11 @@ class SoSAppraisal(Appraisal):
             logger.debug(f"Entering step: {self.step.name}")
 
     def execute_selecting_enemy_sequence(self: Self) -> None:
-        # Just assume we are targeting something for now
         # TODO(eein): this will be similar to consideration that cycles through targets
         # later until it finds the one where the guid is the same (or the unique id)
         # we should also ensure the target is selected before initiating the action
         # This is simply hovering the target and ensures we can move to the next state
+        # Just assume we are targeting something for now
 
         match self.battle_command:
             case SoSBattleCommand.Attack:
@@ -193,7 +191,6 @@ class SoSAppraisal(Appraisal):
         sos_ctrl().dpad.tap_right()
 
     def execute_confirm_enemy_sequence(self: Self) -> None:
-        # TODO(eein): Find better timing, or add a delay for this confirm.
         if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
             logger.debug("Confirming Enemy")
             self.ctrl.confirm()
