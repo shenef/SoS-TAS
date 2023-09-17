@@ -1,7 +1,5 @@
 # Combat Manager
 
-- TODO: Character HP
-- TODO: Boost (AP) on ground
 - Cutscenes
   - There is information on cutsceneRunner and encounterCutscenes, this is probably for boss fights, and we'll need this information to proceed when its a blocker.
 - Timed Attacks
@@ -98,7 +96,7 @@ Combat Manager
             - 0x10 - _items
               - 0x18 - count (0-x)
                 - 0x20 - item[0] (and so on)
-                  - 0x18 icon - TODO: check status here?
+                  - 0x18 icon 
                   - 0x20 disabled icon  
                   - 0x28 nameLocId (localization id, RE)
                   - 0x38 damageType (the type of attack, RE)

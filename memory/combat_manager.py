@@ -336,7 +336,6 @@ class CombatManager:
     # For example:
     # `Encounter Done: True`` means there is no battle going on.
     # This makes it a bit frustrating to use in conditional statements, so be wary.
-    # TODO(eein): Reverse _read_encounter_done to make it more friendly for use.
     def _read_encounter_done(self: Self) -> None:
         if self._should_update():
             current_encounter = self.memory.follow_pointer(
@@ -506,7 +505,7 @@ class CombatManager:
                             selected_attack_target_guid = ""
 
                         # Separate Skill section lookup
-                        # TODO(eein): This is currently not correct as it considers the
+                        # TODO(eein): This is currently not correct as it considers thes
                         # skill target, but gets a bit washed out if there are AOE targets.
                         with contextlib.suppress(Exception):
                             target_unique_id_base = self.memory.follow_pointer(
@@ -612,7 +611,6 @@ class CombatManager:
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
                     #    - 0x20 - Item[0] -> Pointer 0x00000000
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
-                    # TODO(eein): Switch "0x0" to another NULL_POINTER type of 0x00000000
                     if hex(item) == "0x0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue

@@ -29,7 +29,6 @@ class SoSReasoner(Reasoner):
 
     def _select_action(self: Self) -> Action:
         # go through each consideration and calculate its value
-        # TODO(eein): Optimize, do not calculate values for dead/disabled characters
         actions = []
         for consideration in self.considerations:
             calculated_actions = consideration.calculate_actions()

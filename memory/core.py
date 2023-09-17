@@ -103,7 +103,6 @@ class SoSMemory:
             return None
         # This casting is probably not necessary but it ensures it should fit so it doesn't crash
         # when trying to debug pointer locations while building memory managers.
-        # TODO(eein): Try returning only static_table + instance_ptr at a later date.
         return (static_table + instance_ptr) & 0xFFFFFFFFFFFFFFFF
 
     # This function allows you to follow an existing pointer created by get_pointer.
