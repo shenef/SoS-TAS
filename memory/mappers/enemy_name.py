@@ -43,6 +43,8 @@ class EnemyName:
         "3e00a15f95b3e1d4cb68e71021579758": "Cukoo Monster",
         "090c2ec246656b643a5d1e5b0bb3db28": "Clock Zombie",
         "ffe45f0323cb8924e8296b7cc86d9d1b": "Strife Minion",
+        "cc767e360aab54d4ca314a206e32ffee": "Brugraves",
+        "1894c41627be94d408bd64295ab6dd18": "Erlina",
         "a5d39cc10d1848d478b59c892f636e3b": "Dweller of Strife",
         # The Acolytes
         "76c4290aa2a896b4cb405e5a2d29b3a0": "One",
