@@ -505,7 +505,7 @@ class CombatManager:
                             selected_attack_target_guid = ""
 
                         # Separate Skill section lookup
-                        # TODO(eein): This is currently not correct as it considers thes
+                        # TODO(eein): This is currently not correct as it does consider the
                         # skill target, but gets a bit washed out if there are AOE targets.
                         with contextlib.suppress(Exception):
                             target_unique_id_base = self.memory.follow_pointer(
