@@ -6,6 +6,7 @@ from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
     InteractMove,
+    SeqAmulet,
     SeqAwaitLostControl,
     SeqCheckpoint,
     SeqCliffClimb,
@@ -19,6 +20,7 @@ from engine.seq import (
     SeqLog,
     SeqMashUntilIdle,
     SeqMove,
+    SeqSkipUntilClose,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
     SeqTapDown,
@@ -599,8 +601,256 @@ class IntroFinalTrial(SeqList):
                 SeqInteract("Pillar"),
                 SeqSkipUntilCombat("Wyrd"),
                 SeqCombat("Wyrd"),
-                # TODO(orkaboy): Level up
-                # TODO(orkaboy): Leave dungeon
+                # TODO(orkaboy): Implement proper level up
+                SeqMashUntilIdle("TEMP: Level up & cutscene"),
+                SeqMove(
+                    name="Leave dungeon",
+                    coords=[
+                        Vec3(82.074, -9.998, -198.437),
+                        HoldDirection(33.000, 4.002, -128.083, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+                # Jumping into a cutscene here
+                SeqMove(
+                    name="Leave dungeon",
+                    precision=2.0,
+                    coords=[
+                        InteractMove(33.000, -6.990, -130.200),
+                    ],
+                ),
+                # Detect entering world map
+                SeqSkipUntilClose("Leaving home", coord=Vec3(109.500, 2.002, 61.698)),
+                # Activate storytelling amulet
+                # TODO(orkaboy): Should make this optional
+                SeqAmulet("Storytelling Amulet"),
+                SeqMove(
+                    name="Move to Forbidden Cave",
+                    coords=[
+                        Vec3(109.500, 2.002, 64.000),
+                        Vec3(108.000, 2.002, 64.000),
+                        Vec3(108.000, 2.002, 66.500),
+                    ],
+                ),
+                SeqInteract("Forbidden Cave"),
+            ],
+        )
+
+
+class IntroForbiddenCave(SeqList):
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Forbidden Cave",
+            children=[
+                SeqMove(
+                    name="Move to door",
+                    coords=[
+                        Vec3(14.000, 1.002, 14.367),
+                        Vec3(14.000, 1.002, 17.396),
+                    ],
+                ),
+                SeqInteract("Open door"),
+                SeqSkipUntilIdle("Open door"),
+                SeqCombatAndMove(
+                    name="Move to wall",
+                    coords=[
+                        Vec3(14.000, 1.002, 17.396),
+                        HoldDirection(14.050, -0.998, 69.499, joy_dir=Vec2(0, 1)),
+                        Vec3(14.050, -0.998, 120.905),
+                        Vec3(6.759, -0.998, 128.605),
+                        HoldDirection(-25.425, 5.002, 128.568, joy_dir=Vec2(-1, 1)),
+                        Vec3(-28.461, 5.002, 130.157),
+                        InteractMove(-46.540, 5.002, 130.157),
+                        Vec3(-54.723, 5.002, 132.877),
+                        Vec3(-56.857, 5.002, 135.580),
+                        Vec3(-56.857, 5.002, 137.540),
+                    ],
+                ),
+                # TODO(orkaboy): Can fail here if combat is entered in this phase
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(-56.857, 15.002, 138.467),
+                    ],
+                ),
+                # TODO(orkaboy): Can fail (jumping off the pillar)
+                SeqMove(
+                    name="Jump to pillar",
+                    coords=[
+                        Vec3(-54.918, 15.002, 140.050),
+                        InteractMove(
+                            -50.587, 7.010, 140.050
+                        ),  # TODO(orkaboy): How to solve?
+                    ],
+                ),
+                # TODO(orkaboy): Very prone to failure (jumping where not supposed to)
+                SeqMove(
+                    name="Climb tower",
+                    coords=[
+                        Vec3(-46.454, 6.002, 139.460),
+                        InteractMove(-43.510, 9.002, 139.460),
+                        InteractMove(-43.487, 11.002, 140.467),
+                        InteractMove(-44.700, 12.002, 140.467),
+                        InteractMove(-44.700, 15.002, 141.540),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(-44.573, 16.321, 141.530),
+                        Vec3(-35.176, 16.540, 141.530),
+                        Vec3(-35.176, 11.002, 141.540),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to ledge",
+                    coords=[
+                        Vec3(-33.449, 11.002, 139.844),
+                        Vec3(-25.329, 11.002, 139.354),
+                        Vec3(-22.536, 11.002, 136.561),
+                        HoldDirection(5.170, 5.002, 132.895, joy_dir=Vec2(1, -1)),
+                        Vec3(8.542, 5.002, 136.778),
+                        Vec3(11.492, 5.002, 139.500),
+                    ],
+                ),
+                # TODO(orkaboy): Need to press up here. Test HoldDirection?
+                SeqCliffMove(
+                    name="Move across ledge",
+                    coords=[
+                        HoldDirection(13.000, 5.002, 139.500, joy_dir=Vec2(1, 1)),
+                        Vec3(16.550, 5.002, 139.500),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to fight",
+                    coords=[
+                        Vec3(19.659, 5.002, 137.594),
+                        Vec3(21.075, 5.002, 138.526),
+                        HoldDirection(53.465, 1.002, 127.634, joy_dir=Vec2(1, 1)),
+                    ],
+                ),
+                # TODO(orkaboy): Very prone to failure (jumping where not supposed to)
+                SeqCombatAndMove(
+                    name="Navigate to key",
+                    coords=[
+                        Vec3(53.573, 1.010, 133.691),
+                        InteractMove(53.353, 4.012, 137.474),
+                        Vec3(56.658, 4.012, 140.818),
+                        InteractMove(59.915, 8.012, 144.015),
+                        Vec3(60.501, 8.002, 148.204),
+                        Vec3(71.706, 10.002, 148.204),
+                        Vec3(73.633, 10.002, 142.899),
+                        Vec3(72.258, 10.002, 138.201),
+                        InteractMove(69.521, 3.010, 138.381),
+                        InteractMove(61.050, 1.002, 138.381),
+                        Vec3(59.146, 1.002, 138.458),
+                        InteractMove(56.907, 7.002, 140.756),
+                        InteractMove(59.825, 11.002, 144.103),
+                        Vec3(59.847, 11.002, 145.191),
+                        InteractMove(55.900, 16.002, 145.191),
+                        Vec3(54.157, 16.002, 144.114),
+                    ],
+                ),
+                SeqInteract("Forbidden Cavern Key"),
+                SeqSkipUntilIdle("Forbidden Cavern Key"),
+                SeqMove(
+                    name="Jump down",
+                    coords=[
+                        InteractMove(61.458, 1.002, 144.189),
+                    ],
+                ),
+                SeqMove(
+                    name="Approach lever",
+                    precision=0.1,
+                    coords=[
+                        Vec3(62.844, 1.002, 144.645),
+                    ],
+                ),
+                SeqInteract("Pull lever"),
+                # TODO(orkaboy): Very prone to failure (jumping where not supposed to)
+                SeqMove(
+                    name="Move to door",
+                    coords=[
+                        Vec3(61.161, 1.002, 140.211),
+                        Vec3(58.021, 1.012, 140.371),
+                        InteractMove(56.973, 4.012, 141.322),
+                        InteractMove(59.962, 8.012, 144.115),
+                        Vec3(59.962, 8.012, 145.517),
+                        InteractMove(57.824, 10.012, 145.517),
+                        Vec3(57.640, 10.012, 143.590),
+                        Vec3(55.502, 10.012, 141.361),
+                        Vec3(54.687, 10.012, 141.060),
+                    ],
+                ),
+                SeqInteract("Open lock"),
+                SeqMashUntilIdle("Open lock"),
+                SeqMove(
+                    name="Move to scroll",
+                    coords=[
+                        HoldDirection(72.100, 6.002, 203.000, joy_dir=Vec2(-1, 1)),
+                        Vec3(66.875, 6.002, 205.755),
+                        Vec3(64.141, 6.002, 208.489),
+                        Vec3(63.918, 6.002, 209.744),
+                    ],
+                ),
+                SeqInteract("Combo scroll"),
+                SeqSkipUntilIdle("Combo scroll"),
+                SeqMove(
+                    name="Move to wall",
+                    coords=[
+                        Vec3(60.519, 6.002, 206.460),
+                        Vec3(53.945, 6.002, 203.097),
+                        HoldDirection(19.085, 13.002, 136.585, joy_dir=Vec2(-1, -1)),
+                        Vec3(16.958, 13.002, 138.682),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(16.958, 20.143, 140.530),
+                        Vec3(19.374, 20.143, 140.530),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Fight",
+                    coords=[
+                        Vec3(21.487, 20.002, 137.556),
+                        Vec3(25.335, 20.002, 132.576),
+                        InteractMove(25.335, 1.010, 130.365),
+                        InteractMove(25.335, -0.990, 125.800),
+                        Vec3(20.202, -0.998, 124.117),
+                        Vec3(15.461, -0.998, 134.781),
+                        Vec3(14.093, -0.998, 139.361),
+                        HoldDirection(13.931, 5.002, 181.026, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl(
+                    name="Move to bridge",
+                    joy_dir=Vec2(0, 1),
+                ),
+                SeqSkipUntilIdle("Cutscene"),
+                SeqMove(
+                    name="Move to ledge",
+                    coords=[
+                        Vec3(12.471, 5.002, 200.353),
+                        InteractMove(6.260, 5.002, 200.353),
+                        Vec3(4.604, 5.002, 203.368),
+                    ],
+                ),
+                SeqCliffMove(
+                    name="Enter side cavern",
+                    coords=[
+                        Vec3(4.602, 5.000, 204.832),
+                        HoldDirection(-30.917, 2.002, 203.683, joy_dir=Vec2(-1, 1)),
+                    ],
+                ),
+                # TODO(orkaboy): Campfire
+                SeqCheckpoint("forbidden_cave2"),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(-39.489, 2.002, 206.147),
+                    ],
+                ),
             ],
         )
 
@@ -615,5 +865,7 @@ class EvermistIsland(SeqList):
                 SeqCheckpoint("intro_dorms"),
                 IntroZenithAcademy(),
                 IntroFinalTrial(),
+                SeqCheckpoint("forbidden_cave"),
+                IntroForbiddenCave(),
             ],
         )
