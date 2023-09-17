@@ -22,6 +22,11 @@ class Vec2(NamedTuple):
     def __rmul__(self: Self, scalar: float) -> Self:
         return self * scalar
 
+    def __truediv__(self: Self, v: Self | float) -> Self:
+        if isinstance(v, Vec2):
+            return Vec2(self.x / v.x, self.y / v.y)
+        return Vec2(self.x / v, self.y / v)
+
     def close_to(self: Self, other: Self, precision: float) -> bool:
         return (
             self.x < other.x + precision
@@ -269,7 +274,7 @@ class Vec3:
     def __rmul__(self: Self, v: Self) -> Self:
         return self.__mul__(v)
 
-    def __div__(self: Self, v: Self | float) -> Self:
+    def __truediv__(self: Self, v: Self | float) -> Self:
         if isinstance(v, Vec3):
             return Vec3(self.x / v.x, self.y / v.y, self.z / v.z)
         return Vec3(self.x / v, self.y / v, self.z / v)
