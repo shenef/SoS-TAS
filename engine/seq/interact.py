@@ -1,8 +1,9 @@
 # Libraries and Core Files
 from collections.abc import Callable
-from typing import Self
+from typing import Any, Self
 
 from control import sos_ctrl
+from engine.mathlib import Vec3
 from engine.seq.base import SeqBase
 from memory import (
     PlayerMovementState,
@@ -62,6 +63,26 @@ class SeqSkipUntilIdle(SeqBase):
 
     def __repr__(self: Self) -> str:
         return f"Holding turbo/confirm/cancel while waiting for control ({self.name})."
+
+
+class SeqSkipUntilClose(SeqSkipUntilIdle):
+    def __init__(
+        self: Self,
+        name: str,
+        coord: Vec3,
+        precision: float = 1.0,
+        func: Callable[..., Any] = None,
+    ) -> None:
+        super().__init__(name, func)
+        self.coord = coord
+        self.precision = precision
+
+    def is_done(self: Self) -> bool:
+        player_pos = player_party_manager.position
+        return Vec3.is_close(player_pos, self.coord, precision=self.precision)
+
+    def __repr__(self: Self) -> str:
+        return f"Holding turbo/confirm/cancel while waiting to arrive at {self.coord} ({self.name})."  # noqa: E501
 
 
 class SeqSkipUntilCombat(SeqSkipUntilIdle):
