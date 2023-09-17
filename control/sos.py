@@ -4,9 +4,7 @@ import time
 from enum import IntEnum
 from typing import Self
 
-from control.base import Buttons as VgButtons
-from control.base import VgTranslator
-from control.base import handle as ctrl_handle
+from control.base import Buttons as VgButtons, VgTranslator, handle as ctrl_handle
 from engine.mathlib import Vec2
 
 logger = logging.getLogger(__name__)
