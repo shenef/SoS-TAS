@@ -6,6 +6,11 @@ class EnemyName:
         # Evermist Island: Mountain Trail
         "c3a2f1d99be4e0c42aca0ae1ff590028": "Wanderer",
         "fc2736fdbb731394c98da56e8f476d5e": "Rochèvre",
+        # Evermist Island: Final Trial
+        "a9b692dccd6e2a748abe6f848cff857e": "Training Croube",
+        "8beb20a7311444a47b1764ae7ace6658": "Wyrd",
+        # Evermist Island: Forbidden Cave
+        "f526fdd8553bd7344a34243f16f8fc96": "Luslug",
         # Sleeper Island: Moorlands
         "e6ac627711e4ee44da103c47d1cd5736": "Ant Bruiser",
         "2a9a0b40f493b11429febb5d927ef84b": "Srower",
