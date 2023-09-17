@@ -10,6 +10,9 @@ class Vec2(NamedTuple):
     def __eq__(self: Self, other: Self) -> bool:
         return self.x == other.x and self.y == other.y
 
+    def __hash__(self: Self) -> int:
+        return hash((self.x, self.y))
+
     def __add__(self: Self, other: Self) -> Self:
         return Vec2(self.x + other.x, self.y + other.y)
 
@@ -256,6 +259,12 @@ class Vec3:
 
     def norm(self: Self) -> float:
         return math.sqrt(Vec3.dot(self, self))
+
+    def __eq__(self: Self, other: Self) -> bool:
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def __hash__(self: Self) -> int:
+        return hash((self.x, self.y, self.z))
 
     def __add__(self: Self, v: Self) -> Self:
         return Vec3(self.x + v.x, self.y + v.y, self.z + v.z)
