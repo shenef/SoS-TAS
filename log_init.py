@@ -33,7 +33,7 @@ class DeltaTimeFormatter(logging.Formatter):
         logging.CRITICAL: bold_red,
     }
 
-    def format(self: Self, record: LogRecord) -> str:  # noqa: A003
+    def format(self: Self, record: LogRecord) -> str:
         # Create a timestamp we can use to parse,
         # using the millisecond timestamp since start of program / 1000
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
