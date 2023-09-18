@@ -81,14 +81,14 @@ class CombatController:
 
                     self.block_timing = datetime.utcnow() + delta
                     return False
-                else:
-                    if self.block_timing <= datetime.utcnow():
-                        logger.debug(
-                            f"Hitting Block for {next_combat_enemy.move_name} after Movement Done is True"
-                        )
-                        self.block_timing = None
-                        sos_ctrl().confirm()
-                    return False
+
+                if self.block_timing <= datetime.utcnow():
+                    logger.debug(
+                        f"Hitting Block for {next_combat_enemy.move_name} after Movement Done is True"
+                    )
+                    self.block_timing = None
+                    sos_ctrl().confirm()
+                return False
             if (
                 next_combat_enemy
                 and next_combat_enemy.state_type is NextCombatAction.Casting
