@@ -16,6 +16,7 @@ class SeqCombatManual(SeqMove):
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 0.2,
+        precision2: float = 1.0,
         tap_rate: float = 0.1,
         running: bool = True,
         func: Callable = None,
@@ -23,7 +24,15 @@ class SeqCombatManual(SeqMove):
         invert: bool = False,
     ) -> None:
         super().__init__(
-            name, coords, precision, tap_rate, running, func, emergency_skip, invert
+            name,
+            coords,
+            precision,
+            precision2,
+            tap_rate,
+            running,
+            func,
+            emergency_skip,
+            invert,
         )
         self.encounter_done = True
 
