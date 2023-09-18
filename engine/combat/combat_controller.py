@@ -5,6 +5,7 @@ from control import sos_ctrl
 from engine.combat.appraisals.valere.crescent_arc import CrescentArc
 from engine.combat.appraisals.zale.sunball import Sunball
 from engine.combat.utility.core.action import Action
+from engine.combat.utility.sos_appraisal import SoSTimingType
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
@@ -109,6 +110,11 @@ class CombatController:
             # just add an action for using the correct move
             for player in combat_manager.players:
                 if player.character == PlayerPartyCharacter.Valere:
-                    self.action = Action(SoSConsideration(player), CrescentArc())
+                    self.action = Action(
+                        SoSConsideration(player),
+                        CrescentArc(timing_type=SoSTimingType.NONE),
+                    )
                 if player.character == PlayerPartyCharacter.Zale:
-                    self.action = Action(SoSConsideration(player), Sunball())
+                    self.action = Action(
+                        SoSConsideration(player), Sunball(hold_time=2.0)
+                    )
