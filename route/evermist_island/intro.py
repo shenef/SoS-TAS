@@ -767,6 +767,7 @@ class IntroForbiddenCave(SeqList):
                 ),
                 SeqInteract("Pull lever"),
                 # TODO(orkaboy): Very prone to failure (jumping where not supposed to)
+                # TODO(orkaboy): Also some suboptimal movement (jump left instead)
                 SeqMove(
                     name="Move to door",
                     coords=[
@@ -783,6 +784,7 @@ class IntroForbiddenCave(SeqList):
                 ),
                 SeqInteract("Open lock"),
                 SeqMashUntilIdle("Open lock"),
+                # TODO(orkaboy): Grab Mushroom Soup and Shiny Pearl too
                 SeqMove(
                     name="Move to scroll",
                     coords=[
