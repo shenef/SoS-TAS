@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 from typing import Self
 
 from control import sos_ctrl
@@ -10,6 +11,7 @@ from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
     CombatTutorialState,
+    NextCombatAction,
     PlayerPartyCharacter,
     combat_manager_handle,
     level_manager_handle,
@@ -27,6 +29,7 @@ class CombatController:
         self.reasoner = SoSReasoner(combat_manager)
         self.action = None
         self.ctrl = sos_ctrl()
+        self.block_timing = None
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self) -> bool:
@@ -59,6 +62,41 @@ class CombatController:
             self.action = self.reasoner.execute()
             return False
 
+        # Defending an ability
+        # TODO(eein): Move this to a new method
+        if (
+            self.action is None or self.action.appraisal.complete
+        ) and combat_manager.selected_character is PlayerPartyCharacter.NONE:
+            combat_manager.read_next_combat_enemy()
+            next_combat_enemy = combat_manager.next_combat_enemy
+            if (
+                next_combat_enemy
+                and next_combat_enemy.state_type is NextCombatAction.Attacking
+                and next_combat_enemy.movement_done is True
+            ):
+                if self.block_timing is None:
+                    # get the block time from the enemy
+                    # This is where we calculate the time to block for the specific skill
+                    delta = timedelta(seconds=0.3)  # slug?
+
+                    self.block_timing = datetime.utcnow() + delta
+                    return False
+                else:
+                    if self.block_timing <= datetime.utcnow():
+                        logger.debug(
+                            f"Hitting Block for {next_combat_enemy.move_name} after Movement Done is True"
+                        )
+                        self.block_timing = None
+                        sos_ctrl().confirm()
+                    return False
+            if (
+                next_combat_enemy
+                and next_combat_enemy.state_type is NextCombatAction.Casting
+            ):
+                logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
+                sos_ctrl().confirm()
+                return False
+
         # For some reason the action isn't set, so bail out.
         if self.action is None:
             # logger.debug("baling out because self action is nil")
@@ -85,7 +123,6 @@ class CombatController:
             logger.debug("appraisal is complete, reset action")
             self.action = None
 
-        return False
         # are we waiting for an attack to complete?
 
         # is an enemy attacking - do we need to defend?
@@ -98,6 +135,7 @@ class CombatController:
         # if consideration executed
 
         # Check if we have control
+        return False
 
     def _handle_alternate_encounters(self: Self) -> None:
         # checks if we are in the second encounter zone and if we are in the tutorial
