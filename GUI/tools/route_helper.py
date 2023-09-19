@@ -112,7 +112,7 @@ class RouteHelper(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_position(0, 100, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_position(5, 135, condition=imgui.FIRST_USE_EVER)
         imgui.set_window_size(240, 410, condition=imgui.FIRST_USE_EVER)
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
 

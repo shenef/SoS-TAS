@@ -74,10 +74,11 @@ class SequencerEngine:
         duration = datetime.datetime.utcfromtimestamp(elapsed)
         timestamp = f"{duration.strftime('%H:%M:%S')}.{int(duration.strftime('%f')) // 1000:03d}"
         pause_str = " == PAUSED ==" if self.paused else ""
-        imgui.text(f"[{timestamp}]{pause_str}")
+        imgui.text_wrapped(f"Time: {timestamp}{pause_str}")
 
     def _render(self: Self) -> None:
-        imgui.text(f"TAS version: {TAS_VERSION_STRING}")
+        imgui.text_wrapped(f"TAS version: {TAS_VERSION_STRING} |")
+        imgui.same_line()
         # Render timer and gamestate tree
         self._print_timer()
         imgui.text_wrapped(f"Gamestate:\n  {self.root}")

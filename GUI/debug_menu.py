@@ -30,33 +30,37 @@ class DebugMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
-        imgui.set_window_position(300, 80, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_position(185, 30, condition=imgui.FIRST_USE_EVER)
 
-        imgui.text("Level Info")
-        imgui.text(f"Scene Name: {level_manager.scene_name}")
-        imgui.text(f"Scene GUID: {level_manager.current_level}")
-        imgui.text(f"Loading: {level_manager.loading}")
+        imgui.text_wrapped("Level Info")
+        imgui.text_wrapped(f"Scene Name: {level_manager.scene_name}")
+        imgui.text_wrapped(f"Scene GUID: {level_manager.current_level}")
+        imgui.text_wrapped(f"Loading: {level_manager.loading}")
 
         LayoutHelper.add_spacer()
-        imgui.text(f"Current Leader: {player_party_manager.leader_character.value}")
+        imgui.text_wrapped(
+            f"Current Leader: {player_party_manager.leader_character.value}"
+        )
 
         LayoutHelper.add_spacer()
 
         title_cursor_position = title_sequence_manager.title_cursor_position
-        imgui.text(
+        imgui.text_wrapped(
             f"Title Cursor Position: {title_cursor_position.name} ({title_cursor_position.value})"
         )
         left_button = title_sequence_manager.character_select_left_button
         right_button = title_sequence_manager.character_select_right_button
-        imgui.text(
-            f"Left Character: {left_button.character and left_button.character.value} Selected: ({left_button.selected})"  # noqa: E501
+        imgui.text_wrapped(
+            f"Left Char.: {left_button.character and left_button.character.value},"
+            + f" Selected: {left_button.selected}"
         )
-        imgui.text(
-            f"Right Character: {right_button.character and right_button.character.value} Selected: ({right_button.selected})"  # noqa: E501
+        imgui.text_wrapped(
+            f"Right Char.: {right_button.character and right_button.character.value},"
+            + f" Selected: {right_button.selected}"
         )
 
         LayoutHelper.add_spacer()
-        imgui.text(f"Dialog Open: {new_dialog_manager.dialog_open}")
+        imgui.text_wrapped(f"Dialog Open: {new_dialog_manager.dialog_open}")
         LayoutHelper.add_spacer()
         _, self.show_metrics = imgui.checkbox(
             "Show performance metrics", self.show_metrics

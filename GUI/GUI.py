@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 # Create the window that our GUI/visualization will be in
 def create_glfw_window(
-    window_name: str = "Sea of Stars TAS", width: int = 600, height: int = 720
+    window_name: str = "Sea of Stars TAS", width: int = 480, height: int = 800
 ) -> Any:  # noqa: ANN401
     if not glfw.init():
         logger.error("Could not initialize OpenGL context")
