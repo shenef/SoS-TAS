@@ -191,57 +191,55 @@ class CombatManager:
                         0x0,
                     ],
                 )
-                is_player = self.memory.read_bool(ongoing_move_ptr + 0xB8)
-                if is_player:
-                    self.next_combat_enemy = None
-                    return
-                spell_power = self.memory.read_float(combat_move_ptr + 0x30)
-                guid_ptr = self.memory.follow_pointer(
-                    ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0]
-                )
-                guid_ptr = self.memory.follow_pointer(
-                    ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0]
-                )
-                guid = self.memory.read_uuid(guid_ptr + 0x14)
-
-                current_state_ptr = self.memory.follow_pointer(
-                    ongoing_move_ptr,
-                    [0x80, 0x50, 0x0],
-                )
-
-                state_name_ptr = self.memory.follow_pointer(
-                    current_state_ptr, [0x10, 0x48, 0x0]
-                )
-                self.memory.read_string(state_name_ptr, 28)
-                move_ptr = self.memory.follow_pointer(
-                    combat_move_ptr, [0x90, 0x18, 0x10, 0x20, 0x18, 0x0]
-                )
-                move_length = self.memory.read_int(move_ptr + 0x10)
-                move_name = self.memory.read_string(move_ptr + 0x14, move_length * 2)
-
-                next_enemy = None
-                for enemy in self.enemies:
-                    if enemy.unique_id == guid:
-                        next_enemy = enemy
-
-                # if the next move has spell power assume its a cast
-                state_type = NextCombatAction.NONE
-                movement_done = False
-                if next_enemy and spell_power > self.SPELLPOWER_ZERO:
-                    state_type = NextCombatAction.Casting
-                else:
-                    state_type = NextCombatAction.Attacking
-                    movement_done = self.memory.read_bool(current_state_ptr + 0x11A)
-
-                self.next_combat_enemy = NextCombatEnemy(
-                    enemy=next_enemy,
-                    state_type=state_type,
-                    move_name=move_name.replace("\x00", ""),
-                    movement_done=movement_done,
-                )
-                return
             except Exception:
                 self.next_combat_enemy = None
+                return
+
+            is_player = self.memory.read_bool(ongoing_move_ptr + 0xB8)
+            if is_player:
+                self.next_combat_enemy = None
+                return
+            spell_power = self.memory.read_float(combat_move_ptr + 0x30)
+            guid_ptr = self.memory.follow_pointer(
+                ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0]
+            )
+            guid_ptr = self.memory.follow_pointer(
+                ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0]
+            )
+            guid = self.memory.read_uuid(guid_ptr + 0x14)
+
+            current_state_ptr = self.memory.follow_pointer(
+                ongoing_move_ptr,
+                [0x80, 0x50, 0x0],
+            )
+
+            move_ptr = self.memory.follow_pointer(
+                combat_move_ptr, [0x90, 0x18, 0x10, 0x20, 0x18, 0x0]
+            )
+            move_length = self.memory.read_int(move_ptr + 0x10)
+            move_name = self.memory.read_string(move_ptr + 0x14, move_length * 2)
+
+            next_enemy = None
+            for enemy in self.enemies:
+                if enemy.unique_id == guid:
+                    next_enemy = enemy
+
+            # if the next move has spell power assume its a cast
+            state_type = NextCombatAction.NONE
+            movement_done = False
+            if next_enemy and spell_power > self.SPELLPOWER_ZERO:
+                state_type = NextCombatAction.Casting
+            else:
+                state_type = NextCombatAction.Attacking
+                movement_done = self.memory.read_bool(current_state_ptr + 0x11A)
+            self.next_combat_enemy = NextCombatEnemy(
+                enemy=next_enemy,
+                state_type=state_type,
+                move_name=move_name.replace("\x00", ""),
+                movement_done=movement_done,
+            )
+            return
+
         self.next_combat_enemy = None
 
     # Helper function for updating itself and ensuring an internal function doesn't run without
