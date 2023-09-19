@@ -6,6 +6,8 @@ checkpoint            : ""      # When loading game, what checkpoint should the 
 #   intro_mooncradle            # First cavern in flashback
 #   intro_dorms                 # First entering dorms of Zenith Academy
 #   intro_dorms2                # Dorms of Zenith Academy, just before final trial
+#   forbidden_cave              # Forbidden Cave entrance
+#   forbidden_cave2             # Forbidden Cave campfire
 
 # User Interface
 ui:
