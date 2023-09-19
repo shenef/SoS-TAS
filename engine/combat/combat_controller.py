@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime, timedelta
 from typing import Self
 
 from control import sos_ctrl
@@ -25,11 +24,14 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
+    SLUG_TIMING = 0.35
+
     def __init__(self: Self) -> None:
         self.reasoner = SoSReasoner(combat_manager)
         self.action = None
         self.ctrl = sos_ctrl()
-        self.block_timing = None
+        self.block_timing = 0.0
+        self.delta = 0.0
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self) -> bool:
@@ -74,27 +76,24 @@ class CombatController:
                 and next_combat_enemy.state_type is NextCombatAction.Attacking
                 and next_combat_enemy.movement_done is True
             ):
-                if self.block_timing is None:
-                    # get the block time from the enemy
-                    # This is where we calculate the time to block for the specific skill
-                    delta = timedelta(seconds=0.3)  # slug?
-
-                    self.block_timing = datetime.utcnow() + delta
-                    return False
-
-                if self.block_timing <= datetime.utcnow():
+                # accumalates the delta time until it's greater than the block timing
+                if self.block_timing >= self.SLUG_TIMING:
                     logger.debug(f"Hitting Block for {next_combat_enemy.move_name}")
-                    self.block_timing = None
                     sos_ctrl().confirm()
-                return False
-            if (
+                    self.block_timing = 0.0
+                elif next_combat_enemy.movement_done is True:
+                    self.block_timing += self.delta
+
+            elif (
                 next_combat_enemy
                 and next_combat_enemy.state_type is NextCombatAction.Casting
             ):
                 logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
                 sos_ctrl().confirm()
-                return False
 
+            else:
+                self.block_timing = 0.0
+            return False
         # For some reason the action isn't set, so bail out.
         if self.action is None:
             # logger.debug("baling out because self action is nil")

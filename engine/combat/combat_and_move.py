@@ -32,6 +32,7 @@ class SeqCombat(SeqBase):
                 if combat_manager.encounter_done is True:
                     self.state = EncounterState.POST_COMBAT
                 else:
+                    self.combat_controller.delta = delta
                     self.combat_controller.execute_combat()
             case EncounterState.POST_COMBAT:
                 ctrl = sos_ctrl()
@@ -84,6 +85,7 @@ class SeqCombatAndMove(SeqMove):
             ctrl.set_neutral()
             ctrl.toggle_confirm(False)
         else:
+            self.combat_controller.delta = delta
             self.combat_controller.execute_combat()
         self.encounter_done = combat_manager.encounter_done
 
