@@ -245,9 +245,7 @@ class SeqMove(SeqBase):
         )
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, precision):
-            logger.debug(
-                f"Checkpoint reached {self.step}. Player: {player_pos} Target: {target}"
-            )
+            logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")
             self.step = self.step + 1
         elif isinstance(target, HoldDirection):
             ctrl.set_joystick(target.joy_dir)

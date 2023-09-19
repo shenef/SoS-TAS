@@ -289,7 +289,7 @@ class Vec3:
         return Vec3(self.x / v, self.y / v, self.z / v)
 
     def __repr__(self: Self) -> str:
-        return f"[ {self.x:.4f}, {self.y:.4f}, {self.z:.4f} ]"
+        return f"[ {self.x:.3f}, {self.y:.3f}, {self.z:.3f} ]"
 
 
 class Quaternion:
