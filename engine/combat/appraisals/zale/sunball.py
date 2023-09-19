@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class Sunball(SoSAppraisal):
-    def __init__(self: Self, value: int = 0) -> None:
+    def __init__(self: Self, value: int = 0, hold_time: float = 3.8) -> None:
         super().__init__()
         self.value = value
         self.timing_type = SoSTimingType.Charge
@@ -28,12 +28,12 @@ class Sunball(SoSAppraisal):
         self.skill_command_index = 1
         self.ability_time = None
         self.resource = SoSResource.Mana
+        self.hold_time = hold_time
         self.cost = 8  # add modifier for mana cost reduction?
 
     def execute_timing_sequence(self: Self) -> None:
         if self.ability_time is None:
-            # set current time + 3.6 seconds
-            ability_timing = timedelta(seconds=2.0)
+            ability_timing = timedelta(seconds=self.hold_time)
             self.ability_time = datetime.utcnow() + ability_timing
         else:
             sos_ctrl().toggle_confirm(True)

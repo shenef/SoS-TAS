@@ -52,7 +52,7 @@ class SoSResource(Enum):
 
 
 class SoSAppraisal(Appraisal):
-    def __init__(self: Self) -> None:
+    def __init__(self: Self, timing_type: SoSTimingType = SoSTimingType.NONE) -> None:
         super().__init__()
 
         self.combat_manager = combat_manager_handle()
@@ -62,7 +62,7 @@ class SoSAppraisal(Appraisal):
         self.battle_command = SoSBattleCommand.Attack
         self.skill_command_index = 0
         self.target_type = SoSTargetType.Enemy
-        self.timing_type = SoSTimingType.NONE
+        self.timing_type = timing_type
         self.step = SoSAppraisalStep.SelectingCommand
         self.character = PlayerPartyCharacter.NONE
         self.resource = SoSResource.NONE
@@ -170,11 +170,11 @@ class SoSAppraisal(Appraisal):
 
         match self.battle_command:
             case SoSBattleCommand.Attack:
-                selected_target = self.combat_manager.selected_attack_target_guid
+                pass
             case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
-                selected_target = self.combat_manager.selected_skill_target_guid
+                pass
             case _:
-                selected_target = ""
+                pass
         if (
             self._enemy_targeted()
             and not self.combat_manager.battle_command_has_focus
@@ -182,7 +182,7 @@ class SoSAppraisal(Appraisal):
             # TODO(eein): Find better pointer to track selected targets - this one isn't doing
             # what its supposed to so just check if exists to satisfy the result
             # This will move to something more specific later
-            and selected_target
+            # and selected_target
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
