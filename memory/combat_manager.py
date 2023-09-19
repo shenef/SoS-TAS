@@ -95,6 +95,7 @@ class CombatManager:
     NULL_POINTER = 0xFFFFFFFF
     ITEM_OBJECT_OFFSET = 0x8
     ITEM_INDEX_0_ADDRESS = 0x20
+    SPELLPOWER_ZERO = 0.0
 
     def __init__(self: Self) -> None:
         self.memory = mem_handle()
@@ -223,7 +224,7 @@ class CombatManager:
 
                 # if turns > 0 and name does not contain casting
 
-                if next_combat_enemy.enemy and spell_power > 0.0:
+                if next_combat_enemy.enemy and spell_power > self.SPELLPOWER_ZERO:
                     next_combat_enemy.state_type = NextCombatAction.Casting
                 else:
                     next_combat_enemy.state_type = NextCombatAction.Attacking
