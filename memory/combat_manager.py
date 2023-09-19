@@ -222,8 +222,7 @@ class CombatManager:
                     if enemy.unique_id == guid:
                         next_combat_enemy.enemy = enemy
 
-                # if turns > 0 and name does not contain casting
-
+                # if the next move has spell power assume its a cast
                 if next_combat_enemy.enemy and spell_power > self.SPELLPOWER_ZERO:
                     next_combat_enemy.state_type = NextCombatAction.Casting
                 else:
