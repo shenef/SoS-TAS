@@ -83,9 +83,7 @@ class CombatController:
                     return False
 
                 if self.block_timing <= datetime.utcnow():
-                    logger.debug(
-                        f"Hitting Block for {next_combat_enemy.move_name}"
-                    )
+                    logger.debug(f"Hitting Block for {next_combat_enemy.move_name}")
                     self.block_timing = None
                     sos_ctrl().confirm()
                 return False
