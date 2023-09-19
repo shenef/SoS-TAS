@@ -15,7 +15,7 @@ combat_manager = combat_manager_handle()
 class BattleMenu(Menu):
     # Determines the amount of columns, 4 is enough for most scenarios.
     # If there are more than 4 enemies, it'll just flow over into the player columns.
-    COLUMN_MAX = 4
+    COLUMN_MAX = 3
 
     def __init__(self: Self, window: Window) -> None:
         super().__init__(window, title="Battle menu")
@@ -24,39 +24,47 @@ class BattleMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
-        imgui.set_window_position(0, 420, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_size(600, 300, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_position(5, 230, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_size(470, 565, condition=imgui.FIRST_USE_EVER)
 
-        imgui.text(f"Encounter done: {combat_manager.encounter_done}")
-        imgui.text(f"Tutorial State: {combat_manager.tutorial_state.name}")
+        imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done}")
+        imgui.same_line()
+        imgui.text_wrapped(f"Tutorial State: {combat_manager.tutorial_state.name}")
         if not combat_manager.encounter_done:
-            imgui.text(
-                f"Battle Command has focus: {combat_manager.battle_command_has_focus}"
+            imgui.text_wrapped(
+                f"Battle Command has focus: {combat_manager.battle_command_has_focus} |"
             )
-            imgui.text(f"Battle Command Index: {combat_manager.battle_command_index}")
-            imgui.text(
-                f"Skill Command has focus: {combat_manager.skill_command_has_focus}"
-            )
-            imgui.text(f"Skill Command Index: {combat_manager.skill_command_index}")
-            imgui.text(f"Live Mana Small: {combat_manager.small_live_mana} |")
             imgui.same_line()
-            imgui.text(f"Big: {combat_manager.big_live_mana}")
-            imgui.text(f"Selected Character: {combat_manager.selected_character.value}")
+            imgui.text_wrapped(f"Index: {combat_manager.battle_command_index}")
+            imgui.text_wrapped(
+                f"Skill Command has focus: {combat_manager.skill_command_has_focus} |"
+            )
+            imgui.same_line()
+            imgui.text_wrapped(f"Index: {combat_manager.skill_command_index}")
+            imgui.text_wrapped(f"Live Mana Small: {combat_manager.small_live_mana} |")
+            imgui.same_line()
+            imgui.text_wrapped(f"Big: {combat_manager.big_live_mana}")
+            imgui.text_wrapped(
+                f"Selected Character: {combat_manager.selected_character.value}"
+            )
             att_target = (
                 combat_manager.selected_attack_target_guid.replace("\x00", "")
                 if combat_manager.selected_attack_target_guid
                 else "None"
             )
-            imgui.text(f"ATTACK TARGET: {att_target}")
+            imgui.text_wrapped(f"Attack target: {att_target}")
             skill_target = (
                 combat_manager.selected_skill_target_guid.replace("\x00", "")
                 if combat_manager.selected_skill_target_guid
                 else "None"
             )
-            imgui.text(f"SKILL TARGET: {skill_target}")
+            imgui.text_wrapped(f"Skill target: {skill_target}")
             imgui.separator()
-            imgui.text(f"Moonerang Bounces: {combat_manager.projectile_hit_count}")
-            imgui.text(
+            imgui.text_wrapped(
+                f"Moonerang Bounces: {combat_manager.projectile_hit_count} |"
+            )
+            imgui.same_line()
+            imgui.text_wrapped(
                 f"Moonerang Travel Speed: {combat_manager.projectile_speed:.0f}/75"
             )
             imgui.separator()
@@ -81,17 +89,17 @@ class BattleMenu(Menu):
                         enemy.unique_id == combat_manager.selected_skill_target_guid
                     )
 
-                    imgui.text(f"pATK: {enemy.physical_attack} |")
+                    imgui.text_wrapped(f"pATK: {enemy.physical_attack} |")
                     imgui.same_line()
-                    imgui.text(f"mATK: {enemy.magic_attack}")
-                    imgui.text(f"pDEF: {enemy.physical_defense} |")
+                    imgui.text_wrapped(f"mATK: {enemy.magic_attack}")
+                    imgui.text_wrapped(f"pDEF: {enemy.physical_defense} |")
                     imgui.same_line()
-                    imgui.text(f"mDEF: {enemy.magic_defense}")
-                    imgui.text(f"Speed: {enemy.speed}")
-                    imgui.text(f"Attack Targeted: {attack_targeted}")
-                    imgui.text(f"Skill Targeted: {skill_targeted}")
-                    imgui.text(f"Next action: {enemy.turns_to_action}")
-                    imgui.text(f"Locks: {enemy.total_spell_locks}")
+                    imgui.text_wrapped(f"mDEF: {enemy.magic_defense}")
+                    imgui.text_wrapped(f"Speed: {enemy.speed}")
+                    imgui.text_wrapped(f"Attack Targeted: {attack_targeted}")
+                    imgui.text_wrapped(f"Skill Targeted: {skill_targeted}")
+                    imgui.text_wrapped(f"Next action: {enemy.turns_to_action}")
+                    imgui.text_wrapped(f"Locks: {enemy.total_spell_locks}")
 
                     for lock in enemy.spell_locks:
                         imgui.bullet_text(f"{lock.name}")
@@ -104,13 +112,14 @@ class BattleMenu(Menu):
 
             if combat_manager.players is not []:
                 for player in combat_manager.players:
-                    imgui.text(f"{player.character.value}:")
-                    imgui.text(f"HP: {player.current_hp}")
-                    imgui.text(f"MP: {player.current_mp}")
-                    imgui.text(f"Dead: {player.dead}")
-                    imgui.text(f"Selected: {player.selected}")
-                    imgui.text(f"Enabled: {player.enabled}")
-                    imgui.text(f"Mana Charge: {player.mana_charge_count}")
+                    imgui.text_wrapped(f"{player.character.value}:")
+                    imgui.text_wrapped(f"HP: {player.current_hp} |")
+                    imgui.same_line()
+                    imgui.text_wrapped(f"MP: {player.current_mp}")
+                    imgui.text_wrapped(f"Dead: {player.dead}")
+                    imgui.text_wrapped(f"Selected: {player.selected}")
+                    imgui.text_wrapped(f"Enabled: {player.enabled}")
+                    imgui.text_wrapped(f"Mana Charge: {player.mana_charge_count}")
 
                     imgui.next_column()
 
