@@ -2,12 +2,14 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.appraisals.basic_attack import BasicAttack
-from engine.combat.appraisals.valere.moonerang import Moonerang
-from engine.combat.appraisals.zale.sunball import Sunball
+from engine.combat.appraisals.valere import CrescentArc, Moonerang
+from engine.combat.appraisals.zale import Sunball
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.appraisal import Appraisal
 from engine.combat.utility.core.consideration import Consideration
-from memory import CombatPlayer, PlayerPartyCharacter
+from memory import CombatPlayer, PlayerPartyCharacter, combat_manager_handle
+
+combat_manager = combat_manager_handle()
 
 
 class SoSConsideration(Consideration):
@@ -50,9 +52,12 @@ class SoSConsideration(Consideration):
     def _character_appraisals(self: Self) -> list[Appraisal]:
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
-                return [Sunball()]
+                return [Sunball(value=100)]
             case PlayerPartyCharacter.Valere:
-                return [Moonerang()]
+                # Currently set up to use moonerang if there is only one enemy
+                if len(combat_manager.enemies) == 1:
+                    return [Moonerang(value=200)]
+                return [CrescentArc(value=100)]
             case PlayerPartyCharacter.Garl:
                 return []
             case _:

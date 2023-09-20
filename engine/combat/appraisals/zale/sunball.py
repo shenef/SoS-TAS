@@ -16,10 +16,15 @@ logger = logging.getLogger(__name__)
 
 
 class Sunball(SoSAppraisal):
-    def __init__(self: Self, value: int = 0, hold_time: float = 3.8) -> None:
+    def __init__(
+        self: Self,
+        value: int = 0,
+        hold_time: float = 3.8,
+        timing_type: SoSTimingType = SoSTimingType.Charge,
+    ) -> None:
         super().__init__()
         self.value = value
-        self.timing_type = SoSTimingType.Charge
+        self.timing_type = timing_type
         self.battle_command = SoSBattleCommand.Skill
         self.target_type = SoSTargetType.Enemy
         # this needs to move to a system that tracks available abilities.
