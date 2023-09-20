@@ -26,12 +26,12 @@ new_dialog_manager = new_dialog_manager_handle()
 class CombatController:
     SLUG_TIMING = 0.35
 
-    def __init__(self: Self) -> None:
+    def __init__(self: Self, delta: float = 0.0) -> None:
         self.reasoner = SoSReasoner(combat_manager)
         self.action = None
         self.ctrl = sos_ctrl()
         self.block_timing = 0.0
-        self.delta = 0.0
+        self.delta = delta
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self) -> bool:
