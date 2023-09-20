@@ -1,4 +1,5 @@
 PyYAML >= 6.0.0
 Pymem >= 1.10.0
-imgui[glfw] >= 2.0.0
+glfw >= 2.6.2
+imgui-bundle >= 0.8.8
 vgamepad >= 0.0.8
