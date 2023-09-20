@@ -26,22 +26,12 @@ new_dialog_manager = new_dialog_manager_handle()
 class CombatController:
     SLUG_TIMING = 0.35
 
-<<<<<<< HEAD
     def __init__(self: Self, delta: float = 0.0) -> None:
         self.reasoner = SoSReasoner(combat_manager)
         self.action = None
         self.ctrl = sos_ctrl()
         self.block_timing = 0.0
         self.delta = delta
-=======
-    def __init__(self: Self) -> None:
-        self.reasoner = SoSReasoner()
-        self.action = None
-        self.ctrl = sos_ctrl()
-        self.block_timing = 0.0
-        self.delta = 0.0
-        self.second_encounter = False
->>>>>>> ed2b218 (cleans up beginning of the game fights, appraisals, etc)
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self) -> bool:
@@ -162,13 +152,11 @@ class CombatController:
                     if self.second_encounter is True:
                         match player.character:
                             case PlayerPartyCharacter.Valere:
-                                print("setting valere action 2nd encounter")
                                 self.action = Action(
                                     SoSConsideration(player),
                                     CrescentArc(timing_type=SoSTimingType.NONE),
                                 )
                             case PlayerPartyCharacter.Zale:
-                                print("setting zale action 2nd encounter")
                                 self.action = Action(
                                     SoSConsideration(player),
                                     Sunball(value=1000, hold_time=2.0),
@@ -176,13 +164,11 @@ class CombatController:
                     else:
                         match player.character:
                             case PlayerPartyCharacter.Valere:
-                                print("setting valere action starting zone")
                                 self.action = Action(
                                     SoSConsideration(player),
                                     BasicAttack(timing_type=SoSTimingType.NONE),
                                 )
                             case PlayerPartyCharacter.Zale:
-                                print("setting zale action starting zone")
                                 self.action = Action(
                                     SoSConsideration(player),
                                     BasicAttack(timing_type=SoSTimingType.NONE),
