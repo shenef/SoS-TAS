@@ -72,6 +72,17 @@ class EnemyName:
         "f875c492e9ff81d46917be56218ba834": "Kunus'nuku Acolyte",
         "d7cdfe62090e94047991a1b9ca612a6d": "Lonzon",
         "7181b3e6a1edf44409d05e9b51b86f02": "Garnooy",
+        # Cerulean Expanse
+        "bbaa918249ce3a04883d88eca37cf348": "Drone",
+        "99c8b97ca2edc2644ab9b57832c9984c": "Ronin Cowboy",
+        "68f9357277cff414eb0bf287dabd1cb0": "Hoarsemech",
+        # Aephorul's Workshop/Lost Ones Hamlet
+        "bb02eb1602e1ec142b85cd6b505ef5b6": "Meduso",
+        "79150c51ef673bd49a3e5b83af4c5f8c": "Canister",
+        # Sacrosanct Spires
+        "09b42ce72465d8149997ff1d7bb8708a": "Anointed",
+        "5ca276f08b35cd448b7458d85cc8ee5b": "Scout",
+        "a071d2cccf4848746bbc63e27a0af3b9": "Owlsassin",
     }
 
     def get(self: Self, guid: str) -> str:
