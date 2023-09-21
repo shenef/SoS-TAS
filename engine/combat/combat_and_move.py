@@ -84,8 +84,7 @@ class SeqCombatAndMove(SeqMove):
             ctrl.set_neutral()
             ctrl.toggle_confirm(False)
         else:
-            self.combat_controller.delta = delta
-            self.combat_controller.execute_combat()
+            self.combat_controller.execute_combat(delta)
         self.encounter_done = combat_manager.encounter_done
 
     def __repr__(self: Self) -> str:

@@ -49,7 +49,8 @@ class IntroMountainTrail(SeqList):
                         Vec3(54.534, 6.002, 6.543),
                         InteractMove(55.458, 10.002, 9.467),
                         Vec3(57.051, 10.002, 12.404),
-                        InteractMove(43.963, 13.010, 25.059),
+                        InteractMove(43.963, 13.010, 26.059),
+                        InteractMove(35.870, 13.010, 28.070),  # after fight
                     ],
                 ),
                 SeqClimb(
