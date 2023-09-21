@@ -133,7 +133,8 @@ class SoSAppraisal(Appraisal):
 
     def execute_selecting_skill(self: Self) -> None:
         if (
-            self.combat_manager.skill_command_has_focus
+            self.combat_manager.battle_command_has_focus is False
+            and self.combat_manager.skill_command_has_focus is True
             and self.combat_manager.skill_command_index != self.skill_command_index
         ):
             sos_ctrl().dpad.tap_down()
@@ -143,7 +144,8 @@ class SoSAppraisal(Appraisal):
 
     def execute_confirm_skill(self: Self) -> None:
         if (
-            self.combat_manager.skill_command_has_focus
+            self.combat_manager.battle_command_has_focus is False
+            and self.combat_manager.skill_command_has_focus
             and self.combat_manager.skill_command_index == self.skill_command_index
         ):
             self.ctrl.confirm()
