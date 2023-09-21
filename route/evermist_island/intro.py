@@ -6,6 +6,7 @@ from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
     InteractMove,
+    MoveToward,
     SeqAmulet,
     SeqAwaitLostControl,
     SeqCheckpoint,
@@ -186,7 +187,7 @@ class IntroMooncradle(SeqList):
                     joy_dir=Vec2(1, 0.2),
                 ),
                 # Hold B as well to skip cutscene
-                SeqSkipUntilIdle(name="Meeting Brugaves and Erlina"),
+                SeqSkipUntilIdle(name="Meeting Brugaves and Erlina", hold_cancel=True),
                 SeqMove(
                     name="Move to Forbidden Cave",
                     coords=[
@@ -462,12 +463,17 @@ class IntroZenithAcademy(SeqList):
                 SeqInteract("Confirm"),
                 SeqSkipUntilIdle(name="Talking to Moraine"),
                 SeqMove(
-                    name="Move to pit",
+                    name="Jump into pit",
                     coords=[
-                        Vec3(30.334, 7.013, 191.537),
+                        MoveToward(
+                            33.000,
+                            -15.197,
+                            -365.500,
+                            anchor=Vec3(33.000, 7.013, 189.000),
+                            mash=True,
+                        ),
                     ],
                 ),
-                SeqInteract("Jump"),
             ],
         )
 
@@ -857,7 +863,6 @@ class IntroForbiddenCave(SeqList):
                         Vec3(-39.117, 2.002, 201.905),
                     ],
                 ),
-                # TODO(orkaboy): Fix sequence
                 SeqInteract("Campfire"),
                 SeqDelay("Campfire", timeout_in_s=0.5),
                 SeqInteract("Campfire"),
@@ -877,10 +882,62 @@ class IntroForbiddenCave(SeqList):
                     joy_dir=Vec2(0, 1),
                 ),
                 SeqSkipUntilCombat("Boss cutscene"),
-                # TODO(orkaboy): Can currently fail the fight.
-                # TODO(orkaboy): Need to block/use abilities.
                 SeqCombat("Bosslug fight"),
-                # TODO(orkaboy): Continue routing.
+                SeqSkipUntilIdle("Post-boss cutscene"),
+                # Optionally, can enter cave to the north here and grab items
+                SeqMove(
+                    name="Move to exit",
+                    coords=[
+                        Vec3(-35.969, 2.002, 236.869),
+                        InteractMove(-32.475, 6.002, 237.234),
+                        Vec3(-31.291, 6.002, 237.234),
+                        HoldDirection(5.796, 11.002, 244.657, joy_dir=Vec2(1, 1)),
+                        Vec3(8.675, 11.002, 243.322),
+                        InteractMove(12.419, 5.002, 243.322),
+                        Vec3(14.032, 5.002, 250.628),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl(
+                    name="Leave cavern",
+                    joy_dir=Vec2(0, 1),
+                ),
+            ],
+        )
+
+
+class MountainTrail(SeqList):
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Evermist Island",
+            children=[
+                SeqSkipUntilClose(
+                    "Acolytes cutscene",
+                    coord=Vec3(104.000, 3.002, 71.498),
+                ),
+                SeqMove(
+                    name="Move to Mountain Trail",
+                    coords=[
+                        Vec3(104.000, 3.002, 72.500),
+                        Vec3(110.000, 3.002, 72.500),
+                        Vec3(110.000, 3.002, 75.500),
+                    ],
+                ),
+                SeqInteract("Enter Mountain Trail"),
+                SeqSkipUntilIdle("Back to present"),
+                # TODO(orkaboy): Continue routing (cook food).
+                # Valere
+                SeqIfMainCharacterValere(
+                    "Main Char",
+                    when_true=SeqMove(
+                        "Go around campfire",
+                        coords=[Vec3(29.789, 21.002, 12.213)],
+                    ),
+                    when_false=None,
+                ),
+                SeqMove(
+                    "Go to bush",
+                    coords=[Vec3(25.386, 21.002, 16.648)],
+                ),
             ],
         )
 
@@ -897,5 +954,6 @@ class EvermistIsland(SeqList):
                 IntroFinalTrial(),
                 SeqCheckpoint("forbidden_cave"),
                 IntroForbiddenCave(),
+                MountainTrail(),
             ],
         )
