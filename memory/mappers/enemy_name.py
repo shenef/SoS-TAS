@@ -12,6 +12,7 @@ class EnemyName:
         # Evermist Island: Forbidden Cave
         "f526fdd8553bd7344a34243f16f8fc96": "Luslug",
         "5750f181921e1f349b595e8e47760d33": "Bosslug",
+        "3c02795df7f5ec647b8ba102263e7574": "Acid Bug",
         # Sleeper Island: Moorlands
         "e6ac627711e4ee44da103c47d1cd5736": "Ant Bruiser",
         "2a9a0b40f493b11429febb5d927ef84b": "Srower",

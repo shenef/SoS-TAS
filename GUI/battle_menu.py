@@ -24,10 +24,10 @@ class BattleMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, condition=imgui.ONCE)
-        imgui.set_window_position(5, 230, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_size(470, 565, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_position(5, 210, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_size(470, 585, condition=imgui.FIRST_USE_EVER)
 
-        imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done}")
+        imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done} |")
         imgui.same_line()
         imgui.text_wrapped(f"Tutorial State: {combat_manager.tutorial_state.name}")
         if not combat_manager.encounter_done:

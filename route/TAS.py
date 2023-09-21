@@ -59,7 +59,7 @@ class TASMenu(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
         imgui.set_window_position(5, 5, condition=imgui.ONCE)
-        imgui.set_window_size(470, 220, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_size(470, 200, condition=imgui.FIRST_USE_EVER)
 
         ret = False
         if self.tas_is_running:
