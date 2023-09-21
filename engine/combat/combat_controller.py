@@ -26,15 +26,15 @@ new_dialog_manager = new_dialog_manager_handle()
 class CombatController:
     SLUG_TIMING = 0.35
 
-    def __init__(self: Self, delta: float = 0.0) -> None:
-        self.reasoner = SoSReasoner(combat_manager)
+    def __init__(self: Self) -> None:
+        self.reasoner = SoSReasoner()
         self.action = None
         self.ctrl = sos_ctrl()
         self.block_timing = 0.0
-        self.delta = delta
+        self.second_encounter = False
 
     # returns a bool to feed to the sequencer
-    def execute_combat(self: Self) -> bool:
+    def execute_combat(self: Self, delta: float) -> bool:
         self.ctrl.set_neutral()
 
         # if combat is done, just exit
@@ -89,7 +89,7 @@ class CombatController:
                     sos_ctrl().confirm()
                     self.block_timing = 0.0
                 elif next_combat_enemy.movement_done is True:
-                    self.block_timing += self.delta
+                    self.block_timing += delta
 
             elif (
                 next_combat_enemy
