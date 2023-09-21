@@ -43,19 +43,30 @@ class SeqTapDown(SeqBase):
 
 
 class SeqSkipUntilIdle(SeqBase):
+    def __init__(
+        self: Self,
+        name: str,
+        hold_cancel: bool = False,
+        func: Callable[..., Any] = None,
+    ) -> None:
+        super().__init__(name, func)
+        self.hold_cancel = hold_cancel
+
     # Hold confirm through cutscene while holding the turbo button
     def execute(self: Self, delta: float) -> bool:
         ctrl = sos_ctrl()
         ctrl.toggle_turbo(state=True)
         ctrl.toggle_confirm(state=True)
-        ctrl.toggle_cancel(state=True)
+        if self.hold_cancel:
+            ctrl.toggle_cancel(state=True)
 
         # Check if we have control
         done = self.is_done()
         if done:
             ctrl.toggle_confirm(state=False)
             ctrl.toggle_turbo(state=False)
-            ctrl.toggle_cancel(state=False)
+            if self.hold_cancel:
+                ctrl.toggle_cancel(state=False)
         return done
 
     def is_done(self: Self) -> bool:
@@ -71,9 +82,10 @@ class SeqSkipUntilClose(SeqSkipUntilIdle):
         name: str,
         coord: Vec3,
         precision: float = 1.0,
+        hold_cancel: bool = False,
         func: Callable[..., Any] = None,
     ) -> None:
-        super().__init__(name, func)
+        super().__init__(name, hold_cancel, func)
         self.coord = coord
         self.precision = precision
 
