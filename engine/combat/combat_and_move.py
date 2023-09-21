@@ -5,7 +5,7 @@ from typing import Any, Self
 from control.sos import sos_ctrl
 from engine.combat.combat_controller import CombatController
 from engine.mathlib import Vec3
-from engine.seq import HoldDirection, InteractMove, SeqBase, SeqMove
+from engine.seq import HoldDirection, InteractMove, MoveToward, SeqBase, SeqMove
 from memory import combat_manager_handle
 
 combat_manager = combat_manager_handle()
@@ -51,7 +51,7 @@ class SeqCombatAndMove(SeqMove):
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | HoldDirection],
+        coords: list[Vec3 | InteractMove | HoldDirection | MoveToward],
         precision: float = 0.2,
         precision2: float = 1.0,
         tap_rate: float = 0.1,

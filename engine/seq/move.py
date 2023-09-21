@@ -172,11 +172,23 @@ class HoldDirection(Vec3):
         return f"HoldDirection({super().__repr__()}, joy_dir={self.joy_dir})"
 
 
+class MoveToward(Vec3):
+    def __init__(
+        self: Self, x: float, y: float, z: float, anchor: Vec3, mash: bool = False
+    ) -> None:
+        super().__init__(x, y, z)
+        self.anchor = anchor
+        self.mash = mash
+
+    def __repr__(self: Self) -> str:
+        return f"MoveToward({super().__repr__()}, anchor: {self.anchor}, mash: {self.mash})"
+
+
 class SeqMove(SeqBase):
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | HoldDirection],
+        coords: list[Vec3 | InteractMove | HoldDirection | MoveToward],
         precision: float = 0.2,
         precision2: float = 1.0,
         tap_rate: float = 0.1,
@@ -230,7 +242,9 @@ class SeqMove(SeqBase):
             return
 
         ctrl = sos_ctrl()
-        if isinstance(target, InteractMove):
+        if isinstance(target, InteractMove) or (
+            isinstance(target, MoveToward) and target.mash
+        ):
             # Only tap while outside the secondary precision radius
             if Vec3.is_close(player_pos, target, self.precision2):
                 ctrl.toggle_confirm(False)
@@ -249,6 +263,8 @@ class SeqMove(SeqBase):
             self.step = self.step + 1
         elif isinstance(target, HoldDirection):
             ctrl.set_joystick(target.joy_dir)
+        elif isinstance(target, MoveToward):
+            self.move_function(player_pos=player_pos, target_pos=target.anchor)
         else:
             self.move_function(player_pos=player_pos, target_pos=target)
 
@@ -302,7 +318,7 @@ class SeqBoat(SeqMove):
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | HoldDirection],
+        coords: list[Vec3 | InteractMove | HoldDirection | MoveToward],
         precision: float = 1.0,
         precision2: float = 2.0,
         tap_rate: float = 0.1,
