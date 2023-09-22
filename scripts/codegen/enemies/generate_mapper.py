@@ -47,6 +47,7 @@ for filename in glob.glob(os.path.join(path, "*.txt")):
                 enemy.name = result.strip()
 
             parse_kv(text, "guid", "guid", enemy)
+<<<<<<< HEAD
         if enemy.guid:
             enemies[enemy.guid] = enemy.name
 
@@ -55,6 +56,14 @@ mappings = os.linesep.join(f'"{key}": {value}(),' for key, value in enemies.item
 codegen = f"""# ruff: noqa
 from typing import Self
 from data.enemy.enemies import *
+=======
+        # remove non-guid mappings
+        if enemy.guid:
+            enemies[enemy.guid] = enemy.name
+mappings = os.linesep.join(f'"{key}": {value}(),' for key, value in enemies.items())
+codegen = f"""from typing import Self
+
+>>>>>>> 0a176d6308d66d1fe3679f89377393c8868cfbbf
 
 class Enemies:
     MAPPINGS = {{
