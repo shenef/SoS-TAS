@@ -4,7 +4,7 @@ import logging
 import time
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from app import TAS_VERSION_STRING
 from control import sos_ctrl
