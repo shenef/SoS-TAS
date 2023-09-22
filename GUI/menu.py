@@ -1,7 +1,7 @@
 import logging
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from GUI.GUI import Window
 
@@ -20,7 +20,7 @@ class Menu:
     # Return True when done
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
-        imgui.set_window_position(5, 5, condition=imgui.ONCE)
+        imgui.set_window_pos(self.title, imgui.ImVec2(5, 5), imgui.Cond_.once)
         for child in self.children:
             if imgui.button(child.title):
                 self.active = child

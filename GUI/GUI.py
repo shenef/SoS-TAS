@@ -3,9 +3,8 @@ import sys
 from typing import Any, Self
 
 import glfw
-import imgui
 import OpenGL.GL as gl
-from imgui.integrations.glfw import GlfwRenderer
+from imgui_bundle import imgui
 
 from memory import (
     boat_manager_handle,
@@ -81,9 +80,25 @@ class Window:
         self.window = create_glfw_window()
         gl.glClearColor(*self.backgroundColor)
         imgui.create_context()
-        self.impl = GlfwRenderer(self.window)
+
+        self.io = imgui.get_io()
+        self.io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard
+        self.io.config_flags |= imgui.ConfigFlags_.docking_enable
+
+        imgui.style_colors_dark()
+
         vsync = config.get("vsync", True)
         glfw.swap_interval(1 if vsync else 0)
+
+        # Setup Platform/Renderer backends
+        import ctypes
+
+        # You need to transfer the window address to imgui.backends.glfw_init_for_opengl
+        # proceed as shown below to get it.
+        glsl_version = "#version 150"
+        window_address = ctypes.cast(self.window, ctypes.c_void_p).value
+        imgui.backends.glfw_init_for_opengl(window_address, True)
+        imgui.backends.opengl3_init(glsl_version)
 
     def is_open(self: Self) -> bool:
         return not glfw.window_should_close(self.window)
@@ -91,7 +106,8 @@ class Window:
     def start_frame(self: Self) -> None:
         glfw.poll_events()
         update_memory()
-        self.impl.process_inputs()
+        imgui.backends.opengl3_new_frame()
+        imgui.backends.glfw_new_frame()
         imgui.new_frame()
 
     def start_window(self: Self, title: str) -> None:
@@ -108,12 +124,16 @@ class Window:
         gl.glClearColor(*self.backgroundColor)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        self.impl.render(imgui.get_draw_data())
+        imgui.backends.opengl3_render_draw_data(imgui.get_draw_data())
         glfw.swap_buffers(self.window)
 
     # Cleanup
     def close(self: Self) -> None:
-        self.impl.shutdown()
+        imgui.backends.opengl3_shutdown()
+        imgui.backends.glfw_shutdown()
+        imgui.destroy_context()
+
+        glfw.destroy_window(self.window)
         glfw.terminate()
 
 

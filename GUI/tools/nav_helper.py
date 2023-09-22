@@ -2,7 +2,7 @@ import logging
 import time
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from control import sos_ctrl
 from engine.mathlib import Quaternion, Vec2, Vec3
@@ -38,9 +38,11 @@ class NavHelper(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_position(5, 110, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_size(240, 410, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_collapsed(1, condition=imgui.ONCE)
+        imgui.set_window_pos(
+            self.title, imgui.ImVec2(5, 110), imgui.Cond_.first_use_ever
+        )
+        imgui.set_window_size(imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
+        imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
         mstate_v = player_party_manager.movement_state.value
         mstate_m = player_party_manager.movement_state.name
@@ -80,15 +82,9 @@ class NavHelper(Menu):
             "Target Coordinates", True, flags=32
         )
         if ui_target_coordinates and visible:
-            _, self.target.x = imgui.input_float(
-                label="x", value=self.target.x, step=0.001
-            )
-            _, self.target.y = imgui.input_float(
-                label="y", value=self.target.y, step=0.001
-            )
-            _, self.target.z = imgui.input_float(
-                label="z", value=self.target.z, step=0.001
-            )
+            _, self.target.x = imgui.input_float(label="x", v=self.target.x, step=0.001)
+            _, self.target.y = imgui.input_float(label="y", v=self.target.y, step=0.001)
+            _, self.target.z = imgui.input_float(label="z", v=self.target.z, step=0.001)
 
             distance = Vec3.dist(self.target, player_pos)
             imgui.text(f"Distance to target: {distance:.3f}\n")
@@ -138,7 +134,7 @@ class NavHelper(Menu):
         LayoutHelper.add_spacer()
 
         ui_gameobject_coordinates, visible = imgui.collapsing_header(
-            "GameObject Coordinates", True
+            "GameObject Coordinates", True, flags=32
         )
         if ui_gameobject_coordinates and visible:
             imgui.text(f"x: {gameobject_pos.x:.3f}")
@@ -150,7 +146,9 @@ class NavHelper(Menu):
                 )
             LayoutHelper.add_spacings(2)
 
-        ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True)
+        ui_boat_coordinates, visible = imgui.collapsing_header(
+            "Boat Coordinates", True, flags=32
+        )
         boat_pos = Vec3(
             boat_manager.position.x or 0,
             boat_manager.position.y or 0,

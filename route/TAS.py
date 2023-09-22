@@ -1,7 +1,7 @@
 import logging
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
@@ -58,8 +58,10 @@ class TASMenu(Menu):
 
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
-        imgui.set_window_position(5, 5, condition=imgui.ONCE)
-        imgui.set_window_size(470, 200, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_pos(self.title, imgui.ImVec2(5, 5), imgui.Cond_.once)
+        imgui.set_window_size(
+            self.title, imgui.ImVec2(470, 200), cond=imgui.Cond_.first_use_ever
+        )
 
         ret = False
         if self.tas_is_running:

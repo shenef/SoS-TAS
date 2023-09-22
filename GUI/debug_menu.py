@@ -1,7 +1,7 @@
 import logging
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
@@ -29,8 +29,10 @@ class DebugMenu(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_collapsed(1, condition=imgui.ONCE)
-        imgui.set_window_position(185, 30, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
+        imgui.set_window_pos(
+            self.title, imgui.ImVec2(185, 30), imgui.Cond_.first_use_ever
+        )
 
         imgui.text_wrapped("Level Info")
         imgui.text_wrapped(f"Scene Name: {level_manager.scene_name}")
@@ -70,7 +72,7 @@ class DebugMenu(Menu):
 
         _, self.show_test = imgui.checkbox("Show UI test window", self.show_test)
         if self.show_test:
-            imgui.show_test_window()
+            imgui.show_demo_window()
 
         ret = False
         if not top_level and imgui.button("Back"):

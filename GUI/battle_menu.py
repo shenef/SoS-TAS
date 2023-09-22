@@ -1,7 +1,7 @@
 import logging
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
@@ -23,9 +23,13 @@ class BattleMenu(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_collapsed(1, condition=imgui.ONCE)
-        imgui.set_window_position(5, 210, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_size(470, 585, condition=imgui.FIRST_USE_EVER)
+        imgui.set_window_pos(
+            self.title, imgui.ImVec2(5, 210), imgui.Cond_.first_use_ever
+        )
+        imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
+        imgui.set_window_size(
+            self.title, imgui.ImVec2(470, 585), cond=imgui.Cond_.first_use_ever
+        )
 
         imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done} |")
         imgui.same_line()

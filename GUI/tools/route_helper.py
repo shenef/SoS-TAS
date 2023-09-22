@@ -2,7 +2,7 @@ import logging
 from enum import Enum, auto
 from typing import Self
 
-import imgui
+from imgui_bundle import imgui
 
 from engine.mathlib import Vec3
 from GUI.GUI import LayoutHelper, Window
@@ -112,9 +112,13 @@ class RouteHelper(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_position(5, 135, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_size(240, 410, condition=imgui.FIRST_USE_EVER)
-        imgui.set_window_collapsed(1, condition=imgui.ONCE)
+        imgui.set_window_pos(
+            self.title, imgui.ImVec2(5, 135), imgui.Cond_.first_use_ever
+        )
+        imgui.set_window_size(
+            self.title, imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever
+        )
+        imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
         imgui.text(f"{len(self.segments)} segments")
         if imgui.button("To clipboard"):
