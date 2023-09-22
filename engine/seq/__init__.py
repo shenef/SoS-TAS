@@ -3,6 +3,7 @@ from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.interact import (
     SeqBracelet,
     SeqInteract,
+    SeqMashCancelUntilIdle,
     SeqMashUntilIdle,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
@@ -25,7 +26,7 @@ from engine.seq.move import (
     SeqMove,
 )
 from engine.seq.sequencer import SequencerEngine
-from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqMashDelay, SeqTurboMashDelay
+from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqTurboMashDelay
 
 __all__ = [
     "SeqAmulet",
@@ -39,7 +40,6 @@ __all__ = [
     "SeqCheckpoint",
     "SeqDelay",
     "SeqHoldConfirm",
-    "SeqMashDelay",
     "SeqTurboMashDelay",
     "SeqHoldInPlace",
     "SeqManualUntilClose",
@@ -60,4 +60,5 @@ __all__ = [
     "SeqInteract",
     "SeqBracelet",
     "SeqTapDown",
+    "SeqMashCancelUntilIdle",
 ]
