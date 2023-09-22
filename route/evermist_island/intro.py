@@ -14,17 +14,20 @@ from engine.seq import (
     SeqCliffMove,
     SeqClimb,
     SeqDelay,
+    SeqHoldConfirm,
     SeqHoldDirectionUntilLostControl,
     SeqIf,
     SeqInteract,
     SeqList,
     SeqLog,
+    SeqMashCancelUntilIdle,
     SeqMashUntilIdle,
     SeqMove,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
     SeqTapDown,
+    SeqTurboMashDelay,
 )
 from memory import (
     PlayerPartyCharacter,
@@ -684,6 +687,7 @@ class IntroForbiddenCave(SeqList):
                         Vec3(-49.459, 7.002, 139.459),
                     ],
                 ),
+                SeqDelay("Wait for lock", timeout_in_s=0.2),
                 SeqMove(
                     name="Climb tower",
                     coords=[
@@ -729,18 +733,23 @@ class IntroForbiddenCave(SeqList):
                     ],
                 ),
                 SeqCombatAndMove(
-                    name="Navigate to key",
+                    name="Navigate to platform",
                     coords=[
-                        # TODO(orkaboy): Suboptimal movement. Should fight.
-                        Vec3(53.573, 1.010, 133.691),
-                        InteractMove(53.353, 4.012, 137.474),
-                        Vec3(56.658, 4.012, 140.818),
+                        Vec3(59.844, 1.002, 132.896),
+                        Vec3(57.981, 1.018, 139.464),
+                        InteractMove(56.926, 4.012, 140.576),
                         InteractMove(59.915, 8.012, 144.015),
                         Vec3(60.501, 8.002, 148.204),
                         Vec3(71.706, 10.002, 148.204),
                         Vec3(73.633, 10.002, 142.899),
                         Vec3(72.258, 10.002, 138.201),
                         InteractMove(69.521, 3.010, 138.381),
+                    ],
+                ),
+                SeqDelay("Wait for lock", timeout_in_s=0.2),
+                SeqMove(
+                    name="Navigate to key",
+                    coords=[
                         InteractMove(61.050, 1.002, 138.381),
                         Vec3(59.146, 1.002, 138.458),
                         InteractMove(56.907, 7.002, 140.756),
@@ -824,12 +833,18 @@ class IntroForbiddenCave(SeqList):
                         Vec3(19.374, 20.143, 140.530),
                     ],
                 ),
-                SeqCombatAndMove(
-                    name="Fight",
+                SeqMove(
+                    name="Move to platform",
                     coords=[
                         Vec3(21.487, 20.002, 137.556),
                         Vec3(25.335, 20.002, 132.576),
                         InteractMove(25.335, 1.010, 130.365),
+                    ],
+                ),
+                SeqDelay("Wait for lock", timeout_in_s=0.2),
+                SeqCombatAndMove(
+                    name="Fight",
+                    coords=[
                         InteractMove(25.335, -0.990, 125.800),
                         Vec3(20.202, -0.998, 124.117),
                         Vec3(15.461, -0.998, 134.781),
@@ -924,7 +939,6 @@ class MountainTrail(SeqList):
                 ),
                 SeqInteract("Enter Mountain Trail"),
                 SeqSkipUntilIdle("Back to present"),
-                # TODO(orkaboy): Continue routing (cook food).
                 # Valere
                 SeqIfMainCharacterValere(
                     "Main Char",
@@ -934,10 +948,250 @@ class MountainTrail(SeqList):
                     ),
                     when_false=None,
                 ),
+                # Grab berries
                 SeqMove(
                     "Go to bush",
                     coords=[Vec3(25.386, 21.002, 16.648)],
                 ),
+                SeqInteract("Berries"),
+                SeqMove(
+                    "Go to bush",
+                    coords=[Vec3(25.505, 21.002, 18.166)],
+                ),
+                SeqInteract("Berries"),
+                # Learn how to cook
+                SeqMove(
+                    "Go to Garl",
+                    coords=[
+                        Vec3(28.014, 21.002, 15.256),
+                        Vec3(29.175, 21.002, 13.363),
+                    ],
+                ),
+                SeqInteract("Talk to Garl"),
+                SeqSkipUntilIdle("Talk to Garl"),
+                # Cook Berry Jam
+                SeqMove(
+                    "Go to campfire",
+                    coords=[
+                        Vec3(28.414, 21.002, 12.944),
+                    ],
+                ),
+                # TODO(orkaboy): Replace with a better abstraction for cooking
+                SeqInteract("Campfire"),
+                SeqTurboMashDelay("Cook", timeout_in_s=1.0),
+                SeqHoldConfirm("Berry Jam", timeout_in_s=3.0),
+                SeqMashCancelUntilIdle("Close cooking menu"),
+                # Sleep and continue
+                SeqMove(
+                    "Go to Garl",
+                    coords=[
+                        Vec3(29.228, 21.002, 13.475),
+                    ],
+                ),
+                SeqInteract("Talk to Garl"),
+                SeqSkipUntilIdle("Sleep until morning"),
+                SeqMove(
+                    name="Move to cliff",
+                    coords=[
+                        Vec3(27.597, 21.002, 17.912),
+                        Vec3(27.597, 21.002, 25.840),
+                    ],
+                ),
+                SeqCheckpoint("mountain_trail"),
+                SeqMove(
+                    name="Move to cliff",
+                    coords=[
+                        Vec3(30.493, 21.002, 29.656),
+                        Vec3(30.821, 21.002, 32.541),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(30.830, 23.977, 32.530),
+                        Vec3(30.830, 31.002, 33.467),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Navigate trail",
+                    coords=[
+                        Vec3(35.299, 31.122, 48.027),
+                        Vec3(60.728, 31.004, 73.029),
+                        Vec3(61.554, 31.002, 82.984),
+                        Vec3(63.332, 31.002, 82.457),
+                        InteractMove(63.332, 28.002, 79.238),
+                        Vec3(68.246, 25.002, 78.686),
+                        InteractMove(70.460, 21.002, 77.649),
+                        Vec3(69.133, 21.002, 76.458),
+                        InteractMove(68.721, 17.002, 73.326),
+                        Vec3(61.205, 12.002, 72.609),
+                        Vec3(61.278, 12.002, 70.849),
+                        Vec3(69.106, 12.002, 70.849),
+                        Vec3(71.002, 12.090, 75.768),
+                        Vec3(77.707, 12.010, 82.274),
+                        Vec3(78.496, 12.010, 94.355),
+                        Vec3(88.255, 12.002, 94.355),
+                        Vec3(95.261, 12.002, 92.324),
+                        InteractMove(105.206, 12.002, 92.452),
+                        InteractMove(116.207, 12.002, 92.452),
+                        Vec3(119.442, 12.002, 93.462),
+                        InteractMove(119.467, 12.002, 101.690),
+                        Vec3(117.848, 12.002, 103.540),
+                        InteractMove(117.848, 13.002, 105.540),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(117.848, 17.028, 105.530),
+                        Vec3(116.724, 21.540, 105.530),
+                        Vec3(115.592, 21.540, 105.530),
+                    ],
+                ),
+                SeqCliffMove(
+                    name="Move along ledge",
+                    coords=[
+                        Vec3(113.228, 21.002, 98.862),
+                        HoldDirection(110.608, 21.000, 96.043, joy_dir=Vec2(-1, -1)),
+                        Vec3(104.178, 21.000, 95.089),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Fight wanderers",
+                    coords=[
+                        Vec3(96.910, 21.002, 95.089),
+                        InteractMove(93.519, 21.002, 95.089),
+                        Vec3(93.519, 21.002, 95.540),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(93.519, 23.828, 95.530),
+                        Vec3(93.519, 30.002, 96.467),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Navigate to cave",
+                    coords=[
+                        Vec3(96.371, 30.002, 100.611),
+                        # TODO(orkaboy): Can drop down and desync
+                        InteractMove(103.873, 30.002, 100.548),
+                        Vec3(105.732, 30.002, 100.548),
+                        Vec3(109.080, 30.002, 105.382),
+                        Vec3(101.960, 30.002, 112.436),
+                        Vec3(95.286, 30.002, 111.595),
+                        HoldDirection(176.000, 2.002, 122.300, joy_dir=Vec2(0, 1)),
+                        InteractMove(176.189, 4.002, 129.460),
+                        InteractMove(174.247, 6.002, 131.383),
+                        Vec3(172.800, 6.002, 132.974),
+                    ],
+                ),
+                # Campfire/Save Point in cavern
+                # TODO(orkaboy): There is a merchant here too, do we need to buy anything?
+                SeqCheckpoint("mountain_trail2"),
+                SeqMove(
+                    name="Move to cliff",
+                    coords=[
+                        Vec3(172.659, 6.002, 135.695),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(172.953, 8.250, 135.382),
+                        Vec3(172.878, 21.514, 135.458),
+                        Vec3(173.540, 24.002, 136.120),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Navigate trail",
+                    coords=[
+                        Vec3(178.474, 24.002, 132.236),
+                        Vec3(184.256, 24.002, 130.992),
+                        Vec3(186.408, 24.002, 127.659),
+                        Vec3(188.581, 24.002, 124.294),
+                        HoldDirection(105.206, 49.002, 123.163, joy_dir=Vec2(1, -1)),
+                        Vec3(105.206, 49.002, 119.837),
+                        Vec3(86.618, 49.002, 116.410),
+                        InteractMove(79.059, 45.002, 116.298),
+                        Vec3(75.749, 45.002, 118.825),
+                        Vec3(69.908, 45.002, 118.803),
+                        InteractMove(64.543, 46.002, 114.585),
+                        InteractMove(60.470, 49.002, 117.131),
+                        InteractMove(61.074, 53.002, 125.875),
+                        InteractMove(64.035, 55.002, 125.450),
+                        Vec3(65.019, 55.002, 121.584),
+                        InteractMove(70.540, 55.002, 121.547),
+                        Vec3(70.540, 55.002, 123.540),
+                        InteractMove(76.540, 55.002, 123.540),
+                        Vec3(76.540, 55.002, 121.460),
+                        InteractMove(85.314, 55.002, 121.438),
+                        InteractMove(85.715, 60.002, 126.473),
+                        Vec3(83.689, 60.001, 134.331),
+                        InteractMove(79.365, 60.002, 134.452),
+                        Vec3(78.460, 60.002, 134.452),
+                        Vec3(78.460, 60.002, 133.460),
+                        InteractMove(78.460, 60.002, 130.460),
+                        Vec3(76.455, 60.002, 128.748),
+                        InteractMove(73.231, 60.002, 128.548),
+                        Vec3(72.460, 60.002, 128.548),
+                        InteractMove(72.400, 60.002, 131.460),
+                        Vec3(71.071, 60.002, 132.540),
+                        Vec3(69.460, 60.002, 132.540),
+                        InteractMove(66.193, 60.002, 132.540),
+                        Vec3(65.320, 60.002, 130.662),
+                        Vec3(63.611, 60.002, 129.324),
+                    ],
+                ),
+                # TODO(orkaboy): Fails to approach cliff
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(63.472, 60.002, 129.821),
+                        InteractMove(63.752, 62.705, 130.088),
+                        Vec3(63.042, 68.002, 130.702),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Move to cliff",
+                    coords=[
+                        InteractMove(58.533, 69.002, 130.702),
+                        InteractMove(57.362, 72.002, 132.022),
+                        InteractMove(60.714, 73.002, 137.150),
+                        Vec3(66.825, 73.002, 137.150),
+                        Vec3(68.642, 73.002, 134.562),
+                        InteractMove(83.560, 73.002, 134.500),
+                        Vec3(87.935, 73.002, 138.962),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(87.935, 77.453, 139.530),
+                        Vec3(88.451, 83.540, 139.530),
+                        Vec3(89.655, 83.986, 139.990),
+                        Vec3(88.993, 89.002, 140.653),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to cliff",
+                    coords=[
+                        Vec3(84.256, 89.002, 142.541),
+                    ],
+                ),
+                SeqInteract("Grab cliff"),
+                SeqClimb(
+                    name="Climb cliff",
+                    coords=[
+                        InteractMove(84.120, 89.540, 142.530),
+                        Vec3(76.192, 89.686, 142.530),
+                        Vec3(75.555, 96.002, 143.467),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Elder Mist", joy_dir=Vec2(0, 1)),
+                SeqSkipUntilIdle("Elder Mist"),
+                # TODO(orkaboy): Elder Mist Trials
             ],
         )
 

@@ -8,6 +8,8 @@ checkpoint            : ""      # When loading game, what checkpoint should the 
 #   intro_dorms2                # Dorms of Zenith Academy, just before final trial
 #   forbidden_cave              # Forbidden Cave entrance
 #   forbidden_cave2             # Forbidden Cave campfire
+#   mountain_trail              # Mountain Trail, just north of campfire
+#   mountain_trail2             # Mountain Trail, campfire in cave
 
 # User Interface
 ui:
