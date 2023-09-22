@@ -2,12 +2,13 @@ import glob
 import os
 import re
 from re import sub
+from typing import Self
 
 path = "./files"
 
 
 class EnemyOutput:
-    def __init__(self) -> None:
+    def __init__(self: Self) -> None:
         self.guid = ""
         self.hp = 0
         self.speed = 0
@@ -22,7 +23,7 @@ class EnemyOutput:
         # self.qualifiers = []
 
 
-def snake(s):
+def snake(s: str) -> str:
     return "_".join(
         sub(
             "([A-Z][a-z]+)", r" \1", sub("([A-Z]+)", r" \1", s.replace("-", " "))
@@ -30,7 +31,7 @@ def snake(s):
     ).lower()
 
 
-def parse_kv(line, key, field, enemy):
+def parse_kv(line: str, key: str, field: str, enemy: EnemyOutput) -> None:
     if line.startswith(key):
         regex = r"(.+)(: )(.*)"
         subst = r"\3"
@@ -83,10 +84,10 @@ class {enemy.name}(BaseEnemy):
         """
         current_path = os.path.dirname(os.path.abspath(__file__))
         path = f"{current_path}/output/{snake(enemy.name)}.py"
-        new_file = open(path, "w")
+        new_file = open(path, "w")  # noqa: SIM115
         new_file.write(codegen)
         new_file.close()
 
         # if wyrd, append its custom values
-        # weakToSunDamageTypeModifiers: {'keys': [8, 4], 'values': [0.15000000596046448, 1.100000023841858]}
-        # weakToMoonDamageTypeModifiers: {'keys': [4, 8], 'values': [0.15000000596046448, 1.100000023841858]}
+        # weakToSunDamageTypeModifiers: {'keys': [8, 4], 'values': [0.15000000596046448, 1.100000023841858]}  # noqa: E501
+        # weakToMoonDamageTypeModifiers: {'keys': [4, 8], 'values': [0.15000000596046448, 1.100000023841858]}  # noqa: E501
