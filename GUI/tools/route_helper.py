@@ -122,7 +122,7 @@ class RouteHelper(Menu):
 
         imgui.text(f"{len(self.segments)} segments")
         if imgui.button("To clipboard"):
-            imgui.core.set_clipboard_text(f"{self}")
+            imgui.set_clipboard_text(f"{self}")
 
         if imgui.button("CLEAR"):
             self.segments = []
