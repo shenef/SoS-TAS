@@ -6,6 +6,12 @@ class EnemyName:
         # Evermist Island: Mountain Trail
         "c3a2f1d99be4e0c42aca0ae1ff590028": "Wanderer",
         "fc2736fdbb731394c98da56e8f476d5e": "Rochèvre",
+        # Evermist Island: Final Trial
+        "a9b692dccd6e2a748abe6f848cff857e": "Training Croube",
+        "8beb20a7311444a47b1764ae7ace6658": "Wyrd",
+        # Evermist Island: Forbidden Cave
+        "f526fdd8553bd7344a34243f16f8fc96": "Luslug",
+        "5750f181921e1f349b595e8e47760d33": "Bosslug",
         # Sleeper Island: Moorlands
         "e6ac627711e4ee44da103c47d1cd5736": "Ant Bruiser",
         "2a9a0b40f493b11429febb5d927ef84b": "Srower",
@@ -66,6 +72,17 @@ class EnemyName:
         "f875c492e9ff81d46917be56218ba834": "Kunus'nuku Acolyte",
         "d7cdfe62090e94047991a1b9ca612a6d": "Lonzon",
         "7181b3e6a1edf44409d05e9b51b86f02": "Garnooy",
+        # Cerulean Expanse
+        "bbaa918249ce3a04883d88eca37cf348": "Drone",
+        "99c8b97ca2edc2644ab9b57832c9984c": "Ronin Cowboy",
+        "68f9357277cff414eb0bf287dabd1cb0": "Hoarsemech",
+        # Aephorul's Workshop/Lost Ones Hamlet
+        "bb02eb1602e1ec142b85cd6b505ef5b6": "Meduso",
+        "79150c51ef673bd49a3e5b83af4c5f8c": "Canister",
+        # Sacrosanct Spires
+        "09b42ce72465d8149997ff1d7bb8708a": "Anointed",
+        "5ca276f08b35cd448b7458d85cc8ee5b": "Scout",
+        "a071d2cccf4848746bbc63e27a0af3b9": "Owlsassin",
     }
 
     def get(self: Self, guid: str) -> str:

@@ -178,6 +178,7 @@ class SeqMove(SeqBase):
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 0.2,
+        precision2: float = 1.0,
         tap_rate: float = 0.1,
         running: bool = True,
         func: Callable = None,
@@ -186,7 +187,10 @@ class SeqMove(SeqBase):
     ) -> None:
         self.step = 0
         self.coords = coords
+        # Used for detecting endpoint of Vec3/InteractMove
         self.precision = precision
+        # Used for detecting endpoint of HoldDirection and end of mashing during InteractMove
+        self.precision2 = precision2
         self.running = running
         self.emergency_skip = emergency_skip
         self.invert = invert
@@ -227,19 +231,22 @@ class SeqMove(SeqBase):
 
         ctrl = sos_ctrl()
         if isinstance(target, InteractMove):
-            self.confirm_timer += delta
-            if self.confirm_timer >= self.tap_rate / 2:
-                self.confirm_state = not self.confirm_state
-                ctrl.toggle_confirm(self.confirm_state)
-        # If arrived, go to next coordinate in the list
-        if Vec3.is_close(player_pos, target, self.precision):
-            logger.debug(
-                f"Checkpoint reached {self.step}. Player: {player_pos} Target: {target}"
-            )
-            self.step = self.step + 1
-            if self.step >= len(self.coords):
-                ctrl.set_neutral()
+            # Only tap while outside the secondary precision radius
+            if Vec3.is_close(player_pos, target, self.precision2):
                 ctrl.toggle_confirm(False)
+            else:
+                self.confirm_timer += delta
+                if self.confirm_timer >= self.tap_rate / 2:
+                    self.confirm_state = not self.confirm_state
+                    ctrl.toggle_confirm(self.confirm_state)
+
+        precision = (
+            self.precision2 if isinstance(target, HoldDirection) else self.precision
+        )
+        # If arrived, go to next coordinate in the list
+        if Vec3.is_close(player_pos, target, precision):
+            logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")
+            self.step = self.step + 1
         elif isinstance(target, HoldDirection):
             ctrl.set_joystick(target.joy_dir)
         else:
@@ -297,6 +304,7 @@ class SeqBoat(SeqMove):
         name: str,
         coords: list[Vec3 | InteractMove | HoldDirection],
         precision: float = 1.0,
+        precision2: float = 2.0,
         tap_rate: float = 0.1,
         running: bool = True,
         func: Callable = None,
@@ -304,7 +312,15 @@ class SeqBoat(SeqMove):
         invert: bool = False,
     ) -> None:
         super().__init__(
-            name, coords, precision, tap_rate, running, func, emergency_skip, invert
+            name,
+            coords,
+            precision,
+            precision2,
+            tap_rate,
+            running,
+            func,
+            emergency_skip,
+            invert,
         )
 
     def player_position(self: Self) -> Vec3:

@@ -3,6 +3,7 @@ from memory.combat_manager import (
     CombatManager,
     CombatPlayer,
     CombatTutorialState,
+    NextCombatAction,
     combat_manager_handle,
 )
 from memory.core import SoSMemory, mem_handle
@@ -31,5 +32,6 @@ __all__ = [
     "EnemyName",
     "CombatManager",
     "CombatPlayer",
+    "NextCombatAction",
     "CombatTutorialState",
 ]

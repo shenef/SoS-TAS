@@ -19,10 +19,12 @@ combat_manager = combat_manager_handle()
 class Moonerang(SoSAppraisal):
     HIT_AT_POSITION_VALUE = 0.82
 
-    def __init__(self: Self) -> None:
+    def __init__(
+        self: Self, value: int = 0, timing_type: SoSTimingType = SoSTimingType.MultiHit
+    ) -> None:
         super().__init__()
-        self.value = 0
-        self.timing_type = SoSTimingType.MultiHit
+        self.value = value
+        self.timing_type = timing_type
         self.battle_command = SoSBattleCommand.Skill
         self.target_type = SoSTargetType.Enemy
         # this needs to move to a system that tracks available abilities.
@@ -30,7 +32,7 @@ class Moonerang(SoSAppraisal):
         self.skill_command_index = 1
         self.instruction_done = False
         self.resource = SoSResource.Mana
-        self.cost = 6
+        self.cost = 7
 
     def execute_timing_sequence(self: Self) -> None:
         if self.instruction_done is False:

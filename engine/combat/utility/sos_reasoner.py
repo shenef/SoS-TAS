@@ -4,12 +4,13 @@ from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
 from engine.combat.utility.core.reasoner import Reasoner
 from engine.combat.utility.sos_consideration import SoSConsideration
-from memory import CombatManager, CombatPlayer
+from memory import CombatPlayer, combat_manager_handle
+
+combat_manager = combat_manager_handle()
 
 
 class SoSReasoner(Reasoner):
-    def __init__(self: Self, combat_manager_handle: CombatManager) -> None:
-        self.combat_manager_handle = combat_manager_handle
+    def __init__(self: Self) -> None:
         self.considerations = []
 
     def generate_considerations(
@@ -22,9 +23,7 @@ class SoSReasoner(Reasoner):
         return considerations
 
     def execute(self: Self) -> Action:
-        self.considerations = self.generate_considerations(
-            self.combat_manager_handle.players
-        )
+        self.considerations = self.generate_considerations(combat_manager.players)
         return self._select_action()
 
     def _select_action(self: Self) -> Action:

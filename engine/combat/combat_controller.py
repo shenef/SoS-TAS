@@ -2,14 +2,15 @@ import logging
 from typing import Self
 
 from control import sos_ctrl
-from engine.combat.appraisals.valere.crescent_arc import CrescentArc
-from engine.combat.appraisals.zale.sunball import Sunball
+from engine.combat.appraisals.basic_attack import BasicAttack
+from engine.combat.appraisals.valere import CrescentArc
+from engine.combat.appraisals.zale import Sunball
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.sos_appraisal import SoSTimingType
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
-    CombatTutorialState,
+    NextCombatAction,
     PlayerPartyCharacter,
     combat_manager_handle,
     level_manager_handle,
@@ -23,23 +24,34 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
+    SLUG_TIMING = 0.35
+
     def __init__(self: Self) -> None:
-        self.reasoner = SoSReasoner(combat_manager)
+        self.reasoner = SoSReasoner()
         self.action = None
         self.ctrl = sos_ctrl()
+        self.block_timing = 0.0
+        self.second_encounter = False
 
     # returns a bool to feed to the sequencer
-    def execute_combat(self: Self) -> bool:
+    def execute_combat(self: Self, delta: float) -> bool:
         self.ctrl.set_neutral()
 
         # if combat is done, just exit
         if combat_manager.encounter_done is True:
             return True
 
+        # if we are in the starting zone, just execute a non-timed basic attack unless
+        # we have already set the special action for the second encounter
+        # TODO(eein): Move these custom settings over to custom controllers after
+        # refactoring the controllers to use a base class and split methods.
+        # have it check if a state is valid, and set set a custom controller and
+        # execute on those actions, or use `self` to execute the default.
+        self._handle_starting_zone()
         # if some dialog is on the screen - make it go away
         if new_dialog_manager.dialog_open:
             self.ctrl.confirm()
-            self._handle_alternate_encounters()
+            self.second_encounter = True
             return False
 
         # We need to decide how to handle these specific scenarios; via profile
@@ -59,6 +71,37 @@ class CombatController:
             self.action = self.reasoner.execute()
             return False
 
+        # Defending an ability
+        # TODO(eein): Move this to a new method
+        if (
+            self.action is None or self.action.appraisal.complete
+        ) and combat_manager.selected_character is PlayerPartyCharacter.NONE:
+            combat_manager.read_next_combat_enemy()
+            next_combat_enemy = combat_manager.next_combat_enemy
+            if (
+                next_combat_enemy
+                and next_combat_enemy.state_type is NextCombatAction.Attacking
+                and next_combat_enemy.movement_done is True
+            ):
+                # accumalates the delta time until it's greater than the block timing
+                if self.block_timing >= self.SLUG_TIMING:
+                    logger.debug(f"Hitting Block for {next_combat_enemy.move_name}")
+                    sos_ctrl().confirm()
+                    self.block_timing = 0.0
+                elif next_combat_enemy.movement_done is True:
+                    self.block_timing += delta
+
+            elif (
+                next_combat_enemy
+                and next_combat_enemy.state_type is NextCombatAction.Casting
+            ):
+                logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
+                sos_ctrl().confirm()
+
+            else:
+                self.block_timing = 0.0
+
+            return False
         # For some reason the action isn't set, so bail out.
         if self.action is None:
             # logger.debug("baling out because self action is nil")
@@ -85,7 +128,6 @@ class CombatController:
             logger.debug("appraisal is complete, reset action")
             self.action = None
 
-        return False
         # are we waiting for an attack to complete?
 
         # is an enemy attacking - do we need to defend?
@@ -98,23 +140,36 @@ class CombatController:
         # if consideration executed
 
         # Check if we have control
+        return False
 
-    def _handle_alternate_encounters(self: Self) -> None:
-        # checks if we are in the second encounter zone and if we are in the tutorial
+    def _handle_starting_zone(self: Self) -> None:
         if (
             not self.action
             and level_manager.current_level == "72e9f2699f7c8394b93afa1d273ce67a"
-            and combat_manager.tutorial_state is CombatTutorialState.SecondEncounter
         ):
-            # if we're in the "second encounter" combat tutorial after the dialog state
-            # just add an action for using the correct move
             for player in combat_manager.players:
-                if player.character == PlayerPartyCharacter.Valere:
-                    self.action = Action(
-                        SoSConsideration(player),
-                        CrescentArc(timing_type=SoSTimingType.NONE),
-                    )
-                if player.character == PlayerPartyCharacter.Zale:
-                    self.action = Action(
-                        SoSConsideration(player), Sunball(hold_time=2.0)
-                    )
+                if combat_manager.selected_character == player.character:
+                    if self.second_encounter is True:
+                        match player.character:
+                            case PlayerPartyCharacter.Valere:
+                                self.action = Action(
+                                    SoSConsideration(player),
+                                    CrescentArc(timing_type=SoSTimingType.NONE),
+                                )
+                            case PlayerPartyCharacter.Zale:
+                                self.action = Action(
+                                    SoSConsideration(player),
+                                    Sunball(value=1000, hold_time=2.0),
+                                )
+                    else:
+                        match player.character:
+                            case PlayerPartyCharacter.Valere:
+                                self.action = Action(
+                                    SoSConsideration(player),
+                                    BasicAttack(timing_type=SoSTimingType.NONE),
+                                )
+                            case PlayerPartyCharacter.Zale:
+                                self.action = Action(
+                                    SoSConsideration(player),
+                                    BasicAttack(timing_type=SoSTimingType.NONE),
+                                )

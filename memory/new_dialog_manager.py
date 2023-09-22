@@ -40,15 +40,18 @@ class NewDialogManager:
 
     def _read_dialog_box(self: Self) -> None:
         # NewDialogManager -> openedDialogBoxes -> 0x18 -> 0x30 (NewDialogBox)
-        dialog_box_pointer = self.memory.follow_pointer(
-            self.base, [self.opened_dialog_boxes_base, 0x18, 0x30, 0x0]
-        )
-        dialog_box_pointer_2 = self.memory.follow_pointer(
-            self.base, [self.opened_dialog_boxes_base, 0x18, 0x48, 0x0]
-        )
-        if dialog_box_pointer != 0x0 or dialog_box_pointer_2 != 0x0:
-            self.dialog_open = True
-        else:
+        try:
+            dialog_box_pointer = self.memory.follow_pointer(
+                self.base, [self.opened_dialog_boxes_base, 0x18, 0x30, 0x0]
+            )
+            dialog_box_pointer_2 = self.memory.follow_pointer(
+                self.base, [self.opened_dialog_boxes_base, 0x18, 0x48, 0x0]
+            )
+            if dialog_box_pointer != 0x0 or dialog_box_pointer_2 != 0x0:
+                self.dialog_open = True
+            else:
+                self.dialog_open = False
+        except Exception:
             self.dialog_open = False
 
 
