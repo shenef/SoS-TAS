@@ -2,10 +2,11 @@ import glob
 import os
 import re
 from re import sub
+from typing import Self
 
 
 class EnemyOutput:
-    def __init__(self) -> None:
+    def __init__(self: Self) -> None:
         self.guid = ""
         self.hp = 0
         self.speed = 0
@@ -23,7 +24,7 @@ class EnemyOutput:
 path = "./files"
 
 
-def parse_kv(line, key, field, enemy):
+def parse_kv(line: str, key: str, field: str, enemy: EnemyOutput) -> None:
     if line.startswith(key):
         regex = r"(.+)(: )(.*)"
         subst = r"\3"
@@ -31,7 +32,7 @@ def parse_kv(line, key, field, enemy):
         setattr(enemy, field, result)
 
 
-def snake(s):
+def snake(s: str) -> str:
     return "_".join(
         sub(
             "([A-Z][a-z]+)", r" \1", sub("([A-Z]+)", r" \1", s.replace("-", " "))
@@ -72,6 +73,6 @@ __all__ = [
         """
 current_path = os.path.dirname(os.path.abspath(__file__))
 path = f"{current_path}/mapper_output/__init__.py"
-new_file = open(path, "w")
+new_file = open(path, "w")  # noqa: SIM115
 new_file.write(codegen)
 new_file.close()
