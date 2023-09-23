@@ -10,6 +10,8 @@ checkpoint            : ""      # When loading game, what checkpoint should the 
 #   forbidden_cave2             # Forbidden Cave campfire
 #   mountain_trail              # Mountain Trail, just north of campfire
 #   mountain_trail2             # Mountain Trail, campfire in cave
+#   elder_mist                  # Elder Mist trials, campfire after tutorial
+#   elder_mist_boss             # Elder Mist trials, just before the boss
 
 # User Interface
 ui:

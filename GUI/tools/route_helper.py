@@ -73,7 +73,7 @@ class RouteSegment:
 
     def __repr__(self: Self) -> str:
         ret = f"{self._type_str()}(\n"
-        ret += '    name="",  # Name\n'
+        ret += '    name="",\n'
         ret += "    coords=[\n"
         for coord in self.coords:
             ret += f"        {coord},\n"
