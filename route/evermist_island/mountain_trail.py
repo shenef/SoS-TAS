@@ -358,14 +358,13 @@ class MountainTrail(SeqList):
                         Vec3(63.611, 60.002, 129.324),
                     ],
                 ),
-                # TODO(orkaboy): Fails to approach cliff
                 SeqClimb(
                     name="Climb cliff",
                     coords=[
-                        InteractMove(63.472, 60.002, 129.821),
-                        InteractMove(63.752, 62.705, 130.088),
-                        Vec3(63.042, 68.002, 130.702),
+                        InteractMove(63.051, 60.411, 129.386),
+                        Vec3(62.388, 68.002, 130.048),
                     ],
+                    precision2=0,
                 ),
                 SeqCombatAndMove(
                     name="Move to cliff",
@@ -382,6 +381,7 @@ class MountainTrail(SeqList):
                 SeqClimb(
                     name="Climb cliff",
                     coords=[
+                        # TODO(orkaboy): There's a risk of being caught by the enemy here
                         InteractMove(87.935, 77.453, 139.530),
                         Vec3(88.451, 83.540, 139.530),
                         Vec3(89.655, 83.986, 139.990),
