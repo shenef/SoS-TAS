@@ -132,30 +132,3 @@ class SeqMashUntilIdle(SeqBase):
 
     def __repr__(self: Self) -> str:
         return f"Mashing confirm while waiting for control ({self.name})."
-
-
-class SeqMashCancelUntilIdle(SeqBase):
-    _TOGGLE_TIME = 0.05
-
-    def __init__(self: Self, name: str = "", func: Callable = None) -> None:
-        super().__init__(name, func)
-        self.state = False
-        self.timer = 0.0
-
-    # Mash through cutscene while holding the turbo button
-    def execute(self: Self, delta: float) -> bool:
-        self.timer = self.timer + delta
-
-        if self.timer > self._TOGGLE_TIME:
-            self.timer = 0
-            self.state = not self.state
-            sos_ctrl().toggle_cancel(self.state)
-
-        # Check if we have control
-        done = player_party_manager.movement_state == PlayerMovementState.Idle
-        if done:
-            sos_ctrl().toggle_cancel(state=False)
-        return done
-
-    def __repr__(self: Self) -> str:
-        return f"Mashing cancel while waiting for control ({self.name})."

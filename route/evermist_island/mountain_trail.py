@@ -4,6 +4,7 @@ from typing import Self
 from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    CancelMove,
     HoldDirection,
     InteractMove,
     SeqCheckpoint,
@@ -15,7 +16,6 @@ from engine.seq import (
     SeqInteract,
     SeqList,
     SeqLog,
-    SeqMashCancelUntilIdle,
     SeqMove,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
@@ -194,13 +194,12 @@ class MountainTrail(SeqList):
                 # TODO(orkaboy): Replace with a better abstraction for cooking
                 SeqInteract("Campfire"),
                 SeqTurboMashDelay("Cook", timeout_in_s=1.0),
-                SeqHoldConfirm("Berry Jam", timeout_in_s=3.0),
-                SeqMashCancelUntilIdle("Close cooking menu"),
+                SeqHoldConfirm("Berry Jam", timeout_in_s=3.5),
                 # Sleep and continue
                 SeqMove(
                     "Go to Garl",
                     coords=[
-                        Vec3(29.228, 21.002, 13.475),
+                        CancelMove(29.228, 21.002, 13.475),
                     ],
                 ),
                 SeqInteract("Talk to Garl"),

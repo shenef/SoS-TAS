@@ -3,7 +3,6 @@ from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.interact import (
     SeqBracelet,
     SeqInteract,
-    SeqMashCancelUntilIdle,
     SeqMashUntilIdle,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
@@ -12,6 +11,7 @@ from engine.seq.interact import (
 )
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
+    CancelMove,
     HoldDirection,
     InteractMove,
     MoveToward,
@@ -44,6 +44,7 @@ __all__ = [
     "SeqHoldInPlace",
     "SeqManualUntilClose",
     "InteractMove",
+    "CancelMove",
     "HoldDirection",
     "MoveToward",
     "SeqMove",
@@ -60,5 +61,4 @@ __all__ = [
     "SeqInteract",
     "SeqBracelet",
     "SeqTapDown",
-    "SeqMashCancelUntilIdle",
 ]
