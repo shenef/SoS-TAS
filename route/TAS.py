@@ -59,16 +59,12 @@ class TASMenu(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
         imgui.set_window_pos(self.title, imgui.ImVec2(5, 5), imgui.Cond_.once)
-        imgui.set_window_size(
-            self.title, imgui.ImVec2(470, 200), cond=imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_size(self.title, imgui.ImVec2(470, 200), cond=imgui.Cond_.first_use_ever)
 
         ret = False
         if self.tas_is_running:
             # Execute the starting sequence until done (open new game or load game)
-            run_main_sequence = (
-                not self.run_start_sequence or self.start_game_sequencer.done
-            )
+            run_main_sequence = not self.run_start_sequence or self.start_game_sequencer.done
 
             if run_main_sequence:
                 # Run the TAS sequencer
@@ -87,9 +83,7 @@ class TASMenu(Menu):
                 # TODO(orkaboy): Maybe should check for valid range 1-9
                 _, self.saveslot = imgui.input_int("Save slot 1-9", self.saveslot)
                 # TODO(orkaboy): Maybe should be a dropdown of valid checkpoints
-                _, self.checkpoint = imgui.input_text(
-                    "Checkpoint name", self.checkpoint
-                )
+                _, self.checkpoint = imgui.input_text("Checkpoint name", self.checkpoint)
 
             _, self.run_start_sequence = imgui.checkbox(
                 "Should run start sequence", self.run_start_sequence
@@ -129,9 +123,7 @@ class SoSDemoAnyPercentMenu(TASMenu):
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(
-            window=self.window, config=self.config_data, root=TAS_root
-        )
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
     def custom_gui(self: Self) -> None:
         # Override to inject some custom parameters to the run
@@ -155,9 +147,7 @@ class SoSAnyPercentMenu(TASMenu):
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(
-            window=self.window, config=self.config_data, root=TAS_root
-        )
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
 
 class SoSBattleTestMenu(TASMenu):
@@ -175,9 +165,7 @@ class SoSBattleTestMenu(TASMenu):
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(
-            window=self.window, config=self.config_data, root=TAS_root
-        )
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
     def custom_gui(self: Self) -> None:
         # Override to inject some custom parameters to the run

@@ -30,9 +30,7 @@ class DebugMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
-        imgui.set_window_pos(
-            self.title, imgui.ImVec2(185, 30), imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_pos(self.title, imgui.ImVec2(185, 30), imgui.Cond_.first_use_ever)
 
         imgui.text_wrapped("Level Info")
         imgui.text_wrapped(f"Scene Name: {level_manager.scene_name}")
@@ -40,9 +38,7 @@ class DebugMenu(Menu):
         imgui.text_wrapped(f"Loading: {level_manager.loading}")
 
         LayoutHelper.add_spacer()
-        imgui.text_wrapped(
-            f"Current Leader: {player_party_manager.leader_character.value}"
-        )
+        imgui.text_wrapped(f"Current Leader: {player_party_manager.leader_character.value}")
 
         LayoutHelper.add_spacer()
 
@@ -64,9 +60,7 @@ class DebugMenu(Menu):
         LayoutHelper.add_spacer()
         imgui.text_wrapped(f"Dialog Open: {new_dialog_manager.dialog_open}")
         LayoutHelper.add_spacer()
-        _, self.show_metrics = imgui.checkbox(
-            "Show performance metrics", self.show_metrics
-        )
+        _, self.show_metrics = imgui.checkbox("Show performance metrics", self.show_metrics)
         if self.show_metrics:
             imgui.show_metrics_window()
 

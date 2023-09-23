@@ -15,9 +15,7 @@ player_party_manager = player_party_manager_handle()
 boat_manager = boat_manager_handle()
 
 
-def move_to(
-    player: Vec2, target: Vec2, running: bool = True, invert: bool = False
-) -> None:
+def move_to(player: Vec2, target: Vec2, running: bool = True, invert: bool = False) -> None:
     ctrl = sos_ctrl()
 
     speed = 1.0 if running else 0.5
@@ -242,9 +240,7 @@ class SeqMove(SeqBase):
             return
 
         ctrl = sos_ctrl()
-        if isinstance(target, InteractMove) or (
-            isinstance(target, MoveToward) and target.mash
-        ):
+        if isinstance(target, InteractMove) or (isinstance(target, MoveToward) and target.mash):
             # Only tap while outside the secondary precision radius
             if Vec3.is_close(player_pos, target, self.precision2):
                 ctrl.toggle_confirm(False)
@@ -254,9 +250,7 @@ class SeqMove(SeqBase):
                     self.confirm_state = not self.confirm_state
                     ctrl.toggle_confirm(self.confirm_state)
 
-        precision = (
-            self.precision2 if isinstance(target, HoldDirection) else self.precision
-        )
+        precision = self.precision2 if isinstance(target, HoldDirection) else self.precision
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, precision):
             logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")

@@ -38,9 +38,7 @@ class NavHelper(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_pos(
-            self.title, imgui.ImVec2(5, 110), imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_pos(self.title, imgui.ImVec2(5, 110), imgui.Cond_.first_use_ever)
         imgui.set_window_size(imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
@@ -146,9 +144,7 @@ class NavHelper(Menu):
                 )
             LayoutHelper.add_spacings(2)
 
-        ui_boat_coordinates, visible = imgui.collapsing_header(
-            "Boat Coordinates", True, flags=32
-        )
+        ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True, flags=32)
         boat_pos = Vec3(
             boat_manager.position.x or 0,
             boat_manager.position.y or 0,

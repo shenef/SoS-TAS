@@ -94,7 +94,9 @@ class SeqSkipUntilClose(SeqSkipUntilIdle):
         return Vec3.is_close(player_pos, self.coord, precision=self.precision)
 
     def __repr__(self: Self) -> str:
-        return f"Holding turbo/confirm/cancel while waiting to arrive at {self.coord} ({self.name})."  # noqa: E501
+        return (
+            f"Holding turbo/confirm/cancel while waiting to arrive at {self.coord} ({self.name})."
+        )  # noqa: E501
 
 
 class SeqSkipUntilCombat(SeqSkipUntilIdle):

@@ -88,9 +88,7 @@ class RouteHelper(Menu):
         self.segments: list[RouteSegment] = []
         self.current_type = RouteSegmentType.MOVE
 
-    def gui_section(
-        self: Self, idx: int, segment_type: RouteSegmentType, coord: Vec3
-    ) -> None:
+    def gui_section(self: Self, idx: int, segment_type: RouteSegmentType, coord: Vec3) -> None:
         if imgui.button(f"Move##{idx}"):
             self.add_coord(
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
@@ -112,12 +110,8 @@ class RouteHelper(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_pos(
-            self.title, imgui.ImVec2(5, 135), imgui.Cond_.first_use_ever
-        )
-        imgui.set_window_size(
-            self.title, imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_pos(self.title, imgui.ImVec2(5, 135), imgui.Cond_.first_use_ever)
+        imgui.set_window_size(self.title, imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
         imgui.text(f"{len(self.segments)} segments")
@@ -144,9 +138,7 @@ class RouteHelper(Menu):
         self.gui_section(1, RouteSegmentType.MOVE, coord=player_pos)
         LayoutHelper.add_spacer()
 
-        imgui.text(
-            f"Climb wall:{' (cur)' if self.current_type is RouteSegmentType.CLIMB else ''}"
-        )  # noqa: E501
+        imgui.text(f"Climb wall:{' (cur)' if self.current_type is RouteSegmentType.CLIMB else ''}")  # noqa: E501
         self.gui_section(2, RouteSegmentType.CLIMB, coord=player_pos)
         LayoutHelper.add_spacer()
 
@@ -174,9 +166,7 @@ class RouteHelper(Menu):
             boat_manager.position.z or 0,
         )
 
-        imgui.text(
-            f"Boat:{' (cur)' if self.current_type is RouteSegmentType.BOAT else ''}"
-        )  # noqa: E501
+        imgui.text(f"Boat:{' (cur)' if self.current_type is RouteSegmentType.BOAT else ''}")  # noqa: E501
         self.gui_section(5, RouteSegmentType.BOAT, coord=boat_pos)
 
         ret = False
@@ -185,9 +175,7 @@ class RouteHelper(Menu):
         self.window.end_window()
         return ret
 
-    def add_coord(
-        self: Self, coord: RouteCoord, segment_type: RouteSegmentType
-    ) -> None:
+    def add_coord(self: Self, coord: RouteCoord, segment_type: RouteSegmentType) -> None:
         if not self.segments or segment_type != self.current_type:
             self.segments.append(RouteSegment(segment_type))
             self.current_type = segment_type

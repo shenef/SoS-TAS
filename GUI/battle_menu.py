@@ -23,13 +23,9 @@ class BattleMenu(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
-        imgui.set_window_pos(
-            self.title, imgui.ImVec2(5, 210), imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_pos(self.title, imgui.ImVec2(5, 210), imgui.Cond_.first_use_ever)
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
-        imgui.set_window_size(
-            self.title, imgui.ImVec2(470, 585), cond=imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_size(self.title, imgui.ImVec2(470, 585), cond=imgui.Cond_.first_use_ever)
 
         imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done} |")
         imgui.same_line()
@@ -48,9 +44,7 @@ class BattleMenu(Menu):
             imgui.text_wrapped(f"Live Mana Small: {combat_manager.small_live_mana} |")
             imgui.same_line()
             imgui.text_wrapped(f"Big: {combat_manager.big_live_mana}")
-            imgui.text_wrapped(
-                f"Selected Character: {combat_manager.selected_character.value}"
-            )
+            imgui.text_wrapped(f"Selected Character: {combat_manager.selected_character.value}")
             att_target = (
                 combat_manager.selected_attack_target_guid.replace("\x00", "")
                 if combat_manager.selected_attack_target_guid
@@ -64,13 +58,9 @@ class BattleMenu(Menu):
             )
             imgui.text_wrapped(f"Skill target: {skill_target}")
             imgui.separator()
-            imgui.text_wrapped(
-                f"Moonerang Bounces: {combat_manager.projectile_hit_count} |"
-            )
+            imgui.text_wrapped(f"Moonerang Bounces: {combat_manager.projectile_hit_count} |")
             imgui.same_line()
-            imgui.text_wrapped(
-                f"Moonerang Travel Speed: {combat_manager.projectile_speed:.0f}/75"
-            )
+            imgui.text_wrapped(f"Moonerang Travel Speed: {combat_manager.projectile_speed:.0f}/75")
             imgui.separator()
             imgui.columns(self.COLUMN_MAX)
 
@@ -86,12 +76,8 @@ class BattleMenu(Menu):
                     else:
                         imgui.text(f"{enemy.name} ({idx}):")
                     imgui.text(f"HP: {enemy.current_hp}/{enemy.max_hp}")
-                    attack_targeted = (
-                        enemy.unique_id == combat_manager.selected_attack_target_guid
-                    )
-                    skill_targeted = (
-                        enemy.unique_id == combat_manager.selected_skill_target_guid
-                    )
+                    attack_targeted = enemy.unique_id == combat_manager.selected_attack_target_guid
+                    skill_targeted = enemy.unique_id == combat_manager.selected_skill_target_guid
 
                     imgui.text_wrapped(f"pATK: {enemy.physical_attack} |")
                     imgui.same_line()

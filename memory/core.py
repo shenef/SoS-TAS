@@ -58,9 +58,7 @@ class SoSMemory:
                 pm = pymem.Pymem("SeaOfStars.exe")
                 self.pm = pm
 
-                self.module = pymem.process.module_from_name(
-                    pm.process_handle, "GameAssembly.dll"
-                )
+                self.module = pymem.process.module_from_name(pm.process_handle, "GameAssembly.dll")
                 self.module_base = self.module.lpBaseOfDll
 
                 logger.info(
@@ -208,9 +206,7 @@ class SoSMemory:
     # This is used to get the fields lookup base of the class
     # Provides the field offset relative to the base class.
     def get_class_fields_base(self: Self, class_ptr: int) -> int:
-        return pymem.memory.read_longlong(
-            self.pm.process_handle, self.get_class_base(class_ptr)
-        )
+        return pymem.memory.read_longlong(self.pm.process_handle, self.get_class_base(class_ptr))
 
     # This is used to get the actual base of the class
     # This can be used as the base when following pointer + field offsets
@@ -225,14 +221,10 @@ class SoSMemory:
             # 32bit "8A 07 47 84 C0 75 ?? 8B 35"
             # signature = b"\\x8A\\x07\\x47\\x84\\xC0\\x75.\\x8B\\x35"
             address = (
-                pymem.pattern.pattern_scan_module(
-                    self.pm.process_handle, self.module, signature
-                )
+                pymem.pattern.pattern_scan_module(self.pm.process_handle, self.module, signature)
                 + 12
             )
-            self.assemblies = (
-                address + 0x4 + pymem.memory.read_int(self.pm.process_handle, address)
-            )
+            self.assemblies = address + 0x4 + pymem.memory.read_int(self.pm.process_handle, address)
 
     # Scans for the type info definition table signature for the specific version of unity for SoS
     def _type_info_definition_table_trg_sig(self: Self) -> None:
@@ -240,9 +232,7 @@ class SoSMemory:
             # "48 83 3C ?? 00 75 ?? 8B C? E8"
             signature = b"\\x48\\x83\\x3C.\\x00\\x75.\\x8B.\\xe8"
             address = (
-                pymem.pattern.pattern_scan_module(
-                    self.pm.process_handle, self.module, signature
-                )
+                pymem.pattern.pattern_scan_module(self.pm.process_handle, self.module, signature)
                 - 4
             )
             self.type_info_definition_table = (
@@ -256,9 +246,7 @@ class SoSMemory:
         image = None
 
         while True:
-            mono_assembly = pymem.memory.read_longlong(
-                self.pm.process_handle, assemblies
-            )
+            mono_assembly = pymem.memory.read_longlong(self.pm.process_handle, assemblies)
 
             if mono_assembly is None:
                 return
@@ -268,9 +256,7 @@ class SoSMemory:
                 + self.offsets["monoassembly_aname"]
                 + self.offsets["monoassemblyname_name"]
             )
-            name_addr = pymem.memory.read_longlong(
-                self.pm.process_handle, name_addr_pointer
-            )
+            name_addr = pymem.memory.read_longlong(self.pm.process_handle, name_addr_pointer)
             name = pymem.memory.read_string(self.pm.process_handle, name_addr, 128)
 
             if name == assembly_name:
@@ -312,16 +298,12 @@ class SoSMemory:
             self.image + self.offsets["monoimage_metadatahandle"],
         )
         metadata_handle = pymem.memory.read_int(self.pm.process_handle, inner_handle)
-        ptr = pymem.memory.read_longlong(
-            self.pm.process_handle, self.type_info_definition_table
-        )
+        ptr = pymem.memory.read_longlong(self.pm.process_handle, self.type_info_definition_table)
 
         ptr = ptr + (metadata_handle * 8)
         classes: list[int] = []
         for field in range(0, type_count):
-            field_class = pymem.memory.read_ulonglong(
-                self.pm.process_handle, ptr + (field * 8)
-            )
+            field_class = pymem.memory.read_ulonglong(self.pm.process_handle, ptr + (field * 8))
 
             if field_class:
                 classes.append(field_class)

@@ -12,9 +12,7 @@ def timestr(time: datetime) -> str:
 
 
 class Checkpoint:
-    def __init__(
-        self: Self, name: str, timestamp: datetime, duration: datetime
-    ) -> None:
+    def __init__(self: Self, name: str, timestamp: datetime, duration: datetime) -> None:
         self.name = name
         self.timestamp = timestamp
         self.duration = duration
@@ -35,7 +33,9 @@ class Blackboard:
 
     # Dictionary
     def get_dict(
-        self: Self, key: str, default: Any = None  # noqa: ANN401
+        self: Self,
+        key: str,
+        default: Any = None,  # noqa: ANN401
     ) -> Any | None:  # noqa: ANN401
         return self.dict.get(key, default)
 
@@ -50,9 +50,7 @@ class Blackboard:
 
     def log_checkpoint(self: Self, name: str) -> None:
         now = datetime.now()
-        duration = datetime.utcfromtimestamp(
-            (now - self.last_timestamp).total_seconds()
-        )
+        duration = datetime.utcfromtimestamp((now - self.last_timestamp).total_seconds())
         timestamp = datetime.utcfromtimestamp((now - self.start_time).total_seconds())
         self.last_timestamp = now
 
