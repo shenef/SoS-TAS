@@ -134,7 +134,7 @@ class RouteHelper(Menu):
 
         imgui.text(
             f"Regular movement:{' (cur)' if self.current_type is RouteSegmentType.MOVE else ''}"
-        )  # noqa: E501
+        )
         self.gui_section(1, RouteSegmentType.MOVE, coord=player_pos)
         LayoutHelper.add_spacer()
 
@@ -150,13 +150,13 @@ class RouteHelper(Menu):
 
         imgui.text(
             f"Ledge move:{' (cur)' if self.current_type is RouteSegmentType.CLIFF_MOVE else ''}"
-        )  # noqa: E501
+        )
         self.gui_section(3, RouteSegmentType.CLIFF_MOVE, coord=gameobject_pos)
         LayoutHelper.add_spacer()
 
         imgui.text(
             f"Ledge climb:{' (cur)' if self.current_type is RouteSegmentType.CLIFF_CLIMB else ''}"
-        )  # noqa: E501
+        )
         self.gui_section(4, RouteSegmentType.CLIFF_CLIMB, coord=gameobject_pos)
         LayoutHelper.add_spacer()
 

@@ -96,7 +96,7 @@ class SeqSkipUntilClose(SeqSkipUntilIdle):
     def __repr__(self: Self) -> str:
         return (
             f"Holding turbo/confirm/cancel while waiting to arrive at {self.coord} ({self.name})."
-        )  # noqa: E501
+        )
 
 
 class SeqSkipUntilCombat(SeqSkipUntilIdle):
