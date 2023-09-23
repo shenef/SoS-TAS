@@ -72,11 +72,8 @@ class IntroForbiddenCave(SeqList):
                 SeqMove(
                     name="Climb tower",
                     coords=[
-                        InteractMove(-46.460, 6.002, 139.104),
-                        InteractMove(-43.510, 9.002, 139.460),
-                        InteractMove(-43.487, 11.002, 140.467),
-                        InteractMove(-44.700, 12.002, 140.467),
-                        InteractMove(-44.700, 15.002, 141.540),
+                        InteractMove(-45.533, 9.002, 139.460),
+                        InteractMove(-45.533, 15.002, 141.467),
                     ],
                 ),
                 SeqClimb(
