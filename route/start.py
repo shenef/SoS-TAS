@@ -128,7 +128,7 @@ class SoSStartGame(SeqList):
                     name="SYSTEM",
                     text="Starting Sea of Stars TAS main menu sequence.",
                 ),
-                #! The SoS window will not recognize input unless it is in focus!
+                # ! The SoS window will not recognize input unless it is in focus!
                 SeqDelay("MANUAL: Focus SoS window!", timeout_in_s=3.0),
                 SeqDebug(name="SYSTEM", text="Press start to activate main menu."),
                 SeqMenuStartButton(),
