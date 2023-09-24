@@ -1,21 +1,26 @@
 import logging
+from enum import Enum, auto
 from typing import Self
 
-from engine.combat import SeqCombatManual
+from control import sos_ctrl
+from engine.combat import SeqCombat, SeqCombatManual
 from engine.mathlib import Vec3
 from engine.seq import (
     InteractMove,
+    SeqBase,
     SeqCheckpoint,
     SeqClimb,
-    SeqDelay,
     SeqInteract,
     SeqList,
-    SeqMashUntilIdle,
     SeqMove,
-    SeqTapDown,
+    SeqSkipUntilCombat,
+    SeqSkipUntilIdle,
 )
+from memory import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
+
+new_dialog_manager = new_dialog_manager_handle()
 
 
 class ElderMistTrialsRight(SeqList):
@@ -112,6 +117,49 @@ class ElderMistTrialsRight(SeqList):
         )
 
 
+class SelectOption(SeqBase):
+    class State(Enum):
+        Approach = auto()
+        WaitForDialog = auto()
+        ClearPrompt = auto()
+        Answer = auto()
+
+    TIMEOUT = 0.2
+
+    def __init__(self: Self, name: str, option: int = 0) -> None:
+        super().__init__(name)
+        self.timer = 0
+        self.option = option
+        self.state = self.State.Approach
+
+    def execute(self: Self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+        match self.state:
+            case self.State.Approach:
+                ctrl.confirm()
+                self.state = self.State.WaitForDialog
+            case self.State.WaitForDialog:
+                if new_dialog_manager.dialog_open:
+                    ctrl.toggle_turbo(state=True)
+                    ctrl.toggle_confirm(state=True)
+                    self.state = self.State.ClearPrompt
+            case self.State.ClearPrompt:
+                self.timer += delta
+                if self.timer >= self.TIMEOUT:
+                    self.state = self.State.Answer
+                    ctrl.toggle_turbo(state=False)
+                    ctrl.toggle_confirm(state=False)
+            case self.State.Answer:
+                for _ in range(self.option):
+                    ctrl.dpad.tap_down()
+                ctrl.confirm()
+                return True
+        return False
+
+    def __repr__(self: Self) -> str:
+        return f"{self.state} ({self.state})"
+
+
 class ElderMistTrialsCenter(SeqList):
     def __init__(self: Self) -> None:
         super().__init__(
@@ -142,9 +190,8 @@ class ElderMistTrialsCenter(SeqList):
                         Vec3(45.391, 10.002, 118.741),
                     ],
                 ),
-                SeqInteract("First question"),
                 # TODO(orkaboy): Assumes top is correct answer
-                SeqMashUntilIdle("First question"),
+                SelectOption("First question"),
                 SeqMove(
                     name="Move to wall",
                     coords=[
@@ -175,9 +222,8 @@ class ElderMistTrialsCenter(SeqList):
                         Vec3(59.860, 7.002, 108.213),
                     ],
                 ),
-                SeqInteract("Second question"),
                 # TODO(orkaboy): Assumes top is correct answer
-                SeqMashUntilIdle("Second question"),
+                SelectOption("Second question"),
                 SeqMove(
                     name="Move to wall",
                     coords=[
@@ -218,14 +264,8 @@ class ElderMistTrialsCenter(SeqList):
                         Vec3(43.311, 20.002, 116.665),
                     ],
                 ),
-                SeqInteract("Third question"),
                 # TODO(orkaboy): Assumes second is correct answer
-                # TODO(orkaboy): This fails, must wait for all characters to move
-                SeqDelay("Wait", timeout_in_s=1.0),
-                SeqInteract("Confirm"),
-                SeqDelay("Wait", timeout_in_s=0.2),
-                SeqTapDown(),
-                SeqInteract("Confirm"),
+                SelectOption("Third Question", option=1),
                 SeqMove(
                     name="Move to pillar",
                     coords=[
@@ -292,9 +332,9 @@ class ElderMistTrialsLeft(SeqList):
                         InteractMove(-7.124, 14.002, 90.925),
                         InteractMove(-2.371, 14.002, 95.372),
                         InteractMove(-0.431, 15.589, 98.986),
+                        # TODO(orkaboy): Fails to come into contact with enemy
                         Vec3(1.930, 18.888, 103.072),
-                        # TODO(orkaboy): This may fail, must seek out enemy
-                        Vec3(10.418, 19.002, 103.594),
+                        Vec3(8.359, 19.002, 107.734),
                         Vec3(12.489, 19.002, 99.108),
                     ],
                 ),
@@ -362,10 +402,11 @@ class ElderMistTrials(SeqList):
                         Vec3(49.580, 1.002, 47.540),
                     ],
                 ),
-                SeqInteract("Elder Mist Boss"),
-                # TODO(orkaboy): Select "yes" in menu
-                # TODO(orkaboy): Spam through dialogue
-                # TODO(orkaboy): Beat Elder Mist
-                # TODO(orkaboy): Cutscenes
+                SelectOption("Elder Mist Boss"),
+                SeqSkipUntilCombat("Elder Mist Boss"),
+                # TODO(orkaboy): Need combat priority to deal with sword
+                SeqCombat("Elder Mist Boss"),
+                SeqSkipUntilIdle("Cutscenes"),
+                # TODO(orkaboy): Continue routing
             ],
         )
