@@ -73,7 +73,7 @@ class NavHelper(Menu):
             if imgui.button("Set as target"):
                 self.target = player_pos
             if imgui.button("Copy to clipboard##1"):
-                imgui.core.set_clipboard_text(
+                imgui.set_clipboard_text(
                     f"Vec3({player_pos.x:.3f}, {player_pos.y:.3f}, {player_pos.z:.3f}),"
                 )
             LayoutHelper.add_spacings(2)
@@ -90,7 +90,7 @@ class NavHelper(Menu):
             imgui.text(f"Distance to target: {distance:.3f}\n")
 
             if imgui.button("Copy to clipboard##2"):
-                imgui.core.set_clipboard_text(
+                imgui.set_clipboard_text(
                     f"Vec3({self.target.x:.3f}, {self.target.y:.3f}, {self.target.z:.3f}),"
                 )
 
@@ -141,7 +141,7 @@ class NavHelper(Menu):
             imgui.text(f"y: {gameobject_pos.y:.3f}")
             imgui.text(f"z: {gameobject_pos.z:.3f}")
             if imgui.button("Copy to clipboard##3"):
-                imgui.core.set_clipboard_text(
+                imgui.set_clipboard_text(
                     f"Vec3({gameobject_pos.x:.3f}, {gameobject_pos.y:.3f}, {gameobject_pos.z:.3f}),"
                 )
             LayoutHelper.add_spacings(2)
@@ -165,7 +165,7 @@ class NavHelper(Menu):
             imgui.text(f"y: {boat_pos.y:.3f}")
             imgui.text(f"z: {boat_pos.z:.3f}")
             if imgui.button("Copy to clipboard##4"):
-                imgui.core.set_clipboard_text(
+                imgui.set_clipboard_text(
                     f"Vec3({boat_pos.x:.3f}, {boat_pos.y:.3f}, {boat_pos.z:.3f}),"
                 )
             imgui.text(f"Rot (yaw): {boat_rotation.to_yaw():.3f}")

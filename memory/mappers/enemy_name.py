@@ -13,6 +13,10 @@ class EnemyName:
         "f526fdd8553bd7344a34243f16f8fc96": "Luslug",
         "5750f181921e1f349b595e8e47760d33": "Bosslug",
         "3c02795df7f5ec647b8ba102263e7574": "Acid Bug",
+        # Elder Mist Trials
+        "72351ffc3ecd46d46bf11cec4eee353a": "Tern",
+        "962aa552d33fc124782b230fce9185ce": "Elder Mist",
+        "ddc4a3bbf0edb9945ba4b06f96f9c20e": "Elder Mist's Sword",
         # Sleeper Island: Moorlands
         "e6ac627711e4ee44da103c47d1cd5736": "Ant Bruiser",
         "2a9a0b40f493b11429febb5d927ef84b": "Srower",

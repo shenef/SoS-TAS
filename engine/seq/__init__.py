@@ -11,6 +11,7 @@ from engine.seq.interact import (
 )
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
+    CancelMove,
     HoldDirection,
     InteractMove,
     MoveToward,
@@ -25,7 +26,7 @@ from engine.seq.move import (
     SeqMove,
 )
 from engine.seq.sequencer import SequencerEngine
-from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqMashDelay, SeqTurboMashDelay
+from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqTurboMashDelay
 
 __all__ = [
     "SeqAmulet",
@@ -39,11 +40,11 @@ __all__ = [
     "SeqCheckpoint",
     "SeqDelay",
     "SeqHoldConfirm",
-    "SeqMashDelay",
     "SeqTurboMashDelay",
     "SeqHoldInPlace",
     "SeqManualUntilClose",
     "InteractMove",
+    "CancelMove",
     "HoldDirection",
     "MoveToward",
     "SeqMove",

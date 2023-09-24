@@ -79,7 +79,7 @@ class BattleMenu(Menu):
                     if not enemy.name:
                         imgui.text(f"({idx}) guid")
                         imgui.same_line()
-                        imgui.input_text(f"##{idx}", value=enemy.guid)
+                        imgui.input_text(f"##{idx}", enemy.guid)
                         LayoutHelper.add_tooltip(
                             "Enter this data in memory > mappers > enemy_name.py"
                         )

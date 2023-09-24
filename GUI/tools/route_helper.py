@@ -73,7 +73,7 @@ class RouteSegment:
 
     def __repr__(self: Self) -> str:
         ret = f"{self._type_str()}(\n"
-        ret += '    name="",  # Name\n'
+        ret += '    name="",\n'
         ret += "    coords=[\n"
         for coord in self.coords:
             ret += f"        {coord},\n"
@@ -96,18 +96,19 @@ class RouteHelper(Menu):
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
                 segment_type=segment_type,
             )
-        imgui.same_line()
-        if imgui.button(f"Interact##{idx}"):
-            self.add_coord(
-                coord=RouteCoord(RouteCoordType.INTERACT_MOVE, coord),
-                segment_type=segment_type,
-            )
-        imgui.same_line()
-        if imgui.button(f"Hold##{idx}"):
-            self.add_coord(
-                coord=RouteCoord(RouteCoordType.HOLD_DIRECTION, coord),
-                segment_type=segment_type,
-            )
+        if segment_type != RouteSegmentType.BOAT:
+            imgui.same_line()
+            if imgui.button(f"Interact##{idx}"):
+                self.add_coord(
+                    coord=RouteCoord(RouteCoordType.INTERACT_MOVE, coord),
+                    segment_type=segment_type,
+                )
+            imgui.same_line()
+            if imgui.button(f"Hold##{idx}"):
+                self.add_coord(
+                    coord=RouteCoord(RouteCoordType.HOLD_DIRECTION, coord),
+                    segment_type=segment_type,
+                )
 
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
@@ -122,7 +123,7 @@ class RouteHelper(Menu):
 
         imgui.text(f"{len(self.segments)} segments")
         if imgui.button("To clipboard"):
-            imgui.core.set_clipboard_text(f"{self}")
+            imgui.set_clipboard_text(f"{self}")
 
         if imgui.button("CLEAR"):
             self.segments = []
