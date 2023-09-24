@@ -96,18 +96,19 @@ class RouteHelper(Menu):
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
                 segment_type=segment_type,
             )
-        imgui.same_line()
-        if imgui.button(f"Interact##{idx}"):
-            self.add_coord(
-                coord=RouteCoord(RouteCoordType.INTERACT_MOVE, coord),
-                segment_type=segment_type,
-            )
-        imgui.same_line()
-        if imgui.button(f"Hold##{idx}"):
-            self.add_coord(
-                coord=RouteCoord(RouteCoordType.HOLD_DIRECTION, coord),
-                segment_type=segment_type,
-            )
+        if segment_type != RouteSegmentType.BOAT:
+            imgui.same_line()
+            if imgui.button(f"Interact##{idx}"):
+                self.add_coord(
+                    coord=RouteCoord(RouteCoordType.INTERACT_MOVE, coord),
+                    segment_type=segment_type,
+                )
+            imgui.same_line()
+            if imgui.button(f"Hold##{idx}"):
+                self.add_coord(
+                    coord=RouteCoord(RouteCoordType.HOLD_DIRECTION, coord),
+                    segment_type=segment_type,
+                )
 
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
