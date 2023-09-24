@@ -332,8 +332,10 @@ class ElderMistTrialsLeft(SeqList):
                         InteractMove(-7.124, 14.002, 90.925),
                         InteractMove(-2.371, 14.002, 95.372),
                         InteractMove(-0.431, 15.589, 98.986),
-                        # TODO(orkaboy): Fails to come into contact with enemy
                         Vec3(1.930, 18.888, 103.072),
+                        Vec3(8.359, 19.002, 107.734),
+                        Vec3(12.489, 19.002, 99.108),
+                        # TODO(orkaboy): Temp, double back. Bad
                         Vec3(8.359, 19.002, 107.734),
                         Vec3(12.489, 19.002, 99.108),
                     ],
