@@ -125,7 +125,9 @@ class SeqIf(SeqBase):
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
         branch = self.when_true if self.default else self.when_false
-        return branch.advance_to_checkpoint(checkpoint)
+        if branch:
+            return branch.advance_to_checkpoint(checkpoint)
+        return False
 
     # OVERRIDE
     def condition(self: Self) -> bool:

@@ -161,6 +161,11 @@ class InteractMove(Vec3):
         return f"InteractMove({super().__repr__()})"
 
 
+class CancelMove(Vec3):
+    def __repr__(self: Self) -> str:
+        return f"CancelMove({super().__repr__()})"
+
+
 class HoldDirection(Vec3):
     def __init__(self: Self, x: float, y: float, z: float, joy_dir: Vec2) -> None:
         super().__init__(x, y, z)
@@ -186,7 +191,7 @@ class SeqMove(SeqBase):
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | HoldDirection | MoveToward],
+        coords: list[Vec3 | InteractMove | CancelMove | HoldDirection | MoveToward],
         precision: float = 0.2,
         precision2: float = 1.0,
         tap_rate: float = 0.1,
@@ -249,12 +254,20 @@ class SeqMove(SeqBase):
                 if self.confirm_timer >= self.tap_rate / 2:
                     self.confirm_state = not self.confirm_state
                     ctrl.toggle_confirm(self.confirm_state)
+        elif isinstance(target, CancelMove):
+            self.confirm_timer += delta
+            if self.confirm_timer >= self.tap_rate / 2:
+                self.confirm_state = not self.confirm_state
+                ctrl.toggle_cancel(self.confirm_state)
 
         precision = self.precision2 if isinstance(target, HoldDirection) else self.precision
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, precision):
             logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")
             self.step = self.step + 1
+            # Clear potentially held buttons
+            ctrl.toggle_cancel(False)
+            ctrl.toggle_confirm(False)
         elif isinstance(target, HoldDirection):
             ctrl.set_joystick(target.joy_dir)
         elif isinstance(target, MoveToward):
@@ -312,7 +325,7 @@ class SeqBoat(SeqMove):
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | HoldDirection | MoveToward],
+        coords: list[Vec3 | InteractMove | CancelMove | HoldDirection | MoveToward],
         precision: float = 1.0,
         precision2: float = 2.0,
         tap_rate: float = 0.1,
