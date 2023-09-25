@@ -4,6 +4,7 @@ from engine.seq.interact import (
     SeqBracelet,
     SeqInteract,
     SeqMashUntilIdle,
+    SeqSelectOption,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
@@ -25,6 +26,7 @@ from engine.seq.move import (
     SeqManualUntilClose,
     SeqMove,
 )
+from engine.seq.routing import SeqIfMainCharacterValere
 from engine.seq.sequencer import SequencerEngine
 from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqTurboMashDelay
 
@@ -61,4 +63,6 @@ __all__ = [
     "SeqInteract",
     "SeqBracelet",
     "SeqTapDown",
+    "SeqSelectOption",
+    "SeqIfMainCharacterValere",
 ]

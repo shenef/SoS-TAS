@@ -1,5 +1,6 @@
 # Libraries and Core Files
 from collections.abc import Callable
+from enum import Enum, auto
 from typing import Any, Self
 
 from control import sos_ctrl
@@ -8,11 +9,13 @@ from engine.seq.base import SeqBase
 from memory import (
     PlayerMovementState,
     combat_manager_handle,
+    new_dialog_manager_handle,
     player_party_manager_handle,
 )
 
 player_party_manager = player_party_manager_handle()
 combat_manager = combat_manager_handle()
+new_dialog_manager = new_dialog_manager_handle()
 
 
 class SeqInteract(SeqBase):
@@ -117,18 +120,62 @@ class SeqMashUntilIdle(SeqBase):
     def execute(self: Self, delta: float) -> bool:
         self.timer = self.timer + delta
 
-        sos_ctrl().toggle_turbo(state=True)
+        ctrl = sos_ctrl()
+        ctrl.toggle_turbo(state=True)
         if self.timer > self._TOGGLE_TIME:
             self.timer = 0
             self.state = not self.state
-            sos_ctrl().toggle_confirm(self.state)
+            ctrl.toggle_confirm(self.state)
 
         # Check if we have control
         done = player_party_manager.movement_state == PlayerMovementState.Idle
         if done:
-            sos_ctrl().toggle_turbo(state=False)
-            sos_ctrl().toggle_confirm(state=False)
+            ctrl.toggle_turbo(state=False)
+            ctrl.toggle_confirm(state=False)
         return done
 
     def __repr__(self: Self) -> str:
         return f"Mashing confirm while waiting for control ({self.name})."
+
+
+class SeqSelectOption(SeqBase):
+    class State(Enum):
+        Approach = auto()
+        WaitForDialog = auto()
+        ClearPrompt = auto()
+        Answer = auto()
+
+    TIMEOUT = 0.2
+
+    def __init__(self: Self, name: str, option: int = 0) -> None:
+        super().__init__(name)
+        self.timer = 0
+        self.option = option
+        self.state = self.State.Approach
+
+    def execute(self: Self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+        match self.state:
+            case self.State.Approach:
+                ctrl.confirm()
+                self.state = self.State.WaitForDialog
+            case self.State.WaitForDialog:
+                if new_dialog_manager.dialog_open:
+                    ctrl.toggle_turbo(state=True)
+                    ctrl.toggle_confirm(state=True)
+                    self.state = self.State.ClearPrompt
+            case self.State.ClearPrompt:
+                self.timer += delta
+                if self.timer >= self.TIMEOUT:
+                    self.state = self.State.Answer
+                    ctrl.toggle_turbo(state=False)
+                    ctrl.toggle_confirm(state=False)
+            case self.State.Answer:
+                for _ in range(self.option):
+                    ctrl.dpad.tap_down()
+                ctrl.confirm()
+                return True
+        return False
+
+    def __repr__(self: Self) -> str:
+        return f"{self.state} ({self.state})"

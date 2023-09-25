@@ -1,26 +1,21 @@
 import logging
-from enum import Enum, auto
 from typing import Self
 
-from control import sos_ctrl
 from engine.combat import SeqCombat, SeqCombatManual
 from engine.mathlib import Vec3
 from engine.seq import (
     InteractMove,
-    SeqBase,
     SeqCheckpoint,
     SeqClimb,
     SeqInteract,
     SeqList,
     SeqMove,
+    SeqSelectOption,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
-from memory import new_dialog_manager_handle
 
 logger = logging.getLogger(__name__)
-
-new_dialog_manager = new_dialog_manager_handle()
 
 
 class ElderMistTrialsRight(SeqList):
@@ -117,49 +112,6 @@ class ElderMistTrialsRight(SeqList):
         )
 
 
-class SelectOption(SeqBase):
-    class State(Enum):
-        Approach = auto()
-        WaitForDialog = auto()
-        ClearPrompt = auto()
-        Answer = auto()
-
-    TIMEOUT = 0.2
-
-    def __init__(self: Self, name: str, option: int = 0) -> None:
-        super().__init__(name)
-        self.timer = 0
-        self.option = option
-        self.state = self.State.Approach
-
-    def execute(self: Self, delta: float) -> bool:
-        ctrl = sos_ctrl()
-        match self.state:
-            case self.State.Approach:
-                ctrl.confirm()
-                self.state = self.State.WaitForDialog
-            case self.State.WaitForDialog:
-                if new_dialog_manager.dialog_open:
-                    ctrl.toggle_turbo(state=True)
-                    ctrl.toggle_confirm(state=True)
-                    self.state = self.State.ClearPrompt
-            case self.State.ClearPrompt:
-                self.timer += delta
-                if self.timer >= self.TIMEOUT:
-                    self.state = self.State.Answer
-                    ctrl.toggle_turbo(state=False)
-                    ctrl.toggle_confirm(state=False)
-            case self.State.Answer:
-                for _ in range(self.option):
-                    ctrl.dpad.tap_down()
-                ctrl.confirm()
-                return True
-        return False
-
-    def __repr__(self: Self) -> str:
-        return f"{self.state} ({self.state})"
-
-
 class ElderMistTrialsCenter(SeqList):
     def __init__(self: Self) -> None:
         super().__init__(
@@ -191,7 +143,7 @@ class ElderMistTrialsCenter(SeqList):
                     ],
                 ),
                 # TODO(orkaboy): Assumes top is correct answer
-                SelectOption("First question"),
+                SeqSelectOption("First question"),
                 SeqMove(
                     name="Move to wall",
                     coords=[
@@ -223,7 +175,7 @@ class ElderMistTrialsCenter(SeqList):
                     ],
                 ),
                 # TODO(orkaboy): Assumes top is correct answer
-                SelectOption("Second question"),
+                SeqSelectOption("Second question"),
                 SeqMove(
                     name="Move to wall",
                     coords=[
@@ -265,7 +217,7 @@ class ElderMistTrialsCenter(SeqList):
                     ],
                 ),
                 # TODO(orkaboy): Assumes second is correct answer
-                SelectOption("Third Question", option=1),
+                SeqSelectOption("Third Question", option=1),
                 SeqMove(
                     name="Move to pillar",
                     coords=[
@@ -404,7 +356,7 @@ class ElderMistTrials(SeqList):
                         Vec3(49.580, 1.002, 47.540),
                     ],
                 ),
-                SelectOption("Elder Mist Boss"),
+                SeqSelectOption("Elder Mist Boss"),
                 SeqSkipUntilCombat("Elder Mist Boss"),
                 # TODO(orkaboy): Need combat priority to deal with sword
                 SeqCombat("Elder Mist Boss"),

@@ -13,6 +13,7 @@ from engine.seq import (
     SeqClimb,
     SeqHoldConfirm,
     SeqHoldDirectionUntilLostControl,
+    SeqIfMainCharacterValere,
     SeqInteract,
     SeqList,
     SeqLog,
@@ -22,9 +23,6 @@ from engine.seq import (
     SeqSkipUntilIdle,
     SeqTurboMashDelay,
 )
-
-# TODO(orkaboy): Move this
-from route.evermist_island.mooncradle import SeqIfMainCharacterValere
 
 logger = logging.getLogger(__name__)
 
@@ -79,13 +77,13 @@ class IntroMountainTrail(SeqList):
                     coords=[
                         Vec3(-82.388, 10.002, 37.691),
                         Vec3(-82.254, 10.002, 42.898),
-                        Vec3(-87.191, 10.002, 44.145),
+                        Vec3(-88.219, 10.002, 44.546),
                     ],
                 ),
                 SeqClimb(
                     name="Climb cliff",
                     coords=[
-                        InteractMove(-87.191, 16.000, 44.900),
+                        InteractMove(-88.219, 16.000, 45.000),
                     ],
                 ),
                 SeqCliffMove(
