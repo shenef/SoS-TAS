@@ -4,6 +4,7 @@ from engine.seq.interact import (
     SeqBracelet,
     SeqInteract,
     SeqMashUntilIdle,
+    SeqSelectOption,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
@@ -61,4 +62,5 @@ __all__ = [
     "SeqInteract",
     "SeqBracelet",
     "SeqTapDown",
+    "SeqSelectOption",
 ]
