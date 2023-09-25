@@ -13,6 +13,7 @@ from engine.seq.interact import (
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
     CancelMove,
+    Graplou,
     HoldDirection,
     InteractMove,
     MoveToward,
@@ -46,6 +47,7 @@ __all__ = [
     "SeqHoldInPlace",
     "SeqManualUntilClose",
     "InteractMove",
+    "Graplou",
     "CancelMove",
     "HoldDirection",
     "MoveToward",
