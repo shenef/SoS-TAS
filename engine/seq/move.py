@@ -307,7 +307,7 @@ class SeqMove(SeqBase):
             # Clear potentially held buttons
             ctrl.toggle_cancel(False)
             ctrl.toggle_confirm(False)
-        elif isinstance(target, HoldDirection):
+        elif isinstance(target, HoldDirection | Graplou):
             ctrl.set_joystick(target.joy_dir)
         elif isinstance(target, MoveToward):
             self.move_function(player_pos=player_pos, target_pos=target.anchor)
