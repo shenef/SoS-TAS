@@ -9,7 +9,6 @@ from engine.seq import (
     SeqAwaitLostControl,
     SeqCheckpoint,
     SeqClimb,
-    SeqDelay,
     SeqHoldDirectionUntilLostControl,
     SeqIf,
     SeqInteract,
@@ -199,9 +198,7 @@ class IntroZenithAcademy(SeqList):
                         ],
                     ),
                 ),
-                SeqInteract("Sleep"),
-                SeqDelay("Sleep", timeout_in_s=1),
-                SeqInteract("Sleep"),
+                SeqSelectOption("Sleep"),
                 SeqSkipUntilIdle(name="Train with Brugaves"),
                 SeqMove(
                     name="Move to Erlina",
