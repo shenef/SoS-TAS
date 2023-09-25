@@ -50,7 +50,9 @@ class CombatController:
         self._handle_starting_zone()
         # if some dialog is on the screen - make it go away
         if new_dialog_manager.dialog_open:
+            self.ctrl.toggle_turbo(True)
             self.ctrl.confirm()
+            self.ctrl.toggle_turbo(False)
             self.second_encounter = True
             return False
 
