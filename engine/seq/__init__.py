@@ -26,6 +26,7 @@ from engine.seq.move import (
     SeqManualUntilClose,
     SeqMove,
 )
+from engine.seq.routing import SeqIfMainCharacterValere
 from engine.seq.sequencer import SequencerEngine
 from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqTurboMashDelay
 
@@ -63,4 +64,5 @@ __all__ = [
     "SeqBracelet",
     "SeqTapDown",
     "SeqSelectOption",
+    "SeqIfMainCharacterValere",
 ]

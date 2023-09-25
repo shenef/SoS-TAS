@@ -13,6 +13,7 @@ from engine.seq import (
     SeqClimb,
     SeqHoldConfirm,
     SeqHoldDirectionUntilLostControl,
+    SeqIfMainCharacterValere,
     SeqInteract,
     SeqList,
     SeqLog,
@@ -22,9 +23,6 @@ from engine.seq import (
     SeqSkipUntilIdle,
     SeqTurboMashDelay,
 )
-
-# TODO(orkaboy): Move this
-from route.evermist_island.mooncradle import SeqIfMainCharacterValere
 
 logger = logging.getLogger(__name__)
 
