@@ -15,8 +15,8 @@ from engine.seq import (
     SeqInteract,
     SeqList,
     SeqMove,
+    SeqSelectOption,
     SeqSkipUntilIdle,
-    SeqTapDown,
 )
 from memory import (
     PlayerPartyCharacter,
@@ -162,21 +162,9 @@ class SkipTutorial(SeqList):
         super().__init__(
             name,
             children=[
-                SeqInteract("Talk"),
-                SeqDelay("Wait", timeout_in_s=1),
-                SeqInteract("Skip dialog"),
-                SeqDelay("Wait", timeout_in_s=0.2),
-                SeqTapDown(),
-                SeqInteract("Say no"),
-                SeqDelay("Wait", timeout_in_s=1),
-                SeqInteract("Skip dialog"),
-                SeqDelay("Wait", timeout_in_s=0.2),
-                SeqTapDown(),
-                SeqInteract("Say no"),
-                SeqDelay("Wait", timeout_in_s=1),
-                SeqInteract("Skip dialog"),
-                SeqDelay("Wait", timeout_in_s=0.2),
-                SeqInteract("Skip dialog"),
+                SeqSelectOption("First dialog", option=1),
+                SeqSelectOption("Second dialog", option=1),
+                SeqSkipUntilIdle(name="Clear tutorial screen"),
             ],
         )
 
@@ -334,20 +322,13 @@ class IntroZenithAcademy(SeqList):
                     ],
                 ),
                 SkipTutorial("Skip Brugaves Tutorial"),
-                SeqSkipUntilIdle(name="Clear tutorial screen"),
                 SeqMove(
                     name="Move to Moraine",
                     coords=[
                         Vec3(33.071, -8.998, -136.126),
                     ],
                 ),
-                SeqInteract("Headmaster Moraine"),
-                SeqDelay("Wait", timeout_in_s=1.0),
-                SeqInteract("Confirm"),
-                SeqDelay("Wait", timeout_in_s=0.2),
-                SeqInteract("Confirm"),
-                SeqDelay("Wait", timeout_in_s=0.2),
-                SeqInteract("Confirm"),
+                SeqSelectOption("Headmaster Moraine"),
                 SeqSkipUntilIdle(name="Talking to Moraine"),
                 SeqMove(
                     name="Jump into pit",
