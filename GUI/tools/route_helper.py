@@ -22,6 +22,7 @@ class RouteCoordType(Enum):
     MOVE = auto()
     INTERACT_MOVE = auto()
     HOLD_DIRECTION = auto()
+    GRAPLOU = auto()
 
 
 class RouteCoord:
@@ -38,6 +39,8 @@ class RouteCoord:
                 return f"InteractMove({coord})"
             case RouteCoordType.HOLD_DIRECTION:
                 return f"HoldDirection({coord}, joy_dir=Vec2(x, y))"
+            case RouteCoordType.GRAPLOU:
+                return f"Graplou({coord}, joy_dir=None, hold_timer=0.0)"
         return ""
 
 
@@ -107,6 +110,13 @@ class RouteHelper(Menu):
             if imgui.button(f"Hold##{idx}"):
                 self.add_coord(
                     coord=RouteCoord(RouteCoordType.HOLD_DIRECTION, coord),
+                    segment_type=segment_type,
+                )
+        if segment_type == RouteSegmentType.MOVE:
+            imgui.same_line()
+            if imgui.button(f"Graplou##{idx}"):
+                self.add_coord(
+                    coord=RouteCoord(RouteCoordType.GRAPLOU, coord),
                     segment_type=segment_type,
                 )
 
