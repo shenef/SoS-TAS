@@ -2,6 +2,7 @@ from engine.seq.amulet import SeqAmulet
 from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.interact import (
     SeqBracelet,
+    SeqGraplou,
     SeqInteract,
     SeqMashUntilIdle,
     SeqSelectOption,
@@ -64,6 +65,7 @@ __all__ = [
     "SeqSkipUntilCombat",
     "SeqInteract",
     "SeqBracelet",
+    "SeqGraplou",
     "SeqTapDown",
     "SeqSelectOption",
     "SeqIfMainCharacterValere",

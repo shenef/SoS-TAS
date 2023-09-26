@@ -36,6 +36,15 @@ class SeqBracelet(SeqBase):
         return True
 
 
+class SeqGraplou(SeqBase):
+    def __init__(self: Self, name: str = "Graplou") -> None:
+        super().__init__(name)
+
+    def execute(self: Self, delta: float) -> bool:
+        sos_ctrl().graplou()
+        return True
+
+
 class SeqTapDown(SeqBase):
     def __init__(self: Self, name: str = "Tap down") -> None:
         super().__init__(name)
