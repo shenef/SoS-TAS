@@ -68,7 +68,6 @@ def update_memory() -> None:
             player_party_manager_handle().update()
             time_of_day_manager_handle().update()
             level_up_manager_handle().update()
-
             combat_manager_handle().update()
             new_dialog_manager_handle().update()
             if "WorldMap" in scene_name:
