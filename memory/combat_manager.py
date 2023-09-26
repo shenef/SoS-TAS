@@ -148,6 +148,8 @@ class CombatManager:
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)
+                    print("combat")
+                    print(hex(self.base))
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
                     self.current_encounter_base = self.memory.get_field(
                         self.fields_base, "currentEncounter"

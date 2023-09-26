@@ -1,4 +1,5 @@
 from memory.boat_manager import boat_manager_handle
+from memory.character_stats_manager import character_stats_manager_handle
 from memory.combat_manager import (
     CombatEncounter,
     CombatManager,
@@ -8,6 +9,7 @@ from memory.combat_manager import (
 )
 from memory.core import SoSMemory, mem_handle
 from memory.level_manager import level_manager_handle
+from memory.level_up_manager import level_up_manager_handle
 from memory.mappers.enemy_name import EnemyName
 from memory.mappers.player_party_character import PlayerPartyCharacter
 from memory.new_dialog_manager import new_dialog_manager_handle
@@ -23,6 +25,8 @@ __all__ = [
     "mem_handle",
     "boat_manager_handle",
     "combat_manager_handle",
+    "level_up_manager_handle",
+    "character_stats_manager_handle",
     "level_manager_handle",
     "new_dialog_manager_handle",
     "player_party_manager_handle",
