@@ -32,7 +32,7 @@ class CombatController:
         self.action = None
         self.ctrl = sos_ctrl()
         self.block_timing = 0.0
-        self.second_encounter = False
+        self.second_attack = False
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self, delta: float) -> bool:
@@ -54,7 +54,7 @@ class CombatController:
             self.ctrl.toggle_turbo(True)
             self.ctrl.confirm()
             self.ctrl.toggle_turbo(False)
-            self.second_encounter = True
+            self.second_attack = True
             return False
 
         # We need to decide how to handle these specific scenarios; via profile
@@ -164,7 +164,7 @@ class CombatController:
                                     )
 
                         case CombatEncounter.SecondEncounter:
-                            if self.second_encounter is True:
+                            if self.second_attack is True:
                                 match player.character:
                                     case PlayerPartyCharacter.Valere:
                                         self.action = Action(
