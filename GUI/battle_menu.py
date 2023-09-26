@@ -33,7 +33,9 @@ class BattleMenu(Menu):
 
         imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done} |")
         imgui.same_line()
-        imgui.text_wrapped(f"Tutorial State: {combat_manager.tutorial_state.name}")
+        imgui.text_wrapped(
+            f"Combat Controller: {combat_manager.combat_controller.name}"
+        )
         if not combat_manager.encounter_done:
             imgui.text_wrapped(
                 f"Battle Command has focus: {combat_manager.battle_command_has_focus} |"
