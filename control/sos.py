@@ -22,6 +22,8 @@ class Buttons(IntEnum):
     BOOST = VgButtons.TRIG_R
     SHIFT_LEFT = VgButtons.SHOULDER_L
     SHIFT_RIGHT = VgButtons.SHOULDER_R
+    TIME_INC = VgButtons.TRIG_R
+    TIME_DEC = VgButtons.TRIG_L
 
 
 class SoSController:
@@ -109,6 +111,12 @@ class SoSController:
 
     def toggle_turbo(self: Self, state: bool) -> None:
         self.set_button(x_key=Buttons.TURBO, value=1 if state else 0)
+
+    def toggle_time_inc(self: Self, state: bool) -> None:
+        self.set_button(x_key=Buttons.TIME_INC, value=1 if state else 0)
+
+    def toggle_time_dec(self: Self, state: bool) -> None:
+        self.set_button(x_key=Buttons.TIME_DEC, value=1 if state else 0)
 
     def confirm(self: Self, tapping: bool = False) -> None:
         self.set_button(x_key=Buttons.CONFIRM, value=1)
