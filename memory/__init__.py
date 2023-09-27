@@ -1,5 +1,4 @@
 from memory.boat_manager import boat_manager_handle
-from memory.character_stats_manager import character_stats_manager_handle
 from memory.combat_manager import (
     CombatEncounter,
     CombatManager,
@@ -26,7 +25,6 @@ __all__ = [
     "boat_manager_handle",
     "combat_manager_handle",
     "level_up_manager_handle",
-    "character_stats_manager_handle",
     "level_manager_handle",
     "new_dialog_manager_handle",
     "player_party_manager_handle",
