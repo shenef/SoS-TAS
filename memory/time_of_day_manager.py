@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 # We are reaching into the AudioManager for Time of Day instead of using
 # Sabotage.TODManager simply as a way to avoid having to load the other module
 # into memory. The currentTimeOfDay field is provided on the AudioManager as well.
-# `current_time`` is a `float` from 0.0 to 23.99~.
+# `current_time` is a `float` from 0.0 to 23.99~.
 class TimeOfDayManager:
     def __init__(self: Self) -> None:
         self.memory = mem_handle()
