@@ -7,6 +7,7 @@ from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
 from memory import (
     level_manager_handle,
+    level_up_manager_handle,
     new_dialog_manager_handle,
     player_party_manager_handle,
     time_of_day_manager_handle,
@@ -20,6 +21,7 @@ title_sequence_manager = title_sequence_manager_handle()
 level_manager = level_manager_handle()
 new_dialog_manager = new_dialog_manager_handle()
 time_of_day_manager = time_of_day_manager_handle()
+level_up_manager = level_up_manager_handle()
 
 
 class DebugMenu(Menu):
@@ -41,6 +43,19 @@ class DebugMenu(Menu):
         imgui.text_wrapped(f"Scene GUID: {level_manager.current_level}")
         imgui.text_wrapped(f"Loading: {level_manager.loading}")
         imgui.text_wrapped(f"Time of Day: {time_of_day_manager.current_time}")
+        LayoutHelper.add_spacer()
+        imgui.text_wrapped("Level Up Info")
+        imgui.text_wrapped(
+            f"Level Up Screen Active: {level_up_manager.level_up_screen_active}"
+        )
+        if level_up_manager.level_up_screen_active:
+            imgui.text_wrapped(
+                f"Current Character: {level_up_manager.current_character.value}"
+            )
+            for option in level_up_manager.current_level_up_upgrades:
+                imgui.text_wrapped(
+                    f"- {option.upgrade_type.name} Selected: {option.active}"
+                )
 
         LayoutHelper.add_spacer()
         imgui.text_wrapped(
