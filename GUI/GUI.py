@@ -13,6 +13,7 @@ from memory import (
     mem_handle,
     new_dialog_manager_handle,
     player_party_manager_handle,
+    time_of_day_manager_handle,
     title_sequence_manager_handle,
 )
 
@@ -64,6 +65,7 @@ def update_memory() -> None:
             title_sequence_manager_handle().update()
         elif scene_name is not None and loading is False:
             player_party_manager_handle().update()
+            time_of_day_manager_handle().update()
             combat_manager_handle().update()
             new_dialog_manager_handle().update()
             if "WorldMap" in scene_name:
