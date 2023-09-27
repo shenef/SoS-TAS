@@ -9,6 +9,7 @@ from memory import (
     level_manager_handle,
     new_dialog_manager_handle,
     player_party_manager_handle,
+    time_of_day_manager_handle,
     title_sequence_manager_handle,
 )
 
@@ -18,6 +19,7 @@ player_party_manager = player_party_manager_handle()
 title_sequence_manager = title_sequence_manager_handle()
 level_manager = level_manager_handle()
 new_dialog_manager = new_dialog_manager_handle()
+time_of_day_manager = time_of_day_manager_handle()
 
 
 class DebugMenu(Menu):
@@ -38,6 +40,7 @@ class DebugMenu(Menu):
         imgui.text_wrapped(f"Scene Name: {level_manager.scene_name}")
         imgui.text_wrapped(f"Scene GUID: {level_manager.current_level}")
         imgui.text_wrapped(f"Loading: {level_manager.loading}")
+        imgui.text_wrapped(f"Time of Day: {time_of_day_manager.current_time}")
 
         LayoutHelper.add_spacer()
         imgui.text_wrapped(
