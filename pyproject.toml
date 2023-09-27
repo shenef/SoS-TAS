@@ -7,11 +7,11 @@ select = [
   "ANN",      # flake8-annotations
   "ARG",      # flake8-unused-arguments
   "B",        # bugbear
-  "D200",     # pydocstyle fits-on-one-line
+  "D",        # pydocstyle
   "E",        # pycodestyle
   # "ERA",    # eradicate (removes commented out code) - wait for code changes to calm down
   "F",        # pyflakes
-  # "FURB",     # refurb - blocks pre-commit cause fully in preview
+  # "FURB",   # refurb - blocks pre-commit cause fully in preview
   "I",        # isort
   "PL",       # pylint
   "RET",      # flake8-return
@@ -26,12 +26,24 @@ ignore = [
   "ANN002",   # Missing type annotation for *{name} (args)
   "ANN003",   # Missing type annotation for **{name} (kwargs)
   "ARG002",   # unused-method-argument - false positives on overrides
+  "D203",     # one-blank-line-before-class
+  "D212",     # multi-line-summary-first-line
   "PLR0911",  # too-many-return-statements
   "PLR0912",  # too-many-branches
   "PLR0913",  # too-many-arguments
   "PLR0915",  # too-many-statements
   "PLW0603",  # global-statement
   "TD003",    # missing-todo-link
+
+  # slowly introducing those:
+  "D100",     # undocumented-public-module
+  "D101",     # undocumented-public-class
+  "D102",     # undocumented-public-method
+  "D103",     # undocumented-public-function
+  "D104",     # undocumented-public-package
+  "D105",     # undocumented-magic-method
+  "D106",     # undocumented-public-nested-class
+  "D107",     # undocumented-public-init
 ]
 unfixable = [
   "ERA",      # false positives
