@@ -2,6 +2,7 @@ from engine.seq.amulet import SeqAmulet
 from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.interact import (
     SeqBracelet,
+    SeqGraplou,
     SeqInteract,
     SeqMashUntilIdle,
     SeqSelectOption,
@@ -13,6 +14,7 @@ from engine.seq.interact import (
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
     CancelMove,
+    Graplou,
     HoldDirection,
     InteractMove,
     MoveToward,
@@ -46,6 +48,7 @@ __all__ = [
     "SeqHoldInPlace",
     "SeqManualUntilClose",
     "InteractMove",
+    "Graplou",
     "CancelMove",
     "HoldDirection",
     "MoveToward",
@@ -62,6 +65,7 @@ __all__ = [
     "SeqSkipUntilCombat",
     "SeqInteract",
     "SeqBracelet",
+    "SeqGraplou",
     "SeqTapDown",
     "SeqSelectOption",
     "SeqIfMainCharacterValere",

@@ -177,6 +177,23 @@ class HoldDirection(Vec3):
         return f"HoldDirection({super().__repr__()}, joy_dir={self.joy_dir})"
 
 
+class Graplou(Vec3):
+    def __init__(
+        self: Self,
+        x: float,
+        y: float,
+        z: float,
+        joy_dir: Vec2 = None,
+        hold_timer: float = 0.0,
+    ) -> None:
+        super().__init__(x, y, z)
+        self.joy_dir = joy_dir
+        self.hold_timer = hold_timer
+
+    def __repr__(self: Self) -> str:
+        return f"Graplou({super().__repr__()}, joy_dir={self.joy_dir})"
+
+
 class MoveToward(Vec3):
     def __init__(
         self: Self, x: float, y: float, z: float, anchor: Vec3, mash: bool = False
@@ -193,10 +210,12 @@ class SeqMove(SeqBase):
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | CancelMove | HoldDirection | MoveToward],
+        coords: list[
+            Vec3 | InteractMove | CancelMove | Graplou | HoldDirection | MoveToward
+        ],
         precision: float = 0.2,
         precision2: float = 1.0,
-        tap_rate: float = 0.1,
+        tap_rate: float = 0.05,
         running: bool = True,
         func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
@@ -213,7 +232,8 @@ class SeqMove(SeqBase):
         self.invert = invert
         # Interact variables
         self.confirm_state = False
-        self.confirm_timer = 0
+        self.timer = 0
+        self.hold_timer = 0
         self.tap_rate = tap_rate
         super().__init__(name, func=func)
 
@@ -236,6 +256,64 @@ class SeqMove(SeqBase):
     def player_position(self: Self) -> Vec3:
         return player_party_manager.position
 
+    def handle_toggling_input(
+        self: Self, delta: float, player_pos: Vec3, target: Vec3
+    ) -> None:
+        ctrl = sos_ctrl()
+        if isinstance(target, InteractMove) or (
+            isinstance(target, MoveToward) and target.mash
+        ):
+            # Only tap while outside the secondary precision radius
+            if Vec3.is_close(player_pos, target, self.precision2):
+                ctrl.toggle_confirm(False)
+            else:
+                self.timer += delta
+                if self.timer >= self.tap_rate:
+                    self.confirm_state = not self.confirm_state
+                    ctrl.toggle_confirm(self.confirm_state)
+                    self.timer = 0
+        elif isinstance(target, CancelMove):
+            self.timer += delta
+            if self.timer >= self.tap_rate:
+                self.confirm_state = not self.confirm_state
+                ctrl.toggle_cancel(self.confirm_state)
+                self.timer = 0
+        elif isinstance(target, Graplou):
+            self.hold_timer += delta
+            if target.joy_dir is None:
+                target.joy_dir = Vec2(target.x - player_pos.x, target.z - player_pos.z)
+            if self.hold_timer >= target.hold_timer:
+                self.timer += delta
+                if self.timer >= self.tap_rate:
+                    self.confirm_state = not self.confirm_state
+                    ctrl.toggle_graplou(self.confirm_state)
+                    self.timer = 0
+
+    def handle_movement(self: Self, player_pos: Vec3, target: Vec3) -> None:
+        ctrl = sos_ctrl()
+        precision = (
+            self.precision2
+            if isinstance(target, Graplou | HoldDirection)
+            else self.precision
+        )
+        # If arrived, go to next coordinate in the list
+        if Vec3.is_close(player_pos, target, precision):
+            logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")
+            self.step = self.step + 1
+            # Reset state variables
+            self.timer = 0
+            self.hold_timer = 0
+            self.confirm_state = False
+            # Clear potentially held buttons
+            ctrl.toggle_cancel(False)
+            ctrl.toggle_confirm(False)
+        elif isinstance(target, HoldDirection | Graplou):
+            ctrl.set_joystick(target.joy_dir)
+        elif isinstance(target, MoveToward):
+            self.move_function(player_pos=player_pos, target_pos=target.anchor)
+        else:
+            self.move_function(player_pos=player_pos, target_pos=target)
+
     def navigate_to_checkpoint(self: Self, delta: float) -> None:
         # Move towards target
         if self.step >= len(self.coords):
@@ -246,40 +324,8 @@ class SeqMove(SeqBase):
         if player_pos.x is None:
             return
 
-        ctrl = sos_ctrl()
-        if isinstance(target, InteractMove) or (
-            isinstance(target, MoveToward) and target.mash
-        ):
-            # Only tap while outside the secondary precision radius
-            if Vec3.is_close(player_pos, target, self.precision2):
-                ctrl.toggle_confirm(False)
-            else:
-                self.confirm_timer += delta
-                if self.confirm_timer >= self.tap_rate / 2:
-                    self.confirm_state = not self.confirm_state
-                    ctrl.toggle_confirm(self.confirm_state)
-        elif isinstance(target, CancelMove):
-            self.confirm_timer += delta
-            if self.confirm_timer >= self.tap_rate / 2:
-                self.confirm_state = not self.confirm_state
-                ctrl.toggle_cancel(self.confirm_state)
-
-        precision = (
-            self.precision2 if isinstance(target, HoldDirection) else self.precision
-        )
-        # If arrived, go to next coordinate in the list
-        if Vec3.is_close(player_pos, target, precision):
-            logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")
-            self.step = self.step + 1
-            # Clear potentially held buttons
-            ctrl.toggle_cancel(False)
-            ctrl.toggle_confirm(False)
-        elif isinstance(target, HoldDirection):
-            ctrl.set_joystick(target.joy_dir)
-        elif isinstance(target, MoveToward):
-            self.move_function(player_pos=player_pos, target_pos=target.anchor)
-        else:
-            self.move_function(player_pos=player_pos, target_pos=target)
+        self.handle_toggling_input(delta, player_pos, target)
+        self.handle_movement(player_pos, target)
 
     def execute(self: Self, delta: float) -> bool:
         self.navigate_to_checkpoint(delta)

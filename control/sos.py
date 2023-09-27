@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class Buttons(IntEnum):
     CONFIRM = VgButtons.A
     BRACELET = VgButtons.X
+    GRAPLOU = VgButtons.B
     CANCEL = VgButtons.B
     MENU = VgButtons.Y
     PAUSE = VgButtons.START
@@ -100,6 +101,9 @@ class SoSController:
     def toggle_confirm(self: Self, state: bool) -> None:
         self.set_button(x_key=Buttons.CONFIRM, value=1 if state else 0)
 
+    def toggle_graplou(self: Self, state: bool) -> None:
+        self.set_button(x_key=Buttons.GRAPLOU, value=1 if state else 0)
+
     def toggle_bracelet(self: Self, state: bool) -> None:
         self.set_button(x_key=Buttons.BRACELET, value=1 if state else 0)
 
@@ -124,6 +128,13 @@ class SoSController:
         self.set_button(x_key=Buttons.BRACELET, value=1)
         time.sleep(self.delay)
         self.set_button(x_key=Buttons.BRACELET, value=0)
+        if tapping:
+            time.sleep(self.delay)
+
+    def graplou(self: Self, tapping: bool = False) -> None:
+        self.set_button(x_key=Buttons.GRAPLOU, value=1)
+        time.sleep(self.delay)
+        self.set_button(x_key=Buttons.GRAPLOU, value=0)
         if tapping:
             time.sleep(self.delay)
 
