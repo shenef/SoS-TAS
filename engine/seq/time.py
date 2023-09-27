@@ -1,10 +1,52 @@
 """Time-based sequencer nodes."""
 
 # Libraries and Core Files
+from math import fabs
 from typing import Self
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
+from memory import time_of_day_manager_handle
+
+time_of_day_manager = time_of_day_manager_handle()
+
+
+class SeqChangeTimeOfDay(SeqBase):
+    TIME_EPSILON = 0.3
+    FULLDAY = 24.0
+    MIDDAY = 12.0
+
+    def __init__(self: Self, name: str, time_target: float) -> None:
+        super().__init__(name)
+        self.time_target = time_target
+
+    def execute(self: Self, delta: float) -> bool:
+        cur_time = time_of_day_manager.current_time
+        ctrl = sos_ctrl()
+
+        # Change time
+        diff_time = self.time_target - cur_time
+        # Get the difference in time in 0-24 range
+        adjusted_diff = diff_time if diff_time >= 0 else diff_time + self.FULLDAY
+        # If diff is in range 0-12, hold RT
+        if adjusted_diff < self.MIDDAY:
+            ctrl.toggle_time_inc(state=True)
+            ctrl.toggle_time_dec(state=False)
+        # Else (diff is in range 12-24), hold LT
+        else:
+            ctrl.toggle_time_inc(state=False)
+            ctrl.toggle_time_dec(state=True)
+
+        # Check if done
+        done = fabs(diff_time) < self.TIME_EPSILON
+        if done:
+            ctrl.toggle_time_inc(state=False)
+            ctrl.toggle_time_dec(state=False)
+        return done
+
+    def __repr__(self: Self) -> str:
+        cur_time = time_of_day_manager.current_time
+        return f"Change Time ({self.name}). Cur: {cur_time:.2f}, Target: {self.time_target:.2f}"
 
 
 class SeqDelay(SeqBase):
