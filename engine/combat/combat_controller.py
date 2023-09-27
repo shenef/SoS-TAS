@@ -10,6 +10,7 @@ from engine.combat.utility.sos_appraisal import SoSTimingType
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
+    CombatEncounter,
     NextCombatAction,
     PlayerPartyCharacter,
     combat_manager_handle,
@@ -31,7 +32,7 @@ class CombatController:
         self.action = None
         self.ctrl = sos_ctrl()
         self.block_timing = 0.0
-        self.second_encounter = False
+        self.second_attack = False
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self, delta: float) -> bool:
@@ -47,13 +48,13 @@ class CombatController:
         # refactoring the controllers to use a base class and split methods.
         # have it check if a state is valid, and set set a custom controller and
         # execute on those actions, or use `self` to execute the default.
-        self._handle_starting_zone()
+        self._handle_encounter_controller()
         # if some dialog is on the screen - make it go away
         if new_dialog_manager.dialog_open:
             self.ctrl.toggle_turbo(True)
             self.ctrl.confirm()
             self.ctrl.toggle_turbo(False)
-            self.second_encounter = True
+            self.second_attack = True
             return False
 
         # We need to decide how to handle these specific scenarios; via profile
@@ -144,34 +145,47 @@ class CombatController:
         # Check if we have control
         return False
 
-    def _handle_starting_zone(self: Self) -> None:
-        if (
-            not self.action
-            and level_manager.current_level == "72e9f2699f7c8394b93afa1d273ce67a"
-        ):
+    def _handle_encounter_controller(self: Self) -> None:
+        if not self.action:
             for player in combat_manager.players:
                 if combat_manager.selected_character == player.character:
-                    if self.second_encounter is True:
-                        match player.character:
-                            case PlayerPartyCharacter.Valere:
-                                self.action = Action(
-                                    SoSConsideration(player),
-                                    CrescentArc(timing_type=SoSTimingType.NONE),
-                                )
-                            case PlayerPartyCharacter.Zale:
-                                self.action = Action(
-                                    SoSConsideration(player),
-                                    Sunball(value=1000, hold_time=2.0),
-                                )
-                    else:
-                        match player.character:
-                            case PlayerPartyCharacter.Valere:
-                                self.action = Action(
-                                    SoSConsideration(player),
-                                    BasicAttack(timing_type=SoSTimingType.NONE),
-                                )
-                            case PlayerPartyCharacter.Zale:
-                                self.action = Action(
-                                    SoSConsideration(player),
-                                    BasicAttack(timing_type=SoSTimingType.NONE),
-                                )
+                    match combat_manager.combat_controller:
+                        case CombatEncounter.FirstEncounter:
+                            match player.character:
+                                case PlayerPartyCharacter.Valere:
+                                    self.action = Action(
+                                        SoSConsideration(player),
+                                        BasicAttack(timing_type=SoSTimingType.NONE),
+                                    )
+                                case PlayerPartyCharacter.Zale:
+                                    self.action = Action(
+                                        SoSConsideration(player),
+                                        BasicAttack(timing_type=SoSTimingType.NONE),
+                                    )
+
+                        case CombatEncounter.SecondEncounter:
+                            if self.second_attack is True:
+                                match player.character:
+                                    case PlayerPartyCharacter.Valere:
+                                        self.action = Action(
+                                            SoSConsideration(player),
+                                            CrescentArc(timing_type=SoSTimingType.NONE),
+                                        )
+                                    case PlayerPartyCharacter.Zale:
+                                        self.action = Action(
+                                            SoSConsideration(player),
+                                            Sunball(value=1000, hold_time=2.0),
+                                        )
+
+                            else:
+                                match player.character:
+                                    case PlayerPartyCharacter.Valere:
+                                        self.action = Action(
+                                            SoSConsideration(player),
+                                            BasicAttack(timing_type=SoSTimingType.NONE),
+                                        )
+                                    case PlayerPartyCharacter.Zale:
+                                        self.action = Action(
+                                            SoSConsideration(player),
+                                            BasicAttack(timing_type=SoSTimingType.NONE),
+                                        )

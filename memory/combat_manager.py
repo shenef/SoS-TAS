@@ -10,6 +10,21 @@ from memory.mappers.player_party_character import PlayerPartyCharacter
 logger = logging.getLogger(__name__)
 
 
+class CombatEncounter(Enum):
+    Basic = auto()
+    FirstEncounter = auto()
+    SecondEncounter = auto()
+    DwellerOfStrife = auto()
+    DwellerOfDread = auto()
+    KOTutorial = auto()
+    LiveManaTutorial = auto()
+    ManaRegenTutorial = auto()
+    RoundsTutorial = auto()
+    SpellLockTutorial = auto()
+    TimedBlocksTutorial = auto()
+    TimedHitsTutorial = auto()
+
+
 class CombatDamageType(Enum):
     NONE = 0
     Any = 1
@@ -22,11 +37,6 @@ class CombatDamageType(Enum):
     Stun = 128
     Blunt = 256
     Magical = 252
-
-
-class CombatTutorialState(Enum):
-    NONE = auto()
-    SecondEncounter = auto()
 
 
 class CombatSpellLock:
@@ -110,7 +120,7 @@ class CombatManager:
         self.enemies = []
         self.players: list[CombatPlayer] = []
         self.selected_character = PlayerPartyCharacter.NONE
-        self.tutorial_state = CombatTutorialState.NONE
+        self.combat_controller = CombatEncounter.Basic
         self.current_encounter_base = None
         self.encounter_done = None
         self.small_live_mana = None
@@ -147,10 +157,10 @@ class CombatManager:
                     self._read_encounter_done()
 
                     if self.encounter_done is True:
-                        self.tutorial_state = CombatTutorialState.NONE
+                        self.combat_controller = CombatEncounter.Basic
                         return
 
-                    self._read_tutorial_state()
+                    self._read_combat_controller()
                     self._read_players()
                     self._read_enemies()
                     self._read_battle_commands()
@@ -247,34 +257,44 @@ class CombatManager:
     def _should_update(self: Self) -> None:
         return self.memory.ready_for_updates and self.current_encounter_base is not None
 
-    def _read_tutorial_state(self: Self) -> None:
+    def _read_combat_controller(self: Self) -> None:
         if self._should_update():
             try:
-                tutorial_state_ptr = self.memory.follow_pointer(
-                    self.base, [self.current_encounter_base, 0x120, 0x0]
+                combat_controller_ptr = self.memory.follow_pointer(
+                    self.base,
+                    [self.current_encounter_base, 0x120, 0x0, 0x78, 0x10, 0x0],
                 )
 
-                valere_skill_ptr = self.memory.follow_pointer(
-                    tutorial_state_ptr, [0xB0, 0x18, 0x0]
-                )
+                controller = self.memory.read_string(combat_controller_ptr + 0x0, 25)
+                match controller:
+                    case s if s.startswith("FirstEncounter"):
+                        self.combat_controller = CombatEncounter.FirstEncounter
+                        return
+                    case s if s.startswith("SecondEncounter"):
+                        self.combat_controller = CombatEncounter.SecondEncounter
+                    case s if s.startswith("DwellerOfStrife"):
+                        self.combat_controller = CombatEncounter.DwellerOfStrife
+                    case s if s.startswith("DwellerOfDread"):
+                        self.combat_controller = CombatEncounter.DwellerOfDread
+                    case s if s.startswith("KOTutorial"):
+                        self.combat_controller = CombatEncounter.KOTutorial
+                    case s if s.startswith("LiveManaTutorial"):
+                        self.combat_controller = CombatEncounter.LiveManaTutorial
+                    case s if s.startswith("ManaRegenTutorial"):
+                        self.combat_controller = CombatEncounter.ManaRegenTutorial
+                    case s if s.startswith("RoundsTutorial"):
+                        self.combat_controller = CombatEncounter.RoundsTutorial
+                    case s if s.startswith("SpellLockTutorial"):
+                        self.combat_controller = CombatEncounter.SpellLockTutorial
+                    case s if s.startswith("TimedBlocksTutorial"):
+                        self.combat_controller = CombatEncounter.TimedBlocksTutorial
+                    case s if s.startswith("TimedHitsTutorial"):
+                        self.combat_controller = CombatEncounter.TimedHitsTutorial
+                    case _:
+                        self.combat_controller = CombatEncounter.Basic
 
-                zale_skill_ptr = self.memory.follow_pointer(
-                    tutorial_state_ptr, [0xA8, 0x18, 0x0]
-                )
-
-                valere_str = self.memory.read_string(valere_skill_ptr + 0x14, 8)
-                zale_str = self.memory.read_string(zale_skill_ptr + 0x14, 8)
-
-                if (
-                    valere_str.replace("\x00", "") == "Cres"
-                    and zale_str.replace("\x00", "") == "Sunb"
-                ):
-                    self.tutorial_state = CombatTutorialState.SecondEncounter
-                    return
-
-                self.tutorial_state = CombatTutorialState.NONE
             except Exception:
-                self.tutorial_state = CombatTutorialState.NONE
+                self.combat_controller = CombatEncounter.Basic
 
     def read_projectile_is_current_player(self: Self) -> float:
         if self._should_update():
