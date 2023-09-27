@@ -122,7 +122,7 @@ def angle_between(alpha: float, beta: float) -> float:
 
 
 def angle_mod(angle: float) -> float:
-    """Bring radian angle into range -pi..pi"""
+    """Bring radian angle into range -pi..pi."""
     while angle > math.pi:
         angle -= 2 * math.pi
     while angle < -math.pi:

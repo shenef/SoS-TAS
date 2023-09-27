@@ -141,7 +141,7 @@ class Window:
 
 class LayoutHelper:
     """
-    This class provides helper functions for creating GUI elements.
+    Provides helper functions for creating GUI elements.
 
     add_spacer():
         Adds a horizontal line with some padding.
@@ -150,20 +150,21 @@ class LayoutHelper:
         Adds n imgui.spacing() elements.
 
     add_tooltip(text)
-        Adds a tooltip to the previous element."""
+    Adds a tooltip to the previous element.
+    """
 
     def add_spacer() -> None:
-        """Adds a horizontal line with some padding."""
+        """Add a horizontal line with some padding."""
         imgui.spacing()
         imgui.separator()
         imgui.spacing()
 
     def add_spacings(n: int) -> None:
-        """Adds multiple imgui.spacing() at once."""
+        """Add multiple imgui.spacing() at once."""
         for _ in range(n):
             imgui.spacing()
 
     def add_tooltip(text: str) -> None:
-        """Adds a tooltip to the previous element."""
+        """Add a tooltip to the previous element."""
         if imgui.is_item_hovered():
             imgui.set_tooltip(text)

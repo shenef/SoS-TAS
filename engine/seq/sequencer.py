@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class SequencerEngine:
     """
     Engine for executing sequences of generic TAS events.
+
     Each event sequence can be nested using SeqList.
     """
 
