@@ -14,8 +14,13 @@ from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
 from GUI.menu import Menu
 from route.battle_test import BattleTest
-from route.demo import DemoBrisk, DemoPlateau, DemoWizardLab, DemoWorldBriskToTower
+
+# Old routing, TODO(orkaboy): Remove
+from route.demo import DemoBrisk, DemoWizardLab, DemoWorldBriskToTower
+
+# Routing
 from route.evermist_island import EvermistIsland
+from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
 
 logger = logging.getLogger("SYSTEM")
@@ -139,7 +144,7 @@ class SoSDemoAnyPercentMenu(TASMenu):
         TAS_root = SeqList(
             name="Sea of Stars Demo Any%",
             children=[
-                DemoPlateau(),
+                # DemoPlateau(),
                 DemoBrisk(),
                 DemoWorldBriskToTower(),
                 DemoWizardLab(),
@@ -170,6 +175,7 @@ class SoSAnyPercentMenu(TASMenu):
             name="Sea of Stars Any%",
             children=[
                 EvermistIsland(),
+                SleeperIsland(),
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )
