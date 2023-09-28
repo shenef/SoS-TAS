@@ -34,10 +34,10 @@ class LevelUpManager:
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
-        self.level_up_screen_active = False
-        self.current_upgrades = []
+        self.level_up_screen_active: bool = False
+        self.current_upgrades: list[LevelUpUpgrade] = []
         self.active_index = None
-        self.current_character = PlayerPartyCharacter.NONE
+        self.current_character: PlayerPartyCharacter = PlayerPartyCharacter.NONE
 
     def update(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -112,8 +112,7 @@ class LevelUpManager:
                 active = not self.memory.read_bool(active_ptr + 0xA0)
                 upgrades.append(LevelUpUpgrade(upgrade_type, active))
                 address += self.ITEM_OBJECT_OFFSET
-        self.current_level_up_upgrades = upgrades
-        pass
+        self.current_upgrades = upgrades
 
 
 _level_up_manager_mem = LevelUpManager()

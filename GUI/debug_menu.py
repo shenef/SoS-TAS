@@ -52,7 +52,7 @@ class DebugMenu(Menu):
             imgui.text_wrapped(
                 f"Current Character: {level_up_manager.current_character.value}"
             )
-            for option in level_up_manager.current_level_up_upgrades:
+            for option in level_up_manager.current_upgrades:
                 imgui.text_wrapped(
                     f"- {option.upgrade_type.name} Selected: {option.active}"
                 )
