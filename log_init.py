@@ -1,3 +1,19 @@
+"""
+Sets up the logging for the TAS.
+
+The default setup is to created colored logs for the console, and
+generate a log to file under Logs/ folder.
+
+The logging can be configured in config.yaml with the following params:
+```yaml
+logging:
+  color_log           : True    # Colors the console output. May not work on some systems.
+  verbosity           : DEBUG   # Verbosity of log messages in the console.
+                                # Valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+                                # Full log will always be available in a file.
+```
+"""
+
 import datetime
 import logging
 import time
@@ -5,8 +21,8 @@ from logging import LogRecord
 from typing import Self
 
 
-# Used to reset time reference at start of run
 def reset_logging_time_reference() -> None:
+    """Reset time reference at start of run."""
     logging._startTime = time.time()
 
 
@@ -15,9 +31,14 @@ def reset_logging_time_reference() -> None:
 # Advanced documentation here:  https://docs.python.org/3/howto/logging-cookbook.html
 
 
-# Create a custom formatter for the timestamp, adding the delta property to the record
-# This will hold the time from the start of the program
 class DeltaTimeFormatter(logging.Formatter):
+    """
+    Create a custom formatter for the timestamp.
+
+    Adds the delta and color/color_reset properties to the record.
+    This will hold the time from the start of the program.
+    """
+
     white = "\x1b[0m"
     blue = "\x1b[36;20m"
     yellow = "\x1b[33;20m"
@@ -50,8 +71,8 @@ class DeltaTimeFormatter(logging.Formatter):
         return super().format(record)
 
 
-# This should be called once in main, before any calls to the logging library
 def initialize_logging(config_data: dict) -> None:
+    """Call once in main, before any calls to the logging library."""
     # Defines the format of the colored logs
     color_log_fmt = (
         "%(color)s[%(delta)s] %(name)-16s %(levelname)-8s %(message)s%(color_reset)s"

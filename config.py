@@ -1,3 +1,5 @@
+"""Opens the config.yaml file and parses it into a dict."""
+
 import logging
 
 import yaml
@@ -13,7 +15,7 @@ CONFIG_FILE_PATH = "config.yaml"
 
 
 def open_config() -> dict:
-    # Open the config file and parse the yaml contents
+    """Open the config file and parse the yaml contents."""
     try:
         with open(CONFIG_FILE_PATH) as config_file:
             try:

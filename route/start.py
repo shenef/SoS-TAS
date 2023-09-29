@@ -1,3 +1,5 @@
+"""Contains the sequencer node code for navigating the main menu to start the game."""
+
 import math
 from typing import Self
 
@@ -20,6 +22,7 @@ from memory import (
 
 
 def start_timer() -> None:
+    """Restart the TAS timer."""
     reset_logging_time_reference()
     blackboard().start()
 

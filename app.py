@@ -1,3 +1,5 @@
+"""Contains constants for the current version of the TAS program."""
+
 TAS_VERSION_MAJOR = 0
 TAS_VERSION_MINOR = 0
 TAS_VERSION_PATCH = 2

@@ -1,3 +1,10 @@
+"""
+Basic sequencer nodes.
+
+These are generic nodes that can be used as a base to construct more
+complex behavior.
+"""
+
 # Libraries and Core Files
 import logging
 from collections.abc import Callable
@@ -9,24 +16,32 @@ logger = logging.getLogger(__name__)
 
 
 class SeqBase:
+    """Base node for sequencer. All nodes should inherit from `SeqBase`."""
+
     def __init__(self: Self, name: str = "", func: Callable = None) -> None:
         self.name = name
         self.func = func
 
     def reset(self: Self) -> None:
-        pass
+        """Reset node. Override to implement node-specific behavior."""
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
+        """Advance node to checkpoint. Returns True if checkpoint reached."""
         return False
 
-    # Return true if the sequence is done with, or False if we should remain in this state
     def execute(self: Self, delta: float) -> bool:
+        """
+        Execute the behavior of the node.
+
+        Returns True if the node has completed its task
+        and the sequencer should continue to the next node.
+        """
         if self.func:
             self.func()
         return True
 
     def render(self: Self) -> None:
-        pass
+        """Render code for the current node (can apply to the GL canvas or the imgui window)."""
 
     # Should be overloaded
     def __repr__(self: Self) -> str:
@@ -34,6 +49,8 @@ class SeqBase:
 
 
 class SeqCheckpoint(SeqBase):
+    """Checkpoint node. Used to jump to a specific point in the TAS route."""
+
     def __init__(self: Self, checkpoint_name: str) -> None:
         super().__init__(
             name="Checkpoint",
@@ -50,6 +67,8 @@ class SeqCheckpoint(SeqBase):
 
 
 class SeqList(SeqBase):
+    """A list of other nodes. Can be used to create a hierarchical tree."""
+
     def __init__(
         self: Self,
         name: str,
@@ -107,6 +126,21 @@ class SeqList(SeqBase):
 
 
 class SeqIf(SeqBase):
+    """
+    Node to implement an if statement.
+
+    Can be used to create conditional branching execution of the TAS route.
+
+    To use this node, create a new class that inherits from it and override
+    the `condition` method to implement the specific behavior.
+
+    During runtime, if the `condition` method evaluates to True, the
+    `when_true` node will be executed, else the `when_false` node will be executed.
+
+    When iterating over the tree to advance to a checkpoint, the `default` branch
+    will be used.
+    """
+
     def __init__(
         self: Self,
         name: str,
@@ -131,6 +165,7 @@ class SeqIf(SeqBase):
 
     # OVERRIDE
     def condition(self: Self) -> bool:
+        """Override to implement if statement."""
         return self.default
 
     def execute(self: Self, delta: float) -> bool:
@@ -156,6 +191,13 @@ class SeqIf(SeqBase):
 
 
 class SeqWhile(SeqBase):
+    """
+    Iterate over a child node over and over until the `condition` method returns False.
+
+    To use this node, create a class and inherit from `SeqWhile`,
+    then override the `condition` method.
+    """
+
     def __init__(self: Self, name: str, child: SeqBase, default: bool = False) -> None:
         super().__init__(name)
         self.child = child
@@ -170,6 +212,7 @@ class SeqWhile(SeqBase):
 
     # OVERRIDE
     def condition(self: Self) -> bool:
+        """Override to implement while statement."""
         return self.default
 
     def execute(self: Self, delta: float) -> bool:
