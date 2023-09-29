@@ -1,3 +1,10 @@
+"""
+TAS Module.
+
+Contains general code for a TAS sub-menu in imgui, and the
+root nodes for the routes. These classes are instantiated in main.py.
+"""
+
 import logging
 from typing import Self
 
@@ -15,6 +22,15 @@ logger = logging.getLogger("SYSTEM")
 
 
 class TASMenu(Menu):
+    """
+    Generic class for handling a TAS route.
+
+    This class contains common methods used by all routes such as the start
+    sequence and loading from a save.
+
+    Individual routes should inherit from the TASMenu class.
+    """
+
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
         super().__init__(window, title)
         self.tas_is_running = False
@@ -28,15 +44,15 @@ class TASMenu(Menu):
         self.run_start_sequence = True
 
     def init_start_sequence(self: Self, saveslot: int) -> None:
-        # This sequence navigates the main menu into the game
+        """Initialize the sequence that navigates the main menu into the game."""
         self.start_game_sequencer = SequencerEngine(
             window=self.window,
             config=self.config_data,
             root=SoSStartGame(saveslot=saveslot),
         )
 
-    # Override this in subclasses to set the TAS sequence
     def init_TAS(self: Self) -> None:
+        """Override this in subclasses to set the TAS sequence."""
         self.sequencer = SequencerEngine(
             window=self.window,
             config=self.config_data,
@@ -44,7 +60,7 @@ class TASMenu(Menu):
         )
 
     def init_saveslot(self: Self, saveslot: int) -> None:
-        # Potentially advance the TAS to a particular checkpoint
+        """Potentially advance the TAS to a particular checkpoint."""
         if saveslot == 0:
             logger.info("Starting TAS from the beginning")
         elif self.sequencer.advance_to_checkpoint(checkpoint=self.checkpoint):
@@ -53,10 +69,10 @@ class TASMenu(Menu):
             logger.error(f"Couldn't find checkpoint '{self.checkpoint}'")
 
     def custom_gui(self: Self) -> None:
-        # Override to inject some custom parameters to the run
-        pass
+        """Override to inject some custom ui to the window."""
 
     def execute(self: Self, top_level: bool) -> bool:
+        """Run the TAS gui loop. Sets up the buttons required to navigate the TAS."""
         self.window.start_window(self.title)
         imgui.set_window_pos(self.title, imgui.ImVec2(5, 5), imgui.Cond_.once)
         imgui.set_window_size(
@@ -71,7 +87,7 @@ class TASMenu(Menu):
             )
 
             if run_main_sequence:
-                # Run the TAS sequencer
+                # Run the TAS sequencer (this is the code that actually plays the game)
                 self.sequencer.run()
             else:
                 self.start_game_sequencer.run()
@@ -112,6 +128,8 @@ class TASMenu(Menu):
 
 
 class SoSDemoAnyPercentMenu(TASMenu):
+    """Old and unused code for the demo. Not functional."""
+
     def __init__(self: Self, window: Window, config_data: dict) -> None:
         super().__init__(window, config_data, title="Sea of Stars Demo Any%")
 
@@ -134,13 +152,14 @@ class SoSDemoAnyPercentMenu(TASMenu):
         )
 
     def custom_gui(self: Self) -> None:
-        # Override to inject some custom parameters to the run
         imgui.text_wrapped(
             "Warning! The Demo TAS probably won't work, due to memory layout changes compared to the full game."  # noqa E501
         )
 
 
 class SoSAnyPercentMenu(TASMenu):
+    """Main Any% route."""
+
     def __init__(self: Self, window: Window, config_data: dict) -> None:
         super().__init__(window, config_data, title="Sea of Stars Any%")
 
@@ -161,6 +180,8 @@ class SoSAnyPercentMenu(TASMenu):
 
 
 class SoSBattleTestMenu(TASMenu):
+    """Used for testing purposes."""
+
     def __init__(self: Self, window: Window, config_data: dict) -> None:
         super().__init__(window, config_data, title="Battle Test")
 
@@ -180,7 +201,6 @@ class SoSBattleTestMenu(TASMenu):
         )
 
     def custom_gui(self: Self) -> None:
-        # Override to inject some custom parameters to the run
         imgui.text_wrapped(
             "Warning! This mode is only intended for testing the Utility AI comabt system."  # noqa E501
         )
