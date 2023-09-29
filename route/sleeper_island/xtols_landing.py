@@ -2,28 +2,26 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
-from engine.mathlib import Vec3
+from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    HoldDirection,
     InteractMove,
-    SeqAmulet,
     SeqClimb,
+    SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
-    SeqLog,
     SeqMove,
-    SeqSkipUntilIdle,
+    SeqSkipUntilClose,
 )
 
 logger = logging.getLogger(__name__)
 
 
-class DemoPlateau(SeqList):
+class XtolsLanding(SeqList):
     def __init__(self: Self) -> None:
         super().__init__(
             name="X'tol's Landing",
             children=[
-                SeqSkipUntilIdle(name="Wait for control"),
-                SeqLog(name="SYSTEM", text="We have control!"),
                 SeqMove(
                     name="Move to fight",
                     coords=[
@@ -35,11 +33,11 @@ class DemoPlateau(SeqList):
                         Vec3(-426.310, -14.998, -98.160),
                     ],
                 ),
-                SeqAmulet(name="Do Amulet Sequence"),
                 SeqClimb(
                     name="Slide down ladder",
                     coords=[
-                        InteractMove(-425.293, -22.998, -98.917),
+                        InteractMove(-425.293, -20.566, -98.457),
+                        HoldDirection(-425.293, -22.998, -100.725, joy_dir=Vec2(0, -1)),
                     ],
                 ),
                 SeqCombatAndMove(
@@ -75,9 +73,21 @@ class DemoPlateau(SeqList):
                     name="Leave plateau",
                     coords=[
                         Vec3(-407.820, -14.998, -129.990),
-                        Vec3(-398.300, -14.990, -141.200),
                     ],
                 ),
-                SeqSkipUntilIdle(name="Wait for control"),
+                SeqHoldDirectionUntilLostControl("Leave", joy_dir=Vec2(1, -1)),
+                SeqSkipUntilClose(
+                    name="Mysterious Ninja", coord=Vec3(117.500, 15.000, 161.500)
+                ),
+                SeqMove(
+                    name="Move to Moorlands",
+                    coords=[
+                        Vec3(117.500, 15.002, 160.500),
+                        Vec3(118.000, 15.002, 160.500),
+                        Vec3(118.000, 15.002, 159.000),
+                        Vec3(120.500, 15.002, 159.000),
+                    ],
+                ),
+                SeqInteract("Moorlands"),
             ],
         )

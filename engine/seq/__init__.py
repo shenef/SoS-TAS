@@ -30,7 +30,12 @@ from engine.seq.move import (
 )
 from engine.seq.routing import SeqIfMainCharacterValere
 from engine.seq.sequencer import SequencerEngine
-from engine.seq.time import SeqDelay, SeqHoldConfirm, SeqTurboMashDelay
+from engine.seq.time import (
+    SeqChangeTimeOfDay,
+    SeqDelay,
+    SeqHoldConfirm,
+    SeqTurboMashDelay,
+)
 
 __all__ = [
     "SeqAmulet",
@@ -69,4 +74,5 @@ __all__ = [
     "SeqTapDown",
     "SeqSelectOption",
     "SeqIfMainCharacterValere",
+    "SeqChangeTimeOfDay",
 ]

@@ -2,9 +2,11 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatManual
-from engine.mathlib import Vec3
+from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    HoldDirection,
     InteractMove,
+    SeqChangeTimeOfDay,
     SeqCheckpoint,
     SeqClimb,
     SeqInteract,
@@ -361,6 +363,56 @@ class ElderMistTrials(SeqList):
                 # TODO(orkaboy): Need combat priority to deal with sword
                 SeqCombat("Elder Mist Boss"),
                 SeqSkipUntilIdle("Cutscenes"),
-                # TODO(orkaboy): Continue routing
+                SeqMove(
+                    name="Move to save point",
+                    coords=[
+                        Vec3(52.413, 1.002, 33.476),
+                    ],
+                ),
+                # After boss checkpoint
+                SeqCheckpoint("elder_mist_boss2"),
+                SeqMove(
+                    name="Move to exit",
+                    coords=[
+                        Vec3(49.555, 1.002, 31.458),
+                        InteractMove(49.555, 1.002, 25.086),
+                        Vec3(54.487, 1.002, 12.457),
+                        InteractMove(54.487, 1.002, 4.794),
+                        InteractMove(51.519, 1.002, 4.493),
+                        Vec3(50.460, 1.002, 3.457),
+                        InteractMove(50.460, 1.002, 0.519),
+                        Vec3(48.460, 1.002, -1.543),
+                        InteractMove(48.460, 1.002, -4.481),
+                        Vec3(49.572, 1.002, -10.738),
+                    ],
+                ),
+                SeqSelectOption("Leave dream world"),
+                SeqSkipUntilIdle("Time tutorial", time_target=21.0),
+                SeqMove(
+                    name="Move to plate",
+                    coords=[
+                        Vec3(46.352, 97.002, 170.300),
+                    ],
+                ),
+                SeqChangeTimeOfDay("Bridge", time_target=9.0),
+                SeqMove(
+                    name="Move to Y'eet",
+                    coords=[
+                        Vec3(20.483, 97.000, 170.430),
+                        Vec3(7.655, 97.000, 172.225),
+                        HoldDirection(107.500, 6.002, 85.498, joy_dir=Vec2(-1, 0)),
+                        Vec3(104.000, 6.002, 85.500),
+                    ],
+                ),
+                SeqInteract("Y'eet"),
+                SeqMove(
+                    name="Move to Elder Mist",
+                    coords=[
+                        Vec3(-421.597, 27.002, 175.500),
+                        Vec3(-428.018, 27.002, 180.034),
+                    ],
+                ),
+                SeqSelectOption("Talk to Elder Mist"),
+                SeqSkipUntilIdle("Get Y'eeted"),
             ],
         )

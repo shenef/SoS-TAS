@@ -1,6 +1,7 @@
 # Libraries and Core Files
 from collections.abc import Callable
 from enum import Enum, auto
+from math import fabs
 from typing import Any, Self
 
 from control import sos_ctrl
@@ -11,11 +12,13 @@ from memory import (
     combat_manager_handle,
     new_dialog_manager_handle,
     player_party_manager_handle,
+    time_of_day_manager_handle,
 )
 
 player_party_manager = player_party_manager_handle()
 combat_manager = combat_manager_handle()
 new_dialog_manager = new_dialog_manager_handle()
+time_of_day_manager = time_of_day_manager_handle()
 
 
 class SeqInteract(SeqBase):
@@ -55,14 +58,18 @@ class SeqTapDown(SeqBase):
 
 
 class SeqSkipUntilIdle(SeqBase):
+    TIME_EPSILON = 0.3
+
     def __init__(
         self: Self,
         name: str,
         hold_cancel: bool = False,
+        time_target: float = None,
         func: Callable[..., Any] = None,
     ) -> None:
         super().__init__(name, func)
         self.hold_cancel = hold_cancel
+        self.time_target = time_target
 
     # Hold confirm through cutscene while holding the turbo button
     def execute(self: Self, delta: float) -> bool:
@@ -71,6 +78,9 @@ class SeqSkipUntilIdle(SeqBase):
         ctrl.toggle_confirm(state=True)
         if self.hold_cancel:
             ctrl.toggle_cancel(state=True)
+        # Used specifically for the Elder Mist time tutorial
+        if self.time_target is not None:
+            ctrl.toggle_time_inc(state=True)
 
         # Check if we have control
         done = self.is_done()
@@ -79,9 +89,17 @@ class SeqSkipUntilIdle(SeqBase):
             ctrl.toggle_turbo(state=False)
             if self.hold_cancel:
                 ctrl.toggle_cancel(state=False)
+            if self.time_target is not None:
+                ctrl.toggle_time_inc(state=False)
         return done
 
     def is_done(self: Self) -> bool:
+        if (
+            self.time_target is not None
+            and fabs(time_of_day_manager.current_time - self.time_target)
+            < self.TIME_EPSILON
+        ):
+            return True
         return player_party_manager.movement_state == PlayerMovementState.Idle
 
     def __repr__(self: Self) -> str:
