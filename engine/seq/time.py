@@ -8,16 +8,20 @@ from engine.seq.base import SeqBase
 
 
 class SeqDelay(SeqBase):
+    """Wait for a fixed amount of time."""
+
     def __init__(self: Self, name: str, timeout_in_s: float) -> None:
         self.timer = 0.0
         self.timeout = timeout_in_s
         super().__init__(name)
 
     def reset(self: Self) -> None:
+        """Reset the clock."""
         self.timer = 0.0
         return super().reset()
 
     def execute(self: Self, delta: float) -> bool:
+        """Track timer until it expires."""
         self.timer = self.timer + delta
         if self.timer >= self.timeout:
             self.timer = self.timeout
@@ -29,6 +33,8 @@ class SeqDelay(SeqBase):
 
 
 class SeqHoldConfirm(SeqDelay):
+    """Hold confirm button for a fixed period of time."""
+
     def execute(self: Self, delta: float) -> bool:
         self.timer += delta
         ctrl = sos_ctrl()
@@ -44,7 +50,8 @@ class SeqHoldConfirm(SeqDelay):
 
 
 class SeqTurboMashDelay(SeqDelay):
-    # Mash through cutscene while holding the turbo button
+    """Mash while holding the turbo button for a fixed period of time."""
+
     def execute(self: Self, delta: float) -> bool:
         self.timer += delta
         ctrl = sos_ctrl()
