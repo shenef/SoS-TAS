@@ -158,14 +158,11 @@ class LayoutHelper:
     """
     Provides helper functions for creating GUI elements.
 
-    add_spacer():
-        Adds a horizontal line with some padding.
-
-    add_spacings(n)
-        Adds n imgui.spacing() elements.
-
-    add_tooltip(text)
-    Adds a tooltip to the previous element.
+    ```py
+    add_spacer()      # Add a horizontal line with some padding.
+    add_spacings(n)   # Add n imgui.spacing() elements.
+    add_tooltip(text) # Add a tooltip to the previous element.
+    ```
     """
 
     @staticmethod

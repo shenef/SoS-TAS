@@ -5,12 +5,13 @@ The default setup is to created colored logs for the console, and
 generate a log to file under Logs/ folder.
 
 The logging can be configured in config.yaml with the following params:
-
+```yaml
 logging:
   color_log           : True    # Colors the console output. May not work on some systems.
   verbosity           : DEBUG   # Verbosity of log messages in the console.
-                                # These are the valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+                                # Valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
                                 # Full log will always be available in a file.
+```
 """
 
 import datetime
