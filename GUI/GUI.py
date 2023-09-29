@@ -1,3 +1,11 @@
+"""
+GUI Module.
+
+Responsible for setting up the GUI window using glfw, and handling the
+backend side of imgui rendering and event polling.
+"""
+
+import ctypes
 import logging
 import sys
 from typing import Any, Self
@@ -24,6 +32,7 @@ logger = logging.getLogger(__name__)
 def create_glfw_window(
     window_name: str = "Sea of Stars TAS", width: int = 480, height: int = 800
 ) -> Any:  # noqa: ANN401
+    """Initialize the glfw window and OpenGL context."""
     if not glfw.init():
         logger.error("Could not initialize OpenGL context")
         sys.exit(1)
@@ -55,6 +64,7 @@ def create_glfw_window(
 
 
 def update_memory() -> None:
+    """Update all game memory modules."""
     mem_handle().update()
     if mem_handle().ready_for_updates:
         level_manager_handle().update()
@@ -73,14 +83,16 @@ def update_memory() -> None:
 
 
 class Window:
+    """Class to handle the top level GUI window."""
+
     def __init__(self: Self, config: dict) -> None:
         super().__init__()
 
-        self.backgroundColor = (0, 0, 0, 1)
+        self.background_color = (0, 0, 0, 1)
 
         # Create Window/Context and set up renderer
         self.window = create_glfw_window()
-        gl.glClearColor(*self.backgroundColor)
+        gl.glClearColor(*self.background_color)
         imgui.create_context()
 
         self.io = imgui.get_io()
@@ -93,7 +105,6 @@ class Window:
         glfw.swap_interval(1 if vsync else 0)
 
         # Setup Platform/Renderer backends
-        import ctypes
 
         # You need to transfer the window address to imgui.backends.glfw_init_for_opengl
         # proceed as shown below to get it.
@@ -103,34 +114,38 @@ class Window:
         imgui.backends.opengl3_init(glsl_version)
 
     def is_open(self: Self) -> bool:
+        """Return True while the GUI window is open. Return False if the user quits the program."""
         return not glfw.window_should_close(self.window)
 
     def start_frame(self: Self) -> None:
+        """Call at start of frame to handle imgui setup, memory readout and event polling."""
         glfw.poll_events()
         update_memory()
         imgui.backends.opengl3_new_frame()
         imgui.backends.glfw_new_frame()
         imgui.new_frame()
 
+    # TODO(orkaboy): start_window/end_window should be static (or removed)
     def start_window(self: Self, title: str) -> None:
+        """Initialize sub-window."""
         imgui.begin(title, True)
 
-    # Finalize window
     def end_window(self: Self) -> None:
+        """Finalize sub-window."""
         imgui.end()
 
-    # Finalize drawing
     def end_frame(self: Self) -> None:
+        """Finalize drawing. Should be called at the end of each frame."""
         imgui.render()
 
-        gl.glClearColor(*self.backgroundColor)
+        gl.glClearColor(*self.background_color)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.backends.opengl3_render_draw_data(imgui.get_draw_data())
         glfw.swap_buffers(self.window)
 
-    # Cleanup
     def close(self: Self) -> None:
+        """Cleanup imgui and cleanly close down glfw."""
         imgui.backends.opengl3_shutdown()
         imgui.backends.glfw_shutdown()
         imgui.destroy_context()
@@ -153,17 +168,20 @@ class LayoutHelper:
     Adds a tooltip to the previous element.
     """
 
+    @staticmethod
     def add_spacer() -> None:
         """Add a horizontal line with some padding."""
         imgui.spacing()
         imgui.separator()
         imgui.spacing()
 
+    @staticmethod
     def add_spacings(n: int) -> None:
         """Add multiple imgui.spacing() at once."""
         for _ in range(n):
             imgui.spacing()
 
+    @staticmethod
     def add_tooltip(text: str) -> None:
         """Add a tooltip to the previous element."""
         if imgui.is_item_hovered():
