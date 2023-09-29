@@ -1,13 +1,10 @@
+"""Time-based sequencer nodes."""
+
 # Libraries and Core Files
-import time
 from typing import Self
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
-
-
-def wait_seconds(seconds: float) -> None:
-    time.sleep(seconds)
 
 
 class SeqDelay(SeqBase):
