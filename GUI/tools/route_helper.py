@@ -1,3 +1,11 @@
+"""
+Sets up the Route Helper imgui sub-window.
+
+It is a tool that is used to quickly build long sequences of movement
+nodes to inject into a TAS route (usually by grabbing player coordinates
+and building long chains of `SeqMove` nodes).
+"""
+
 import logging
 from enum import Enum, auto
 from typing import Self
@@ -19,13 +27,17 @@ boat_manager = boat_manager_handle()
 
 
 class RouteCoordType(Enum):
-    MOVE = auto()
-    INTERACT_MOVE = auto()
-    HOLD_DIRECTION = auto()
-    GRAPLOU = auto()
+    """Which type of coordinate a certain entry is."""
+
+    MOVE = auto()  # Vec3
+    INTERACT_MOVE = auto()  # InteractMove
+    HOLD_DIRECTION = auto()  # HoldDirection
+    GRAPLOU = auto()  # Graplou
 
 
 class RouteCoord:
+    """Holds a coordinate and a type."""
+
     def __init__(self: Self, coord_type: RouteCoordType, coord: Vec3) -> None:
         self.coord_type = coord_type
         self.coord = coord
@@ -45,22 +57,28 @@ class RouteCoord:
 
 
 class RouteSegmentType(Enum):
-    MOVE = auto()
-    CLIMB = auto()
-    CLIFF_MOVE = auto()
-    CLIFF_CLIMB = auto()
-    BOAT = auto()
+    """Which type of sequencer node should be used for this segment."""
+
+    MOVE = auto()  # SeqMove
+    CLIMB = auto()  # SeqClimb
+    CLIFF_MOVE = auto()  # SeqCliffMove
+    CLIFF_CLIMB = auto()  # SeqCliffClimb
+    BOAT = auto()  # SeqBoat
 
 
 class RouteSegment:
+    """Holds a single segment of the current route, with a list of coordinates and a type."""
+
     def __init__(self: Self, segment_type: RouteSegmentType) -> None:
         self.segment_type = segment_type
         self.coords: list[RouteCoord] = []
 
     def add_coord(self: Self, coord: RouteCoord) -> None:
+        """Add a new coordinate to this segment."""
         self.coords.append(coord)
 
     def _type_str(self: Self) -> str:
+        """Map segment type to a string representing the sequencer node."""
         match self.segment_type:
             case RouteSegmentType.MOVE:
                 return "SeqMove"
@@ -86,6 +104,8 @@ class RouteSegment:
 
 
 class RouteHelper(Menu):
+    """The actual imgui menu. Contains the code to set up the GUI window."""
+
     def __init__(self: Self, window: Window) -> None:
         super().__init__(window, title="Route helper")
         self.segments: list[RouteSegment] = []
@@ -94,6 +114,11 @@ class RouteHelper(Menu):
     def gui_section(
         self: Self, idx: int, segment_type: RouteSegmentType, coord: Vec3
     ) -> None:
+        """
+        Generate the GUI section (a set of buttons) for a particular segment.
+
+        The coord parameter should usually be the current player position.
+        """
         if imgui.button(f"Move##{idx}"):
             self.add_coord(
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
@@ -121,6 +146,7 @@ class RouteHelper(Menu):
                 )
 
     def execute(self: Self, top_level: bool) -> bool:
+        """Render the menu and handle input."""
         self.window.start_window(self.title)
 
         imgui.set_window_pos(
@@ -199,6 +225,7 @@ class RouteHelper(Menu):
     def add_coord(
         self: Self, coord: RouteCoord, segment_type: RouteSegmentType
     ) -> None:
+        """Add a new coordinate to the current segment, or start a new segment."""
         if not self.segments or segment_type != self.current_type:
             self.segments.append(RouteSegment(segment_type))
             self.current_type = segment_type

@@ -131,6 +131,7 @@ class SeqIf(SeqBase):
 
     # OVERRIDE
     def condition(self: Self) -> bool:
+        """Override to implement if statement."""
         return self.default
 
     def execute(self: Self, delta: float) -> bool:
