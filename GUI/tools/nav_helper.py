@@ -29,7 +29,7 @@ class NavHelper(Menu):
         self.target_locked = Vec3(0, 0, 0)
         self.moving = False
         self.is_run = True
-        self.precision = 0.3
+        self.precision = 0.2
         self.stop = False
         self.stop_time = 0
 
