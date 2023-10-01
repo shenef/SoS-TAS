@@ -114,6 +114,7 @@ class NavHelper(Menu):
 
         if self.stop:
             sos_ctrl().set_neutral()
+            sos_ctrl().release_buttons()
             now = time.time()
             difftime = now - self.stop_time
             imgui.same_line()
