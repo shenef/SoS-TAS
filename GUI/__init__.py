@@ -1,8 +1,9 @@
-from GUI.GUI import Window
+from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu, MenuManager
 
 __all__ = [
-    "Window",
+    "LayoutHelper",
     "MenuManager",
     "Menu",
+    "Window",
 ]

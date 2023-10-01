@@ -11,9 +11,7 @@ from typing import Self
 from imgui_bundle import imgui
 
 from engine.seq import SeqList, SeqLog, SequencerEngine
-from GUI import Window
-from GUI.GUI import LayoutHelper
-from GUI.menu import Menu
+from GUI import LayoutHelper, Menu, Window
 from route.battle_test import BattleTest
 
 # Old routing, TODO(orkaboy): Remove
