@@ -1,12 +1,15 @@
 """Time-based sequencer nodes."""
 
 # Libraries and Core Files
+import logging
 from math import fabs
 from typing import Self
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
 from memory import time_of_day_manager_handle
+
+logger = logging.getLogger(__name__)
 
 time_of_day_manager = time_of_day_manager_handle()
 
@@ -42,6 +45,7 @@ class SeqChangeTimeOfDay(SeqBase):
         if done:
             ctrl.toggle_time_inc(state=False)
             ctrl.toggle_time_dec(state=False)
+            logger.info(f"Changed time of day to {self.time_target:.2f} ({self.name})")
         return done
 
     def __repr__(self: Self) -> str:
