@@ -257,9 +257,9 @@ class IntroForbiddenCave(SeqList):
                     ],
                 ),
                 SeqInteract("Campfire"),
-                SeqDelay("Campfire", timeout_in_s=0.5),
+                SeqDelay("Campfire", timeout_in_s=0.4),
                 SeqInteract("Campfire"),
-                SeqDelay("Campfire", timeout_in_s=0.5),
+                SeqDelay("Campfire", timeout_in_s=0.4),
                 SeqInteract("Campfire"),
                 # Save point
                 SeqCheckpoint("forbidden_cave2"),

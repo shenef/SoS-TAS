@@ -19,7 +19,7 @@ class Sunball(SoSAppraisal):
     def __init__(
         self: Self,
         value: int = 0,
-        hold_time: float = 3.8,
+        hold_time: float = 4.0,
         timing_type: SoSTimingType = SoSTimingType.Charge,
     ) -> None:
         super().__init__()

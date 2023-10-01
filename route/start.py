@@ -85,19 +85,16 @@ class SeqNewGameFromMenu(SeqList):
             name="Select main character",
             children=[
                 SeqDelay(name="Wait for select screen", timeout_in_s=10.0),
-                # TODO(orkaboy): Select male/female PC (left/right position is random)?
-                SeqMenuTapLeft(),
+                # TODO(orkaboy): Deliberately select Valere/Zale
                 # Countdown
                 SeqLog(name="SYSTEM", text="Starting in..."),
                 SeqLog(name="SYSTEM", text="3"),
-                SeqMenuTapLeft(),
                 SeqDelay(name="Menu", timeout_in_s=1.0),
                 SeqLog(name="SYSTEM", text="2"),
-                SeqMenuTapLeft(),
                 SeqDelay(name="Menu", timeout_in_s=1.0),
                 SeqLog(name="SYSTEM", text="1"),
-                SeqMenuTapLeft(),
                 SeqDelay(name="Menu", timeout_in_s=1.0),
+                SeqMenuTapLeft(),
                 SeqBase(func=start_timer),
                 SeqLog(name="SYSTEM", text="Starting timer!"),
                 SeqInteract("Select character"),
@@ -132,7 +129,7 @@ class SoSStartGame(SeqList):
                     text="Starting Sea of Stars TAS main menu sequence.",
                 ),
                 # ! The SoS window will not recognize input unless it is in focus!
-                SeqDelay("MANUAL: Focus SoS window!", timeout_in_s=3.0),
+                SeqDelay(name="MANUAL: Focus SoS window!", timeout_in_s=2.5),
                 SeqDebug(name="SYSTEM", text="Press start to activate main menu."),
                 SeqMenuStartButton(),
                 SeqDelay(name="Menu", timeout_in_s=1.5),

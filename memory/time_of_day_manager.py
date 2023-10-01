@@ -37,7 +37,7 @@ class TimeOfDayManager:
 
                 else:
                     self._read_current_time()
-            except Exception as _e:  # noqa: F841
+            except Exception as _e:
                 # logger.debug(f"Audio Manager Reloading {type(_e)}")
                 self.__init__()
 

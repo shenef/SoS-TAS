@@ -78,7 +78,7 @@ class TitleSequenceManager:
                 if not self.title_position_set:
                     self.title_cursor_position = TitleCursorPosition.NONE
 
-        except Exception as _e:  # noqa: F841
+        except Exception as _e:
             # logger.debug(f"Title Sequence Manager Reloading {type(_e)}")
             self.__init__()
 

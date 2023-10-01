@@ -29,7 +29,7 @@ class NavHelper(Menu):
         self.target_locked = Vec3(0, 0, 0)
         self.moving = False
         self.is_run = True
-        self.precision = 0.3
+        self.precision = 0.2
         self.stop = False
         self.stop_time = 0
 
@@ -114,6 +114,7 @@ class NavHelper(Menu):
 
         if self.stop:
             sos_ctrl().set_neutral()
+            sos_ctrl().release_buttons()
             now = time.time()
             difftime = now - self.stop_time
             imgui.same_line()
