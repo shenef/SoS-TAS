@@ -58,7 +58,7 @@ class LevelUpManager:
                     if self._read_level_up_screen_active:
                         self._read_current_level_up_upgrades()
                         self._read_current_character()
-            except Exception as _e:  # noqa: F841
+            except Exception as _e:
                 # logger.debug(f"Level Up Manager Reloading {type(_e)}")
                 self.__init__()
 

@@ -32,7 +32,7 @@ class BoatManager:
                     self._read_position()
                     self._read_rotation()
                     self._read_speed()
-            except Exception as _e:  # noqa: F841
+            except Exception as _e:
                 # logger.debug(f"BoatManager Reloading {type(_e)}")
                 self.__init__()
 

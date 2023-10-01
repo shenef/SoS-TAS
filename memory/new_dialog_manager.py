@@ -34,7 +34,7 @@ class NewDialogManager:
 
                 else:
                     self._read_dialog_box()
-            except Exception as _e:  # noqa: F841
+            except Exception as _e:
                 # logger.debug(f"New Dialog Manager Reloading {type(_e)}")
                 self.__init__()
 

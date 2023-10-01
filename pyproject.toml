@@ -15,6 +15,7 @@ select = [
   "I",        # isort
   "PL",       # pylint
   "RET",      # flake8-return
+  "RUF100",   # Remove unused noqas
   "SIM",      # flake8-simplify
   "T20",      # flake8-print (no print statements)
   "TD",       # flake8-todos
