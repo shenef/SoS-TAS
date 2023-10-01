@@ -77,7 +77,7 @@ class Vec2(NamedTuple):
         return math.atan2(self.y, self.x)
 
     def __repr__(self: Self) -> str:
-        return f"Vec2({self.x:0.3f}, {self.y:0.3f})"
+        return f"Vec2({self.x:.3f}, {self.y:.3f})"
 
 
 def cross(p1: Vec2, p2: Vec2, point: Vec2) -> float:
@@ -86,12 +86,12 @@ def cross(p1: Vec2, p2: Vec2, point: Vec2) -> float:
 
 
 def is_left(p1: Vec2, p2: Vec2, point: Vec2) -> bool:
-    """Calcuate if the point is left of the line described by (p1,p2)."""
+    """Calculate if the point is left of the line described by (p1, p2)."""
     return cross(p1, p2, point) > 0
 
 
 class Polar(NamedTuple):
-    """Polar coordinate. A point in space defined by an angle and a distance from origo."""
+    """Polar coordinate. A point in space, defined by an angle and a distance from origo."""
 
     r: float
     theta: float

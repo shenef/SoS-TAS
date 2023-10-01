@@ -107,14 +107,14 @@ class CombatController:
             return False
         # For some reason the action isn't set, so bail out.
         if self.action is None:
-            # logger.debug("baling out because self action is nil")
+            # logger.debug("Baling out because self action is nil")
             return False
 
-        # if the consideration doesn't believe the situation is valid, execute it.
+        # If the consideration doesn't believe the situation is valid, execute it.
         # This will put the cursor on the character it should be on.
-        # internally it checks to see if the character is not NONE and if the selected
+        # Internally it checks to see if the character is not NONE and if the selected
         # character is the one it wants and return true if so.
-        # if the character is None, it knows it can't move things.
+        # If the character is None, it knows it can't move things.
         consideration_valid = self.action.consideration.valid(
             combat_manager.selected_character, self.action
         )
@@ -128,19 +128,19 @@ class CombatController:
         # logger.debug("Try to execute the appraisal")
         self.action.appraisal.execute()
         if self.action.appraisal.complete:
-            logger.debug("appraisal is complete, reset action")
+            logger.debug("Appraisal is complete, reset action")
             self.action = None
 
-        # are we waiting for an attack to complete?
+        # Are we waiting for an attack to complete?
 
-        # is an enemy attacking - do we need to defend?
+        # Is an enemy attacking - do we need to defend?
 
-        # execute consideration; it should know what states it expected
-        # if consideration not executed, execute it
-        #   - considerations must have actions, it will pop an action off the stack
+        # Execute consideration; it should know what states it expected
+        # If consideration not executed, execute it
+        #   - Considerations must have actions, it will pop an action off the stack
         #     and run it so the ui is not blocked. once the stack is complete it will mark
         #     the consideration as completed and will continue on.
-        # if consideration executed
+        # If consideration executed
 
         # Check if we have control
         return False

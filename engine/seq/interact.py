@@ -103,7 +103,7 @@ class SeqSkipUntilIdle(SeqBase):
         return player_party_manager.movement_state == PlayerMovementState.Idle
 
     def __repr__(self: Self) -> str:
-        return f"Holding turbo/confirm/cancel while waiting for control ({self.name})."
+        return f"Holding turbo + confirm while waiting for control ({self.name})."
 
 
 class SeqSkipUntilClose(SeqSkipUntilIdle):
@@ -124,7 +124,7 @@ class SeqSkipUntilClose(SeqSkipUntilIdle):
         return Vec3.is_close(player_pos, self.coord, precision=self.precision)
 
     def __repr__(self: Self) -> str:
-        return f"Holding turbo/confirm/cancel while waiting to arrive at {self.coord} ({self.name})."  # noqa: E501
+        return f"Holding turbo + confirm while waiting to arrive at {self.coord} ({self.name})."
 
 
 class SeqSkipUntilCombat(SeqSkipUntilIdle):
@@ -132,7 +132,7 @@ class SeqSkipUntilCombat(SeqSkipUntilIdle):
         return combat_manager.encounter_done is False
 
     def __repr__(self: Self) -> str:
-        return f"Holding turbo/confirm/cancel while waiting for combat ({self.name})."
+        return f"Holding turbo + confirm while waiting for combat ({self.name})."
 
 
 class SeqMashUntilIdle(SeqBase):

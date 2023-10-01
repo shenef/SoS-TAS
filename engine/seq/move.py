@@ -298,7 +298,12 @@ class SeqMove(SeqBase):
         )
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, precision):
-            logger.debug(f"Checkpoint {self.step}. Pos.: {player_pos} Target: {target}")
+            logger.debug(
+                f"Checkpoint {self.step}, "
+                + f"Δ: {Vec3.dist(player_pos, target):.3f}, "
+                + f"Pos: {player_pos}, "
+                + f"{target}"
+            )
             self.step = self.step + 1
             # Reset state variables
             self.timer = 0

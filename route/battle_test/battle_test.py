@@ -17,7 +17,7 @@ class BattleTest(SeqList):
         super().__init__(
             name="BattleTest",
             children=[
-                SeqDelay(name="Wait for select screen", timeout_in_s=3.0),
+                SeqDelay(name="MANUAL: Focus SoS window!", timeout_in_s=2.5),
                 BattleTestSequence(),
             ],
         )
