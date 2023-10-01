@@ -12,6 +12,7 @@ from imgui_bundle import imgui
 
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import Window
+from GUI.GUI import LayoutHelper
 from GUI.menu import Menu
 from route.battle_test import BattleTest
 
@@ -110,6 +111,19 @@ class TASMenu(Menu):
                 # TODO(orkaboy): Maybe should be a dropdown of valid checkpoints
                 _, self.checkpoint = imgui.input_text(
                     "Checkpoint name", self.checkpoint
+                )
+                LayoutHelper.add_tooltip(
+                    "intro_mooncradle (First cavern in flashback)\n"
+                    + "intro_dorms      (First entering dorms of Zenith Academy)\n"
+                    + "intro_dorms2     (Dorms of Zenith Academy, just before final trial)\n"
+                    + "forbidden_cave   (Forbidden Cave entrance)\n"
+                    + "forbidden_cave2  (Forbidden Cave campfire)\n"
+                    + "mountain_trail   (Mountain Trail, just north of campfire)\n"
+                    + "mountain_trail2  (Mountain Trail, campfire in cave)\n"
+                    + "elder_mist       (Elder Mist trials, campfire after tutorial)\n"
+                    + "elder_mist_boss  (Elder Mist trials, just before the boss)\n"
+                    + "elder_mist_boss2 (Elder Mist trials, just after the boss)\n"
+                    + "moorlands        (When just entering Moorlands)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
