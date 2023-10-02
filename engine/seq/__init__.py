@@ -28,7 +28,7 @@ from engine.seq.move import (
     SeqManualUntilClose,
     SeqMove,
 )
-from engine.seq.routing import SeqIfMainCharacterValere
+from engine.seq.routing import RouteBranchMode, SeqIfMainCharacterValere, SeqRouteBranch
 from engine.seq.sequencer import SequencerEngine
 from engine.seq.time import (
     SeqChangeTimeOfDay,
@@ -74,5 +74,7 @@ __all__ = [
     "SeqTapDown",
     "SeqSelectOption",
     "SeqIfMainCharacterValere",
+    "SeqRouteBranch",
+    "RouteBranchMode",
     "SeqChangeTimeOfDay",
 ]
