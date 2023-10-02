@@ -8,8 +8,17 @@ root nodes for the routes. These classes are instantiated in main.py.
 import logging
 from typing import Self
 
+import yaml
+
+try:
+    from yaml import CDumper as Dumper
+except ImportError:
+    from yaml import Dumper
+
+
 from imgui_bundle import imgui
 
+from config import get_route_config, open_route_config, set_route_config
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import LayoutHelper, Menu, Window
 from route.battle_test import BattleTest
@@ -23,6 +32,17 @@ from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
 
 logger = logging.getLogger("SYSTEM")
+
+
+class RouteOption:
+    """GUI component for a route option."""
+
+    def __init__(
+        self: Self, name: str, description: str, default: bool = False
+    ) -> None:
+        self.name = name
+        self.description = description
+        self.default = default
 
 
 class TASMenu(Menu):
@@ -177,11 +197,39 @@ class SoSDemoAnyPercentMenu(TASMenu):
 class SoSAnyPercentMenu(TASMenu):
     """Main Any% route."""
 
+    # We can add route configuration parameters here (apply branches with `SeqRouteBranch` node)
+    ROUTE_CONFIG_PARAMS: list[RouteOption] = [
+        RouteOption(
+            name="amulet", description="Use the Amulet of Storytelling", default=True
+        ),
+    ]
+
     def __init__(self: Self, window: Window, config_data: dict) -> None:
         super().__init__(window, config_data, title="Sea of Stars Any%")
+        # Initialize all route options to their default values from `ROUTE_CONFIG_PARAMS`
+        self.route_config = {
+            param.name: param.default for param in self.ROUTE_CONFIG_PARAMS
+        }
+        self.route_config_path = config_data.get("route_config", "route_config.yaml")
+        self._load_route_config()
+
+    def _load_route_config(self: Self) -> None:
+        """Try to load route config from file."""
+        if open_route_config(self.route_config_path):
+            route_config = get_route_config()
+            # Apply any relevant values to the local cache
+            for name, value in self.route_config.items():
+                self.route_config[name] = route_config.get(name, value)
+
+    def _save_route_config(self: Self) -> None:
+        """Save route config to file."""
+        with open(self.route_config_path, mode="w") as file:
+            yaml.dump(self.route_config, file, Dumper=Dumper)
 
     # Override
     def init_TAS(self: Self) -> None:
+        # Apply local route config cache to global store
+        set_route_config(self.route_config)
         # This is the root node of the TAS
         TAS_root = SeqList(
             name="Sea of Stars Any%",
@@ -195,6 +243,27 @@ class SoSAnyPercentMenu(TASMenu):
         self.sequencer = SequencerEngine(
             window=self.window, config=self.config_data, root=TAS_root
         )
+
+    def custom_gui(self: Self) -> None:
+        route_config_tab, visible = imgui.collapsing_header(
+            "Route config", True, flags=32
+        )
+        if route_config_tab and visible:
+            # Load/Save route config from file UI
+            if imgui.button("Load config"):
+                self._load_route_config()
+            imgui.same_line()
+            if imgui.button("Save config"):
+                self._save_route_config()
+            _, self.route_config_path = imgui.input_text(
+                "Route config path", self.route_config_path
+            )
+            # TODO(orkaboy): Should be split into multiple columns
+            for param in self.ROUTE_CONFIG_PARAMS:
+                _, self.route_config[param.name] = imgui.checkbox(
+                    param.description, self.route_config.get(param.name, param.default)
+                )
+            LayoutHelper.add_spacer()
 
 
 class SoSBattleTestMenu(TASMenu):
