@@ -1,6 +1,7 @@
 # Game mode
 saveslot              : 0       # 0 for new game or 1-9 for load game
 checkpoint            : ""      # When loading game, what checkpoint should the TAS jump to?
+route_config          : ""      # Path to a route options configuration file
 
 # Valid checkpoints (SoS Any%):
 #   intro_mooncradle            # First cavern in flashback
