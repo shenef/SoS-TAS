@@ -43,8 +43,8 @@ class SeqRouteBranch(SeqIf):
         self: Self,
         name: str,
         when_true: SeqBase,
-        when_false: SeqBase,
         route: list[str],
+        when_false: SeqBase = None,
         mode: RouteBranchMode = RouteBranchMode.OR,
     ) -> None:
         super().__init__(name, when_true, when_false)
