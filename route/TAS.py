@@ -63,9 +63,9 @@ class TASMenu(Menu):
             root=SeqLog(name="SYSTEM", text="ERROR, NO TAS SEQUENCE!"),
         )
 
-    def init_saveslot(self: Self, saveslot: int) -> None:
+    def init_saveslot(self: Self) -> None:
         """Potentially advance the TAS to a particular checkpoint."""
-        if saveslot == 0:
+        if not self.load_game_checkbox:
             logger.info("Starting TAS from the beginning")
         elif self.sequencer.advance_to_checkpoint(checkpoint=self.checkpoint):
             logger.info(f"Advanced TAS to checkpoint '{self.checkpoint}'")
@@ -146,7 +146,7 @@ class TASMenu(Menu):
                 if self.run_start_sequence:
                     self.init_start_sequence(saveslot)
                 self.init_TAS()
-                self.init_saveslot(saveslot)
+                self.init_saveslot()
                 self.tas_is_running = True
 
             if not top_level and imgui.button("Back"):
