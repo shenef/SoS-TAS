@@ -230,6 +230,9 @@ class SoSAnyPercentMenu(TASMenu):
     def init_TAS(self: Self) -> None:
         # Apply local route config cache to global store
         set_route_config(self.route_config)
+        logger.info("Route configuration:")
+        for name, value in self.route_config.items():
+            logger.info(f"  {name}: {value}")
         # This is the root node of the TAS
         TAS_root = SeqList(
             name="Sea of Stars Any%",
