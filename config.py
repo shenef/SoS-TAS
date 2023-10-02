@@ -29,3 +29,36 @@ def open_config() -> dict:
             f"Didn't find config file {CONFIG_FILE_PATH}, using default values for run."
         )
         return {}
+
+
+_route_config: dict[str, bool] = {}
+
+
+def open_route_config(path: str) -> bool:
+    """
+    Open a route config file and parse the yaml contents.
+
+    Assign the global `_route_config` the and return true if everything worked.
+    """
+    global _route_config
+    try:
+        with open(path) as route_config:
+            try:
+                _route_config = yaml.load(route_config, Loader=Loader)
+                return True
+            except Exception:
+                logger.error(f"Error: Failed to parse route config file {path}")
+                logger.exception()
+                return False
+    except Exception:
+        logger.info(f"Didn't find route config file {path}")
+        return False
+
+
+def get_route_config() -> dict[str, bool]:
+    return _route_config
+
+
+def set_route_config(route_config: dict[str, bool]) -> None:
+    global _route_config
+    _route_config = route_config
