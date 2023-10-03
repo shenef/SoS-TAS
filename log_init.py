@@ -60,7 +60,7 @@ class DeltaTimeFormatter(logging.Formatter):
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
         # Create the delta property, with the format 'HH:MM:SS.sss'
         record.delta_ms = (
-            f"{duration.strftime('%H:%M:%S')}." + f"{int(duration.strftime('%f')) // 1000:03d}"
+            f"{duration.strftime('%H:%M:%S')}.{int(duration.strftime('%f')) // 1000:03d}"
         )
         # Latter part may be removed if we are not interested in milliseconds,
         # or replaced with %f if we want microseconds.
