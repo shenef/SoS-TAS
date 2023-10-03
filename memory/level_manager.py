@@ -19,9 +19,7 @@ class LevelManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "LevelManager"
-                    )
+                    singleton_ptr = self.memory.get_singleton_by_class_name("LevelManager")
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)
@@ -32,13 +30,9 @@ class LevelManager:
                         self.fields_base, "currentLevel"
                     )
 
-                    self.loading_base = self.memory.get_field(
-                        self.fields_base, "loadingLevel"
-                    )
+                    self.loading_base = self.memory.get_field(self.fields_base, "loadingLevel")
 
-                    self.level_loader_base = self.memory.get_field(
-                        self.fields_base, "levelLoader"
-                    )
+                    self.level_loader_base = self.memory.get_field(self.fields_base, "levelLoader")
                 else:
                     self._read_loading()
                     self._read_current_level()

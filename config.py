@@ -25,9 +25,7 @@ def open_config() -> dict:
                 logger.exception()
                 return {}
     except Exception:
-        logger.info(
-            f"Didn't find config file {CONFIG_FILE_PATH}, using default values for run."
-        )
+        logger.info(f"Didn't find config file {CONFIG_FILE_PATH}, using default values for run.")
         return {}
 
 

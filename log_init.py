@@ -60,8 +60,7 @@ class DeltaTimeFormatter(logging.Formatter):
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
         # Create the delta property, with the format 'HH:MM:SS.sss'
         record.delta_ms = (
-            f"{duration.strftime('%H:%M:%S')}."
-            + f"{int(duration.strftime('%f')) // 1000:03d}"
+            f"{duration.strftime('%H:%M:%S')}." + f"{int(duration.strftime('%f')) // 1000:03d}"
         )
         # Latter part may be removed if we are not interested in milliseconds,
         # or replaced with %f if we want microseconds.
@@ -74,9 +73,7 @@ class DeltaTimeFormatter(logging.Formatter):
 def initialize_logging(config_data: dict) -> None:
     """Call once in main, before any calls to the logging library."""
     # Defines the format of the colored logs
-    color_log_fmt = (
-        "%(color)s[%(delta)s] %(name)-16s %(levelname)-8s %(message)s%(color_reset)s"
-    )
+    color_log_fmt = "%(color)s[%(delta)s] %(name)-16s %(levelname)-8s %(message)s%(color_reset)s"
     color_log_formatter = DeltaTimeFormatter(fmt=color_log_fmt)
     # Same format, but without the coloring
     bw_log_fmt = "[%(delta)s] %(name)-16s %(levelname)-8s %(message)s"
@@ -148,9 +145,7 @@ def initialize_logging(config_data: dict) -> None:
 
 # Method for adding a custom log level. Adapted from:
 # https://stackoverflow.com/questions/2183233/how-to-add-a-custom-loglevel-to-pythons-logging-facility/35804945#35804945
-def _add_log_level(
-    level_name: str, level_num: int, method_name: str | None = None
-) -> None:
+def _add_log_level(level_name: str, level_num: int, method_name: str | None = None) -> None:
     """
     Add a new logging level to the `logging` module and the currently configured logging class.
 

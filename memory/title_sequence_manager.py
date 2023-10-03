@@ -33,20 +33,14 @@ class TitleSequenceManager:
         self.pressed_start = False
         self.title_cursor_position = TitleCursorPosition.NONE
         self.title_position_set = False
-        self.character_select_left_button = CharacterSelectButton(
-            PlayerPartyCharacter.NONE, False
-        )
-        self.character_select_right_button = CharacterSelectButton(
-            PlayerPartyCharacter.NONE, False
-        )
+        self.character_select_left_button = CharacterSelectButton(PlayerPartyCharacter.NONE, False)
+        self.character_select_right_button = CharacterSelectButton(PlayerPartyCharacter.NONE, False)
 
     def update(self: Self) -> None:
         try:
             if self.memory.ready_for_updates:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "TitleSequenceManager"
-                    )
+                    singleton_ptr = self.memory.get_singleton_by_class_name("TitleSequenceManager")
 
                     if singleton_ptr is None:
                         return
@@ -56,9 +50,7 @@ class TitleSequenceManager:
                         return
 
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                    self.title_screen = self.memory.get_field(
-                        self.fields_base, "titleScreen"
-                    )
+                    self.title_screen = self.memory.get_field(self.fields_base, "titleScreen")
                     self.character_selection_screen = self.memory.get_field(
                         self.fields_base, "characterSelectionScreen"
                     )
@@ -91,9 +83,7 @@ class TitleSequenceManager:
             left_character_value = self.memory.read_string(
                 left_button_character_definition_id_ptr + 0x14, 8
             )
-            left_character = PlayerPartyCharacter.parse_definition_id(
-                left_character_value
-            )
+            left_character = PlayerPartyCharacter.parse_definition_id(left_character_value)
 
             # characterSelectionScreen -> rightButton -> characterDefinitionId
             right_button_character_definition_id_ptr = self.memory.follow_pointer(
@@ -102,9 +92,7 @@ class TitleSequenceManager:
             right_character_value = self.memory.read_string(
                 right_button_character_definition_id_ptr + 0x14, 8
             )
-            right_character = PlayerPartyCharacter.parse_definition_id(
-                right_character_value
-            )
+            right_character = PlayerPartyCharacter.parse_definition_id(right_character_value)
         except Exception:
             right_character = None
             left_character = None
@@ -113,9 +101,7 @@ class TitleSequenceManager:
             selected_character_pointer = self.memory.follow_pointer(
                 self.base, [self.character_selection_screen, 0xE8, 0x0]
             )
-            selected_character_value = self.memory.read_bool(
-                selected_character_pointer + 0x60
-            )
+            selected_character_value = self.memory.read_bool(selected_character_pointer + 0x60)
             selected_character = None
             match selected_character_value:
                 case False:
@@ -135,9 +121,7 @@ class TitleSequenceManager:
                 right_character, right_selected
             )
 
-            self.character_select_left_button = CharacterSelectButton(
-                left_character, left_selected
-            )
+            self.character_select_left_button = CharacterSelectButton(left_character, left_selected)
 
         except Exception:
             self.character_select_left_button = CharacterSelectButton(

@@ -15,9 +15,7 @@ player_party_manager = player_party_manager_handle()
 boat_manager = boat_manager_handle()
 
 
-def move_to(
-    player: Vec2, target: Vec2, running: bool = True, invert: bool = False
-) -> None:
+def move_to(player: Vec2, target: Vec2, running: bool = True, invert: bool = False) -> None:
     ctrl = sos_ctrl()
 
     speed = 1.0 if running else 0.5
@@ -210,9 +208,7 @@ class SeqMove(SeqBase):
     def __init__(
         self: Self,
         name: str,
-        coords: list[
-            Vec3 | InteractMove | CancelMove | Graplou | HoldDirection | MoveToward
-        ],
+        coords: list[Vec3 | InteractMove | CancelMove | Graplou | HoldDirection | MoveToward],
         precision: float = 0.2,
         precision2: float = 1.0,
         tap_rate: float = 0.05,
@@ -256,13 +252,9 @@ class SeqMove(SeqBase):
     def player_position(self: Self) -> Vec3:
         return player_party_manager.position
 
-    def handle_toggling_input(
-        self: Self, delta: float, player_pos: Vec3, target: Vec3
-    ) -> None:
+    def handle_toggling_input(self: Self, delta: float, player_pos: Vec3, target: Vec3) -> None:
         ctrl = sos_ctrl()
-        if isinstance(target, InteractMove) or (
-            isinstance(target, MoveToward) and target.mash
-        ):
+        if isinstance(target, InteractMove) or (isinstance(target, MoveToward) and target.mash):
             # Only tap while outside the secondary precision radius
             if Vec3.is_close(player_pos, target, self.precision2):
                 ctrl.toggle_confirm(False)
@@ -292,9 +284,7 @@ class SeqMove(SeqBase):
     def handle_movement(self: Self, player_pos: Vec3, target: Vec3) -> None:
         ctrl = sos_ctrl()
         precision = (
-            self.precision2
-            if isinstance(target, Graplou | HoldDirection)
-            else self.precision
+            self.precision2 if isinstance(target, Graplou | HoldDirection) else self.precision
         )
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, precision):

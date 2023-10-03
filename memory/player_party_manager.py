@@ -29,9 +29,7 @@ class PlayerPartyManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "PlayerPartyManager"
-                    )
+                    singleton_ptr = self.memory.get_singleton_by_class_name("PlayerPartyManager")
                     if singleton_ptr is None:
                         return
 
@@ -68,9 +66,7 @@ class PlayerPartyManager:
     def _read_gameobject_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
-            gameobject_ptr = self.memory.follow_pointer(
-                self.base, [self.leader, 0x30, 0x0]
-            )
+            gameobject_ptr = self.memory.follow_pointer(self.base, [self.leader, 0x30, 0x0])
             if gameobject_ptr == 0x0:
                 self.gameobject_position = Vec3(None, None, None)
                 return
@@ -112,9 +108,7 @@ class PlayerPartyManager:
             # Definition IDS are stored as some goofy serialized utf encoded string
             # We just do our best with the values that are provided to
             # Determine the character we are looking at
-            self.leader_character = PlayerPartyCharacter.parse_definition_id(
-                definition_id
-            )
+            self.leader_character = PlayerPartyCharacter.parse_definition_id(definition_id)
 
 
 _player_party_manager_mem = PlayerPartyManager()

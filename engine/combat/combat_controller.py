@@ -94,10 +94,7 @@ class CombatController:
                 elif next_combat_enemy.movement_done is True:
                     self.block_timing += delta
 
-            elif (
-                next_combat_enemy
-                and next_combat_enemy.state_type is NextCombatAction.Casting
-            ):
+            elif next_combat_enemy and next_combat_enemy.state_type is NextCombatAction.Casting:
                 logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
                 sos_ctrl().confirm()
 
