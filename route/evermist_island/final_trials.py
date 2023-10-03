@@ -8,6 +8,7 @@ from engine.seq import (
     InteractMove,
     SeqAmulet,
     SeqClimb,
+    SeqHoldDirectionUntilCombat,
     SeqInteract,
     SeqList,
     SeqMashUntilIdle,
@@ -76,11 +77,21 @@ class IntroFinalTrial(SeqList):
                 ),
                 SeqInteract("Brazier"),
                 SeqMashUntilIdle("Brazier"),
+                SeqMove(
+                    name="Jump into pit",
+                    coords=[
+                        Vec3(37.523, -7.998, -335.876),
+                        InteractMove(36.012, -12.998, -335.664),
+                    ],
+                ),
+                SeqHoldDirectionUntilCombat(
+                    name="Attack enemies",
+                    joy_dir=Vec2(0, -1),
+                    mash_confirm=True,  # TODO(orkaboy): May not be worth it for the 1 dmg
+                ),
                 SeqCombatAndMove(
                     name="Fight enemies",
                     coords=[
-                        Vec3(37.523, -7.998, -335.876),
-                        InteractMove(34.825, -12.998, -338.872),
                         Vec3(32.868, -12.998, -336.460),
                     ],
                 ),
