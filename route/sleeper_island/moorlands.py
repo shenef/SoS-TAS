@@ -13,7 +13,6 @@ from engine.seq import (
     SeqClimb,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
-    SeqIfMainCharacterValere,
     SeqInteract,
     SeqList,
     SeqMove,
@@ -204,6 +203,7 @@ class Moorlands(SeqList):
                         Vec3(275.162, 1.002, -3.794),
                     ],
                 ),
+                # TODO(orkaboy): Misses the pickup
                 SeqInteract("Rock Lid"),
                 SeqSkipUntilIdle("Rock Lid"),
                 SeqCombatAndMove(
@@ -217,6 +217,7 @@ class Moorlands(SeqList):
                         Vec3(344.951, 1.002, 77.452),
                         InteractMove(345.613, 2.002, 75.756),
                         HoldDirection(303.958, 1.002, 2.452, joy_dir=Vec2(0, -1)),
+                        # TODO(orkaboy): Should go right instead, through the water
                         Vec3(304.188, 1.002, -1.165),
                         InteractMove(305.219, 0.002, -2.222),
                         Vec3(308.214, 0.002, -8.838),
@@ -233,15 +234,9 @@ class Moorlands(SeqList):
                 ),
                 SeqSkipUntilIdle(name="Teaks", hold_cancel=True),
                 # Campfire
-                # TODO(orkaboy): Position depends on main character, verify for both
-                SeqIfMainCharacterValere(
-                    name="Campfire",
-                    when_true=SeqMove(
-                        name="Approach", coords=[Vec3(344.058, 1.002, 0.962)]
-                    ),
-                    when_false=SeqMove(
-                        name="Approach", coords=[Vec3(346.916, 1.002, 1.431)]
-                    ),
+                SeqMove(
+                    name="Approach",
+                    coords=[Vec3(344.058, 1.002, 0.962)],
                 ),
                 SeqSelectOption("Campfire", option=1),
                 SeqSkipUntilIdle("Sleep"),
@@ -256,8 +251,11 @@ class Moorlands(SeqList):
                         InteractMove(415.548, 1.002, 4.868),
                         Vec3(423.401, 1.002, -1.406),
                         Vec3(432.121, 1.002, -2.621),
-                        # TODO(orkaboy): Continue routing
+                        # TODO(orkaboy): Continue routing (go into the fight)
                     ],
                 ),
+                # TODO(orkaboy): Time puzzle to get combo scroll
+                # TODO(orkaboy): Go right to the world map
+                # TODO(orkaboy): Enter Stonemason's Outpost
             ],
         )
