@@ -12,6 +12,7 @@ from engine.seq import (
     SeqList,
     SeqMashUntilIdle,
     SeqMove,
+    SeqRouteBranch,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
 )
@@ -164,8 +165,11 @@ class IntroFinalTrial(SeqList):
                 # Detect entering world map
                 SeqSkipUntilClose("Leaving home", coord=Vec3(109.500, 2.002, 61.698)),
                 # Activate storytelling amulet
-                # TODO(orkaboy): Should make this optional (config)
-                SeqAmulet("Storytelling Amulet"),
+                SeqRouteBranch(
+                    name="Storytelling Amulet",
+                    when_true=SeqAmulet("Activate Amulet"),
+                    route=["amulet"],
+                ),
                 SeqMove(
                     name="Move to Forbidden Cave",
                     coords=[
