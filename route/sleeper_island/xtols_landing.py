@@ -37,6 +37,7 @@ class XtolsLanding(SeqList):
                         Vec3(-426.310, -14.998, -98.160),
                     ],
                 ),
+                # TODO(orkaboy): Can get Solstice Ring in a cave and 90 gold
                 SeqClimb(
                     name="Slide down ladder",
                     coords=[

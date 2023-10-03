@@ -139,7 +139,8 @@ class TASMenu(Menu):
                     + "elder_mist       (Elder Mist trials, campfire after tutorial)\n"
                     + "elder_mist_boss  (Elder Mist trials, just before the boss)\n"
                     + "elder_mist_boss2 (Elder Mist trials, just after the boss)\n"
-                    + "moorlands        (When just entering Moorlands)"
+                    + "moorlands        (When just entering Moorlands)\n"
+                    + "moorlands2       (By the campfire at the Runestone)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
