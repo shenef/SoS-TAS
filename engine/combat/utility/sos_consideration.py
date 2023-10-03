@@ -27,12 +27,9 @@ class SoSConsideration(Consideration):
 
     # if the selected character is NONE or we are on the selected character, considered valid'
     # and do nothing else here.
-    def valid(
-        self: Self, selected_character: PlayerPartyCharacter, action: Action
-    ) -> bool:
-        return (
-            selected_character is PlayerPartyCharacter.NONE
-            or self.on_selected_character(selected_character, action)
+    def valid(self: Self, selected_character: PlayerPartyCharacter, action: Action) -> bool:
+        return selected_character is PlayerPartyCharacter.NONE or self.on_selected_character(
+            selected_character, action
         )
 
     def on_selected_character(

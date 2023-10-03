@@ -76,9 +76,7 @@ class XtolsLanding(SeqList):
                     ],
                 ),
                 SeqHoldDirectionUntilLostControl("Leave", joy_dir=Vec2(1, -1)),
-                SeqSkipUntilClose(
-                    name="Mysterious Ninja", coord=Vec3(117.500, 15.000, 161.500)
-                ),
+                SeqSkipUntilClose(name="Mysterious Ninja", coord=Vec3(117.500, 15.000, 161.500)),
                 SeqMove(
                     name="Move to Moorlands",
                     coords=[

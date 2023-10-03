@@ -13,9 +13,7 @@ class SoSReasoner(Reasoner):
     def __init__(self: Self) -> None:
         self.considerations = []
 
-    def generate_considerations(
-        self: Self, players: list[CombatPlayer]
-    ) -> list[Consideration]:
+    def generate_considerations(self: Self, players: list[CombatPlayer]) -> list[Consideration]:
         considerations = []
         for player in players:
             if not player.dead and player.enabled:

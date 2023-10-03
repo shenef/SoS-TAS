@@ -96,8 +96,7 @@ class SeqSkipUntilIdle(SeqBase):
     def is_done(self: Self) -> bool:
         if (
             self.time_target is not None
-            and fabs(time_of_day_manager.current_time - self.time_target)
-            < self.TIME_EPSILON
+            and fabs(time_of_day_manager.current_time - self.time_target) < self.TIME_EPSILON
         ):
             return True
         return player_party_manager.movement_state == PlayerMovementState.Idle
