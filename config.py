@@ -38,7 +38,7 @@ def open_route_config(path: str) -> bool:
     """
     Open a route config file and parse the yaml contents.
 
-    Assign the global `_route_config` the and return true if everything worked.
+    Assign the global `_route_config` and return true if everything worked.
     """
     global _route_config
     try:
@@ -56,9 +56,11 @@ def open_route_config(path: str) -> bool:
 
 
 def get_route_config() -> dict[str, bool]:
+    """Return a handle to the global `_route_config`."""
     return _route_config
 
 
 def set_route_config(route_config: dict[str, bool]) -> None:
+    """Assign the global `_route_config`."""
     global _route_config
     _route_config = route_config

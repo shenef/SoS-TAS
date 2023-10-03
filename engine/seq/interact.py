@@ -172,7 +172,7 @@ class SeqSelectOption(SeqBase):
         ClearPrompt = auto()
         Answer = auto()
 
-    TIMEOUT = 0.2
+    TIMEOUT = 0.3
 
     def __init__(self: Self, name: str, option: int = 0) -> None:
         super().__init__(name)

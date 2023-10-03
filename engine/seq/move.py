@@ -7,12 +7,18 @@ from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
 from engine.seq.time import SeqDelay
-from memory import PlayerMovementState, boat_manager_handle, player_party_manager_handle
+from memory import (
+    PlayerMovementState,
+    boat_manager_handle,
+    combat_manager_handle,
+    player_party_manager_handle,
+)
 
 logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
 boat_manager = boat_manager_handle()
+combat_manager = combat_manager_handle()
 
 
 def move_to(
@@ -85,6 +91,45 @@ class SeqHoldDirectionUntilClose(SeqBase):
 
     def __repr__(self: Self) -> str:
         return f"{self.name}: Holding joystick dir {self.joy_dir} until reaching {self.target}"
+
+
+class SeqHoldDirectionUntilCombat(SeqBase):
+    """Sequencer node to move in a direction until combat starts."""
+
+    TOGGLE_TIME = 0.1
+
+    def __init__(
+        self: Self, name: str, joy_dir: Vec2, mash_confirm: bool = False
+    ) -> None:
+        super().__init__(name)
+        self.joy_dir = joy_dir
+        self.mash_confirm = mash_confirm
+        self.timer = 0
+        self.toggle_state = False
+
+    def execute(self: Self, delta: float) -> bool:
+        player_pos = player_party_manager.position
+        if player_pos.x is None:
+            return False
+
+        ctrl = sos_ctrl()
+
+        if self.mash_confirm:
+            self.timer += delta
+            if self.timer >= self.TOGGLE_TIME:
+                self.timer = 0
+                self.toggle_state = not self.toggle_state
+                ctrl.toggle_confirm(state=self.toggle_state)
+
+        ctrl.set_joystick(self.joy_dir)
+        if combat_manager.encounter_done is False:
+            ctrl.set_neutral()
+            ctrl.toggle_confirm(state=False)
+            return True
+        return False
+
+    def __repr__(self: Self) -> str:
+        return f"Holding direction while waiting for combat ({self.name})."
 
 
 class SeqAwaitLostControl(SeqBase):
