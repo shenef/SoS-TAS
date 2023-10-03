@@ -231,5 +231,5 @@ class SoSBattleTestMenu(TASMenu):
 
     def custom_gui(self: Self) -> None:
         imgui.text_wrapped(
-            "Warning! This mode is only intended for testing the Utility AI comabt system."  # noqa E501
+            "Warning! This mode is only intended for testing the Utility AI comabt system."
         )
