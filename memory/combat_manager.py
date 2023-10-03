@@ -206,7 +206,6 @@ class CombatManager:
                     return
                 spell_power = self.memory.read_float(combat_move_ptr + 0x30)
                 guid_ptr = self.memory.follow_pointer(ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0])
-                guid_ptr = self.memory.follow_pointer(ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0])
                 guid = self.memory.read_uuid(guid_ptr + 0x14)
 
                 current_state_ptr = self.memory.follow_pointer(
