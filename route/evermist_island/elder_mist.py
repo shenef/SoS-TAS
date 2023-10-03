@@ -1,3 +1,5 @@
+"""Routing of Elder Mist section of Evermist Island."""
+
 import logging
 from typing import Self
 
@@ -21,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 
 class ElderMistTrialsRight(SeqList):
+    """The right section of the Elder Mist Trials. A few fights."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Right Trial",
@@ -115,6 +119,8 @@ class ElderMistTrialsRight(SeqList):
 
 
 class ElderMistTrialsCenter(SeqList):
+    """The central section of the Elder Mist Trials. The quiz questions."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Center Trial",
@@ -233,6 +239,8 @@ class ElderMistTrialsCenter(SeqList):
 
 
 class ElderMistTrialsLeft(SeqList):
+    """The left section of the Elder Mist Trials. Moving platform and fights."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Left Trial",
@@ -300,6 +308,8 @@ class ElderMistTrialsLeft(SeqList):
 
 
 class ElderMistTrials(SeqList):
+    """Top level Elder Mist Trials. Route from entry to getting thrown to Sleeper Island."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Elder Mist Trials",

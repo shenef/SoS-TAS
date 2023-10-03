@@ -1,3 +1,5 @@
+"""Routing of Sleeper Island."""
+
 import logging
 from typing import Self
 
@@ -9,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class SleeperIsland(SeqList):
+    """Top-level routing of Sleeper Island, from arrival at X'tol to leaving for Wraith Island."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Sleeper Island",
@@ -16,5 +20,6 @@ class SleeperIsland(SeqList):
                 XtolsLanding(),
                 SeqCheckpoint("moorlands"),
                 Moorlands(),
+                # TODO(orkaboy): Routing
             ],
         )

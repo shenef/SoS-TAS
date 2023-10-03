@@ -1,3 +1,5 @@
+"""Routing of Final Trial section of Evermist Island."""
+
 import logging
 from typing import Self
 
@@ -22,6 +24,13 @@ logger = logging.getLogger(__name__)
 
 
 class IntroFinalTrial(SeqList):
+    """
+    The Final Trials of young Solstice Warriors.
+
+    Route from the entrance of the trial grounds, beating the Wyrd boss and
+    leaving for the Forbidden Cave.
+    """
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Final trials",

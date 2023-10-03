@@ -1,3 +1,5 @@
+"""Routing of Forbidden Cave section of Evermist Island."""
+
 import logging
 from typing import Self
 
@@ -23,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 
 class IntroForbiddenCave(SeqList):
+    """Forbidden Cave section, from entry, beating Bosslug, and leaving."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Forbidden Cave",

@@ -1,3 +1,5 @@
+"""Routing of X'tol's Landing section of Sleeper Island."""
+
 import logging
 from typing import Self
 
@@ -18,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 class XtolsLanding(SeqList):
+    """Route from arrival from Evermist Island to leaving X'tol's Landing for the world map."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="X'tol's Landing",

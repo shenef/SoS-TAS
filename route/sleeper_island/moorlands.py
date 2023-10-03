@@ -1,3 +1,5 @@
+"""Routing of Moorlands section of Sleeper Island."""
+
 import logging
 from typing import Self
 

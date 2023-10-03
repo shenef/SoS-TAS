@@ -1,3 +1,5 @@
+"""Routing of Evermist Island (start of the game)."""
+
 import logging
 from typing import Self
 
@@ -15,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 class EvermistIsland(SeqList):
+    """Top level Evermist Island. Route from beginning of game to being thrown to Sleeper Island."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Evermist Island",
