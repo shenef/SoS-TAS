@@ -40,32 +40,34 @@ class CombatDamageType(Enum):
 
 
 class CombatSpellLock:
-    def __init__(self: Self) -> None:
+    def __init__(
+        self: Self, damage_type: CombatDamageType = CombatDamageType.NONE
+    ) -> None:
         self.name_loc_id = None
-        self.damage_type = CombatDamageType.NONE
+        self.damage_type = damage_type
 
 
 class CombatCastingData:
     def __init__(self: Self) -> None:
-        self.spell_locks = []
+        self.spell_locks: list[CombatDamageType] = []
 
 
 class CombatEnemyTarget:
     def __init__(self: Self) -> None:
-        self.max_hp = None
-        self.current_hp = None
-        self.physical_attack = None
-        self.physical_defense = None
-        self.magic_attack = None
-        self.magic_defense = None
-        self.speed = None
-        self.guid = None
-        self.name = None
+        self.max_hp: int = None
+        self.current_hp: int = None
+        self.physical_attack: int = None
+        self.physical_defense: int = None
+        self.magic_attack: int = None
+        self.magic_defense: int = None
+        self.speed: int = None
+        self.guid: str = None
+        self.name: str = None
         self.casting_data = CombatCastingData()
-        self.turns_to_action = None
-        self.unique_id = None
-        self.total_spell_locks = 0
-        self.spell_locks = []
+        self.turns_to_action: int = None
+        self.unique_id: str = None
+        self.total_spell_locks: int = 0
+        self.spell_locks: list[CombatSpellLock] = []
 
 
 class NextCombatAction(Enum):
@@ -90,17 +92,17 @@ class NextCombatEnemy:
 
 class CombatPlayer:
     def __init__(self: Self) -> None:
-        self.max_hp = None
-        self.current_hp = None
-        self.current_mp = None
-        self.physical_attack = None
+        self.max_hp: int = None
+        self.current_hp: int = None
+        self.current_mp: int = None
+        self.physical_attack: int = None
         self.selected = False
-        self.definition_id = None
+        self.definition_id: str = None
         self.timed_attack_ready = False
         self.dead = False
         self.character = PlayerPartyCharacter.NONE
-        self.enabled = None
-        self.mana_charge_count = None
+        self.enabled: bool = None
+        self.mana_charge_count: int = None
 
 
 class CombatManager:
@@ -114,24 +116,24 @@ class CombatManager:
 
     def __init__(self: Self) -> None:
         self.memory = mem_handle()
-        self.base = None
-        self.fields_base = None
-        self.selector_base = None
-        self.enemies = []
+        self.base: int = None
+        self.fields_base: int = None
+        self.selector_base: int = None
+        self.enemies: list[CombatEnemyTarget] = []
         self.players: list[CombatPlayer] = []
         self.selected_character = PlayerPartyCharacter.NONE
         self.combat_controller = CombatEncounter.Basic
-        self.current_encounter_base = None
-        self.encounter_done = None
-        self.small_live_mana = None
-        self.big_live_mana = None
+        self.current_encounter_base: int = None
+        self.encounter_done: bool = None
+        self.small_live_mana: int = None
+        self.big_live_mana: int = None
         self.battle_command_has_focus = False
-        self.battle_command_index = None
+        self.battle_command_index: int = None
         self.skill_command_has_focus = False
-        self.skill_command_index = None
-        self.selected_attack_target_guid = None
-        self.selected_skill_target_guid = None
-        self.next_combat_enemy = None
+        self.skill_command_index: int = None
+        self.selected_attack_target_guid: str = None
+        self.selected_skill_target_guid: str = None
+        self.next_combat_enemy: NextCombatEnemy = None
         # Moonerang
         self.projectile_hit_count = 0
         self.projectile_speed = 0.0
@@ -760,7 +762,7 @@ class CombatManager:
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
-                    spell_locks = []
+                    spell_locks: list[CombatSpellLock] = []
 
                     # A try is used here due to enemy dropping the spell lock when it starts to
                     # attack. This prevents the edge case and safely returns.
@@ -781,7 +783,9 @@ class CombatManager:
                                 continue
 
                             lock = self.memory.read_int(spell_locks_base + 0x40)
-                            spell_locks.append(CombatDamageType(lock))
+                            spell_locks.append(
+                                CombatSpellLock(damage_type=CombatDamageType(lock))
+                            )
 
                             spell_locks_addr += self.ITEM_OBJECT_OFFSET
                     except Exception:
