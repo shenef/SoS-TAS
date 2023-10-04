@@ -56,20 +56,14 @@ class TestCombatUtility(unittest.TestCase):
     def test_consideration_selection(self: Self) -> None:
         reasoner = SoSReasoner(combat_manager)
         action = reasoner._select_action()
-        self.assertEqual(
-            action.consideration.actor.character, PlayerPartyCharacter.Garl
-        )
+        self.assertEqual(action.consideration.actor.character, PlayerPartyCharacter.Garl)
 
         # With garl disabled, it should always pick valere
         garl.enabled = False
         action = reasoner._select_action()
-        self.assertEqual(
-            action.consideration.actor.character, PlayerPartyCharacter.Valere
-        )
+        self.assertEqual(action.consideration.actor.character, PlayerPartyCharacter.Valere)
 
         # With valere disabled as well, it will pick zale
         valere.enabled = False
         action = reasoner._select_action()
-        self.assertEqual(
-            action.consideration.actor.character, PlayerPartyCharacter.Zale
-        )
+        self.assertEqual(action.consideration.actor.character, PlayerPartyCharacter.Zale)

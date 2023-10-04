@@ -156,9 +156,7 @@ class SoSStartGame(SeqList):
                             ),
                             SeqInteract("Load game"),
                             SeqDelay(name="Load menu", timeout_in_s=1.0),
-                            SeqSelectSaveSlot(
-                                name="Select save slot", saveslot=saveslot
-                            ),
+                            SeqSelectSaveSlot(name="Select save slot", saveslot=saveslot),
                             SeqInteract("Load slot"),
                             # TODO(orkaboy): Need to select manual save slot if relevant
                             SeqDelay(name="Load menu", timeout_in_s=1.0),

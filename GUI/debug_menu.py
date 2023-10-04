@@ -34,9 +34,7 @@ class DebugMenu(Menu):
         self.window.start_window(self.title)
 
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
-        imgui.set_window_pos(
-            self.title, imgui.ImVec2(185, 30), imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_pos(self.title, imgui.ImVec2(185, 30), imgui.Cond_.first_use_ever)
 
         imgui.text_wrapped("Level Info")
         imgui.text_wrapped(f"Scene Name: {level_manager.scene_name}")
@@ -45,22 +43,14 @@ class DebugMenu(Menu):
         imgui.text_wrapped(f"Time of Day: {time_of_day_manager.current_time}")
         LayoutHelper.add_spacer()
         imgui.text_wrapped("Level Up Info")
-        imgui.text_wrapped(
-            f"Level Up Screen Active: {level_up_manager.level_up_screen_active}"
-        )
+        imgui.text_wrapped(f"Level Up Screen Active: {level_up_manager.level_up_screen_active}")
         if level_up_manager.level_up_screen_active:
-            imgui.text_wrapped(
-                f"Current Character: {level_up_manager.current_character.value}"
-            )
+            imgui.text_wrapped(f"Current Character: {level_up_manager.current_character.value}")
             for option in level_up_manager.current_upgrades:
-                imgui.text_wrapped(
-                    f"- {option.upgrade_type.name} Selected: {option.active}"
-                )
+                imgui.text_wrapped(f"- {option.upgrade_type.name} Selected: {option.active}")
 
         LayoutHelper.add_spacer()
-        imgui.text_wrapped(
-            f"Current Leader: {player_party_manager.leader_character.value}"
-        )
+        imgui.text_wrapped(f"Current Leader: {player_party_manager.leader_character.value}")
 
         LayoutHelper.add_spacer()
 
@@ -82,9 +72,7 @@ class DebugMenu(Menu):
         LayoutHelper.add_spacer()
         imgui.text_wrapped(f"Dialog Open: {new_dialog_manager.dialog_open}")
         LayoutHelper.add_spacer()
-        _, self.show_metrics = imgui.checkbox(
-            "Show performance metrics", self.show_metrics
-        )
+        _, self.show_metrics = imgui.checkbox("Show performance metrics", self.show_metrics)
         if self.show_metrics:
             imgui.show_metrics_window()
 

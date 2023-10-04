@@ -24,9 +24,7 @@ class TimeOfDayManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "AudioManager"
-                    )
+                    singleton_ptr = self.memory.get_singleton_by_class_name("AudioManager")
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)

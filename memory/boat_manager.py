@@ -17,9 +17,7 @@ class BoatManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "BoatManager"
-                    )
+                    singleton_ptr = self.memory.get_singleton_by_class_name("BoatManager")
                     if singleton_ptr is None:
                         return
 

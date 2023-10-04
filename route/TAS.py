@@ -37,9 +37,7 @@ logger = logging.getLogger("SYSTEM")
 class RouteOption:
     """GUI component for a route option."""
 
-    def __init__(
-        self: Self, name: str, description: str, default: bool = False
-    ) -> None:
+    def __init__(self: Self, name: str, description: str, default: bool = False) -> None:
         self.name = name
         self.description = description
         self.default = default
@@ -99,16 +97,12 @@ class TASMenu(Menu):
         """Run the TAS gui loop. Sets up the buttons required to navigate the TAS."""
         self.window.start_window(self.title)
         imgui.set_window_pos(self.title, imgui.ImVec2(5, 5), imgui.Cond_.once)
-        imgui.set_window_size(
-            self.title, imgui.ImVec2(470, 200), cond=imgui.Cond_.first_use_ever
-        )
+        imgui.set_window_size(self.title, imgui.ImVec2(470, 200), cond=imgui.Cond_.first_use_ever)
 
         ret = False
         if self.tas_is_running:
             # Execute the starting sequence until done (open new game or load game)
-            run_main_sequence = (
-                not self.run_start_sequence or self.start_game_sequencer.done
-            )
+            run_main_sequence = not self.run_start_sequence or self.start_game_sequencer.done
 
             if run_main_sequence:
                 # Run the TAS sequencer (this is the code that actually plays the game)
@@ -125,9 +119,7 @@ class TASMenu(Menu):
 
             if self.load_game_checkbox:
                 # TODO(orkaboy): Maybe should be a dropdown of valid checkpoints
-                _, self.checkpoint = imgui.input_text(
-                    "Checkpoint name", self.checkpoint
-                )
+                _, self.checkpoint = imgui.input_text("Checkpoint name", self.checkpoint)
                 LayoutHelper.add_tooltip(
                     "intro_mooncradle (First cavern in flashback)\n"
                     + "intro_dorms      (First entering dorms of Zenith Academy)\n"
@@ -159,9 +151,7 @@ class TASMenu(Menu):
             if imgui.button("Start TAS"):
                 # Only set saveslot if loading from main menu
                 saveslot = (
-                    self.saveslot
-                    if (self.load_game_checkbox and self.run_start_sequence)
-                    else 0
+                    self.saveslot if (self.load_game_checkbox and self.run_start_sequence) else 0
                 )
 
                 if self.run_start_sequence:
@@ -196,9 +186,7 @@ class SoSDemoAnyPercentMenu(TASMenu):
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(
-            window=self.window, config=self.config_data, root=TAS_root
-        )
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
     def custom_gui(self: Self) -> None:
         imgui.text_wrapped(
@@ -211,17 +199,13 @@ class SoSAnyPercentMenu(TASMenu):
 
     # We can add route configuration parameters here (apply branches with `SeqRouteBranch` node)
     ROUTE_CONFIG_PARAMS: list[RouteOption] = [
-        RouteOption(
-            name="amulet", description="Use the Amulet of Storytelling", default=True
-        ),
+        RouteOption(name="amulet", description="Use the Amulet of Storytelling", default=True),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict) -> None:
         super().__init__(window, config_data, title="Sea of Stars Any%")
         # Initialize all route options to their default values from `ROUTE_CONFIG_PARAMS`
-        self.route_config = {
-            param.name: param.default for param in self.ROUTE_CONFIG_PARAMS
-        }
+        self.route_config = {param.name: param.default for param in self.ROUTE_CONFIG_PARAMS}
         self.route_config_path = config_data.get("route_config", "route_config.yaml")
         self._load_route_config()
 
@@ -255,14 +239,10 @@ class SoSAnyPercentMenu(TASMenu):
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(
-            window=self.window, config=self.config_data, root=TAS_root
-        )
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
     def custom_gui(self: Self) -> None:
-        route_config_tab, visible = imgui.collapsing_header(
-            "Route config", True, flags=32
-        )
+        route_config_tab, visible = imgui.collapsing_header("Route config", True, flags=32)
         if route_config_tab and visible:
             # Load/Save route config from file UI
             if imgui.button("Load config"):
@@ -298,9 +278,7 @@ class SoSBattleTestMenu(TASMenu):
             ],
         )
         # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(
-            window=self.window, config=self.config_data, root=TAS_root
-        )
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
     def custom_gui(self: Self) -> None:
         imgui.text_wrapped(

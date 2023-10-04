@@ -13,9 +13,7 @@ logger = logging.getLogger(__name__)
 class Menu:
     """A sub-menu that can be added to a Menu Manager."""
 
-    def __init__(
-        self: Self, window: Window, title: str, children: list[Self] = None
-    ) -> None:
+    def __init__(self: Self, window: Window, title: str, children: list[Self] = None) -> None:
         if children is None:
             children = []
         self.window = window
