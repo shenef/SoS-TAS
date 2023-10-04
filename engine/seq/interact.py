@@ -173,11 +173,12 @@ class SeqSelectOption(SeqBase):
 
     TIMEOUT = 0.3
 
-    def __init__(self: Self, name: str, option: int = 0) -> None:
+    def __init__(self: Self, name: str, option: int = 0, skip_dialog_check: bool = False) -> None:
         super().__init__(name)
         self.timer = 0
         self.option = option
         self.state = self.State.Approach
+        self.skip_dialog_check = skip_dialog_check
 
     def execute(self: Self, delta: float) -> bool:
         ctrl = sos_ctrl()
@@ -186,7 +187,7 @@ class SeqSelectOption(SeqBase):
                 ctrl.confirm()
                 self.state = self.State.WaitForDialog
             case self.State.WaitForDialog:
-                if new_dialog_manager.dialog_open:
+                if new_dialog_manager.dialog_open or self.skip_dialog_check:
                     ctrl.toggle_turbo(state=True)
                     ctrl.toggle_confirm(state=True)
                     self.state = self.State.ClearPrompt
