@@ -91,14 +91,43 @@ class SeqHoldDirectionUntilClose(SeqBase):
         return f"{self.name}: Holding joystick dir {self.joy_dir} until reaching {self.target}"
 
 
+class SeqHoldDirectionDelay(SeqBase):
+    """Sequencer node to move in a direction for a specified period of time."""
+
+    def __init__(
+        self: Self,
+        name: str,
+        joy_dir: Vec2,
+        timeout_s: float,
+        func: Callable = None,
+    ) -> None:
+        self.joy_dir = joy_dir
+        self.timeout_s = timeout_s
+        self.timer = 0
+        super().__init__(name, func)
+
+    def execute(self: Self, delta: float) -> bool:
+        self.timer += delta
+
+        ctrl = sos_ctrl()
+        ctrl.set_joystick(self.joy_dir)
+        # If arrived, go to next coordinate in the list
+        if self.timer >= self.timeout_s:
+            logger.debug(f"Hold direction done after {self.timeout_s} seconds.")
+            ctrl.set_neutral()
+            return True
+        return False
+
+    def __repr__(self: Self) -> str:
+        return f"{self.name}: Holding joystick dir {self.joy_dir} until timeout {self.timer}/{self.timeout_s}"  # noqa: E501
+
+
 class SeqHoldDirectionUntilCombat(SeqBase):
     """Sequencer node to move in a direction until combat starts."""
 
     TOGGLE_TIME = 0.1
 
-    def __init__(
-        self: Self, name: str, joy_dir: Vec2, mash_confirm: bool = False
-    ) -> None:
+    def __init__(self: Self, name: str, joy_dir: Vec2, mash_confirm: bool = False) -> None:
         super().__init__(name)
         self.joy_dir = joy_dir
         self.mash_confirm = mash_confirm
