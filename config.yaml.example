@@ -16,6 +16,7 @@ route_config          : ""      # Path to a route options configuration file
 #   elder_mist_boss2            # Elder Mist trials, just after the boss
 #   moorlands                   # When just entering Moorlands
 #   moorlands2                  # By the campfire at the Runestone
+#   wind_tunnel_mines           # First floor, by the elevator
 
 # User Interface
 ui:

@@ -5,6 +5,7 @@ from typing import Self
 
 from engine.seq import SeqCheckpoint, SeqList
 from route.sleeper_island.moorlands import Moorlands
+from route.sleeper_island.stonemasons import StonemasonsOutpost
 from route.sleeper_island.xtols_landing import XtolsLanding
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,7 @@ class SleeperIsland(SeqList):
                 XtolsLanding(),
                 SeqCheckpoint("moorlands"),
                 Moorlands(),
+                StonemasonsOutpost(),
                 # TODO(orkaboy): Routing
             ],
         )

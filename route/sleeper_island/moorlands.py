@@ -3,19 +3,24 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
     InteractMove,
     MoveToward,
+    SeqAwaitLostControl,
+    SeqChangeTimeOfDay,
     SeqCheckpoint,
     SeqClimb,
+    SeqDelay,
+    SeqHoldDirectionDelay,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
     SeqMove,
+    SeqRouteBranch,
     SeqSelectOption,
     SeqSkipUntilIdle,
 )
@@ -42,11 +47,9 @@ class Moorlands(SeqList):
                         Vec3(59.624, 0.002, 8.436),
                         InteractMove(59.624, -1.998, 5.284),
                         Vec3(58.853, -1.998, -3.808),
-                        Vec3(54.181, -1.998, -7.913),
-                        InteractMove(50.884, -0.998, -5.684),
-                        InteractMove(51.183, 2.002, -3.519),
-                        Vec3(52.721, 2.002, -1.744),
-                        InteractMove(52.721, 5.002, -0.533),
+                        Vec3(53.951, -1.998, -8.176),
+                        InteractMove(52.907, -0.998, -7.029),
+                        InteractMove(52.907, 5.002, -0.533),
                         Vec3(57.541, 5.002, 4.735),
                         InteractMove(71.864, 5.002, 4.735),
                         Vec3(97.075, 1.002, 4.735),
@@ -66,10 +69,21 @@ class Moorlands(SeqList):
                         InteractMove(120.098, 7.002, 13.562),
                         Vec3(123.974, 7.002, 13.562),
                         InteractMove(128.531, 7.002, 13.562),
-                        Vec3(135.119, 7.002, 9.886),
+                        Vec3(135.340, 7.002, 9.732),
                     ],
                 ),
                 # Can grab Power Belt here
+                SeqRouteBranch(
+                    name="Power Belt",
+                    route=["ml_power_belt"],
+                    when_true=SeqList(
+                        name="",
+                        children=[
+                            SeqInteract("Power Belt"),
+                            SeqSkipUntilIdle("Power Belt"),
+                        ],
+                    ),
+                ),
                 SeqCombatAndMove(
                     name="Move into cave",
                     coords=[
@@ -178,7 +192,39 @@ class Moorlands(SeqList):
                         InteractMove(186.878, 1.002, -9.500),
                     ],
                 ),
-                # TODO(orkaboy): Can get Teal Amber Ore here to the left
+                # Can optionally get Teal Amber Ore here to the left
+                SeqRouteBranch(
+                    name="Teal Amber Ore",
+                    route=["ml_teal_amber_ore"],
+                    when_true=SeqList(
+                        name="Teal Amber Ore",
+                        children=[
+                            SeqMove(
+                                name="Move to chest",
+                                coords=[
+                                    Vec3(181.460, 1.002, -11.777),
+                                    InteractMove(180.096, 3.002, -11.799),
+                                    Vec3(177.434, 3.002, -12.964),
+                                    Vec3(172.081, 3.002, -12.964),
+                                    InteractMove(172.081, 6.002, -11.533),
+                                    InteractMove(173.467, 8.002, -11.258),
+                                    Vec3(175.603, 8.002, -8.224),
+                                ],
+                            ),
+                            SeqInteract("Teal Amber Ore"),
+                            SeqSkipUntilIdle("Teal Amber Ore"),
+                            SeqMove(
+                                name="Return to route",
+                                coords=[
+                                    Vec3(177.159, 8.002, -8.195),
+                                    InteractMove(178.453, 3.002, -8.195),
+                                    Vec3(182.259, 3.002, -8.094),
+                                    InteractMove(183.357, 1.002, -9.102),
+                                ],
+                            ),
+                        ],
+                    ),
+                ),
                 SeqCombatAndMove(
                     name="Move to chest",
                     coords=[
@@ -203,7 +249,7 @@ class Moorlands(SeqList):
                         Vec3(275.162, 1.002, -3.794),
                     ],
                 ),
-                # TODO(orkaboy): Misses the pickup
+                SeqHoldDirectionDelay("Rock Lid", joy_dir=Vec2(0, -1), timeout_s=0.2),
                 SeqInteract("Rock Lid"),
                 SeqSkipUntilIdle("Rock Lid"),
                 SeqCombatAndMove(
@@ -214,18 +260,25 @@ class Moorlands(SeqList):
                         InteractMove(280.061, 0.002, 3.661),
                         Vec3(293.716, 0.002, 5.548),
                         HoldDirection(335.701, 1.002, 74.701, joy_dir=Vec2(1, 1)),
-                        Vec3(344.951, 1.002, 77.452),
-                        InteractMove(345.613, 2.002, 75.756),
+                        Vec3(338.941, 1.002, 76.437),
+                        Vec3(344.141, 1.002, 76.783),
+                        InteractMove(345.266, 2.002, 74.848),
+                        Vec3(346.042, 2.002, 71.826),
                         HoldDirection(303.958, 1.002, 2.452, joy_dir=Vec2(0, -1)),
-                        # TODO(orkaboy): Should go right instead, through the water
-                        Vec3(304.188, 1.002, -1.165),
-                        InteractMove(305.219, 0.002, -2.222),
-                        Vec3(308.214, 0.002, -8.838),
-                        Vec3(313.524, 0.002, -8.838),
-                        Vec3(318.524, 0.002, -7.358),
-                        InteractMove(319.868, 1.002, -7.358),
-                        Vec3(324.510, 1.002, -5.557),
-                        Vec3(330.526, 1.002, 2.078),
+                    ],
+                ),
+                SeqMove(
+                    name="Go to Teaks",
+                    coords=[
+                        Vec3(305.289, 1.002, 1.423),
+                        InteractMove(307.149, 0.002, 1.423),
+                        Vec3(312.319, 0.002, 2.961),
+                        InteractMove(313.935, -1.197, 2.605),
+                        Vec3(317.162, -1.197, 0.813),
+                        InteractMove(318.562, 0.002, -0.381),
+                        Vec3(320.058, 0.002, -0.295),
+                        InteractMove(323.646, 1.002, -1.617),
+                        Vec3(330.898, 1.002, 1.814),
                     ],
                 ),
                 SeqHoldDirectionUntilLostControl(
@@ -238,11 +291,11 @@ class Moorlands(SeqList):
                     name="Approach",
                     coords=[Vec3(344.058, 1.002, 0.962)],
                 ),
-                SeqSelectOption("Campfire", option=1),
+                SeqSelectOption("Campfire", option=1, skip_dialog_check=True),
                 SeqSkipUntilIdle("Sleep"),
                 SeqCheckpoint("moorlands2"),
-                SeqCombatAndMove(
-                    name="Fight enemies",
+                SeqMove(
+                    name="Go to enemies",
                     coords=[
                         Vec3(352.369, 1.002, 1.654),
                         # Cross bridge
@@ -251,11 +304,63 @@ class Moorlands(SeqList):
                         InteractMove(415.548, 1.002, 4.868),
                         Vec3(423.401, 1.002, -1.406),
                         Vec3(432.121, 1.002, -2.621),
-                        # TODO(orkaboy): Continue routing (go into the fight)
+                        Vec3(433.432, 1.010, -7.761),
                     ],
                 ),
-                # TODO(orkaboy): Time puzzle to get combo scroll
-                # TODO(orkaboy): Go right to the world map
-                # TODO(orkaboy): Enter Stonemason's Outpost
+                SeqRouteBranch(
+                    name="Solar Rain Puzzle",
+                    route=["ml_solar_rain"],
+                    when_true=SeqList(
+                        name="Solar Rain Puzzle",
+                        children=[
+                            SeqHoldDirectionUntilCombat(
+                                name="Go to fight",
+                                joy_dir=Vec2(1, 0),
+                                mash_confirm=True,
+                            ),
+                            SeqCombat("Fight puzzle guards"),
+                            SeqMove(
+                                name="Move to puzzle",
+                                coords=[
+                                    Vec3(444.493, 1.002, -9.073),
+                                ],
+                            ),
+                            SeqChangeTimeOfDay("Left Moon Rune", time_target=3.6),
+                            SeqDelay("Left Moon Rune", timeout_in_s=4),
+                            SeqChangeTimeOfDay("Right Moon Rune", time_target=20),
+                            SeqDelay("Right Moon Rune", timeout_in_s=4),
+                            SeqChangeTimeOfDay("Sun Rune", time_target=12),
+                            SeqAwaitLostControl("Sun Rune"),
+                            SeqMove(
+                                name="Go to scroll",
+                                coords=[
+                                    Vec3(444.492, 1.002, -2.917),
+                                ],
+                            ),
+                            SeqInteract("Solar Rain"),
+                            SeqSkipUntilIdle("Solar Rain"),
+                        ],
+                    ),
+                ),
+                SeqCombatAndMove(
+                    name="Move to Stonemason's Outpost",
+                    coords=[
+                        Vec3(455.000, 1.002, -8.955),
+                        Vec3(459.948, 1.001, 0.351),
+                        Vec3(487.534, 1.002, 3.206),
+                        Vec3(501.372, 1.002, 10.024),
+                        Vec3(507.974, 1.002, 16.063),
+                        Vec3(517.278, 1.002, 16.063),
+                        Vec3(521.318, 1.002, 6.179),
+                        Vec3(513.431, 1.002, -3.276),
+                        # Leave for the world map
+                        HoldDirection(124.500, 15.002, 155.498, joy_dir=Vec2(0, -1)),
+                        Vec3(124.500, 15.002, 154.000),
+                        Vec3(123.000, 15.002, 154.000),
+                        Vec3(123.000, 15.002, 150.000),
+                        Vec3(123.500, 15.002, 150.000),
+                    ],
+                ),
+                SeqInteract("Stonemason's Outpost"),
             ],
         )
