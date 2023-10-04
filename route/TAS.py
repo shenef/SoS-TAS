@@ -200,6 +200,8 @@ class SoSAnyPercentMenu(TASMenu):
     # We can add route configuration parameters here (apply branches with `SeqRouteBranch` node)
     ROUTE_CONFIG_PARAMS: list[RouteOption] = [
         RouteOption(name="amulet", description="Use the Amulet of Storytelling", default=True),
+        RouteOption(name="fc_leeching_thorn", description="Grab Leeching Thorn", default=False),
+        RouteOption(name="fc_bosslug_loot", description="Loot Bosslug cave", default=True),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict) -> None:
