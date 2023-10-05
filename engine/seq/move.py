@@ -96,9 +96,7 @@ class SeqHoldDirectionUntilCombat(SeqBase):
 
     TOGGLE_TIME = 0.1
 
-    def __init__(
-        self: Self, name: str, joy_dir: Vec2, mash_confirm: bool = False
-    ) -> None:
+    def __init__(self: Self, name: str, joy_dir: Vec2, mash_confirm: bool = False) -> None:
         super().__init__(name)
         self.joy_dir = joy_dir
         self.mash_confirm = mash_confirm

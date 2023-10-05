@@ -40,9 +40,7 @@ class CombatDamageType(Enum):
 
 
 class CombatSpellLock:
-    def __init__(
-        self: Self, damage_type: CombatDamageType = CombatDamageType.NONE
-    ) -> None:
+    def __init__(self: Self, damage_type: CombatDamageType = CombatDamageType.NONE) -> None:
         self.name_loc_id = None
         self.damage_type = damage_type
 
@@ -758,9 +756,7 @@ class CombatManager:
                                 continue
 
                             lock = self.memory.read_int(spell_locks_base + 0x40)
-                            spell_locks.append(
-                                CombatSpellLock(damage_type=CombatDamageType(lock))
-                            )
+                            spell_locks.append(CombatSpellLock(damage_type=CombatDamageType(lock)))
 
                             spell_locks_addr += self.ITEM_OBJECT_OFFSET
                     except Exception:
