@@ -203,6 +203,7 @@ class SoSAnyPercentMenu(TASMenu):
         RouteOption(name="amulet", description="Use the Amulet of Storytelling", default=True),
         RouteOption(name="fc_leeching_thorn", description="Grab Leeching Thorn", default=False),
         RouteOption(name="fc_bosslug_loot", description="Loot Bosslug cave", default=True),
+        RouteOption(name="xl_solstice_ring", description="X'tol Solstice Ring", default=True),
         RouteOption(name="ml_power_belt", description="Moorland Power Belt", default=True),
         RouteOption(name="ml_teal_amber_ore", description="Moorland Teal Amber Ore", default=True),
         RouteOption(name="ml_solar_rain", description="Moorland Solar Rain scroll", default=True),

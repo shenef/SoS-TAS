@@ -13,7 +13,9 @@ from engine.seq import (
     SeqInteract,
     SeqList,
     SeqMove,
+    SeqRouteBranch,
     SeqSkipUntilClose,
+    SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
@@ -26,18 +28,69 @@ class XtolsLanding(SeqList):
         super().__init__(
             name="X'tol's Landing",
             children=[
+                # Can get Solstice Ring in a cave and 90 gold
+                SeqRouteBranch(
+                    name="Solstice Ring",
+                    route=["xl_solstice_ring"],
+                    when_true=SeqList(
+                        name="Solstice Ring",
+                        children=[
+                            SeqMove(
+                                name="Move to chest",
+                                coords=[
+                                    Vec3(-456.847, 1.002, -62.006),
+                                    InteractMove(-459.978, -4.998, -65.169),
+                                    Vec3(-453.412, -4.998, -70.543),
+                                    InteractMove(-453.412, -9.998, -72.458),
+                                    Vec3(-450.379, -9.998, -72.458),
+                                    HoldDirection(-491.448, 1.002, -219.789, joy_dir=Vec2(0, 1)),
+                                    Vec3(-491.448, 3.002, -206.558),
+                                ],
+                            ),
+                            SeqInteract("Solstice Ring"),
+                            SeqSkipUntilIdle("Solstice Ring"),
+                            SeqMove(
+                                name="Move to chest",
+                                coords=[
+                                    Vec3(-491.448, 1.010, -220.681),
+                                    HoldDirection(-450.196, -9.998, -72.732, joy_dir=Vec2(0, -1)),
+                                    Vec3(-446.604, -9.998, -72.457),
+                                    InteractMove(-445.176, -14.998, -73.460),
+                                    Vec3(-444.577, -14.998, -73.867),
+                                ],
+                            ),
+                            SeqInteract("90 gold"),
+                            SeqSkipUntilIdle("90 gold"),
+                            SeqMove(
+                                name="Return to route",
+                                coords=[
+                                    Vec3(-447.621, -14.998, -76.229),
+                                    InteractMove(-450.221, -14.998, -79.093),
+                                    Vec3(-449.642, -14.998, -81.495),
+                                    InteractMove(-443.687, -14.998, -87.190),
+                                    Vec3(-443.687, -14.998, -90.633),
+                                    Vec3(-440.434, -14.998, -93.589),
+                                ],
+                            ),
+                        ],
+                    ),
+                    when_false=SeqMove(
+                        name="Move to fight",
+                        coords=[
+                            InteractMove(-440.880, 0.002, -66.672),
+                            InteractMove(-434.989, 1.002, -72.355),
+                            Vec3(-435.754, -6.679, -85.519),
+                            Vec3(-436.293, -6.998, -86.561),
+                            InteractMove(-441.924, -14.998, -92.082),
+                        ],
+                    ),
+                ),
                 SeqMove(
                     name="Move to fight",
                     coords=[
-                        InteractMove(-440.880, 0.002, -66.672),
-                        InteractMove(-434.989, 1.002, -72.355),
-                        Vec3(-435.754, -6.679, -85.519),
-                        Vec3(-436.293, -6.998, -86.561),
-                        InteractMove(-441.924, -14.998, -92.082),
                         Vec3(-426.310, -14.998, -98.160),
                     ],
                 ),
-                # TODO(orkaboy): Can get Solstice Ring in a cave and 90 gold
                 SeqClimb(
                     name="Slide down ladder",
                     coords=[
