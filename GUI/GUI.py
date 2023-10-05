@@ -175,7 +175,7 @@ class LayoutHelper:
         imgui.spacing()
 
     @staticmethod
-    def add_spacings(n: int) -> None:
+    def add_spacings(n: int = 2) -> None:
         """Add multiple imgui.spacing() at once."""
         for _ in range(n):
             imgui.spacing()
