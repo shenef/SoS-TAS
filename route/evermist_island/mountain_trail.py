@@ -1,3 +1,5 @@
+"""Routing of Mountain Trail section of Evermist Island."""
+
 import logging
 from typing import Self
 
@@ -28,6 +30,8 @@ logger = logging.getLogger(__name__)
 
 
 class IntroMountainTrail(SeqList):
+    """Route of start of game, up until the flashback to childhood."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Mountain Trail",
@@ -132,8 +136,9 @@ class IntroMountainTrail(SeqList):
         )
 
 
-# TODO(orkaboy): Combat in this section stunted since it uses the optimized version from the intro
 class MountainTrail(SeqList):
+    """Route Mountain Trail section. From leaving Forbidden Cave to arrival at Elder Mist."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Evermist Island",
@@ -403,6 +408,5 @@ class MountainTrail(SeqList):
                 ),
                 SeqHoldDirectionUntilLostControl("Elder Mist", joy_dir=Vec2(0, 1)),
                 SeqSkipUntilIdle("Elder Mist"),
-                # TODO(orkaboy): Elder Mist Trials
             ],
         )

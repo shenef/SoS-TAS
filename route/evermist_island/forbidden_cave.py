@@ -1,3 +1,5 @@
+"""Routing of Forbidden Cave section of Evermist Island."""
+
 import logging
 from typing import Self
 
@@ -10,11 +12,13 @@ from engine.seq import (
     SeqCliffMove,
     SeqClimb,
     SeqDelay,
+    SeqHoldDirectionDelay,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
     SeqMashUntilIdle,
     SeqMove,
+    SeqRouteBranch,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
@@ -23,6 +27,8 @@ logger = logging.getLogger(__name__)
 
 
 class IntroForbiddenCave(SeqList):
+    """Forbidden Cave section, from entry, beating Bosslug, and leaving."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Forbidden Cave",
@@ -74,12 +80,15 @@ class IntroForbiddenCave(SeqList):
                     coords=[
                         InteractMove(-45.533, 9.002, 139.460),
                         InteractMove(-45.533, 15.002, 141.467),
+                        Vec3(-43.460, 15.002, 141.546),
                     ],
                 ),
+                SeqHoldDirectionDelay(name="Turn", joy_dir=Vec2(0, 1), timeout_s=0.2),
+                SeqInteract("Grab wall"),
                 SeqClimb(
                     name="Climb wall",
                     coords=[
-                        InteractMove(-44.573, 16.321, 141.530),
+                        Vec3(-43.460, 16.540, 141.540),
                         Vec3(-35.176, 16.540, 141.530),
                         Vec3(-35.176, 11.002, 141.540),
                     ],
@@ -212,9 +221,51 @@ class IntroForbiddenCave(SeqList):
                     ],
                 ),
                 SeqMove(
-                    name="Move to platform",
+                    name="Move to split",
                     coords=[
                         Vec3(21.487, 20.002, 137.556),
+                        Vec3(22.693, 20.002, 136.291),
+                    ],
+                ),
+                # Optionally, get Leeching Thorn
+                SeqRouteBranch(
+                    name="Get Leeching Thorn",
+                    route=["fc_leeching_thorn"],
+                    when_true=SeqList(
+                        name="Get Leeching Thorn",
+                        children=[
+                            SeqMove(
+                                name="Move to chest",
+                                coords=[
+                                    Vec3(22.692, 20.002, 130.813),
+                                    Vec3(21.037, 20.002, 128.500),
+                                    InteractMove(14.175, 20.002, 128.500),
+                                    Vec3(12.018, 20.002, 130.657),
+                                    Vec3(12.018, 20.002, 132.492),
+                                    Vec3(9.168, 20.002, 135.161),
+                                ],
+                            ),
+                            SeqHoldDirectionDelay("Chest", joy_dir=Vec2(-1, 0), timeout_s=0.2),
+                            SeqInteract("Leeching Thorn"),
+                            SeqSkipUntilIdle("Leeching Thorn"),
+                            SeqMove(
+                                name="Return to route",
+                                coords=[
+                                    Vec3(12.027, 20.002, 132.374),
+                                    Vec3(12.027, 20.002, 130.274),
+                                    Vec3(13.874, 20.002, 128.622),
+                                    InteractMove(20.670, 20.002, 128.500),
+                                    Vec3(22.604, 20.002, 130.658),
+                                    Vec3(22.670, 20.002, 132.946),
+                                ],
+                            ),
+                        ],
+                    ),
+                ),
+                SeqMove(
+                    name="Move to platform",
+                    coords=[
+                        Vec3(25.451, 20.002, 133.119),
                         Vec3(25.335, 20.002, 132.576),
                         InteractMove(25.335, 1.010, 130.365),
                     ],
@@ -278,6 +329,40 @@ class IntroForbiddenCave(SeqList):
                 SeqCombat("Bosslug fight"),
                 SeqSkipUntilIdle("Post-boss cutscene"),
                 # Optionally, can enter cave to the north here and grab items
+                SeqRouteBranch(
+                    name="Loot boss cave",
+                    route=["fc_bosslug_loot"],
+                    when_true=SeqList(
+                        name="Loot boss cave",
+                        children=[
+                            SeqMove(
+                                name="Move to chest",
+                                coords=[
+                                    Vec3(-39.493, 2.002, 238.270),
+                                    HoldDirection(-39.000, 2.002, 293.358, joy_dir=Vec2(0, 1)),
+                                    Vec3(-40.479, 2.002, 302.318),
+                                ],
+                            ),
+                            SeqInteract("60 gold"),
+                            SeqSkipUntilIdle("60 gold"),
+                            SeqMove(
+                                name="Move to chest",
+                                coords=[
+                                    Vec3(-37.746, 2.002, 302.321),
+                                ],
+                            ),
+                            SeqInteract("Adventurer's Vest"),
+                            SeqSkipUntilIdle("Adventurer's Vest"),
+                            SeqMove(
+                                name="Leave cave",
+                                coords=[
+                                    Vec3(-39.017, 2.002, 291.219),
+                                    HoldDirection(-39.525, 2.002, 238.625, joy_dir=Vec2(0, -1)),
+                                ],
+                            ),
+                        ],
+                    ),
+                ),
                 SeqMove(
                     name="Move to exit",
                     coords=[

@@ -122,16 +122,18 @@ class TASMenu(Menu):
                 _, self.checkpoint = imgui.input_text("Checkpoint name", self.checkpoint)
                 LayoutHelper.add_tooltip(
                     "intro_mooncradle (First cavern in flashback)\n"
-                    + "intro_dorms      (First entering dorms of Zenith Academy)\n"
-                    + "intro_dorms2     (Dorms of Zenith Academy, just before final trial)\n"
-                    + "forbidden_cave   (Forbidden Cave entrance)\n"
-                    + "forbidden_cave2  (Forbidden Cave campfire)\n"
-                    + "mountain_trail   (Mountain Trail, just north of campfire)\n"
-                    + "mountain_trail2  (Mountain Trail, campfire in cave)\n"
-                    + "elder_mist       (Elder Mist trials, campfire after tutorial)\n"
-                    + "elder_mist_boss  (Elder Mist trials, just before the boss)\n"
-                    + "elder_mist_boss2 (Elder Mist trials, just after the boss)\n"
-                    + "moorlands        (When just entering Moorlands)"
+                    + "intro_dorms          (First entering dorms of Zenith Academy)\n"
+                    + "intro_dorms2         (Dorms of Zenith Academy, just before final trial)\n"
+                    + "forbidden_cave       (Forbidden Cave entrance)\n"
+                    + "forbidden_cave2      (Forbidden Cave campfire)\n"
+                    + "mountain_trail       (Mountain Trail, just north of campfire)\n"
+                    + "mountain_trail2      (Mountain Trail, campfire in cave)\n"
+                    + "elder_mist           (Elder Mist trials, campfire after tutorial)\n"
+                    + "elder_mist_boss      (Elder Mist trials, just before the boss)\n"
+                    + "elder_mist_boss2     (Elder Mist trials, just after the boss)\n"
+                    + "moorlands            (When just entering Moorlands)\n"
+                    + "moorlands2           (By the campfire at the Runestone)\n"
+                    + "wind_tunnel_mines    (First floor, by the elevator)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
@@ -201,6 +203,12 @@ class SoSAnyPercentMenu(TASMenu):
     # We can add route configuration parameters here (apply branches with `SeqRouteBranch` node)
     ROUTE_CONFIG_PARAMS: list[RouteOption] = [
         RouteOption(name="amulet", description="Use the Amulet of Storytelling", default=True),
+        RouteOption(name="fc_leeching_thorn", description="Grab Leeching Thorn", default=False),
+        RouteOption(name="fc_bosslug_loot", description="Loot Bosslug cave", default=True),
+        RouteOption(name="xl_solstice_ring", description="X'tol Solstice Ring", default=True),
+        RouteOption(name="ml_power_belt", description="Moorland Power Belt", default=True),
+        RouteOption(name="ml_teal_amber_ore", description="Moorland Teal Amber Ore", default=True),
+        RouteOption(name="ml_solar_rain", description="Moorland Solar Rain scroll", default=True),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict) -> None:

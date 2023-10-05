@@ -1,3 +1,5 @@
+"""Routing of Mooncradle/Zenith Academy section of Evermist Island."""
+
 import logging
 from typing import Self
 
@@ -22,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 class IntroMooncradle(SeqList):
+    """Childhood, route from cave to Zenith Academy."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Mooncradle",
@@ -117,6 +121,8 @@ class IntroMooncradle(SeqList):
 
 
 class LoomsToCenter(SeqIfMainCharacterValere):
+    """Reusable section, moving from looms to the center area of Zenith Academy dorms."""
+
     def __init__(self: Self, name: str) -> None:
         super().__init__(
             name,
@@ -143,6 +149,8 @@ class LoomsToCenter(SeqIfMainCharacterValere):
 
 
 class SkipTutorial(SeqList):
+    """Reusable segment for skipping battle tutorials with Brugaves and Erlina."""
+
     def __init__(self: Self, name: str) -> None:
         super().__init__(
             name,
@@ -155,9 +163,11 @@ class SkipTutorial(SeqList):
 
 
 class IntroZenithAcademy(SeqList):
+    """Route Zenith Academy, from dorms, until jumping into Final Trials."""
+
     def __init__(self: Self) -> None:
         super().__init__(
-            name="Mooncradle",
+            name="Zenith Academy",
             children=[
                 SeqIfMainCharacterValere(
                     name="Main Character",
