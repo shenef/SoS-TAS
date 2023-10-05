@@ -159,6 +159,8 @@ class TASMenu(Menu):
                 self.init_saveslot()
                 self.tas_is_running = True
 
+            imgui.same_line()
+
             if not top_level and imgui.button("Back"):
                 ret = True
         self.window.end_window()
@@ -241,6 +243,7 @@ class SoSAnyPercentMenu(TASMenu):
         self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
 
     def custom_gui(self: Self) -> None:
+        imgui.spacing()
         route_config_tab, visible = imgui.collapsing_header("Route config", True, flags=32)
         if route_config_tab and visible:
             # Load/Save route config from file UI
