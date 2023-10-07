@@ -71,12 +71,12 @@ class MoveToMines(SeqList):
         )
 
 
-class WindTunnelMines(SeqList):
-    """Route through the Wind Tunnel Mines."""
+class WindTunnelMinesFirstFloor(SeqList):
+    """Route through the First Floor of Wind Tunnel Mines."""
 
     def __init__(self: Self) -> None:
         super().__init__(
-            name="WindTunnelMines",
+            name="Wind Tunnel Mines First Floor",
             children=[
                 SeqCombatAndMove(
                     name="Move into cave",
@@ -285,7 +285,153 @@ class WindTunnelMines(SeqList):
                 SeqSkipUntilIdle("Wind tunnel"),
                 SeqAwaitLostControl("Screen transition"),
                 SeqSkipUntilIdle("Elder cutscene"),
-                SeqCheckpoint("wind_tunnel_mines2"),
+            ],
+        )
+
+
+class WindTunnelMinesLowerFloorBlockPuzzle1(SeqList):
+    """First block puzzle sequence."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Block Puzzle #1",
+            children=[
+                SeqMove(
+                    name="Move south of block",
+                    coords=[
+                        Vec3(146.307, 1.002, -92.047),
+                        InteractMove(135.818, 1.002, -92.047),
+                        Vec3(124.043, 1.002, -92.614),
+                        Vec3(124.043, 1.002, -91.460),
+                    ],
+                ),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move left of block",
+                    coords=[
+                        Vec3(122.067, 1.002, -90.512),
+                        Vec3(122.067, 1.002, -88.945),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(1, 0), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move north of block",
+                    coords=[
+                        Vec3(125.220, 1.002, -86.541),
+                        Vec3(128.214, 1.002, -86.659),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move right of block",
+                    coords=[
+                        Vec3(129.907, 1.002, -93.817),
+                        Vec3(129.929, 1.002, -95.855),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move south of block",
+                    coords=[
+                        Vec3(124.476, 1.002, -97.991),
+                        Vec3(119.140, 1.002, -97.991),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move to right of block",
+                    coords=[
+                        Vec3(120.715, 1.002, -93.769),
+                        Vec3(120.715, 1.002, -91.819),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                # Block puzzle done
+            ],
+        )
+
+
+class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
+    """Second block puzzle sequence."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Block Puzzle #2",
+            children=[
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(1, 0), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move north of block",
+                    coords=[
+                        Vec3(-56.904, 1.010, 9.713),
+                        Vec3(-53.961, 1.002, 9.713),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move right of block",
+                    coords=[
+                        Vec3(-52.402, 1.010, 5.533),
+                        Vec3(-52.402, 1.010, 0.896),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move south of block",
+                    coords=[
+                        Vec3(-57.365, 1.002, -0.616),
+                        Vec3(-63.142, 1.002, -0.616),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move north of block",
+                    coords=[
+                        Vec3(-71.421, 1.010, 7.773),
+                        Vec3(-75.965, 1.002, 7.773),
+                    ],
+                ),
+                SeqDelay("Wait", timeout_in_s=6.0),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move right of block",
+                    coords=[
+                        Vec3(-74.251, 1.002, 5.236),
+                        Vec3(-74.251, 1.002, 2.102),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                SeqMove(
+                    name="Move south of block",
+                    coords=[
+                        Vec3(-86.716, 1.002, 0.232),
+                        Vec3(-91.953, 1.002, 0.232),
+                    ],
+                ),
+                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
+                SeqBracelet("Push block"),
+                # Block puzzle done
+            ],
+        )
+
+
+class WindTunnelMinesLowerFloor(SeqList):
+    """Route through the lower floor Wind Tunnel Mines."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Wind Tunnel Mines Lower Floor",
+            children=[
                 SeqMove(
                     name="Jump into elevator shaft",
                     coords=[
@@ -432,63 +578,8 @@ class WindTunnelMines(SeqList):
                 SeqSkipUntilCombat("Rockie"),
                 SeqCombat("Rockie"),
                 SeqSkipUntilIdle("Cutscene"),
-                # TODO(orkaboy): Puzzle. Extract into own node?
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
-                        Vec3(146.307, 1.002, -92.047),
-                        InteractMove(135.818, 1.002, -92.047),
-                        Vec3(124.043, 1.002, -92.614),
-                        Vec3(124.043, 1.002, -91.460),
-                    ],
-                ),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move left of block",
-                    coords=[
-                        Vec3(122.067, 1.002, -90.512),
-                        Vec3(122.067, 1.002, -88.945),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move north of block",
-                    coords=[
-                        Vec3(125.220, 1.002, -86.541),
-                        Vec3(128.214, 1.002, -86.659),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move right of block",
-                    coords=[
-                        Vec3(129.907, 1.002, -93.817),
-                        Vec3(129.929, 1.002, -95.855),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
-                        Vec3(124.476, 1.002, -97.991),
-                        Vec3(119.140, 1.002, -97.991),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move to right of block",
-                    coords=[
-                        Vec3(120.715, 1.002, -93.769),
-                        Vec3(120.715, 1.002, -91.819),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                # Block puzzle done
+                # Block puzzle with Mistral Bracelet
+                WindTunnelMinesLowerFloorBlockPuzzle1(),
                 SeqMove(
                     name="Move outside",
                     coords=[
@@ -562,66 +653,8 @@ class WindTunnelMines(SeqList):
                         Vec3(-59.908, 1.002, 7.960),
                     ],
                 ),
-                # TODO(orkaboy): Need to wait here for block to drop?
-                # TODO(orkaboy): Box puzzle. Split out into own node?
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move north of block",
-                    coords=[
-                        Vec3(-56.904, 1.010, 9.713),
-                        Vec3(-53.961, 1.002, 9.713),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move right of block",
-                    coords=[
-                        Vec3(-52.402, 1.010, 5.533),
-                        Vec3(-52.402, 1.010, 0.896),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
-                        Vec3(-57.365, 1.002, -0.616),
-                        Vec3(-63.142, 1.002, -0.616),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move north of block",
-                    coords=[
-                        Vec3(-71.421, 1.010, 7.773),
-                        Vec3(-75.965, 1.002, 7.773),
-                    ],
-                ),
-                SeqDelay("Wait", timeout_in_s=6.0),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move right of block",
-                    coords=[
-                        Vec3(-74.251, 1.002, 5.236),
-                        Vec3(-74.251, 1.002, 2.102),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
-                        Vec3(-86.716, 1.002, 0.232),
-                        Vec3(-91.953, 1.002, 0.232),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                # Block puzzle done
+                # Second block puzzle
+                WindTunnelMinesLowerFloorBlockPuzzle2(),
                 SeqCombatAndMove(
                     name="Move into tunnel",
                     coords=[
@@ -699,7 +732,17 @@ class WindTunnelMines(SeqList):
                         Vec3(21.483, 1.002, 18.467),
                     ],
                 ),
-                SeqCheckpoint("wind_tunnel_mines4"),
+            ],
+        )
+
+
+class WindTunnelMines(SeqList):
+    """Route through the Wind Tunnel Mines."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Wind Tunnel Mines",
+            children=[
                 SeqMove(
                     name="Move left of block",
                     coords=[
@@ -707,7 +750,7 @@ class WindTunnelMines(SeqList):
                         Vec3(25.177, 1.002, 5.839),
                     ],
                 ),
-                # TODO(orkaboy): Continue routing (first floor)
+                # TODO(orkaboy): Continue routing (first floor with Mistral Bracelet)
             ],
         )
 
@@ -721,6 +764,10 @@ class StonemasonsOutpost(SeqList):
             children=[
                 MoveToMines(),
                 SeqCheckpoint("wind_tunnel_mines"),
+                WindTunnelMinesFirstFloor(),
+                SeqCheckpoint("wind_tunnel_mines2"),
+                WindTunnelMinesLowerFloor(),
+                SeqCheckpoint("wind_tunnel_mines4"),
                 WindTunnelMines(),
             ],
         )
