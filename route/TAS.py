@@ -136,7 +136,8 @@ class TASMenu(Menu):
                     + "wind_tunnel_mines    (First floor, by the elevator)\n"
                     + "wind_tunnel_mines2   (After defeating first Bushtroo)\n"
                     + "wind_tunnel_mines3   (Campfire just before Mistral Bracelet)\n"
-                    + "wind_tunnel_mines4   (First floor, with Mistral Bracelet)"
+                    + "wind_tunnel_mines4   (First floor, with Mistral Bracelet)\n"
+                    + "coral_cascades       (Top of Coral Cascades)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
