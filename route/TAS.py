@@ -134,7 +134,9 @@ class TASMenu(Menu):
                     + "moorlands            (When just entering Moorlands)\n"
                     + "moorlands2           (By the campfire at the Runestone)\n"
                     + "wind_tunnel_mines    (First floor, by the elevator)\n"
-                    + "wind_tunnel_mines2   (After defeating first Bushtroo)"
+                    + "wind_tunnel_mines2   (After defeating first Bushtroo)\n"
+                    + "wind_tunnel_mines3   (Campfire just before Mistral Bracelet)\n"
+                    + "wind_tunnel_mines4   (First floor, with Mistral Bracelet)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
