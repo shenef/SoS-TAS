@@ -133,7 +133,11 @@ class TASMenu(Menu):
                     + "elder_mist_boss2     (Elder Mist trials, just after the boss)\n"
                     + "moorlands            (When just entering Moorlands)\n"
                     + "moorlands2           (By the campfire at the Runestone)\n"
-                    + "wind_tunnel_mines    (First floor, by the elevator)"
+                    + "wind_tunnel_mines    (First floor, by the elevator)\n"
+                    + "wind_tunnel_mines2   (After defeating first Bushtroo)\n"
+                    + "wind_tunnel_mines3   (Campfire just before Mistral Bracelet)\n"
+                    + "wind_tunnel_mines4   (First floor, with Mistral Bracelet)\n"
+                    + "coral_cascades       (Top of Coral Cascades)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
@@ -209,6 +213,9 @@ class SoSAnyPercentMenu(TASMenu):
         RouteOption(name="ml_power_belt", description="Moorland Power Belt", default=True),
         RouteOption(name="ml_teal_amber_ore", description="Moorland Teal Amber Ore", default=True),
         RouteOption(name="ml_solar_rain", description="Moorland Solar Rain scroll", default=True),
+        RouteOption(
+            name="wtm_green_leaf", description="Wind Tunnel Mines Green Leaf", default=True
+        ),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict) -> None:

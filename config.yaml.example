@@ -17,6 +17,10 @@ route_config          : ""      # Path to a route options configuration file
 #   moorlands                   # When just entering Moorlands
 #   moorlands2                  # By the campfire at the Runestone
 #   wind_tunnel_mines           # First floor, by the elevator
+#   wind_tunnel_mines2          # After defeating first Bushtroo
+#   wind_tunnel_mines3          # Campfire just before Mistral Bracelet
+#   wind_tunnel_mines4          # First floor, with Mistral Bracelet
+#   coral_cascades              # Top of Coral Cascades
 
 # User Interface
 ui:
