@@ -8,14 +8,15 @@ from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
     InteractMove,
+    MistralBracelet,
     MoveToward,
     SeqAwaitLostControl,
+    SeqBlockPuzzle,
     SeqBracelet,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
     SeqDelay,
-    SeqHoldDirectionDelay,
     SeqHoldDirectionUntilClose,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
@@ -23,6 +24,7 @@ from engine.seq import (
     SeqList,
     SeqMove,
     SeqRouteBranch,
+    SeqSkipUntilClose,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
@@ -289,69 +291,31 @@ class WindTunnelMinesFirstFloor(SeqList):
         )
 
 
-class WindTunnelMinesLowerFloorBlockPuzzle1(SeqList):
+class WindTunnelMinesLowerFloorBlockPuzzle1(SeqBlockPuzzle):
     """First block puzzle sequence."""
 
     def __init__(self: Self) -> None:
         super().__init__(
             name="Block Puzzle #1",
-            children=[
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
-                        Vec3(146.307, 1.002, -92.047),
-                        InteractMove(135.818, 1.002, -92.047),
-                        Vec3(124.043, 1.002, -92.614),
-                        Vec3(124.043, 1.002, -91.460),
-                    ],
-                ),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move left of block",
-                    coords=[
-                        Vec3(122.067, 1.002, -90.512),
-                        Vec3(122.067, 1.002, -88.945),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move north of block",
-                    coords=[
-                        Vec3(125.220, 1.002, -86.541),
-                        Vec3(128.214, 1.002, -86.659),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move right of block",
-                    coords=[
-                        Vec3(129.907, 1.002, -93.817),
-                        Vec3(129.929, 1.002, -95.855),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
-                        Vec3(124.476, 1.002, -97.991),
-                        Vec3(119.140, 1.002, -97.991),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move to right of block",
-                    coords=[
-                        Vec3(120.715, 1.002, -93.769),
-                        Vec3(120.715, 1.002, -91.819),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                # Block puzzle done
+            coords=[
+                Vec3(124.043, 1.002, -92.614),
+                Vec3(124.043, 1.002, -91.460),
+                MistralBracelet(joy_dir=Vec2(0, 1)),
+                Vec3(122.067, 1.002, -90.512),
+                Vec3(122.067, 1.002, -88.945),
+                MistralBracelet(joy_dir=Vec2(1, 0)),
+                Vec3(125.220, 1.002, -86.541),
+                Vec3(128.214, 1.002, -86.659),
+                MistralBracelet(joy_dir=Vec2(0, -1)),
+                Vec3(129.907, 1.002, -93.817),
+                Vec3(129.929, 1.002, -95.855),
+                MistralBracelet(joy_dir=Vec2(-1, 0)),
+                Vec3(124.476, 1.002, -97.991),
+                Vec3(119.140, 1.002, -97.991),
+                MistralBracelet(joy_dir=Vec2(0, 1)),
+                Vec3(120.715, 1.002, -93.769),
+                Vec3(120.715, 1.002, -91.819),
+                MistralBracelet(joy_dir=Vec2(-1, 0)),
             ],
         )
 
@@ -363,63 +327,36 @@ class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
         super().__init__(
             name="Block Puzzle #2",
             children=[
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move north of block",
+                SeqBlockPuzzle(
+                    name="First section",
                     coords=[
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
                         Vec3(-56.904, 1.010, 9.713),
                         Vec3(-53.961, 1.002, 9.713),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move right of block",
-                    coords=[
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
                         Vec3(-52.402, 1.010, 5.533),
                         Vec3(-52.402, 1.010, 0.896),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
                         Vec3(-57.365, 1.002, -0.616),
                         Vec3(-63.142, 1.002, -0.616),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move north of block",
-                    coords=[
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
                         Vec3(-71.421, 1.010, 7.773),
                         Vec3(-75.965, 1.002, 7.773),
                     ],
                 ),
                 SeqDelay("Wait", timeout_in_s=6.0),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move right of block",
+                SeqBlockPuzzle(
+                    name="Second section",
                     coords=[
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
                         Vec3(-74.251, 1.002, 5.236),
                         Vec3(-74.251, 1.002, 2.102),
-                    ],
-                ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                SeqBracelet("Push block"),
-                SeqMove(
-                    name="Move south of block",
-                    coords=[
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
                         Vec3(-86.716, 1.002, 0.232),
                         Vec3(-91.953, 1.002, 0.232),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
                     ],
                 ),
-                SeqHoldDirectionDelay(name="Block", joy_dir=Vec2(0, 1), timeout_s=0.2),
-                SeqBracelet("Push block"),
                 # Block puzzle done
             ],
         )
@@ -578,6 +515,13 @@ class WindTunnelMinesLowerFloor(SeqList):
                 SeqSkipUntilCombat("Rockie"),
                 SeqCombat("Rockie"),
                 SeqSkipUntilIdle("Cutscene"),
+                SeqMove(
+                    name="Move south of block",
+                    coords=[
+                        Vec3(146.307, 1.002, -92.047),
+                        InteractMove(135.818, 1.002, -92.047),
+                    ],
+                ),
                 # Block puzzle with Mistral Bracelet
                 WindTunnelMinesLowerFloorBlockPuzzle1(),
                 SeqMove(
@@ -736,21 +680,174 @@ class WindTunnelMinesLowerFloor(SeqList):
         )
 
 
-class WindTunnelMines(SeqList):
-    """Route through the Wind Tunnel Mines."""
+class WindTunnelMinesBlockPuzzle3(SeqList):
+    """Third block puzzle sequence."""
 
     def __init__(self: Self) -> None:
         super().__init__(
-            name="Wind Tunnel Mines",
+            name="Block Puzzle #3",
             children=[
-                SeqMove(
-                    name="Move left of block",
+                SeqBlockPuzzle(
+                    name="First segment",
                     coords=[
                         Vec3(25.177, 1.002, 7.939),
                         Vec3(25.177, 1.002, 5.839),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(31.285, 1.002, 7.910),
+                        Vec3(32.869, 1.002, 7.910),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(34.975, 1.010, -0.480),
+                        Vec3(34.975, 1.010, -5.665),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
                     ],
                 ),
-                # TODO(orkaboy): Continue routing (first floor with Mistral Bracelet)
+                SeqMove(
+                    name="Jump gap",
+                    coords=[
+                        Vec3(29.039, 0.997, -5.665),
+                        InteractMove(25.386, 1.002, -5.665),
+                    ],
+                ),
+                SeqBlockPuzzle(
+                    name="Second segment",
+                    coords=[
+                        Vec3(18.642, 1.002, -5.079),
+                        Vec3(11.219, 1.002, -5.117),
+                        Vec3(11.219, 1.002, -6.850),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(15.680, 1.002, -8.679),
+                        Vec3(19.772, 1.002, -8.679),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(14.761, 1.002, 5.031),
+                        Vec3(12.910, 1.002, 4.993),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(12.602, 1.010, -3.687),
+                        Vec3(11.164, 1.002, -5.264),
+                        Vec3(11.164, 1.002, -6.755),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(15.376, 1.010, -8.708),
+                        Vec3(19.529, 1.002, -8.708),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(18.421, 1.002, -5.222),
+                        Vec3(18.421, 1.002, -3.772),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(21.640, 1.002, -3.772),
+                        Vec3(21.640, 1.010, -1.990),
+                    ],
+                ),
+                SeqDelay(name="Wait", timeout_in_s=1.5),
+                SeqBlockPuzzle(
+                    name="Third segment",
+                    coords=[
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(0.661, 1.002, -2.013),
+                        Vec3(-2.431, 1.002, -4.096),
+                        Vec3(-3.525, 1.002, -3.460),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(-2.364, 1.002, 8.755),
+                        Vec3(-2.364, 1.002, 14.450),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(-4.357, 1.010, 16.794),
+                        Vec3(-5.600, 1.002, 16.794),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(-7.614, 1.010, 14.596),
+                        Vec3(-7.614, 1.010, 13.458),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(-2.758, 1.002, 14.873),
+                        Vec3(3.716, 1.002, 14.873),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(5.631, 1.010, 12.938),
+                        Vec3(5.631, 1.010, 11.490),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(1.144, 1.002, 12.768),
+                        Vec3(-4.959, 1.002, 12.768),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(-3.209, 1.002, 7.982),
+                        Vec3(-3.209, 1.002, 5.130),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(-4.806, 1.064, 3.180),
+                        Vec3(-6.047, 1.002, 3.180),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(-7.565, 1.002, 7.108),
+                        Vec3(-7.565, 1.002, 8.950),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(-0.764, 1.002, 7.357),
+                        Vec3(2.788, 1.002, 7.357),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(2.788, 1.002, 13.435),
+                    ],
+                ),
+            ],
+        )
+
+
+class EarthWizardMalkomud(SeqList):
+    """Route from block puzzle until Malkomud is defeated."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Earth Wizard Malkomud",
+            children=[
+                SeqMove(
+                    name="Move to windtrap",
+                    coords=[
+                        InteractMove(3.099, 6.002, 18.460),
+                        InteractMove(1.989, 7.002, 19.653),
+                        Vec3(0.039, 7.002, 19.653),
+                    ],
+                ),
+                SeqBracelet(name="Windtrap"),
+                SeqMove(
+                    name="Enter Malkomud's fort",
+                    coords=[
+                        Vec3(-0.718, 7.002, 18.458),
+                        InteractMove(-0.718, 1.002, 17.540),
+                        HoldDirection(-60.500, 1.002, 95.467, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("To Malkomud!", joy_dir=Vec2(0, 1)),
+                SeqSkipUntilCombat("Malkomud talk"),
+                SeqCombat("Malkomud and Rockie"),
+                SeqSkipUntilIdle("Garl makes a friend"),
+            ],
+        )
+
+
+class LeavingOutpost(SeqList):
+    """Route from mines to Coral Cascades."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Leaving Outpost",
+            children=[
+                # TODO(orkaboy): WR gets Rainbow Conch here?
+                SeqMove(
+                    name="Move to elevator",
+                    coords=[
+                        Vec3(21.726, 21.010, 32.521),
+                        Vec3(19.071, 21.010, 29.824),
+                        Vec3(20.001, 21.002, 28.648),
+                        InteractMove(19.810, 16.002, 27.539),
+                        Vec3(21.418, 16.002, 27.539),
+                        Vec3(23.603, 16.002, 22.454),
+                        InteractMove(23.603, 10.002, 20.436),
+                        Vec3(23.731, 10.002, 14.534),
+                        Vec3(17.060, 10.002, 11.977),
+                        Vec3(17.060, 10.002, 7.716),
+                        Vec3(20.450, 10.002, 6.567),
+                        Vec3(23.880, 10.002, 6.567),
+                    ],
+                ),
+                SeqInteract("Elevator"),
+                SeqSkipUntilClose("Say hi to Wentworth", coord=Vec3(124.500, 6.000, 148.500)),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(124.500, 6.002, 147.500),
+                        Vec3(126.500, 6.002, 147.500),
+                    ],
+                ),
+                SeqInteract("Enter Coral Cascades"),
             ],
         )
 
@@ -768,6 +865,8 @@ class StonemasonsOutpost(SeqList):
                 SeqCheckpoint("wind_tunnel_mines2"),
                 WindTunnelMinesLowerFloor(),
                 SeqCheckpoint("wind_tunnel_mines4"),
-                WindTunnelMines(),
+                WindTunnelMinesBlockPuzzle3(),
+                EarthWizardMalkomud(),
+                LeavingOutpost(),
             ],
         )
