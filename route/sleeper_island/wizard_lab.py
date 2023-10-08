@@ -21,8 +21,10 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqMashUntilIdle,
     SeqMove,
     SeqSelectOption,
+    SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
 
@@ -509,9 +511,164 @@ class WizardLabYellowArea(SeqList):
                         Vec3(-1.963, 1.002, 25.120),
                         Vec3(3.996, 1.002, 29.859),
                         HoldDirection(108.500, 1.002, 9.000, joy_dir=Vec2(0, 1)),
-                        # TODO(orkaboy): Continue routing
                     ],
                 ),
+                SeqCombatAndMove(
+                    name="Navigate yellow room",
+                    coords=[
+                        Vec3(108.500, 1.002, 15.177),
+                        Vec3(115.953, 1.002, 24.286),
+                        InteractMove(115.953, 1.002, 33.673),
+                        Vec3(111.618, 1.002, 50.541),
+                        InteractMove(111.618, 1.002, 58.014),
+                        InteractMove(120.206, 1.002, 58.014),
+                        InteractMove(120.206, 1.002, 65.539),
+                        Vec3(120.206, 1.002, 81.076),
+                        InteractMove(120.121, 1.002, 92.889),
+                        InteractMove(108.119, 1.002, 92.714),
+                        InteractMove(108.119, 1.002, 100.806),
+                        InteractMove(119.981, 1.002, 100.806),
+                        InteractMove(120.004, 1.002, 108.864),
+                        Vec3(124.285, 1.002, 113.068),
+                        InteractMove(124.830, 9.002, 113.830),
+                        Vec3(123.555, 9.002, 117.211),
+                        Vec3(117.573, 9.002, 117.211),
+                    ],
+                ),
+                SeqInteract("Button"),
+                SeqMove(
+                    name="Go to lever",
+                    coords=[
+                        Vec3(106.896, 9.002, 115.148),
+                        Vec3(106.088, 9.002, 109.760),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Move around platform",
+                    coords=[
+                        HoldDirection(108.526, 9.002, 87.774, joy_dir=Vec2(1, -1)),
+                        HoldDirection(105.173, 9.002, 40.408, joy_dir=Vec2(-1, -1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Leave portal",
+                    coords=[
+                        Vec3(105.458, 9.002, 27.460),
+                        InteractMove(105.458, 1.002, 26.542),
+                        Vec3(109.183, 1.002, 19.380),
+                        Vec3(108.439, 1.002, 8.930),
+                        HoldDirection(4.167, 1.002, 28.000, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to pillar",
+                    coords=[
+                        Vec3(9.930, 1.002, 22.205),
+                        Vec3(9.930, 1.002, 15.719),
+                        Vec3(7.482, 1.002, 13.100),
+                        Vec3(4.006, 1.002, 13.100),
+                        Vec3(4.006, 2.952, 20.222),
+                    ],
+                ),
+                SeqSelectOption("Place Blue Crystal", skip_dialog_check=True),
+                SeqMove(
+                    name="Move to save branch",
+                    coords=[
+                        Vec3(3.379, 1.002, 13.332),
+                        Vec3(0.548, 1.002, 13.310),
+                        Vec3(-2.010, 1.002, 15.860),
+                    ],
+                ),
+            ],
+        )
+
+
+class WizardLabWhiteArea(SeqList):
+    """Route through white area."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="White area",
+            children=[
+                SeqMove(
+                    name="Enter white portal",
+                    coords=[
+                        Vec3(-1.963, 1.002, 25.120),
+                        Vec3(3.996, 1.002, 29.859),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Enter portal", joy_dir=Vec2(0, 1)),
+                SeqSkipUntilCombat("Boss cutscene"),
+                SeqCombat("Chromatic Apparition"),
+                SeqSkipUntilIdle("Coin of Undeath Accord"),
+            ],
+        )
+
+
+class ReturnToBrisk(SeqList):
+    """Leave Wizard Lab and return to Brisk."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Return to Brisk",
+            children=[
+                SeqMove(
+                    name="Leave Wizard Lab",
+                    coords=[
+                        Vec3(10.008, 1.002, 22.367),
+                        Vec3(10.008, 1.002, 15.522),
+                        Vec3(4.281, 1.002, 9.705),
+                        Vec3(4.281, 1.002, -11.397),
+                        HoldDirection(22.500, 1.002, -65.500, joy_dir=Vec2(1, -1)),
+                        Vec3(22.500, 1.002, -69.186),
+                        Vec3(7.442, 1.002, -69.186),
+                        Vec3(-2.063, 1.002, -65.553),
+                        HoldDirection(144.000, 1.002, 160.498, joy_dir=Vec2(-1, 0)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to Brisk",
+                    coords=[
+                        Vec3(144.000, 1.002, 160.000),
+                        Vec3(134.000, 1.002, 160.000),
+                        Vec3(134.000, 1.002, 151.500),
+                        Vec3(135.000, 1.002, 151.500),
+                    ],
+                ),
+                SeqInteract("Enter Brisk"),
+            ],
+        )
+
+
+class BoardOakumSkiff(SeqList):
+    """Route Brisk until leaving for Wraith Island."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Brisk",
+            children=[
+                SeqMove(
+                    name="Move to ship",
+                    coords=[
+                        Vec3(1.893, 4.002, 48.561),
+                        Vec3(4.644, 4.002, 30.344),
+                        Vec3(9.142, 4.002, 22.549),
+                        Vec3(11.530, 4.002, 17.788),
+                        Vec3(12.322, 4.002, 9.267),
+                        Vec3(18.863, 4.002, 4.980),
+                        Vec3(32.237, 4.002, -8.886),
+                    ],
+                ),
+                SeqCheckpoint("brisk2"),
+                SeqMove(
+                    name="Move to captain",
+                    coords=[
+                        Vec3(33.065, 4.002, -15.542),
+                    ],
+                ),
+                SeqInteract("Talk to captain"),
+                SeqMashUntilIdle("Oakum Skiff"),
             ],
         )
 
@@ -532,8 +689,7 @@ class WizardLab(SeqList):
                 WizardLabTealArea(),
                 SeqCheckpoint("wizard_lab4"),
                 WizardLabYellowArea(),
-                # TODO(orkaboy): Continue routing
                 SeqCheckpoint("wizard_lab_boss"),
-                # TODO(orkaboy): Continue routing
+                WizardLabWhiteArea(),
             ],
         )

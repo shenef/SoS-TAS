@@ -28,6 +28,7 @@ from route.battle_test import BattleTest
 from route.evermist_island import EvermistIsland
 from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
+from route.wraith_island import WraithIsland
 
 logger = logging.getLogger("SYSTEM")
 
@@ -141,7 +142,8 @@ class TASMenu(Menu):
                     + "wizard_lab2          (After placing Blue Crystal)\n"
                     + "wizard_lab3          (After placing Blue+Green Crystals)\n"
                     + "wizard_lab4          (After placing Green+Red Crystals)\n"
-                    + "wizard_lab_boss      (Before boss fight)"
+                    + "wizard_lab_boss      (Before boss fight)\n"
+                    + "brisk2               (Before boarding Oakum Skiff)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
@@ -227,6 +229,7 @@ class SoSAnyPercentMenu(TASMenu):
             children=[
                 EvermistIsland(),
                 SleeperIsland(),
+                WraithIsland(),
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )

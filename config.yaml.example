@@ -27,6 +27,7 @@ route_config          : ""      # Path to a route options configuration file
 #   wizard_lab3                 # After placing Blue+Green Crystals
 #   wizard_lab4                 # After placing Green+Red Crystals
 #   wizard_lab_boss             # Before boss fight
+#   brisk2                      # Before boarding Oakum Skiff
 
 # User Interface
 ui:
