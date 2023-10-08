@@ -513,6 +513,7 @@ class WizardLabYellowArea(SeqList):
                         HoldDirection(108.500, 1.002, 9.000, joy_dir=Vec2(0, 1)),
                     ],
                 ),
+                # TODO(orkaboy): Currently doesn't attempt to dodge encounters
                 SeqCombatAndMove(
                     name="Navigate yellow room",
                     coords=[
