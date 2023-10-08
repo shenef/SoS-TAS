@@ -48,7 +48,7 @@ class SoSResource(Enum):
     NONE = auto()
     Mana = auto()
     ComboPoints = auto()
-    UltimateGuage = auto()
+    UltimateGauge = auto()
 
 
 class SoSAppraisal(Appraisal):
@@ -247,7 +247,7 @@ class SoSAppraisal(Appraisal):
             # Not yet implemented
             # case SoSResource.ComboPoints:
             #     return actor.combo_points >= self.cost
-            # case SoSResource.UltimateGuage:
+            # case SoSResource.UltimateGauge:
             #     return actor.ultimate_gauge >= self.cost
             case _:
                 return True

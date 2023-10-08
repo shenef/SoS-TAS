@@ -50,10 +50,10 @@ class Vec2(NamedTuple):
         center = center or Vec2(0, 0)
         translated = self - center
         # Rotate point using 2d matrix
-        xnew = translated.x * c - translated.y * s
-        ynew = translated.x * s + translated.y * c
+        x_new = translated.x * c - translated.y * s
+        y_new = translated.x * s + translated.y * c
         # Translate point back
-        return Vec2(xnew, ynew) + center
+        return Vec2(x_new, y_new) + center
 
     @property
     def invert_y(self: Self) -> Self:

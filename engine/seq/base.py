@@ -101,7 +101,7 @@ class SeqList(SeqBase):
         if self.step >= num_children:
             return True
         cur_child = self.children[self.step]
-        # Peform logic of current child step
+        # Perform logic of current child step
         ret = cur_child.execute(delta=delta)
         if ret is True:  # If current child is done
             self.step = self.step + 1

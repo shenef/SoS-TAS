@@ -86,7 +86,7 @@ class CombatController:
                 and next_combat_enemy.state_type is NextCombatAction.Attacking
                 and next_combat_enemy.movement_done is True
             ):
-                # accumalates the delta time until it's greater than the block timing
+                # Accumulates the delta time until it's greater than the block timing
                 if self.block_timing >= self.SLUG_TIMING:
                     logger.debug(f"Hitting Block for {next_combat_enemy.move_name}")
                     sos_ctrl().confirm()

@@ -33,7 +33,7 @@ class SoSMemory:
             "monoclassfield_offset": 0x18,
         }
 
-    # Helper for setting the `read_for_updates` field to allow depdencies to
+    # Helper for setting the `read_for_updates` field to allow dependencies to
     # ensure all the modules for the core are loaded
     def _set_ready_for_updates(self: Self) -> None:
         ready = (
