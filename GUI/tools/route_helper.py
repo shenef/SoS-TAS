@@ -237,6 +237,9 @@ class RouteHelper(Menu):
         self.gui_section(5, RouteSegmentType.BOAT, coord=boat_pos)
         LayoutHelper.add_spacer()
 
+        imgui.text(
+            f"Block Puzzle:{' (cur)' if self.current_type is RouteSegmentType.BLOCK_PUZZLE else ''}"
+        )
         self.gui_section(6, RouteSegmentType.BLOCK_PUZZLE, coord=player_pos)
 
         ret = False
