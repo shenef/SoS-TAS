@@ -1,3 +1,5 @@
+"""Routing of Abandoned Wizard Lab section of Sleeper Island."""
+
 import logging
 from typing import Self
 
@@ -6,78 +8,69 @@ from engine.combat import (
 )
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    HoldDirection,
     InteractMove,
-    SeqBracelet,
+    MistralBracelet,
+    SeqAwaitLostControl,
+    SeqBlockPuzzle,
     SeqCheckpoint,
     SeqDelay,
-    SeqHoldDirectionUntilClose,
+    SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
-    SeqLog,
     SeqMove,
+    SeqSelectOption,
     SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
 
 
-class DemoWizardLabEnterTower(SeqList):
+class FirstBlockPuzzle(SeqBlockPuzzle):
+    """Block puzzle in first room."""
+
+    def __init__(self: Self) -> None:
+        super().__init__(
+            name="Block Puzzle #1",
+            coords=[
+                Vec3(-3.831, 1.002, 15.133),
+                Vec3(-3.831, 1.002, 17.216),
+                MistralBracelet(joy_dir=Vec2(0, 1)),
+                Vec3(-6.202, 1.002, 27.352),
+                Vec3(-5.454, 1.002, 27.401),
+                MistralBracelet(joy_dir=Vec2(1, 0)),
+                Vec3(-1.966, 1.002, 24.339),
+                Vec3(-1.966, 1.002, 25.815),
+                MistralBracelet(joy_dir=Vec2(0, 1)),
+            ],
+        )
+
+
+class WizardLabEnterTower(SeqList):
+    """Route up to entering the green portal."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Enter tower",
             children=[
-                SeqMove(
-                    name="Move to cutscene",
-                    coords=[
-                        Vec3(14.300, 1.010, -72.600),
-                    ],
-                ),
                 # Cutscene
+                SeqAwaitLostControl("Scene transition"),
+                SeqSkipUntilIdle("Scene transition"),
+                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(1, -0.5)),
                 SeqSkipUntilIdle(name="Making a door"),
                 SeqMove(
-                    name="Move to entrance",
-                    coords=[
-                        Vec3(22.317, 1.002, -70.433),
-                    ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Go inside tower",
-                    target=Vec3(8.000, 1.002, -13.399),
-                    joy_dir=Vec2(0, 1),
-                ),
-                SeqMove(
                     name="Move to cutscene",
                     coords=[
+                        Vec3(22.317, 1.002, -70.433),
+                        HoldDirection(8.000, 1.002, -13.399, joy_dir=Vec2(0, 1)),
                         Vec3(4.424, 1.002, -11.310),
                         Vec3(3.040, 1.005, 9.869),
                     ],
                 ),
                 # Cutscene
-                SeqSkipUntilIdle(name="Pirate leaves"),
-                SeqMove(
-                    name="Move to block",
-                    coords=[
-                        Vec3(-3.831, 1.002, 15.133),
-                        Vec3(-3.831, 1.002, 17.216),
-                    ],
-                ),
-                SeqBracelet("Push block north"),
-                SeqMove(
-                    name="Move to block",
-                    coords=[
-                        Vec3(-6.202, 1.002, 27.352),
-                        Vec3(-5.454, 1.002, 27.401),
-                    ],
-                ),
-                SeqBracelet("Push block east"),
-                SeqMove(
-                    name="Move to block",
-                    coords=[
-                        Vec3(-1.966, 1.002, 24.339),
-                        Vec3(-1.966, 1.002, 25.815),
-                    ],
-                ),
-                SeqBracelet("Push block north"),
+                SeqSkipUntilIdle(name="Keenathan leaves"),
+                # Block puzzle
+                FirstBlockPuzzle(),
                 SeqMove(
                     name="Go to chest",
                     coords=[
@@ -85,7 +78,8 @@ class DemoWizardLabEnterTower(SeqList):
                         InteractMove(7.100, 6.002, 33.171),
                     ],
                 ),
-                SeqSkipUntilIdle(name="Pick up green crystal"),
+                SeqInteract("Green crystal"),
+                SeqSkipUntilIdle("Green crystal"),
                 SeqMove(
                     name="Go to altar",
                     coords=[
@@ -98,9 +92,7 @@ class DemoWizardLabEnterTower(SeqList):
                     ],
                 ),
                 # Place green crystal
-                SeqInteract(),
-                SeqDelay(name="Menu", timeout_in_s=1.0),
-                SeqInteract(),
+                SeqSelectOption("Place Green Crystal", skip_dialog_check=True),
                 SeqMove(
                     name="Go towards portal",
                     coords=[
@@ -111,28 +103,26 @@ class DemoWizardLabEnterTower(SeqList):
                     ],
                 ),
                 # Checkpoint: Wizard lab
-                SeqCheckpoint(checkpoint_name="wizard_lab1"),
+                SeqCheckpoint(checkpoint_name="wizard_lab"),
                 SeqMove(
-                    name="Go to portal",
+                    name="Enter green portal",
                     coords=[
                         Vec3(-3.187, 1.002, 24.928),
                         Vec3(3.932, 1.002, 29.996),
+                        HoldDirection(-80.000, 1.002, -29.498, joy_dir=Vec2(0, 1)),
                     ],
                 ),
             ],
         )
 
 
-class DemoWizardLabGreenArea(SeqList):
+class WizardLabGreenArea(SeqList):
+    """Route through the green portal area."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Green area",
             children=[
-                SeqHoldDirectionUntilClose(
-                    name="Enter green portal",
-                    target=Vec3(-80.000, 1.002, -29.498),
-                    joy_dir=Vec2(0, 1),
-                ),
                 SeqCombatAndMove(
                     name="Move to fight (AI combat)",
                     coords=[
@@ -158,7 +148,6 @@ class DemoWizardLabGreenArea(SeqList):
                 ),
                 SeqMove(
                     name="Platforms",
-                    precision=0.5,  # Low precision to prevent turning the wrong way
                     coords=[
                         # Jump on platforms
                         InteractMove(-88.460, 6.002, -12.460),
@@ -182,25 +171,24 @@ class DemoWizardLabGreenArea(SeqList):
                         InteractMove(-78.839, 6.002, -3.181),
                     ],
                 ),
-                SeqSkipUntilIdle(name="Pick up blue crystal"),
+                SeqInteract("Blue Crystal"),
+                SeqSkipUntilIdle(name="Blue Crystal"),
                 SeqMove(
                     name="Leave room",
                     coords=[
                         InteractMove(-78.839, 1.010, -10.512),
                         Vec3(-80.122, 1.002, -17.544),
                         Vec3(-80.122, 1.002, -30.838),
+                        HoldDirection(4.000, 1.002, 28.775, joy_dir=Vec2(0, -1)),
                     ],
-                ),
-                SeqHoldDirectionUntilClose(
-                    name="Leave green portal",
-                    target=Vec3(4.000, 1.002, 28.775),
-                    joy_dir=Vec2(0, -1),
                 ),
             ],
         )
 
 
-class DemoWizardLabPlaceBlueCrystal(SeqList):
+class WizardLabPlaceBlueCrystal(SeqList):
+    """Route to place blue crystal."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Set blue crystal",
@@ -217,62 +205,58 @@ class DemoWizardLabPlaceBlueCrystal(SeqList):
                     ],
                 ),
                 # Remove green crystal
-                SeqInteract(),
-                SeqDelay(name="Menu", timeout_in_s=1.0),
-                SeqInteract(),
-                SeqDelay(name="Menu", timeout_in_s=1.0),
+                SeqSelectOption("Remove Green Crystal", skip_dialog_check=True),
+                SeqDelay("Wait", timeout_in_s=1.0),
                 # Place blue crystal
-                SeqInteract(),
-                SeqDelay(name="Menu", timeout_in_s=1.0),
-                SeqInteract(),
+                SeqSelectOption("Place Blue Crystal", skip_dialog_check=True),
                 SeqMove(
                     name="Go towards portal",
                     coords=[
                         Vec3(3.976, 2.947, 15.920),
                         Vec3(3.225, 1.010, 13.016),
-                        Vec3(-1.145, 1.002, 13.016),
-                        Vec3(-3.187, 1.002, 19.657),
+                        Vec3(0.242, 1.002, 12.798),
+                        Vec3(-2.137, 1.002, 15.356),
+                        Vec3(-2.137, 1.002, 25.087),
                     ],
                 ),
                 # Checkpoint: Wizard lab
                 SeqCheckpoint(checkpoint_name="wizard_lab2"),
                 SeqMove(
-                    name="Go to portal",
+                    name="Enter blue portal",
                     coords=[
-                        Vec3(-3.187, 1.002, 24.928),
+                        Vec3(-2.137, 1.002, 25.087),
                         Vec3(3.932, 1.002, 29.996),
+                        HoldDirection(239.500, 1.002, -48.833, joy_dir=Vec2(0, 1)),
                     ],
                 ),
             ],
         )
 
 
-class DemoWizardLabBlueArea(SeqList):
+class WizardLabBlueArea(SeqList):
+    """Route through blue area."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Blue area",
             children=[
-                SeqHoldDirectionUntilClose(
-                    name="Enter blue portal",
-                    target=Vec3(239.500, 1.002, -48.833),
-                    joy_dir=Vec2(0, 1),
-                ),
                 # TODO(orkaboy): Route blue room
             ],
         )
 
 
-class DemoWizardLab(SeqList):
+class WizardLab(SeqList):
+    """Route of Abandoned Wizard Lab, from entering to defeating boss."""
+
     def __init__(self: Self) -> None:
         super().__init__(
             name="Wizard Lab",
             children=[
-                SeqLog(name="SYSTEM", text="We have arrived at the tower!"),
-                DemoWizardLabEnterTower(),
+                WizardLabEnterTower(),
                 # Enter green portal
-                DemoWizardLabGreenArea(),
-                DemoWizardLabPlaceBlueCrystal(),
-                DemoWizardLabBlueArea(),
+                WizardLabGreenArea(),
+                WizardLabPlaceBlueCrystal(),
+                WizardLabBlueArea(),
                 # TODO(orkaboy): A lot
                 SeqCheckpoint(checkpoint_name="wizard_lab_boss"),
             ],
