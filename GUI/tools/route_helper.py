@@ -46,7 +46,6 @@ class RouteCoord:
 
     def __repr__(self: Self) -> str:
         coord = f"{self.coord.x:.3f}, {self.coord.y:.3f}, {self.coord.z:.3f}"
-        joy_dir = f"Vec2({self.joy_dir.x}, {self.joy_dir.y})"
         match self.coord_type:
             case RouteCoordType.MOVE:
                 return f"Vec3({coord})"
@@ -57,7 +56,8 @@ class RouteCoord:
             case RouteCoordType.GRAPLOU:
                 return f"Graplou({coord}, joy_dir=None, hold_timer=0.0)"
             case RouteCoordType.BRACELET:
-                return f"MistralBracelet({coord}, joy_dir={joy_dir})"
+                joy_dir = f"Vec2({self.joy_dir.x}, {self.joy_dir.y})"
+                return f"MistralBracelet(joy_dir={joy_dir})"
         return ""
 
 
