@@ -115,9 +115,6 @@ def initialize_logging(config_data: dict) -> None:
     # Add the handlers to the root logger
     logging.getLogger("").addHandler(console)
 
-    # Turn off logging in specific sublibraries to prevent even more spam
-    logging.getLogger("comtypes").setLevel(logging.WARNING)  # For pyttsx3
-
     # Now the logging to file/console is configured!
 
 
