@@ -115,9 +115,6 @@ def initialize_logging(config_data: dict) -> None:
     # Add the handlers to the root logger
     logging.getLogger("").addHandler(console)
 
-    # Turn off logging in specific sublibraries to prevent even more spam
-    logging.getLogger("comtypes").setLevel(logging.WARNING)  # For pyttsx3
-
     # Now the logging to file/console is configured!
 
 
@@ -154,7 +151,7 @@ def _add_log_level(level_name: str, level_num: int, method_name: str | None = No
     by `logging.getLoggerClass()` (usually just `logging.Logger`). If `method_name` is
     not specified, `level_name.lower()` is used.
 
-    To avoid accidental clobberings of existing attributes, this method will raise
+    To avoid accidental clobbering of existing attributes, this method will raise
     an `AttributeError` if the level name is already an attribute of the `logging` module
     or if the method name is already present
 

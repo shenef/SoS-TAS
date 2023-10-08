@@ -4,7 +4,7 @@ Main entry point of program.
 Loads configuration data from file, initializes logging and sets up the GUI window.
 
 Once everything is initialized, the main function will start the Menu Manager,
-which runs all the sub-menues of the imgui window.
+which runs all the sub-menus of the imgui window.
 """
 
 import config

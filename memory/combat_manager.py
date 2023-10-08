@@ -105,7 +105,7 @@ class CombatPlayer:
 
 class CombatManager:
     # The null pointer here is a const for the pointer we see provided
-    # When the selectors drop from memory for breif periods - Its more of
+    # When the selectors drop from memory for brief periods - Its more of
     # a magic number than anything.
     NULL_POINTER = 0xFFFFFFFF
     ITEM_OBJECT_OFFSET = 0x8
@@ -372,7 +372,7 @@ class CombatManager:
             battle_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
             )
-            # Checks if we lost access to the selector pointer for a breif period as the UI changes.
+            # Checks if we lost access to the selector pointer for a brief period as the UI changes.
             if battle_command_selector == self.NULL_POINTER:
                 self.battle_command_has_focus = False
                 self.battle_command_index = None
@@ -409,7 +409,7 @@ class CombatManager:
             skill_command_selector = self.memory.follow_pointer(
                 self.base, [self.current_encounter_base, 0x138, 0x50, 0x78, 0x0]
             )
-            # Checks if we lost access to the selector pointer for a breif period as the UI changes.
+            # Checks if we lost access to the selector pointer for a brief period as the UI changes.
             if skill_command_selector == self.NULL_POINTER:
                 self.skill_command_has_focus = False
                 self.skill_command_index = None
@@ -461,7 +461,7 @@ class CombatManager:
     # As boost is charged, 5 small live mana is consumed per level, the value is immediately
     # deducted, and the big_live_mana field increases by 1. Reversing a big live mana immediately
     # returns 5 back to the small_live_mana field.
-    # When a boost is consumed, the player recieved the total big live mana as a mana_charge.
+    # When a boost is consumed, the player received the total big live mana as a mana_charge.
     def _read_live_mana(self: Self) -> None:
         if self._should_update():
             small_live_mana = self.memory.follow_pointer(
