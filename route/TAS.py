@@ -139,6 +139,8 @@ class TASMenu(Menu):
                     + "brisk                (At port, just after first pirates cutscene)\n"
                     + "wizard_lab           (After placing Green Crystal)\n"
                     + "wizard_lab2          (After placing Blue Crystal)\n"
+                    + "wizard_lab3          (After placing Blue+Green Crystals)\n"
+                    + "wizard_lab4          (After placing Green+Red Crystals)\n"
                     + "wizard_lab_boss      (Before boss fight)"
                 )
 
