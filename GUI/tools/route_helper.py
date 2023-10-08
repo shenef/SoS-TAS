@@ -12,7 +12,7 @@ from typing import Self
 
 from imgui_bundle import imgui
 
-from engine.mathlib import Vec3
+from engine.mathlib import Vec2, Vec3
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
 from memory import (
@@ -33,17 +33,20 @@ class RouteCoordType(Enum):
     INTERACT_MOVE = auto()  # InteractMove
     HOLD_DIRECTION = auto()  # HoldDirection
     GRAPLOU = auto()  # Graplou
+    BRACELET = auto()  # Mistral Bracelet
 
 
 class RouteCoord:
     """Holds a coordinate and a type."""
 
-    def __init__(self: Self, coord_type: RouteCoordType, coord: Vec3) -> None:
+    def __init__(self: Self, coord_type: RouteCoordType, coord: Vec3, joy_dir: Vec2 = None) -> None:
         self.coord_type = coord_type
         self.coord = coord
+        self.joy_dir = joy_dir
 
     def __repr__(self: Self) -> str:
         coord = f"{self.coord.x:.3f}, {self.coord.y:.3f}, {self.coord.z:.3f}"
+        joy_dir = f"Vec2({self.joy_dir.x}, {self.joy_dir.y})"
         match self.coord_type:
             case RouteCoordType.MOVE:
                 return f"Vec3({coord})"
@@ -53,6 +56,8 @@ class RouteCoord:
                 return f"HoldDirection({coord}, joy_dir=Vec2(x, y))"
             case RouteCoordType.GRAPLOU:
                 return f"Graplou({coord}, joy_dir=None, hold_timer=0.0)"
+            case RouteCoordType.BRACELET:
+                return f"MistralBracelet({coord}, joy_dir={joy_dir})"
         return ""
 
 
@@ -64,6 +69,7 @@ class RouteSegmentType(Enum):
     CLIFF_MOVE = auto()  # SeqCliffMove
     CLIFF_CLIMB = auto()  # SeqCliffClimb
     BOAT = auto()  # SeqBoat
+    BLOCK_PUZZLE = auto()  # SeqBlockPuzzle
 
 
 class RouteSegment:
@@ -90,6 +96,8 @@ class RouteSegment:
                 return "SeqCliffClimb"
             case RouteSegmentType.BOAT:
                 return "SeqBoat"
+            case RouteSegmentType.BLOCK_PUZZLE:
+                return "SeqBlockPuzzle"
         return ""
 
     def __repr__(self: Self) -> str:
@@ -101,6 +109,14 @@ class RouteSegment:
         ret += "    ],\n"
         ret += ")"
         return ret
+
+
+class _Direction:
+    """Direction and label."""
+
+    def __init__(self: Self, joy_dir: Vec2, label: str) -> None:
+        self.joy_dir = joy_dir
+        self.label = label
 
 
 class RouteHelper(Menu):
@@ -122,7 +138,7 @@ class RouteHelper(Menu):
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
                 segment_type=segment_type,
             )
-        if segment_type != RouteSegmentType.BOAT:
+        if segment_type not in (RouteSegmentType.BOAT, RouteSegmentType.BLOCK_PUZZLE):
             imgui.same_line()
             if imgui.button(f"Interact##{idx}"):
                 self.add_coord(
@@ -142,6 +158,20 @@ class RouteHelper(Menu):
                     coord=RouteCoord(RouteCoordType.GRAPLOU, coord),
                     segment_type=segment_type,
                 )
+        if segment_type == RouteSegmentType.BLOCK_PUZZLE:
+            directions = [
+                _Direction(joy_dir=Vec2(1, 0), label="E"),
+                _Direction(joy_dir=Vec2(0, 1), label="N"),
+                _Direction(joy_dir=Vec2(-1, 0), label="W"),
+                _Direction(joy_dir=Vec2(0, -1), label="S"),
+            ]
+            for direction in directions:
+                imgui.same_line()
+                if imgui.button(f"Bracelet({direction.label})"):
+                    self.add_coord(
+                        coord=RouteCoord(RouteCoordType.BRACELET, coord, joy_dir=direction.joy_dir),
+                        segment_type=segment_type,
+                    )
 
     def execute(self: Self, top_level: bool) -> bool:
         """Render the menu and handle input."""
@@ -205,6 +235,9 @@ class RouteHelper(Menu):
 
         imgui.text(f"Boat:{' (cur)' if self.current_type is RouteSegmentType.BOAT else ''}")
         self.gui_section(5, RouteSegmentType.BOAT, coord=boat_pos)
+        LayoutHelper.add_spacer()
+
+        self.gui_section(6, RouteSegmentType.BLOCK_PUZZLE, coord=player_pos)
 
         ret = False
         if not top_level and imgui.button("Back"):
