@@ -37,7 +37,6 @@ class CombatController:
             or self.controller.__class__.__name__
             is not self._encounter_controller_factory().__class__.__name__
         ):
-            # TODO(eein): Add a battle controller factory
             logger.debug("Setting New Combat Controller")
             self.controller = self._encounter_controller_factory()
             logger.debug(f"Using: {self.controller.__class__.__name__}")

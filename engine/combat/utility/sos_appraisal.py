@@ -60,8 +60,6 @@ class SoSAppraisal(Appraisal):
         super().__init__()
 
         self.combat_manager = combat_manager_handle()
-        self.ctrl = sos_ctrl()
-        self.ctrl.delay = 0.1
         self.complete = False
         self.battle_command = SoSBattleCommand.Attack
         self.skill_command_index = 0
@@ -123,8 +121,7 @@ class SoSAppraisal(Appraisal):
 
             for boost in range(self.boost):
                 logger.debug(f"Triggering Boost: {boost + 1}")
-                sos_ctrl().confirm()
-                time.sleep(0.2)
+                sos_ctrl().confirm(tapping=True)
 
             sos_ctrl().toggle_boost(False)
         self.step = SoSAppraisalStep.ConfirmCommand
@@ -134,7 +131,7 @@ class SoSAppraisal(Appraisal):
             self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index == self.battle_command.value
         ):
-            self.ctrl.confirm()
+            sos_ctrl().confirm()
             # Attack skips to selecting enemy sequence
             match self.battle_command:
                 case SoSBattleCommand.Attack:
@@ -171,7 +168,7 @@ class SoSAppraisal(Appraisal):
             and self.combat_manager.skill_command_has_focus
             and self.combat_manager.skill_command_index == self.skill_command_index
         ):
-            self.ctrl.confirm()
+            sos_ctrl().confirm()
             # Attack skips to selecting enemy sequence
             match self.battle_command:
                 case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
@@ -218,7 +215,7 @@ class SoSAppraisal(Appraisal):
     def execute_confirm_enemy_sequence(self: Self) -> None:
         if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
             logger.debug("Confirming Enemy")
-            self.ctrl.confirm()
+            sos_ctrl().confirm()
         else:
             self.step = SoSAppraisalStep.TimingSequence
             logger.debug("Confirmed Target")
@@ -230,7 +227,7 @@ class SoSAppraisal(Appraisal):
                 # need a way to bail out if missed timing
                 if self.is_player_timed_attack_ready():
                     logger.debug("Executing Timing Attack")
-                    self.ctrl.confirm()
+                    sos_ctrl().confirm()
                     self.step = SoSAppraisalStep.ActionComplete
             case SoSTimingType.Charge:
                 # Hold Button until timing ready
