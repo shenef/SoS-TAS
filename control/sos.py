@@ -103,6 +103,9 @@ class SoSController:
     def toggle_confirm(self: Self, state: bool) -> None:
         self.set_button(x_key=Buttons.CONFIRM, value=1 if state else 0)
 
+    def toggle_boost(self: Self, state: bool) -> None:
+        self.set_button(x_key=VgButtons.TRIG_R, value=1 if state else 0)
+
     def toggle_graplou(self: Self, state: bool) -> None:
         self.set_button(x_key=Buttons.GRAPLOU, value=1 if state else 0)
 

@@ -20,7 +20,10 @@ class Moonerang(SoSAppraisal):
     HIT_AT_POSITION_VALUE = 0.50
 
     def __init__(
-        self: Self, value: int = 0, timing_type: SoSTimingType = SoSTimingType.MultiHit
+        self: Self,
+        value: int = 0,
+        timing_type: SoSTimingType = SoSTimingType.MultiHit,
+        boost: int = 0,
     ) -> None:
         super().__init__()
         self.value = value
@@ -33,6 +36,7 @@ class Moonerang(SoSAppraisal):
         self.instruction_done = False
         self.resource = SoSResource.Mana
         self.cost = 7
+        self.boost = boost
 
     def execute_timing_sequence(self: Self) -> None:
         if self.instruction_done is False:

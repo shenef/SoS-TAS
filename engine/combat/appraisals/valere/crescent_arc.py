@@ -14,7 +14,10 @@ logger = logging.getLogger(__name__)
 
 class CrescentArc(SoSAppraisal):
     def __init__(
-        self: Self, value: int = 0, timing_type: SoSTimingType = SoSTimingType.OneHit
+        self: Self,
+        value: int = 0,
+        timing_type: SoSTimingType = SoSTimingType.OneHit,
+        boost: int = 0,
     ) -> None:
         super().__init__()
         self.value = value
@@ -26,3 +29,4 @@ class CrescentArc(SoSAppraisal):
         self.skill_command_index = 0
         self.resource = SoSResource.Mana
         self.cost = 6
+        self.boost = boost

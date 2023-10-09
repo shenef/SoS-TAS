@@ -1,4 +1,5 @@
 import logging
+import time
 from enum import Enum, auto
 from typing import Self
 
@@ -27,6 +28,7 @@ class SoSTimingType(Enum):
 
 class SoSAppraisalStep(Enum):
     SelectingCommand = auto()
+    Boost = auto()
     ConfirmCommand = auto()
     SelectingSkill = auto()
     ConfirmSkill = auto()
@@ -52,7 +54,9 @@ class SoSResource(Enum):
 
 
 class SoSAppraisal(Appraisal):
-    def __init__(self: Self, timing_type: SoSTimingType = SoSTimingType.NONE) -> None:
+    def __init__(
+        self: Self, timing_type: SoSTimingType = SoSTimingType.NONE, boost: int = 0
+    ) -> None:
         super().__init__()
 
         self.combat_manager = combat_manager_handle()
@@ -67,12 +71,15 @@ class SoSAppraisal(Appraisal):
         self.character = PlayerPartyCharacter.NONE
         self.resource = SoSResource.NONE
         self.cost = 0
+        self.boost = boost
 
     # selects the step to perform based on the current step
     def execute(self: Self) -> None:
         match self.step:
             case SoSAppraisalStep.SelectingCommand:
                 self.execute_selecting_command()
+            case SoSAppraisalStep.Boost:
+                self.execute_boost()
             case SoSAppraisalStep.ConfirmCommand:
                 self.execute_confirm_command()
             case SoSAppraisalStep.SelectingSkill:
@@ -103,8 +110,24 @@ class SoSAppraisal(Appraisal):
         ):
             sos_ctrl().dpad.tap_down()
         else:
-            self.step = SoSAppraisalStep.ConfirmCommand
+            self.step = SoSAppraisalStep.Boost
             logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
+
+    def execute_boost(self: Self) -> None:
+        # TODO(eein): Check if theres a flag that shows when live mana is available and use
+        # that to guard this function as well
+        if self.boost > 0:
+            logger.debug(f"Boosting: {self.battle_command.name} {self.boost} times")
+            sos_ctrl().toggle_boost(True)
+            time.sleep(0.5)
+
+            for boost in range(self.boost):
+                logger.debug(f"Triggering Boost: {boost + 1}")
+                sos_ctrl().confirm()
+                time.sleep(0.2)
+
+            sos_ctrl().toggle_boost(False)
+        self.step = SoSAppraisalStep.ConfirmCommand
 
     def execute_confirm_command(self: Self) -> None:
         if (
@@ -222,7 +245,7 @@ class SoSAppraisal(Appraisal):
 
     def execute_action_complete(self: Self) -> None:
         self.complete = True
-        logger.debug("Action Complete")
+        # logger.debug("Action Complete")
 
     def _enemy_targeted(self: Self) -> bool:
         return True

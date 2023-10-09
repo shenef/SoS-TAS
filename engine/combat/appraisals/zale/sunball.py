@@ -21,6 +21,7 @@ class Sunball(SoSAppraisal):
         value: int = 0,
         hold_time: float = 4.0,
         timing_type: SoSTimingType = SoSTimingType.Charge,
+        boost: int = 0,
     ) -> None:
         super().__init__()
         self.value = value
@@ -35,6 +36,7 @@ class Sunball(SoSAppraisal):
         self.resource = SoSResource.Mana
         self.hold_time = hold_time
         self.cost = 8  # add modifier for mana cost reduction?
+        self.boost = boost
 
     def execute_timing_sequence(self: Self) -> None:
         if self.ability_time is None:

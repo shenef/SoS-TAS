@@ -2,17 +2,14 @@ import logging
 from typing import Self
 
 from control import sos_ctrl
-from engine.combat.appraisals.basic_attack import BasicAttack
-from engine.combat.appraisals.valere import CrescentArc
-from engine.combat.appraisals.zale import Sunball
-from engine.combat.utility.core.action import Action
-from engine.combat.utility.sos_appraisal import SoSTimingType
-from engine.combat.utility.sos_consideration import SoSConsideration
-from engine.combat.utility.sos_reasoner import SoSReasoner
+from engine.combat.controllers import (
+    EncounterController,
+    FirstEncounterController,
+    LiveManaTutorialController,
+    SecondEncounterController,
+)
 from memory import (
     CombatEncounter,
-    NextCombatAction,
-    PlayerPartyCharacter,
     combat_manager_handle,
     level_manager_handle,
     new_dialog_manager_handle,
@@ -25,164 +22,57 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
-    SLUG_TIMING = 0.35
-
     def __init__(self: Self) -> None:
-        self.reasoner = SoSReasoner()
-        self.action = None
-        self.ctrl = sos_ctrl()
-        self.block_timing = 0.0
-        self.second_attack = False
+        self.controller = None
 
     # returns a bool to feed to the sequencer
     def execute_combat(self: Self, delta: float) -> bool:
-        self.ctrl.set_neutral()
+        sos_ctrl().set_neutral()
 
-        # if combat is done, just exit
-        if combat_manager.encounter_done is True:
+        # Assign a controller, or the correct controller if it changes.
+        # This is because sometimes when we check, the controller has not been
+        # set by the game yet, or potentially a change in controllers during a fight.
+        if (
+            self.controller is None
+            or self.controller.__class__.__name__
+            is not self._encounter_controller_factory().__class__.__name__
+        ):
+            # TODO(eein): Add a battle controller factory
+            logger.debug("Setting New Combat Controller")
+            self.controller = self._encounter_controller_factory()
+            logger.debug(f"Using: {self.controller.__class__.__name__}")
+
+        if self.controller.encounter_done():
+            self.controller = None
             return True
 
-        # if we are in the starting zone, just execute a non-timed basic attack unless
-        # we have already set the special action for the second encounter
-        # TODO(eein): Move these custom settings over to custom controllers after
-        # refactoring the controllers to use a base class and split methods.
-        # have it check if a state is valid, and set set a custom controller and
-        # execute on those actions, or use `self` to execute the default.
-        self._handle_encounter_controller()
-        # if some dialog is on the screen - make it go away
-        if new_dialog_manager.dialog_open:
-            self.ctrl.toggle_turbo(True)
-            self.ctrl.confirm()
-            self.ctrl.toggle_turbo(False)
-            self.second_attack = True
+        if self.controller.execute_dialog():
             return False
 
-        # We need to decide how to handle these specific scenarios; via profile
-        # or whatever else, but this is good for now.
-        # Note: It can't be stopped or tested mid encounter.
-
-        # if we dont have an action or the current appraisal is complete,
-        # we make a new one.
-        # we also check if battle command has focus, so it doesn't start executing before
-        # we have control
-        if (
-            (self.action is None or self.action.appraisal.complete)
-            and combat_manager.selected_character is not PlayerPartyCharacter.NONE
-            and combat_manager.battle_command_has_focus
-        ):
-            logger.debug("No action exists, executing one one")
-            self.action = self.reasoner.execute()
+        if self.controller.generate_action():
             return False
 
-        # Defending an ability
-        # TODO(eein): Move this to a new method
-        if (
-            self.action is None or self.action.appraisal.complete
-        ) and combat_manager.selected_character is PlayerPartyCharacter.NONE:
-            combat_manager.read_next_combat_enemy()
-            next_combat_enemy = combat_manager.next_combat_enemy
-            if (
-                next_combat_enemy
-                and next_combat_enemy.state_type is NextCombatAction.Attacking
-                and next_combat_enemy.movement_done is True
-            ):
-                # Accumulates the delta time until it's greater than the block timing
-                if self.block_timing >= self.SLUG_TIMING:
-                    logger.debug(f"Hitting Block for {next_combat_enemy.move_name}")
-                    sos_ctrl().confirm()
-                    self.block_timing = 0.0
-                elif next_combat_enemy.movement_done is True:
-                    self.block_timing += delta
-
-            elif next_combat_enemy and next_combat_enemy.state_type is NextCombatAction.Casting:
-                logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
-                sos_ctrl().confirm()
-
-            else:
-                self.block_timing = 0.0
-
-            return False
-        # For some reason the action isn't set, so bail out.
-        if self.action is None:
-            # logger.debug("Baling out because self action is nil")
+        if self.controller.execute_block():
             return False
 
-        # If the consideration doesn't believe the situation is valid, execute it.
-        # This will put the cursor on the character it should be on.
-        # Internally it checks to see if the character is not NONE and if the selected
-        # character is the one it wants and return true if so.
-        # If the character is None, it knows it can't move things.
-        consideration_valid = self.action.consideration.valid(
-            combat_manager.selected_character, self.action
-        )
-        if not consideration_valid:
-            logger.debug("Consideration is not valid, move cursor")
-            self.action.consideration.execute()
+        if not self.controller.has_action():
             return False
 
-        # do we need to navigate to an action?
-        # if we are on the selected character, run the appraisal:
-        # logger.debug("Try to execute the appraisal")
-        self.action.appraisal.execute()
-        if self.action.appraisal.complete:
-            logger.debug("Appraisal is complete, reset action")
-            self.action = None
+        if self.controller.execute_consideration():
+            return False
 
-        # Are we waiting for an attack to complete?
+        if self.controller.action.appraisal.execute():
+            return False
 
-        # Is an enemy attacking - do we need to defend?
-
-        # Execute consideration; it should know what states it expected
-        # If consideration not executed, execute it
-        #   - Considerations must have actions, it will pop an action off the stack
-        #     and run it so the ui is not blocked. once the stack is complete it will mark
-        #     the consideration as completed and will continue on.
-        # If consideration executed
-
-        # Check if we have control
         return False
 
-    def _handle_encounter_controller(self: Self) -> None:
-        if not self.action:
-            for player in combat_manager.players:
-                if combat_manager.selected_character == player.character:
-                    match combat_manager.combat_controller:
-                        case CombatEncounter.FirstEncounter:
-                            match player.character:
-                                case PlayerPartyCharacter.Valere:
-                                    self.action = Action(
-                                        SoSConsideration(player),
-                                        BasicAttack(timing_type=SoSTimingType.NONE),
-                                    )
-                                case PlayerPartyCharacter.Zale:
-                                    self.action = Action(
-                                        SoSConsideration(player),
-                                        BasicAttack(timing_type=SoSTimingType.NONE),
-                                    )
-
-                        case CombatEncounter.SecondEncounter:
-                            if self.second_attack is True:
-                                match player.character:
-                                    case PlayerPartyCharacter.Valere:
-                                        self.action = Action(
-                                            SoSConsideration(player),
-                                            CrescentArc(timing_type=SoSTimingType.NONE),
-                                        )
-                                    case PlayerPartyCharacter.Zale:
-                                        self.action = Action(
-                                            SoSConsideration(player),
-                                            Sunball(value=1000, hold_time=2.0),
-                                        )
-
-                            else:
-                                match player.character:
-                                    case PlayerPartyCharacter.Valere:
-                                        self.action = Action(
-                                            SoSConsideration(player),
-                                            BasicAttack(timing_type=SoSTimingType.NONE),
-                                        )
-                                    case PlayerPartyCharacter.Zale:
-                                        self.action = Action(
-                                            SoSConsideration(player),
-                                            BasicAttack(timing_type=SoSTimingType.NONE),
-                                        )
+    def _encounter_controller_factory(self: Self) -> EncounterController:
+        match combat_manager.combat_controller:
+            case CombatEncounter.FirstEncounter:
+                return FirstEncounterController()
+            case CombatEncounter.SecondEncounter:
+                return SecondEncounterController()
+            case CombatEncounter.LiveManaTutorial:
+                return LiveManaTutorialController()
+            case _:
+                return EncounterController()
