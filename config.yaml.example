@@ -21,6 +21,13 @@ route_config          : ""      # Path to a route options configuration file
 #   wind_tunnel_mines3          # Campfire just before Mistral Bracelet
 #   wind_tunnel_mines4          # First floor, with Mistral Bracelet
 #   coral_cascades              # Top of Coral Cascades
+#   brisk                       # At port, just after first pirates cutscene
+#   wizard_lab                  # After placing Green Crystal
+#   wizard_lab2                 # After placing Blue Crystal
+#   wizard_lab3                 # After placing Blue+Green Crystals
+#   wizard_lab4                 # After placing Green+Red Crystals
+#   wizard_lab_boss             # Before boss fight
+#   brisk2                      # Before boarding Oakum Skiff
 
 # User Interface
 ui:

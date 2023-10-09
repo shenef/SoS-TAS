@@ -4,9 +4,11 @@ import logging
 from typing import Self
 
 from engine.seq import SeqCheckpoint, SeqList
-from route.sleeper_island.coral_cascades import CoralCascades
+from route.sleeper_island.brisk import Brisk, BriskToWizardLab
+from route.sleeper_island.coral_cascades import CoralCascades, CoralCascadesToBrisk
 from route.sleeper_island.moorlands import Moorlands
 from route.sleeper_island.stonemasons import StonemasonsOutpost
+from route.sleeper_island.wizard_lab import BoardOakumSkiff, ReturnToBrisk, WizardLab
 from route.sleeper_island.xtols_landing import XtolsLanding
 
 logger = logging.getLogger(__name__)
@@ -24,6 +26,11 @@ class SleeperIsland(SeqList):
                 Moorlands(),
                 StonemasonsOutpost(),
                 CoralCascades(),
-                # TODO(orkaboy): Routing
+                CoralCascadesToBrisk(),
+                Brisk(),
+                BriskToWizardLab(),
+                WizardLab(),
+                ReturnToBrisk(),
+                BoardOakumSkiff(),
             ],
         )

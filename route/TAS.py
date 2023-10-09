@@ -24,12 +24,11 @@ from GUI import LayoutHelper, Menu, Window
 from route.battle_test import BattleTest
 
 # Old routing, TODO(orkaboy): Remove
-from route.demo import DemoBrisk, DemoWizardLab, DemoWorldBriskToTower
-
 # Routing
 from route.evermist_island import EvermistIsland
 from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
+from route.wraith_island import WraithIsland
 
 logger = logging.getLogger("SYSTEM")
 
@@ -137,7 +136,14 @@ class TASMenu(Menu):
                     + "wind_tunnel_mines2   (After defeating first Bushtroo)\n"
                     + "wind_tunnel_mines3   (Campfire just before Mistral Bracelet)\n"
                     + "wind_tunnel_mines4   (First floor, with Mistral Bracelet)\n"
-                    + "coral_cascades       (Top of Coral Cascades)"
+                    + "coral_cascades       (Top of Coral Cascades)\n"
+                    + "brisk                (At port, just after first pirates cutscene)\n"
+                    + "wizard_lab           (After placing Green Crystal)\n"
+                    + "wizard_lab2          (After placing Blue Crystal)\n"
+                    + "wizard_lab3          (After placing Blue+Green Crystals)\n"
+                    + "wizard_lab4          (After placing Green+Red Crystals)\n"
+                    + "wizard_lab_boss      (Before boss fight)\n"
+                    + "brisk2               (Before boarding Oakum Skiff)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
@@ -171,34 +177,6 @@ class TASMenu(Menu):
                 ret = True
         self.window.end_window()
         return ret
-
-
-class SoSDemoAnyPercentMenu(TASMenu):
-    """Old and unused code for the demo. Not functional."""
-
-    def __init__(self: Self, window: Window, config_data: dict) -> None:
-        super().__init__(window, config_data, title="Sea of Stars Demo Any%")
-
-    # Override
-    def init_TAS(self: Self) -> None:
-        # This is the root node of the TAS
-        TAS_root = SeqList(
-            name="Sea of Stars Demo Any%",
-            children=[
-                # DemoPlateau(),
-                DemoBrisk(),
-                DemoWorldBriskToTower(),
-                DemoWizardLab(),
-                SeqLog(name="SYSTEM", text="SoS Demo Any% TAS done!"),
-            ],
-        )
-        # This initializes the sequencer engine that will execute the TAS
-        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
-
-    def custom_gui(self: Self) -> None:
-        imgui.text_wrapped(
-            "Warning! The Demo TAS probably won't work, due to memory layout changes compared to the full game."  # noqa E501
-        )
 
 
 class SoSAnyPercentMenu(TASMenu):
@@ -251,6 +229,7 @@ class SoSAnyPercentMenu(TASMenu):
             children=[
                 EvermistIsland(),
                 SleeperIsland(),
+                WraithIsland(),
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )
