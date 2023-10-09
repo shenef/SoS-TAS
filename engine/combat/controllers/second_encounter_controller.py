@@ -36,11 +36,7 @@ class SecondEncounterController(EncounterController):
         return False
 
     def generate_action(self: Self) -> bool:
-        if (
-            (self.action is None or self.action.appraisal.complete)
-            and combat_manager.selected_character is not PlayerPartyCharacter.NONE
-            and combat_manager.battle_command_has_focus
-        ):
+        if self._should_generate_action():
             logger.debug("No action exists, executing one one")
             self.action = self._get_action()
             return True

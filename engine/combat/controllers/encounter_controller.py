@@ -6,6 +6,7 @@ from engine.combat.utility.core.action import Action
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
     NextCombatAction,
+    NextCombatEnemy,
     PlayerPartyCharacter,
     combat_manager_handle,
     level_manager_handle,
@@ -48,11 +49,7 @@ class EncounterController:
     # we also check if battle command has focus, so it doesn't start executing before
     # we have control
     def generate_action(self: Self) -> bool:
-        if (
-            (self.action is None or self.action.appraisal.complete)
-            and combat_manager.selected_character is not PlayerPartyCharacter.NONE
-            and combat_manager.battle_command_has_focus
-        ):
+        if self._should_generate_action():
             logger.debug("No action exists, executing one one")
             self.action = self.reasoner.execute()
             return True
@@ -62,22 +59,14 @@ class EncounterController:
     # solution for blocking.
     # Currently it will spam confirm to block.
     def execute_block(self: Self) -> bool:
-        if (
-            self.action is None or self.action.appraisal.complete
-        ) and combat_manager.selected_character is PlayerPartyCharacter.NONE:
+        if self._should_block():
             combat_manager.read_next_combat_enemy()
             next_combat_enemy = combat_manager.next_combat_enemy
-            if (
-                next_combat_enemy
-                and next_combat_enemy.movement_done is True
-                and next_combat_enemy.state_type is NextCombatAction.Attacking
-            ):
+
+            if self._is_blocking_attack(next_combat_enemy):
                 logger.debug(f"Spam Block for {next_combat_enemy.move_name} Attack")
                 sos_ctrl().confirm()
-            elif (
-                next_combat_enemy
-                and next_combat_enemy.state_type is NextCombatAction.Casting
-            ):
+            elif self._is_blocking_spell(next_combat_enemy):
                 logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
                 sos_ctrl().confirm()
 
@@ -111,6 +100,33 @@ class EncounterController:
     # attempting to take control and attack an enemy.
     def has_action(self: Self) -> bool:
         return self.action is not None
+
+    def _should_generate_action(self: Self) -> bool:
+        return (
+            (self.action is None or self.action.appraisal.complete)
+            and combat_manager.selected_character is not PlayerPartyCharacter.NONE
+            and combat_manager.battle_command_has_focus
+        )
+
+    # Check if we should block. This is used to determine if we should be blocking
+    def _should_block(self: Self) -> bool:
+        return (
+            self.action is None or self.action.appraisal.complete
+        ) and combat_manager.selected_character is PlayerPartyCharacter.NONE
+
+    # Determine if we are blocking an attack
+    def _is_blocking_attack(self: Self, next_combat_enemy: NextCombatEnemy) -> bool:
+        return (
+            next_combat_enemy
+            and next_combat_enemy.movement_done is True
+            and next_combat_enemy.state_type is NextCombatAction.Attacking
+        )
+
+    def _is_blocking_spell(self: Self, next_combat_enemy: NextCombatEnemy) -> bool:
+        return (
+            next_combat_enemy
+            and next_combat_enemy.state_type is NextCombatAction.Casting
+        )
 
     # Check the consideration to see if it's valid and return true if so.
     def _consideration_valid(self: Self) -> bool:

@@ -25,9 +25,8 @@ class Moonerang(SoSAppraisal):
         timing_type: SoSTimingType = SoSTimingType.MultiHit,
         boost: int = 0,
     ) -> None:
-        super().__init__()
+        super().__init__(boost=boost, timing_type=timing_type)
         self.value = value
-        self.timing_type = timing_type
         self.battle_command = SoSBattleCommand.Skill
         self.target_type = SoSTargetType.Enemy
         # this needs to move to a system that tracks available abilities.
@@ -36,7 +35,6 @@ class Moonerang(SoSAppraisal):
         self.instruction_done = False
         self.resource = SoSResource.Mana
         self.cost = 7
-        self.boost = boost
 
     def execute_timing_sequence(self: Self) -> None:
         if self.instruction_done is False:
