@@ -19,7 +19,9 @@ class NewDialogManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name("NewDialogManager")
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "NewDialogManager"
+                    )
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)
@@ -27,7 +29,7 @@ class NewDialogManager:
                         return
                     self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
                     self.opened_dialog_boxes_base = self.memory.get_field(
-                        self.fields_base, "openedDialogBoxes"
+                        self.fields_base, "onDialogCompleted"
                     )
 
                 else:
@@ -40,12 +42,9 @@ class NewDialogManager:
         # NewDialogManager -> openedDialogBoxes -> 0x18 -> 0x30 (NewDialogBox)
         try:
             dialog_box_pointer = self.memory.follow_pointer(
-                self.base, [self.opened_dialog_boxes_base, 0x18, 0x30, 0x0]
+                self.base, [self.opened_dialog_boxes_base, 0x0]
             )
-            dialog_box_pointer_2 = self.memory.follow_pointer(
-                self.base, [self.opened_dialog_boxes_base, 0x18, 0x48, 0x0]
-            )
-            if dialog_box_pointer != 0x0 or dialog_box_pointer_2 != 0x0:
+            if dialog_box_pointer != 0x0:
                 self.dialog_open = True
             else:
                 self.dialog_open = False
