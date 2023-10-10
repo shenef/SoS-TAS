@@ -32,9 +32,11 @@ class LevelUpManager:
 
     def __init__(self: Self) -> None:
         """Initialize a new LevelUpManager object."""
+        # Memory related information
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
+        # Data fields
         self.level_up_screen_active: bool = False
         self.current_upgrades: list[LevelUpUpgrade] = []
         self.active_index = None
