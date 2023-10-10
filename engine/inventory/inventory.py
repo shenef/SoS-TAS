@@ -48,13 +48,6 @@ class InventoryManager:
         """Increase money held in wallet."""
         self.money += amount
 
-    def __repr__(self: Self) -> str:
-        ret = f"Money: {self.money}"
-        ret += "\nItems:"
-        for item, amount in self.items.items():
-            ret += f"\n  {amount}x {item}"
-        return ret
-
 
 _inventory_manager = InventoryManager()
 
