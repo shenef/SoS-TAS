@@ -207,3 +207,6 @@ class SeqEquip(SeqBase):
                 return True
 
         return False
+
+
+# TODO(orkaboy): Add shopping node
