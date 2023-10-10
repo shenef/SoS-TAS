@@ -274,9 +274,8 @@ class WindTunnelMinesFirstFloor(SeqList):
                     joy_dir=Vec2(-1, 0.5),
                     mash_confirm=True,
                 ),
-                SeqCombat("Fight Bushtroo"),
-                SeqMove(
-                    name="Move into tunnel mouth",
+                SeqCombatAndMove(
+                    name="Fight Bushtroo and go into tunnel mouth",
                     coords=[
                         Vec3(99.725, 2.002, 28.737),
                         InteractMove(98.564, 3.002, 29.228),
@@ -387,8 +386,7 @@ class WindTunnelMinesLowerFloor(SeqList):
                 SeqHoldDirectionUntilCombat(
                     name="Attack!", joy_dir=Vec2(-1, -1), mash_confirm=True
                 ),
-                SeqCombat("Bats and ant"),
-                SeqMove(
+                SeqCombatAndMove(
                     name="Move to ladder",
                     coords=[
                         Vec3(-85.505, 1.002, 16.540),
@@ -564,9 +562,8 @@ class WindTunnelMinesLowerFloor(SeqList):
                     joy_dir=Vec2(-1, 1),
                     mash_confirm=True,
                 ),
-                SeqCombat("Fight Bushtroo"),
-                SeqMove(
-                    name="Move to tunnel mouth",
+                SeqCombatAndMove(
+                    name="Fight Bushtroo and move to tunnel mouth",
                     coords=[
                         Vec3(93.373, 1.002, -33.274),
                         InteractMove(92.663, 2.002, -32.462),
@@ -638,9 +635,8 @@ class WindTunnelMinesLowerFloor(SeqList):
                     joy_dir=Vec2(1, 0.5),
                     mash_confirm=True,
                 ),
-                SeqCombat("Fight Bushtroo"),
-                SeqMove(
-                    name="Move into tunnel",
+                SeqCombatAndMove(
+                    name="Fight Bushtroo and move into tunnel",
                     coords=[
                         Vec3(-124.578, 1.002, 95.514),
                         InteractMove(-123.700, 2.002, 96.360),

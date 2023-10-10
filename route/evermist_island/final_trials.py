@@ -97,7 +97,7 @@ class IntroFinalTrial(SeqList):
                 SeqHoldDirectionUntilCombat(
                     name="Attack enemies",
                     joy_dir=Vec2(0, -1),
-                    mash_confirm=True,  # TODO(orkaboy): May not be worth it for the 1 dmg
+                    mash_confirm=True,
                 ),
                 SeqCombatAndMove(
                     name="Fight enemies",
@@ -166,8 +166,7 @@ class IntroFinalTrial(SeqList):
                 SeqInteract("Pillar"),
                 SeqSkipUntilCombat("Wyrd"),
                 SeqCombat("Wyrd"),
-                # TODO(orkaboy): Implement proper level up
-                SeqMashUntilIdle("TEMP: Level up & cutscene"),
+                SeqMashUntilIdle("Wyrd cutscene"),
                 SeqMove(
                     name="Leave dungeon",
                     coords=[
