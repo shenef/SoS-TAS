@@ -12,6 +12,7 @@ class ItemType(Enum):
     VALUABLE = auto()
     WEAPON = auto()
     ARMOR = auto()
+    ACCESSORY = auto()
     FOOD = auto()
 
 
