@@ -2,7 +2,7 @@
 
 from typing import Self
 
-from engine.inventory.item import Item
+from engine.inventory.item import Item, ItemType
 
 
 # TODO(orkaboy): Add validation when removing/buying/selling stuff
@@ -47,6 +47,14 @@ class InventoryManager:
     def add_money(self: Self, amount: int) -> None:
         """Increase money held in wallet."""
         self.money += amount
+
+    def get_items_by_type(self: Self, item_type: ItemType) -> list[tuple[Item, int]]:
+        """Return a list of items held, based on item type."""
+        ret: list[tuple[Item, int]] = []
+        for item, amount in self.items.items():
+            if item.item_type == item_type:
+                ret.append((item, amount))
+        return ret
 
 
 _inventory_manager = InventoryManager()

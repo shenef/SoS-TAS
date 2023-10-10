@@ -3,7 +3,7 @@ from typing import Self
 
 from imgui_bundle import imgui
 
-from engine.inventory import get_inventory_manager
+from engine.inventory import ItemType, get_inventory_manager
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
 
@@ -26,9 +26,22 @@ class InventoryHelper(Menu):
         imgui.text(f"Money: {inventory_manager.money}")
         LayoutHelper.add_spacer()
 
-        imgui.text("Items:")
-        for item, amount in inventory_manager.items.items():
-            imgui.text(f"  {amount}x {item}")
+        for item_type in [
+            ItemType.VALUABLE,
+            ItemType.KEY,
+            ItemType.WEAPON,
+            ItemType.ARMOR,
+            ItemType.ACCESSORY,
+            ItemType.FOOD,
+            ItemType.RECIPE,
+            ItemType.INGREDIENT,
+        ]:
+            items = inventory_manager.get_items_by_type(item_type)
+            if len(items):
+                header_open, visible = imgui.collapsing_header(item_type.name, True, flags=32)
+                if header_open and visible:
+                    for item, amount in items:
+                        imgui.text(f"{amount}x {item}")
 
         ret = False
         if not top_level and imgui.button("Back"):

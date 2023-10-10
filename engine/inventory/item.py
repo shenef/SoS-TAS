@@ -14,6 +14,9 @@ class ItemType(Enum):
     ARMOR = auto()
     ACCESSORY = auto()
     FOOD = auto()
+    KEY = auto()
+    INGREDIENT = auto()
+    RECIPE = auto()
 
 
 class Item:
@@ -27,6 +30,9 @@ class Item:
         self.name = name
         self.cost = cost
         self.sell_value = sell_value
+
+    def __eq__(self: Self, other: Self) -> bool:
+        return other and self.guid == other.guid
 
     def __hash__(self: Self) -> int:
         return hash(self.guid)
