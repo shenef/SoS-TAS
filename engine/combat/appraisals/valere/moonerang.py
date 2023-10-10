@@ -17,7 +17,7 @@ combat_manager = combat_manager_handle()
 
 
 class Moonerang(SoSAppraisal):
-    HIT_AT_POSITION_VALUE = 0.50
+    HIT_AT_POSITION_VALUE = 0.55
 
     def __init__(
         self: Self,
