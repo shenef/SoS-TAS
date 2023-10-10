@@ -65,8 +65,8 @@ class EquipmentCommand(NamedTuple):
 
     character: PlayerPartyCharacter
     item: Item
-    # 0, 1, 2 (gold). Only relevant if item.item_type is ItemType.ACCESSORY
-    accessory_slot: int = 0
+    # 0, 1 (trinket), 2 (gold/group). Only relevant if item.item_type is ItemType.TRINKET
+    trinket_slot: int = 0
 
 
 class SeqEquip(SeqBase):
@@ -87,9 +87,9 @@ class SeqEquip(SeqBase):
 
         WEAPON = 0
         ARMOR = 1
-        ACC1 = 2
-        ACC2 = 3
-        ACC3 = 4
+        TRINKET1 = 2
+        TRINKET2 = 3
+        GROUP_TRINKET = 4
 
     def __init__(self: Self, name: str, commands: list[EquipmentCommand]) -> None:
         super().__init__(name)
@@ -116,7 +116,7 @@ class SeqEquip(SeqBase):
         # TODO(orkaboy): Temp, select first char
         return True
 
-    def select_slot(self: Self, item: Item, accessory_slot: int = 0) -> bool:
+    def select_slot(self: Self, item: Item, trinket_slot: int = 0) -> bool:
         """Select the equipment slot."""
         slot = SeqEquip.EquipSlot.WEAPON
         ctrl = sos_ctrl()
@@ -125,18 +125,18 @@ class SeqEquip(SeqBase):
                 slot = SeqEquip.EquipSlot.WEAPON
             case ItemType.ARMOR:
                 slot = SeqEquip.EquipSlot.ARMOR
-            case ItemType.ACCESSORY:
-                match accessory_slot:
+            case ItemType.TRINKET:
+                match trinket_slot:
                     case 0:
-                        slot = SeqEquip.EquipSlot.ACC1
+                        slot = SeqEquip.EquipSlot.TRINKET1
                     case 1:
-                        slot = SeqEquip.EquipSlot.ACC2
+                        slot = SeqEquip.EquipSlot.TRINKET2
                     case 2:
-                        slot = SeqEquip.EquipSlot.ACC3
+                        slot = SeqEquip.EquipSlot.GROUP_TRINKET
                     case _:
                         # Can't put accessory in this slot! What are you doing?!
                         logger.error(
-                            f"It's not possible to equip {item.name} in slot {accessory_slot}!"
+                            f"It's not possible to equip {item.name} in slot {trinket_slot}!"
                         )
                         return False
             case _:
@@ -185,7 +185,7 @@ class SeqEquip(SeqBase):
                 else:
                     self.next_command()
             case SeqEquip.FSM.SELECT_SLOT:
-                if self.select_slot(command.item, command.accessory_slot):
+                if self.select_slot(command.item, command.trinket_slot):
                     ctrl.confirm(tapping=True)
                     self.state = SeqEquip.FSM.EQUIP_GEAR
                 elif self.next_command():

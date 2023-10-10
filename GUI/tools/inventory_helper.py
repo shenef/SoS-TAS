@@ -31,7 +31,7 @@ class InventoryHelper(Menu):
             ItemType.KEY,
             ItemType.WEAPON,
             ItemType.ARMOR,
-            ItemType.ACCESSORY,
+            ItemType.TRINKET,
             ItemType.FOOD,
             ItemType.RECIPE,
             ItemType.INGREDIENT,
