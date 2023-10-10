@@ -6,6 +6,7 @@ from engine.inventory.item import Item
 
 
 # TODO(orkaboy): Add validation when removing/buying/selling stuff
+# TODO(orkaboy): Grab some of these things from memory
 class InventoryManager:
     """A class that manages items held by the party."""
 
