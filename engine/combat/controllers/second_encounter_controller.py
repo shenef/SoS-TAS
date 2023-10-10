@@ -22,6 +22,7 @@ new_dialog_manager = new_dialog_manager_handle()
 
 class SecondEncounterController(EncounterController):
     def __init__(self: Self) -> None:
+        """Initialize a new SecondEncounterController object."""
         super().__init__()
         self.second_attack = False
 

@@ -23,6 +23,7 @@ new_dialog_manager = new_dialog_manager_handle()
 # should short circuit the root combat controller.
 class EncounterController:
     def __init__(self: Self) -> None:
+        """Initialize a new EncounterController object."""
         self.reasoner = SoSReasoner()
         self.action: Action = None
         self.block_timing = 0.0
@@ -123,13 +124,8 @@ class EncounterController:
         )
 
     def _is_blocking_spell(self: Self, next_combat_enemy: NextCombatEnemy) -> bool:
-        return (
-            next_combat_enemy
-            and next_combat_enemy.state_type is NextCombatAction.Casting
-        )
+        return next_combat_enemy and next_combat_enemy.state_type is NextCombatAction.Casting
 
     # Check the consideration to see if it's valid and return true if so.
     def _consideration_valid(self: Self) -> bool:
-        return self.action.consideration.valid(
-            combat_manager.selected_character, self.action
-        )
+        return self.action.consideration.valid(combat_manager.selected_character, self.action)

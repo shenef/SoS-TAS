@@ -26,6 +26,7 @@ class Checkpoint:
 
 class Blackboard:
     def __init__(self: Self) -> None:
+        """Initialize a new Blackboard object."""
         self.start_time = datetime.now()
         self.last_timestamp = self.start_time
         self.checkpoints: list[Checkpoint] = []

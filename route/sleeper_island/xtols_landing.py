@@ -25,6 +25,7 @@ class XtolsLanding(SeqList):
     """Route from arrival from Evermist Island to leaving X'tol's Landing for the world map."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new XtolsLanding object."""
         super().__init__(
             name="X'tol's Landing",
             children=[

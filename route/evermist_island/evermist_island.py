@@ -20,6 +20,7 @@ class EvermistIsland(SeqList):
     """Top level Evermist Island. Route from beginning of game to being thrown to Sleeper Island."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new EvermistIsland object."""
         super().__init__(
             name="Evermist Island",
             children=[

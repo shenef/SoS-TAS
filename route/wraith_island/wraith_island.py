@@ -12,6 +12,7 @@ class WraithIsland(SeqList):
     """Top-level routing of Wraith Island, from arrival to returning to Brisk."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WraithIsland object."""
         super().__init__(
             name="Wraith Island",
             children=[

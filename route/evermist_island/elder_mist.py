@@ -26,6 +26,7 @@ class ElderMistTrialsRight(SeqList):
     """The right section of the Elder Mist Trials. A few fights."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new ElderMistTrialsRight object."""
         super().__init__(
             name="Right Trial",
             children=[
@@ -122,6 +123,7 @@ class ElderMistTrialsCenter(SeqList):
     """The central section of the Elder Mist Trials. The quiz questions."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new ElderMistTrialsCenter object."""
         super().__init__(
             name="Center Trial",
             children=[
@@ -242,6 +244,7 @@ class ElderMistTrialsLeft(SeqList):
     """The left section of the Elder Mist Trials. Moving platform and fights."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new ElderMistTrialsLeft object."""
         super().__init__(
             name="Left Trial",
             children=[
@@ -311,6 +314,7 @@ class ElderMistTrials(SeqList):
     """Top level Elder Mist Trials. Route from entry to getting thrown to Sleeper Island."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new ElderMistTrials object."""
         super().__init__(
             name="Elder Mist Trials",
             children=[

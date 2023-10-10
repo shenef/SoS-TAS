@@ -18,6 +18,7 @@ class SleeperIsland(SeqList):
     """Top-level routing of Sleeper Island, from arrival at X'tol to leaving for Wraith Island."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new SleeperIsland object."""
         super().__init__(
             name="Sleeper Island",
             children=[
