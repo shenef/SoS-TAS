@@ -32,6 +32,7 @@ class IntroFinalTrial(SeqList):
     """
 
     def __init__(self: Self) -> None:
+        """Initialize a new IntroFinalTrial object."""
         super().__init__(
             name="Final trials",
             children=[

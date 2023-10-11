@@ -1,5 +1,13 @@
+# Python
 __pycache__
-imgui.ini
-Logs
+
+# Config files
 config.yaml
 route_config.yaml
+imgui.ini
+
+# TAS output
+Logs
+
+# Ruff output
+report.json

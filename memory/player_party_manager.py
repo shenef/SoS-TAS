@@ -16,6 +16,7 @@ class PlayerMovementState(Enum):
 
 class PlayerPartyManager:
     def __init__(self: Self) -> None:
+        """Initialize a new PlayerPartyManager object."""
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None

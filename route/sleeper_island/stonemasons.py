@@ -36,6 +36,7 @@ class MoveToMines(SeqList):
     """Route from arrival at Stonemason's Outpost into the mines."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new MoveToMines object."""
         super().__init__(
             name="Navigate to mines",
             children=[
@@ -77,6 +78,7 @@ class WindTunnelMinesFirstFloor(SeqList):
     """Route through the First Floor of Wind Tunnel Mines."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WindTunnelMinesFirstFloor object."""
         super().__init__(
             name="Wind Tunnel Mines First Floor",
             children=[
@@ -295,6 +297,7 @@ class WindTunnelMinesLowerFloorBlockPuzzle1(SeqBlockPuzzle):
     """First block puzzle sequence."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WindTunnelMinesLowerFloorBlockPuzzle1 object."""
         super().__init__(
             name="Block Puzzle #1",
             coords=[
@@ -324,6 +327,7 @@ class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
     """Second block puzzle sequence."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WindTunnelMinesLowerFloorBlockPuzzle2 object."""
         super().__init__(
             name="Block Puzzle #2",
             children=[
@@ -366,6 +370,7 @@ class WindTunnelMinesLowerFloor(SeqList):
     """Route through the lower floor Wind Tunnel Mines."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WindTunnelMinesLowerFloor object."""
         super().__init__(
             name="Wind Tunnel Mines Lower Floor",
             children=[
@@ -684,6 +689,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
     """Third block puzzle sequence."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WindTunnelMinesBlockPuzzle3 object."""
         super().__init__(
             name="Block Puzzle #3",
             children=[
@@ -785,6 +791,7 @@ class EarthWizardMalkomud(SeqList):
     """Route from block puzzle until Malkomud is defeated."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new EarthWizardMalkomud object."""
         super().__init__(
             name="Earth Wizard Malkomud",
             children=[
@@ -817,6 +824,7 @@ class LeavingOutpost(SeqList):
     """Route from mines to Coral Cascades."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new LeavingOutpost object."""
         super().__init__(
             name="Leaving Outpost",
             children=[
@@ -856,6 +864,7 @@ class StonemasonsOutpost(SeqList):
     """Route from arrival at Stonemason's Outpost until leaving."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new StonemasonsOutpost object."""
         super().__init__(
             name="Stonemason's Outpost",
             children=[

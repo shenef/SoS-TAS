@@ -22,6 +22,7 @@ class CharacterSelectButton:
 
 class TitleSequenceManager:
     def __init__(self: Self) -> None:
+        """Initialize a new TitleSequenceManager object."""
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None

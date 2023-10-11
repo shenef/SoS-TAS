@@ -30,6 +30,7 @@ class IntroForbiddenCave(SeqList):
     """Forbidden Cave section, from entry, beating Bosslug, and leaving."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new IntroForbiddenCave object."""
         super().__init__(
             name="Forbidden Cave",
             children=[

@@ -5,6 +5,7 @@ from memory.core import mem_handle
 
 class LevelManager:
     def __init__(self: Self) -> None:
+        """Initialize a new LevelManager object."""
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None

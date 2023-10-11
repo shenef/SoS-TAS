@@ -6,6 +6,7 @@ from engine.combat.utility.core.appraisal import Appraisal
 
 class Consideration:
     def __init__(self: Self) -> None:
+        """Initialize a new Consideration object."""
         self.value = 0
         self.appraisals = self.generate_appraisals()
 

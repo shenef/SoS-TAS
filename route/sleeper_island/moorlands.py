@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 class Moorlands(SeqList):
     def __init__(self: Self) -> None:
+        """Initialize a new Moorlands object."""
         super().__init__(
             name="Moorlands",
             children=[

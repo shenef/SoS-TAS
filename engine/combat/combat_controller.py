@@ -23,6 +23,7 @@ new_dialog_manager = new_dialog_manager_handle()
 
 class CombatController:
     def __init__(self: Self) -> None:
+        """Initialize a new CombatController object."""
         self.controller = None
 
     # returns a bool to feed to the sequencer

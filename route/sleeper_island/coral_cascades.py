@@ -22,6 +22,7 @@ class CoralCascadesToBrisk(SeqList):
     """Route from Coral Cascades to Brisk."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new CoralCascadesToBrisk object."""
         super().__init__(
             name="To Brisk",
             children=[
@@ -50,6 +51,7 @@ class CoralCascades(SeqList):
     # TODO(orkaboy): Movement through this entire segment is somewhat difficult due to the rapids.
     # TODO(orkaboy): Might need to decrease precision on some parts.
     def __init__(self: Self) -> None:
+        """Initialize a new CoralCascades object."""
         super().__init__(
             name="Coral Cascades",
             children=[

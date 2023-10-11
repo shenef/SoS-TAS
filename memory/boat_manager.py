@@ -6,6 +6,7 @@ from memory.core import mem_handle
 
 class BoatManager:
     def __init__(self: Self) -> None:
+        """Initialize a new BoatManager object."""
         self.memory = mem_handle()
         self.base = None
         self.position = Vec3(None, None, None)

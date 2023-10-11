@@ -47,11 +47,13 @@ class CombatSpellLock:
 
 class CombatCastingData:
     def __init__(self: Self) -> None:
+        """Initialize a new CombatCastingData object."""
         self.spell_locks: list[CombatDamageType] = []
 
 
 class CombatEnemyTarget:
     def __init__(self: Self) -> None:
+        """Initialize a new CombatEnemyTarget object."""
         self.max_hp: int = None
         self.current_hp: int = None
         self.physical_attack: int = None
@@ -90,6 +92,7 @@ class NextCombatEnemy:
 
 class CombatPlayer:
     def __init__(self: Self) -> None:
+        """Initialize a new CombatPlayer object."""
         self.max_hp: int = None
         self.current_hp: int = None
         self.current_mp: int = None
@@ -113,6 +116,7 @@ class CombatManager:
     SPELLPOWER_ZERO = 0.0
 
     def __init__(self: Self) -> None:
+        """Initialize a new CombatManager object."""
         self.memory = mem_handle()
         self.base: int = None
         self.fields_base: int = None

@@ -27,6 +27,7 @@ class IntroMooncradle(SeqList):
     """Childhood, route from cave to Zenith Academy."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new IntroMooncradle object."""
         super().__init__(
             name="Mooncradle",
             children=[
@@ -166,6 +167,7 @@ class IntroZenithAcademy(SeqList):
     """Route Zenith Academy, from dorms, until jumping into Final Trials."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new IntroZenithAcademy object."""
         super().__init__(
             name="Zenith Academy",
             children=[

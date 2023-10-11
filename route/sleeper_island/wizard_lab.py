@@ -35,6 +35,7 @@ class FirstBlockPuzzle(SeqBlockPuzzle):
     """Block puzzle in first room."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new FirstBlockPuzzle object."""
         super().__init__(
             name="Block Puzzle #1",
             coords=[
@@ -55,6 +56,7 @@ class WizardLabEnterTower(SeqList):
     """Route up to entering the green portal."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabEnterTower object."""
         super().__init__(
             name="Enter tower",
             children=[
@@ -125,6 +127,7 @@ class WizardLabGreenArea(SeqList):
     """Route through the green portal area."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabGreenArea object."""
         super().__init__(
             name="Green area",
             children=[
@@ -195,6 +198,7 @@ class WizardLabPlaceBlueCrystal(SeqList):
     """Route to place blue crystal."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabPlaceBlueCrystal object."""
         super().__init__(
             name="Set blue crystal",
             children=[
@@ -242,6 +246,7 @@ class WizardLabBlueArea(SeqList):
     """Route through blue area."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabBlueArea object."""
         super().__init__(
             name="Blue area",
             children=[
@@ -380,6 +385,7 @@ class WizardLabTealArea(SeqList):
     """Route through teal area."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabTealArea object."""
         super().__init__(
             name="Teal area",
             children=[
@@ -502,6 +508,7 @@ class WizardLabYellowArea(SeqList):
     """Route through yellow area."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabYellowArea object."""
         super().__init__(
             name="Yellow area",
             children=[
@@ -589,6 +596,7 @@ class WizardLabWhiteArea(SeqList):
     """Route through white area."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLabWhiteArea object."""
         super().__init__(
             name="White area",
             children=[
@@ -611,6 +619,7 @@ class ReturnToBrisk(SeqList):
     """Leave Wizard Lab and return to Brisk."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new ReturnToBrisk object."""
         super().__init__(
             name="Return to Brisk",
             children=[
@@ -646,6 +655,7 @@ class BoardOakumSkiff(SeqList):
     """Route Brisk until leaving for Wraith Island."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new BoardOakumSkiff object."""
         super().__init__(
             name="Brisk",
             children=[
@@ -678,6 +688,7 @@ class WizardLab(SeqList):
     """Route of Abandoned Wizard Lab, from entering to defeating boss."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new WizardLab object."""
         super().__init__(
             name="Wizard Lab",
             children=[

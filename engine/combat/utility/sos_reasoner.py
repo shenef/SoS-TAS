@@ -11,6 +11,7 @@ combat_manager = combat_manager_handle()
 
 class SoSReasoner(Reasoner):
     def __init__(self: Self) -> None:
+        """Initialize a new SoSReasoner object."""
         self.considerations = []
 
     def generate_considerations(self: Self, players: list[CombatPlayer]) -> list[Consideration]:

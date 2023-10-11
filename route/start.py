@@ -81,6 +81,7 @@ class SeqNavigateMainMenu(SeqBase):
 
 class SeqNewGameFromMenu(SeqList):
     def __init__(self: Self) -> None:
+        """Initialize a new SeqNewGameFromMenu object."""
         super().__init__(
             name="Select main character",
             children=[

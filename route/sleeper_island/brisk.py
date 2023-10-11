@@ -22,6 +22,7 @@ class Brisk(SeqList):
     """Route from arrival at Brisk until leaving."""
 
     def __init__(self: Self) -> None:
+        """Initialize a new Brisk object."""
         super().__init__(
             name="Brisk",
             children=[
@@ -113,6 +114,7 @@ class Brisk(SeqList):
 
 class BriskToWizardLab(SeqList):
     def __init__(self: Self) -> None:
+        """Initialize a new BriskToWizardLab object."""
         super().__init__(
             name="World map",
             children=[

@@ -24,6 +24,7 @@ class Buttons(IntEnum):
 
 class VgTranslator:
     def __init__(self: Self) -> None:
+        """Initialize a new VgTranslator object."""
         logger.info("Setting up emulated Xbox360 controller.")
         self.gamepad = vg.VX360Gamepad()
 

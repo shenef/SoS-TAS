@@ -14,6 +14,7 @@ from engine.seq import (
 # the combat controller and then run the battle test sequence.
 class BattleTest(SeqList):
     def __init__(self: Self) -> None:
+        """Initialize a new BattleTest object."""
         super().__init__(
             name="BattleTest",
             children=[
@@ -25,6 +26,7 @@ class BattleTest(SeqList):
 
 class BattleTestSequence(SeqList):
     def __init__(self: Self) -> None:
+        """Initialize a new BattleTestSequence object."""
         super().__init__(
             name="Testing Fight",
             children=[

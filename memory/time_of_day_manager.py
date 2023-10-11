@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 # `current_time` is a `float` from 0.0 to 23.99~.
 class TimeOfDayManager:
     def __init__(self: Self) -> None:
+        """Initialize a new TimeOfDayManager object."""
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None

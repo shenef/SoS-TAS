@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class SoSMemory:
     def __init__(self: Self) -> None:
+        """Initialize a new SoSMemory object."""
         self.pm = None
         self.module = None
         self.module_base = None

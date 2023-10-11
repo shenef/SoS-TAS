@@ -55,6 +55,7 @@ class DeltaTimeFormatter(logging.Formatter):
     }
 
     def format(self: Self, record: LogRecord) -> str:
+        """Add colors and a timestamp to the logging output."""
         # Create a timestamp we can use to parse,
         # using the millisecond timestamp since start of program / 1000
         duration = datetime.datetime.utcfromtimestamp(record.relativeCreated / 1000)
