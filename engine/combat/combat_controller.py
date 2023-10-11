@@ -9,6 +9,7 @@ from engine.combat.controllers import (
     LiveManaTutorialController,
     SecondEncounterController,
 )
+from engine.combat.level_up import handle_level_up
 from memory import (
     CombatEncounter,
     combat_manager_handle,
@@ -25,7 +26,7 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
-    LEVEL_UP_TIMEOUT = 10.0
+    LEVEL_UP_TIMEOUT = 5.0
 
     class FSM(Enum):
         """FSM States."""
@@ -68,12 +69,15 @@ class CombatController:
                 if self.controller.encounter_done():
                     self.timer = 0
                     self.state = CombatController.FSM.AFTER_COMBAT
+            # This is a somewhat janky way of detecting level up,
+            # while still allowing for starting movement in SeqMove.
             case CombatController.FSM.AFTER_COMBAT:
                 self.timer += delta
                 if self.timer >= self.LEVEL_UP_TIMEOUT:
                     self.state = CombatController.FSM.IDLE
                 if level_up_manager.level_up_screen_active:
                     self.state = CombatController.FSM.LEVEL_UP_SCREEN
+                    logger.debug(f"After combat state -> Level up screen, took {self.timer:.3f}s")
             case CombatController.FSM.LEVEL_UP_SCREEN:
                 if level_up_manager.level_up_screen_active is False:
                     self.state = CombatController.FSM.IDLE
@@ -83,8 +87,7 @@ class CombatController:
         sos_ctrl().set_neutral()
 
         if self.state == CombatController.FSM.LEVEL_UP_SCREEN:
-            # TODO(orkaboy): Very temporary code to mash past level up screen
-            sos_ctrl().confirm(tapping=True)
+            handle_level_up()  # See level_up.py
             return False
 
         if self.controller.encounter_done():
