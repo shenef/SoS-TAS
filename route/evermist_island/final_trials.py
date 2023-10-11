@@ -70,8 +70,8 @@ class IntroFinalTrial(SeqList):
                     name="Move to chest",
                     coords=[
                         Vec3(41.031, -7.998, -338.552),
-                        Vec3(40.723, -7.998, -341.119),
-                        InteractMove(24.618, -7.998, -341.119),
+                        Vec3(40.723, -7.998, -340.119),
+                        InteractMove(24.618, -7.998, -340.119),
                         Vec3(24.618, -7.998, -334.883),
                     ],
                 ),
