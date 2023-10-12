@@ -40,7 +40,9 @@ class CombatDamageType(Enum):
 
 
 class CombatSpellLock:
-    def __init__(self: Self, damage_type: CombatDamageType = CombatDamageType.NONE) -> None:
+    def __init__(
+        self: Self, damage_type: CombatDamageType = CombatDamageType.NONE
+    ) -> None:
         self.name_loc_id = None
         self.damage_type = damage_type
 
@@ -145,7 +147,9 @@ class CombatManager:
             if self.memory.ready_for_updates:
                 if self.base is None or self.fields_base is None:
                     self.encounter_done = True
-                    singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "CombatManager"
+                    )
 
                     if singleton_ptr is None:
                         return
@@ -209,7 +213,9 @@ class CombatManager:
                     self.next_combat_enemy = None
                     return
                 spell_power = self.memory.read_float(combat_move_ptr + 0x30)
-                guid_ptr = self.memory.follow_pointer(ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0])
+                guid_ptr = self.memory.follow_pointer(
+                    ongoing_move_ptr, [0xF8, 0xF0, 0x18, 0x0]
+                )
                 guid = self.memory.read_uuid(guid_ptr + 0x14)
 
                 current_state_ptr = self.memory.follow_pointer(
@@ -323,7 +329,9 @@ class CombatManager:
     def read_projectile_bounce_count(self: Self) -> int:
         if self._should_update():
             try:
-                progress_ptr = self.memory.follow_pointer(self.base, [0x168, 0x18, 0x20, 0x0])
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
 
                 return self.memory.read_int(progress_ptr + 0x15C)
 
@@ -335,7 +343,9 @@ class CombatManager:
     def read_projectile_hit_count(self: Self) -> int:
         if self._should_update():
             try:
-                progress_ptr = self.memory.follow_pointer(self.base, [0x168, 0x18, 0x20, 0x0])
+                progress_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
 
                 return self.memory.read_int(progress_ptr + 0x158)
 
@@ -361,7 +371,9 @@ class CombatManager:
     def read_back_to_slot(self: Self) -> float:
         if self._should_update():
             try:
-                back_to_slot_ptr = self.memory.follow_pointer(self.base, [0x168, 0x18, 0x20, 0x0])
+                back_to_slot_ptr = self.memory.follow_pointer(
+                    self.base, [0x168, 0x18, 0x20, 0x0]
+                )
                 back_to_slot = self.memory.read_bool(back_to_slot_ptr + 0x161)
                 if back_to_slot:
                     return True
@@ -428,7 +440,9 @@ class CombatManager:
                     # item menu is open
                     # TODO(eein): Does the skill_command_selector apply to the items menu as well?
                     has_focus = self.memory.read_bool(skill_command_selector + 0x3C)
-                    selected_item_index = self.memory.read_longlong(skill_command_selector + 0x40)
+                    selected_item_index = self.memory.read_longlong(
+                        skill_command_selector + 0x40
+                    )
                     self.skill_command_has_focus = has_focus
                     self.skill_command_index = selected_item_index
                     if has_focus:
@@ -492,6 +506,10 @@ class CombatManager:
         if self._should_update():
             selected_character = PlayerPartyCharacter.NONE
             try:
+                panel_count_ptr = self.memory.follow_pointer(
+                    self.base, [self.current_encounter_base, 0x120, 0x98, 0x0]
+                )
+                panel_count = self.memory.read_int(panel_count_ptr + 0x5C)
                 player_panels_list = self.memory.follow_pointer(
                     self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
                 )
@@ -509,15 +527,9 @@ class CombatManager:
             )
             players = []
             if items:
-                # Item objects are as follows:
-                # Items
-                #   - 0x18 - count
-                #   - 0x20 - Item[0]
-                #   - 0x28 - Item[1]
-                count = self.memory.read_int(items + 0x18)
                 address = self.ITEM_INDEX_0_ADDRESS
 
-                for _item in range(count):
+                for _item in range(panel_count):
                     character = PlayerPartyCharacter.NONE
                     item = self.memory.follow_pointer(items, [address, 0x0])
 
@@ -550,8 +562,12 @@ class CombatManager:
                     # tracks timed attacks maybe
                     # timedAttackHandler -> trackingAfterHit
                     try:
-                        timed_attack_ptr = self.memory.follow_pointer(dead_ptr, [0x160, 0x0])
-                        timed_attack_value = self.memory.read_bool(timed_attack_ptr + 0x3A)
+                        timed_attack_ptr = self.memory.follow_pointer(
+                            dead_ptr, [0x160, 0x0]
+                        )
+                        timed_attack_value = self.memory.read_bool(
+                            timed_attack_ptr + 0x3A
+                        )
                     except Exception:
                         timed_attack_value = False
 
@@ -571,7 +587,9 @@ class CombatManager:
                     portrait = self.memory.follow_pointer(item, [0x68, 0x0])
                     enabled = self.memory.read_bool(portrait + 0x30)
 
-                    live_mana_handler = self.memory.follow_pointer(item, [0x68, 0x38, 0x148, 0x0])
+                    live_mana_handler = self.memory.follow_pointer(
+                        item, [0x68, 0x38, 0x148, 0x0]
+                    )
                     mana_charge_count = self.memory.read_int(live_mana_handler + 0x58)
                     target_unique_id_base = None
                     # A try is used here, because this pointer tends to fall out in quick
@@ -721,11 +739,15 @@ class CombatManager:
                         continue
 
                     current_hp = self.memory.read_int(item + 0x94)
-                    casting_data = self.memory.follow_pointer(items, [address, 0x80, 0x120, 0x0])
+                    casting_data = self.memory.follow_pointer(
+                        items, [address, 0x80, 0x120, 0x0]
+                    )
                     unique_id = self.memory.follow_pointer(
                         items, [address, 0x80, 0xF8, 0xF0, 0x18, 0x0]
                     )
-                    enemy_data = self.memory.follow_pointer(items, [address, 0x80, 0x108, 0x0])
+                    enemy_data = self.memory.follow_pointer(
+                        items, [address, 0x80, 0x108, 0x0]
+                    )
 
                     guid = self.memory.follow_pointer(enemy_data, [0x18, 0x0])
                     max_hp = self.memory.read_int(enemy_data + 0x20)
@@ -760,7 +782,9 @@ class CombatManager:
                                 continue
 
                             lock = self.memory.read_int(spell_locks_base + 0x40)
-                            spell_locks.append(CombatSpellLock(damage_type=CombatDamageType(lock)))
+                            spell_locks.append(
+                                CombatSpellLock(damage_type=CombatDamageType(lock))
+                            )
 
                             spell_locks_addr += self.ITEM_OBJECT_OFFSET
                     except Exception:
