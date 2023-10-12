@@ -420,7 +420,9 @@ class WizardLabTealArea(SeqList):
                 SeqHoldDirectionUntilCombat("Fight", joy_dir=Vec2(0, -1), mash_confirm=True),
                 SeqCombatAndMove(
                     name="Fight #1",
-                    coords=Vec3(-98.264, 5.002, 161.106),
+                    coords=[
+                        Vec3(-98.264, 5.002, 161.106),
+                    ],
                 ),
                 SeqBlockPuzzle(
                     name="Move block",
