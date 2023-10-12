@@ -76,10 +76,13 @@ class CombatController:
                 return LiveManaTutorialController()
             case _:
                 match map(lambda x: x.guid, combat_manager.enemies):
+                    # Handle Enemy Specific Controllers
                     # Elder Mist Fight
                     case _ as enemies if "962aa552d33fc124782b230fce9185ce" in enemies:
                         return EncounterController()
-                    case _to_zones:
+                    # Handle level specific controllers or fall back to
+                    # standard encounter controller
+                    case _:
                         match level_manager.current_level:
                             # Elder Mist Zone
                             case "11810c4630980eb43abf7fecebfd5a6b":
