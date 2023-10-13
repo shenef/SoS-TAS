@@ -62,6 +62,12 @@ class PlayerPartyManager:
     def _read_current_party(self: Self) -> None:
         try:
             current_party_ptr = self.memory.follow_pointer(self.base, [0x98, 0x0])
+            # Item is an array of pointers of size 0x08
+            # this follows playerPartyManager -> 0x98 (currentParty)
+            combat_players = self.memory.follow_pointer(
+                current_party_ptr,
+                [0x10, 0x0],
+            )
         except Exception:
             self.current_party = []
             return
@@ -69,12 +75,7 @@ class PlayerPartyManager:
         if current_party_ptr == self.NULL_POINTER:
             self.current_party = []
             return
-        # Item is an array of pointers of size 0x08
-        # this follows playerPartyManager -> 0x98 (currentParty)
-        combat_players = self.memory.follow_pointer(
-            current_party_ptr,
-            [0x10, 0x0],
-        )
+        
         players = []
 
         if combat_players:
