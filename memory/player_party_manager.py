@@ -16,14 +16,15 @@ class PlayerMovementState(Enum):
 
 class PlayerPartyManager:
     NULL_POINTER = 0xFFFFFFFF
-    ITEM_OBJECT_OFFSET = 0x8
-    ITEM_INDEX_0_ADDRESS = 0x20
+    PLAYER_OBJECT_OFFSET = 0x8
+    PLAYER_INDEX_0_ADDRESS = 0x20
 
     def __init__(self: Self) -> None:
         """Initialize a new PlayerPartyManager object."""
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
+        self.current_party: list[PlayerPartyCharacter] = []
         self.position = Vec3(None, None, None)
         self.gameobject_position = Vec3(None, None, None)
         self.leader = None
@@ -58,42 +59,36 @@ class PlayerPartyManager:
                 # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
 
-    def _read_current_party(self: Self) -> [PlayerPartyCharacter]:
+    def _read_current_party(self: Self) -> None:
         try:
             current_party_ptr = self.memory.follow_pointer(self.base, [0x98, 0x0])
         except Exception:
-            self.players = []
-            return None
+            self.current_party = []
+            return
 
         if current_party_ptr == self.NULL_POINTER:
             self.current_party = []
-            return None
+            return
         # Item is an array of pointers of size 0x08
-        items = self.memory.follow_pointer(
+        # this follows playerPartyManager -> 0x98 (currentParty)
+        combat_players = self.memory.follow_pointer(
             current_party_ptr,
             [0x10, 0x0],
         )
         players = []
 
-        if items:
-            # Item objects are as follows:
-            # Items
-            #   - 0x18 - count
-            #   - 0x20 - Item[0]
-            #   - 0x28 - Item[1]
-            count = self.memory.read_int(items + 0x18)
-            address = self.ITEM_INDEX_0_ADDRESS
+        if combat_players:
+            count = self.memory.read_int(combat_players + 0x18)
+            address = self.PLAYER_INDEX_0_ADDRESS
 
             for _item in range(count):
-                ptr = self.memory.follow_pointer(items, [address, 0x0])
+                ptr = self.memory.follow_pointer(combat_players, [address, 0x0])
                 definition_id = self.memory.read_string(ptr + 0x14, 8)
 
-                # Definition IDS are stored as some goofy serialized utf encoded string
-                # We just do our best with the values that are provided to
-                # Determine the character we are looking at
                 players.append(PlayerPartyCharacter.parse_definition_id(definition_id))
-                address += self.ITEM_OBJECT_OFFSET
+                address += self.PLAYER_OBJECT_OFFSET
             self.current_party = players
+            return
         self.current_party = []
 
     def _read_position(self: Self) -> None:
@@ -147,9 +142,6 @@ class PlayerPartyManager:
                     self.movement_state = PlayerMovementState.Idle
                 case _:
                     self.movement_state = PlayerMovementState.NONE
-
-    def _read_players(self: Self) -> None:
-        pass
 
     def _read_leader_character(self: Self) -> None:
         if self.memory.ready_for_updates:
