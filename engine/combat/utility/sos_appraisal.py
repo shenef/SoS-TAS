@@ -55,15 +55,22 @@ class SoSResource(Enum):
 
 class SoSAppraisal(Appraisal):
     def __init__(
-        self: Self, timing_type: SoSTimingType = SoSTimingType.NONE, boost: int = 0
+        self: Self, 
+        timing_type: SoSTimingType = SoSTimingType.NONE, 
+        boost: int = 0, 
+        battle_command: SoSBattleCommand = SoSBattleCommand.Attack
     ) -> None:
         super().__init__()
 
         self.combat_manager = combat_manager_handle()
         self.complete = False
-        self.battle_command = SoSBattleCommand.Attack
+        self.battle_command: SoSBattleCommand = battle_command
         self.skill_command_index = 0
         self.target_type = SoSTargetType.Enemy
+        # the following provides an alternative targeting type for moves that break out of
+        # the normal controller types. Moonerang is an example of this, which acts like a
+        # basic attack when it targets, but is a skill when it is selected
+        self.battle_command_targeting_type: SoSBattleCommand = self.battle_command
         self.timing_type = timing_type
         self.step = SoSAppraisalStep.SelectingCommand
         self.character = PlayerPartyCharacter.NONE
@@ -184,32 +191,16 @@ class SoSAppraisal(Appraisal):
             logger.debug(f"Entering step: {self.step.name}")
 
     def execute_selecting_enemy_sequence(self: Self) -> None:
-        # TODO(eein): this will be similar to consideration that cycles through targets
-        # later until it finds the one where the guid is the same (or the unique id)
-        # we should also ensure the target is selected before initiating the action
-        # This is simply hovering the target and ensures we can move to the next state
-        # Just assume we are targeting something for now
-
-        match self.battle_command:
-            case SoSBattleCommand.Attack:
-                pass
-            case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
-                pass
-            case _:
-                pass
         if (
             self._enemy_targeted()
             and not self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index is None
-            # TODO(eein): Find better pointer to track selected targets - this one isn't doing
-            # what its supposed to so just check if exists to satisfy the result
-            # This will move to something more specific later
-            # and selected_target
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
             logger.debug("Selected Target")
             return
+        logger.warn("Enemy Target Not Valid, moving cursor")
         sos_ctrl().dpad.tap_right()
 
     def execute_confirm_enemy_sequence(self: Self) -> None:
@@ -245,26 +236,23 @@ class SoSAppraisal(Appraisal):
         # logger.debug("Action Complete")
 
     def _enemy_targeted(self: Self) -> bool:
-        return True
-        # for enemy in self.combat_manager.enemies:
-        #     match self.battle_command:
-        #         case SoSBattleCommand.Attack:
-        #             return (
-        #                 enemy.unique_id
-        #                 == self.combat_manager.selected_attack_target_guid
-        #             )
-        #         case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
-        #             return (
-        #                 enemy.unique_id
-        #                 == self.combat_manager.selected_skill_target_guid
-        #             )
-        # return False
+        for enemy in self.combat_manager.enemies:
+            if enemy.unique_id == self.target:
+                match self.battle_command_targeting_type:
+                    case SoSBattleCommand.Attack:
+                        if enemy.unique_id == self.combat_manager.selected_attack_target_guid:
+                            return True
+                    
+                    case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
+                        if enemy.unique_id == self.combat_manager.selected_skill_target_guid:
+                            return True
+        return False
 
     def has_resources(self: Self, actor: CombatPlayer) -> bool:
         match self.resource:
             case SoSResource.Mana:
                 return actor.current_mp >= self.cost
-            # Not yet implemented
+            # TODO(eein): Not yet implemented
             # case SoSResource.ComboPoints:
             #     return actor.combo_points >= self.cost
             # case SoSResource.UltimateGauge:

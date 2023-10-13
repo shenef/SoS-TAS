@@ -4,6 +4,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
+    ElderMistEncounterController,
     EncounterController,
     FirstEncounterController,
     LiveManaTutorialController,
@@ -127,7 +128,7 @@ class CombatController:
                     # Handle Enemy Specific Controllers
                     # Elder Mist Fight
                     case _ as enemies if "962aa552d33fc124782b230fce9185ce" in enemies:
-                        return EncounterController()
+                        return ElderMistEncounterController()
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
                     case _:

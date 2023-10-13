@@ -1,3 +1,4 @@
+import copy
 from typing import Self
 
 from control import sos_ctrl
@@ -45,7 +46,8 @@ class SoSConsideration(Consideration):
         basic_attack.value = self.actor.physical_attack
 
         return [basic_attack]
-
+    
+    # TODO(eein): Calculate appraisals based on skill/combo availability
     def _character_appraisals(self: Self) -> list[Appraisal]:
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
@@ -63,9 +65,12 @@ class SoSConsideration(Consideration):
     def calculate_actions(self: Self) -> list[Action]:
         # if the actor isn't enabled, return no actions
         actions = []
+
         for appraisal in self.appraisals:
-            # TODO(eein): calculate this for every enemy.
-            actions.append(Action(self, appraisal))
+            for enemy in combat_manager.enemies:
+                new_appraisal = copy.copy(appraisal)
+                new_appraisal.target = enemy.unique_id
+                actions.append(copy.copy(Action(self, new_appraisal)))
         return actions
 
     # execute on selecting the consideration to perform the appraisal

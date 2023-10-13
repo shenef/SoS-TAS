@@ -173,6 +173,7 @@ class CombatManager:
                     if not self.battle_command_has_focus:
                         self._read_skill_commands()
                     self._read_live_mana()
+                    self._read_current_target()
                     self.projectile_hit_count = self.read_projectile_hit_count()
                     self.projectile_speed = self.read_projectile_speed()
 
@@ -259,6 +260,91 @@ class CombatManager:
     # combat manager module.
     def _should_update(self: Self) -> None:
         return self.memory.ready_for_updates and self.current_encounter_base is not None
+
+    def _read_current_target(self: Self) -> None:
+        target_unique_id_base = None
+                  
+        selected_attack_target_guid = ""
+        selected_skill_target_guid = ""
+        first_player_ptr = self.memory.follow_pointer(
+                self.base,
+                    [
+                        self.current_encounter_base,
+                        0x120,
+                        0x98,
+                        0x40,
+                        0x10,
+                        0x20,
+                        0x0,
+                    ]
+        )
+        with contextlib.suppress(Exception):
+            target_unique_id_base = self.memory.follow_pointer(
+                first_player_ptr,
+                [
+                    0x68,
+                    0x38,
+                    0x190,
+                    0x30,
+                    0xA8,
+                    0x80,
+                    0x40,
+                    0xA8,
+                    0x80,
+                    0xF8,
+                    0xF0,
+                    0x18,
+                    0x0,
+                ],
+        )
+
+        # This check was added due to the pointer not falling off in time,
+        # referencing an enemy that just died
+        try:
+            selected_attack_target_guid = self.memory.read_uuid(
+                target_unique_id_base + 0x14
+            )
+        except Exception:
+            selected_attack_target_guid = ""
+
+        # Separate Skill section lookup
+        # TODO(eein): This is currently not correct as it does consider the
+        # skill target, but gets a bit washed out if there are AOE targets.
+        with contextlib.suppress(Exception):
+            target_unique_id_base = self.memory.follow_pointer(
+                first_player_ptr,
+                [
+                    0x68,
+                    0x38,
+                    0x190,
+                    0x28,
+                    0x10,
+                    0x20,
+                    0xA8,
+                    0x80,
+                    0x40,
+                    0xA8,
+                    0x80,
+                    0xF8,
+                    0xF0,
+                    0x18,
+                    0x0,
+                ],
+            )
+
+        # This check was added due to the pointer not falling off in time,
+        # referencing an enemy that just died
+        try:
+            selected_skill_target_guid = self.memory.read_uuid(
+                target_unique_id_base + 0x14
+            )
+        except Exception:
+            selected_skill_target_guid = ""
+
+        # if the current player is selected, set it to the main combat manager state
+        # this will help us prevent scanning lists later on
+        self.selected_attack_target_guid = selected_attack_target_guid
+        self.selected_skill_target_guid = selected_skill_target_guid
 
     def _read_combat_controller(self: Self) -> None:
         if self._should_update():
@@ -591,88 +677,16 @@ class CombatManager:
                         item, [0x68, 0x38, 0x148, 0x0]
                     )
                     mana_charge_count = self.memory.read_int(live_mana_handler + 0x58)
-                    target_unique_id_base = None
-                    # A try is used here, because this pointer tends to fall out in quick
-                    # play. This just returns safely and attempts again.
 
-                    selected_attack_target_guid = ""
-                    selected_skill_target_guid = ""
                     if selected:
-                        with contextlib.suppress(Exception):
-                            target_unique_id_base = self.memory.follow_pointer(
-                                item,
-                                [
-                                    0x68,
-                                    0x38,
-                                    0x190,
-                                    0x30,
-                                    0xA8,
-                                    0x80,
-                                    0x40,
-                                    0xA8,
-                                    0x80,
-                                    0xF8,
-                                    0xF0,
-                                    0x18,
-                                    0x0,
-                                ],
-                            )
+                        selected_character = character
 
-                        # This check was added due to the pointer not falling off in time,
-                        # referencing an enemy that just died
-                        try:
-                            selected_attack_target_guid = self.memory.read_uuid(
-                                target_unique_id_base + 0x14
-                            )
-                        except Exception:
-                            selected_attack_target_guid = ""
-
-                        # Separate Skill section lookup
-                        # TODO(eein): This is currently not correct as it does consider the
-                        # skill target, but gets a bit washed out if there are AOE targets.
-                        with contextlib.suppress(Exception):
-                            target_unique_id_base = self.memory.follow_pointer(
-                                item,
-                                [
-                                    0x68,
-                                    0x38,
-                                    0x190,
-                                    0x28,
-                                    0x10,
-                                    0x20,
-                                    0xA8,
-                                    0x80,
-                                    0x40,
-                                    0xA8,
-                                    0x80,
-                                    0xF8,
-                                    0xF0,
-                                    0x18,
-                                    0x0,
-                                ],
-                            )
-
-                        # This check was added due to the pointer not falling off in time,
-                        # referencing an enemy that just died
-                        try:
-                            selected_skill_target_guid = self.memory.read_uuid(
-                                target_unique_id_base + 0x14
-                            )
-                        except Exception:
-                            selected_skill_target_guid = ""
-
+                    player = CombatPlayer()
+                    
                     mp_text_field = self.memory.follow_pointer(item, [0x30, 0x0])
 
                     current_mp = self.memory.read_int(mp_text_field + 0x58)
 
-                    # if the current player is selected, set it to the main combat manager state
-                    # this will help us prevent scanning lists later on
-                    if selected:
-                        selected_character = character
-                        self.selected_attack_target_guid = selected_attack_target_guid
-                        self.selected_skill_target_guid = selected_skill_target_guid
-
-                    player = CombatPlayer()
 
                     # TODO(eein): hardcode these for now - we need to extract these players into
                     # something more global and only update them as required.
