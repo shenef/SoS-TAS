@@ -4,6 +4,9 @@ import logging
 from typing import Self
 
 from engine.seq import SeqList
+from route.wraith_island.cursed_woods import CursedWoods
+from route.wraith_island.docks import WraithIslandDocks
+from route.wraith_island.lucent import LucentArrival
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +19,9 @@ class WraithIsland(SeqList):
         super().__init__(
             name="Wraith Island",
             children=[
+                WraithIslandDocks(),
+                LucentArrival(),
+                CursedWoods(),
                 # TODO(orkaboy): Continue routing
             ],
         )
