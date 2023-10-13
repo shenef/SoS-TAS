@@ -54,6 +54,8 @@ class SoSResource(Enum):
 
 
 class SoSAppraisal(Appraisal):
+    MAX_ENEMY_TARGETING_FAILURES = 6
+
     def __init__(
         self: Self,
         timing_type: SoSTimingType = SoSTimingType.NONE,
@@ -77,6 +79,7 @@ class SoSAppraisal(Appraisal):
         self.resource = SoSResource.NONE
         self.cost = 0
         self.boost = boost
+        self.enemy_targeting_failures = 0
 
     # selects the step to perform based on the current step
     def execute(self: Self) -> None:
@@ -202,6 +205,10 @@ class SoSAppraisal(Appraisal):
             return
         logger.warn("Enemy Target Not Valid, moving cursor")
         sos_ctrl().dpad.tap_right()
+        self.enemy_targeting_failures += 1
+        if self.enemy_targeting_failures >= self.MAX_ENEMY_TARGETING_FAILURES:
+            self.step = SoSAppraisalStep.ConfirmEnemySequence
+            logger.warn("Max Targeting Failures Reached, Confirming Target")
 
     def execute_confirm_enemy_sequence(self: Self) -> None:
         if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
