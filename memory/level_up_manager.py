@@ -32,9 +32,11 @@ class LevelUpManager:
 
     def __init__(self: Self) -> None:
         """Initialize a new LevelUpManager object."""
+        # Memory related information
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
+        # Data fields
         self.level_up_screen_active: bool = False
         self.current_upgrades: list[LevelUpUpgrade] = []
         self.active_index = None
@@ -90,11 +92,11 @@ class LevelUpManager:
         try:
             items = self.memory.follow_pointer(self.base, [0xB0, 0x10, 0x0])
         except Exception:
-            self.current_level_up_upgrades = []
+            self.current_upgrades = []
             return
 
         if items in {self.NULL_POINTER, self.ZERO_NULL_POINTER}:
-            self.current_level_up_upgrades = []
+            self.current_upgrades = []
             return
         # Item is an array of pointers of size 0x08
         upgrades = []

@@ -70,8 +70,8 @@ class IntroFinalTrial(SeqList):
                     name="Move to chest",
                     coords=[
                         Vec3(41.031, -7.998, -338.552),
-                        Vec3(40.723, -7.998, -341.119),
-                        InteractMove(24.618, -7.998, -341.119),
+                        Vec3(40.723, -7.998, -340.119),
+                        InteractMove(24.618, -7.998, -340.119),
                         Vec3(24.618, -7.998, -334.883),
                     ],
                 ),
@@ -97,7 +97,7 @@ class IntroFinalTrial(SeqList):
                 SeqHoldDirectionUntilCombat(
                     name="Attack enemies",
                     joy_dir=Vec2(0, -1),
-                    mash_confirm=True,  # TODO(orkaboy): May not be worth it for the 1 dmg
+                    mash_confirm=True,
                 ),
                 SeqCombatAndMove(
                     name="Fight enemies",
@@ -166,8 +166,7 @@ class IntroFinalTrial(SeqList):
                 SeqInteract("Pillar"),
                 SeqSkipUntilCombat("Wyrd"),
                 SeqCombat("Wyrd"),
-                # TODO(orkaboy): Implement proper level up
-                SeqMashUntilIdle("TEMP: Level up & cutscene"),
+                SeqMashUntilIdle("Wyrd cutscene"),
                 SeqMove(
                     name="Leave dungeon",
                     coords=[

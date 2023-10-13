@@ -3,7 +3,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombat, SeqCombatAndMove
+from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -319,9 +319,8 @@ class Moorlands(SeqList):
                                 joy_dir=Vec2(1, 0),
                                 mash_confirm=True,
                             ),
-                            SeqCombat("Fight puzzle guards"),
-                            SeqMove(
-                                name="Move to puzzle",
+                            SeqCombatAndMove(
+                                name="Fight puzzle guards",
                                 coords=[
                                     Vec3(444.493, 1.002, -9.073),
                                 ],

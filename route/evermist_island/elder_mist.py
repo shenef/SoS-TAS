@@ -3,7 +3,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombat, SeqCombatManual
+from engine.combat import SeqCombat, SeqCombatAndMove, SeqCombatManual
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -318,8 +318,7 @@ class ElderMistTrials(SeqList):
         super().__init__(
             name="Elder Mist Trials",
             children=[
-                # TODO(orkaboy): Manual. Fix with correct combat
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Live Mana Tutorial",
                     coords=[
                         Vec3(48.570, 1.002, -6.019),

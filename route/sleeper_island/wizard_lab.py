@@ -310,8 +310,7 @@ class WizardLabBlueArea(SeqList):
                     joy_dir=Vec2(1, -1),
                     mash_confirm=True,
                 ),
-                SeqCombat("Fight"),
-                SeqMove(
+                SeqCombatAndMove(
                     name="Move to pressure plate",
                     coords=[
                         Vec3(286.063, 1.252, -42.584),
@@ -419,11 +418,15 @@ class WizardLabTealArea(SeqList):
                 ),
                 SeqInteract("Summon enemies"),
                 SeqHoldDirectionUntilCombat("Fight", joy_dir=Vec2(0, -1), mash_confirm=True),
-                SeqCombat("Fight #1"),
+                SeqCombatAndMove(
+                    name="Fight #1",
+                    coords=[
+                        Vec3(-98.264, 5.002, 161.106),
+                    ],
+                ),
                 SeqBlockPuzzle(
                     name="Move block",
                     coords=[
-                        Vec3(-98.264, 5.002, 161.106),
                         Vec3(-100.157, 5.002, 161.106),
                         MistralBracelet(joy_dir=Vec2(0, 1)),
                         Vec3(-101.644, 5.002, 164.377),
@@ -440,8 +443,7 @@ class WizardLabTealArea(SeqList):
                 ),
                 SeqInteract("Summon enemies"),
                 SeqHoldDirectionUntilCombat("Fight", joy_dir=Vec2(0, -1), mash_confirm=True),
-                SeqCombat("Fight #2"),
-                SeqMove(
+                SeqCombatAndMove(
                     name="Move to pillar",
                     coords=[
                         Vec3(-96.902, 5.002, 153.009),
@@ -456,8 +458,7 @@ class WizardLabTealArea(SeqList):
                     ],
                 ),
                 SeqHoldDirectionUntilCombat("Fight", joy_dir=Vec2(1, 1), mash_confirm=True),
-                SeqCombat("Fight #3"),
-                SeqMove(
+                SeqCombatAndMove(
                     name="Move to chest",
                     coords=[
                         Vec3(-86.159, 5.002, 156.983),

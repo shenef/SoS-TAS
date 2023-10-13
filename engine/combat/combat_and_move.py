@@ -13,15 +13,17 @@ from engine.seq import (
     SeqBase,
     SeqMove,
 )
-from memory import combat_manager_handle
+from memory import combat_manager_handle, level_up_manager_handle
 
 combat_manager = combat_manager_handle()
+level_up_manager = level_up_manager_handle()
 
 
 class EncounterState(Enum):
     BEFORE_COMBAT = auto()
     COMBAT = auto()
     POST_COMBAT = auto()
+    LEVEL_UP = auto()
 
 
 class SeqCombat(SeqBase):
@@ -31,25 +33,40 @@ class SeqCombat(SeqBase):
         self.combat_controller = CombatController()
 
     def execute(self: Self, delta: float) -> bool:
+        self.combat_controller.update_state(delta)
+
+        encounter_done = self.combat_controller.is_done()
         match self.state:
             case EncounterState.BEFORE_COMBAT:
-                if combat_manager.encounter_done is False:
+                if encounter_done is False:
                     self.state = EncounterState.COMBAT
             case EncounterState.COMBAT:
-                if combat_manager.encounter_done is True:
+                if encounter_done is True:
                     self.state = EncounterState.POST_COMBAT
                 else:
                     self.combat_controller.execute_combat(delta)
             case EncounterState.POST_COMBAT:
+                # Assume we are going into some kind of cutscene
                 ctrl = sos_ctrl()
                 ctrl.set_neutral()
-                ctrl.toggle_confirm(False)
-                return True
+                ctrl.confirm(tapping=True)
+                # If the combat controller wants control again, there is a level up screen
+                if encounter_done is False:
+                    self.state = EncounterState.LEVEL_UP
+                # Detect if we've actually exited the combat state + timeout
+                elif self.combat_controller.state is CombatController.FSM.IDLE:
+                    return True
+            case EncounterState.LEVEL_UP:
+                if encounter_done is True:
+                    return True
+                self.combat_controller.execute_combat(delta)
 
         return False
 
     def __repr__(self: Self) -> str:
-        return f"Executing single Combat Sequence ({self.name})."
+        return (
+            f"Executing single Combat Sequence ({self.name}): {self.combat_controller.state.name}."
+        )
 
 
 class SeqCombatAndMove(SeqMove):
@@ -83,7 +100,10 @@ class SeqCombatAndMove(SeqMove):
 
     # Override
     def navigate_to_checkpoint(self: Self, delta: float) -> None:
-        if combat_manager.encounter_done:
+        self.combat_controller.update_state(delta)
+
+        encounter_done = self.combat_controller.is_done()
+        if encounter_done:
             # If there is no active fight, move along the designated path
             super().navigate_to_checkpoint(delta)
         elif self.encounter_done:
@@ -92,9 +112,9 @@ class SeqCombatAndMove(SeqMove):
             ctrl.toggle_confirm(False)
         else:
             self.combat_controller.execute_combat(delta)
-        self.encounter_done = combat_manager.encounter_done
+        self.encounter_done = encounter_done
 
     def __repr__(self: Self) -> str:
-        if combat_manager.encounter_done:
+        if self.combat_controller.is_done():
             return super().__repr__()
-        return f"Executing Combat Sequence ({self.name})."
+        return f"Executing Combat Sequence ({self.name}): {self.combat_controller.state.name}."
