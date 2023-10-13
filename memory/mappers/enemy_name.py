@@ -23,6 +23,11 @@ class EnemyName:
         "d0f2cf59f69f42842ac0703193f39c85": "Salamander",
         "810980f005079324fb9fb643243eccee": "Malkomud",
         "fc51f181f5f913f4e99195da947b1425": "Malkomount",
+        # Wraith Island: Cursed Woods
+        "f93fa5cbb04648047902c7c612f418ee": "Lonzon",
+        "6dd1189ece4445c48a7fb978f16eb797": "Boulbe",
+        "01101b1b5a47ca14b8979f4597514a59": "Woodland Spirit",
+        "30372e1cddf4d8245861bd27363d5f9a": "Arentee",
         # Wraith Island: Haunted Mansion
         "64246a3a9059257409ea628466ced26e": "Botanical Horror",
         "3bbc6ad42918c444c9947d156e7674aa": "Bottom Flower",
