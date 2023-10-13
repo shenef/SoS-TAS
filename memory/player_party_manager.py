@@ -15,11 +15,16 @@ class PlayerMovementState(Enum):
 
 
 class PlayerPartyManager:
+    NULL_POINTER = 0xFFFFFFFF
+    PLAYER_OBJECT_OFFSET = 0x8
+    PLAYER_INDEX_0_ADDRESS = 0x20
+
     def __init__(self: Self) -> None:
         """Initialize a new PlayerPartyManager object."""
         self.memory = mem_handle()
         self.base = None
         self.fields_base = None
+        self.current_party: list[PlayerPartyCharacter] = []
         self.position = Vec3(None, None, None)
         self.gameobject_position = Vec3(None, None, None)
         self.leader = None
@@ -30,7 +35,9 @@ class PlayerPartyManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name("PlayerPartyManager")
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "PlayerPartyManager"
+                    )
                     if singleton_ptr is None:
                         return
 
@@ -46,9 +53,44 @@ class PlayerPartyManager:
                     self._read_gameobject_position()
                     self._read_movement_state()
                     self._read_leader_character()
+                    self._read_current_party()
+
             except Exception as _e:
                 # logger.debug(f"PlayerPartyManager Reloading {type(_e)}")
                 self.__init__()
+
+    def _read_current_party(self: Self) -> None:
+        try:
+            current_party_ptr = self.memory.follow_pointer(self.base, [0x98, 0x0])
+            # Item is an array of pointers of size 0x08
+            # this follows playerPartyManager -> 0x98 (currentParty)
+            combat_players = self.memory.follow_pointer(
+                current_party_ptr,
+                [0x10, 0x0],
+            )
+        except Exception:
+            self.current_party = []
+            return
+
+        if current_party_ptr == self.NULL_POINTER:
+            self.current_party = []
+            return
+        
+        players = []
+
+        if combat_players:
+            count = self.memory.read_int(combat_players + 0x18)
+            address = self.PLAYER_INDEX_0_ADDRESS
+
+            for _item in range(count):
+                ptr = self.memory.follow_pointer(combat_players, [address, 0x0])
+                definition_id = self.memory.read_string(ptr + 0x14, 8)
+
+                players.append(PlayerPartyCharacter.parse_definition_id(definition_id))
+                address += self.PLAYER_OBJECT_OFFSET
+            self.current_party = players
+            return
+        self.current_party = []
 
     def _read_position(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -67,7 +109,9 @@ class PlayerPartyManager:
     def _read_gameobject_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
-            gameobject_ptr = self.memory.follow_pointer(self.base, [self.leader, 0x30, 0x0])
+            gameobject_ptr = self.memory.follow_pointer(
+                self.base, [self.leader, 0x30, 0x0]
+            )
             if gameobject_ptr == 0x0:
                 self.gameobject_position = Vec3(None, None, None)
                 return
@@ -109,7 +153,10 @@ class PlayerPartyManager:
             # Definition IDS are stored as some goofy serialized utf encoded string
             # We just do our best with the values that are provided to
             # Determine the character we are looking at
-            self.leader_character = PlayerPartyCharacter.parse_definition_id(definition_id)
+
+            self.leader_character = PlayerPartyCharacter.parse_definition_id(
+                definition_id
+            )
 
 
 _player_party_manager_mem = PlayerPartyManager()
