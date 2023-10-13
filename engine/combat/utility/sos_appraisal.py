@@ -55,10 +55,10 @@ class SoSResource(Enum):
 
 class SoSAppraisal(Appraisal):
     def __init__(
-        self: Self, 
-        timing_type: SoSTimingType = SoSTimingType.NONE, 
-        boost: int = 0, 
-        battle_command: SoSBattleCommand = SoSBattleCommand.Attack
+        self: Self,
+        timing_type: SoSTimingType = SoSTimingType.NONE,
+        boost: int = 0,
+        battle_command: SoSBattleCommand = SoSBattleCommand.Attack,
     ) -> None:
         super().__init__()
 
@@ -236,13 +236,17 @@ class SoSAppraisal(Appraisal):
         # logger.debug("Action Complete")
 
     def _enemy_targeted(self: Self) -> bool:
+        # If we are doing some custom controller stuff that doesn't need a target, just return True
+        if self.target is None:
+            return True
+
         for enemy in self.combat_manager.enemies:
             if enemy.unique_id == self.target:
                 match self.battle_command_targeting_type:
                     case SoSBattleCommand.Attack:
                         if enemy.unique_id == self.combat_manager.selected_attack_target_guid:
                             return True
-                    
+
                     case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
                         if enemy.unique_id == self.combat_manager.selected_skill_target_guid:
                             return True

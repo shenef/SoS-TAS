@@ -81,7 +81,7 @@ class EncounterController:
                 logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
                 sos_ctrl().confirm()
 
-                return True
+            return True
         return False
 
     # TODO(eein): This should also take into considerations swapping characters into the game field.

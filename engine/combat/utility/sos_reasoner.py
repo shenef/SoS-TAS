@@ -43,14 +43,23 @@ class SoSReasoner(Reasoner):
 
         # sort and return the results by their value in desc order
         actions.sort(key=lambda action: action.appraisal.value, reverse=True)
-
+        for a in actions:
+            print(
+                f"Action: {a.appraisal.value} {a.appraisal.__class__.__name__} {a.appraisal.target}"
+            )
         # filter enemies with no HP (elder mist & botantical horror)
         actions = self._filter_disabled_enemies(actions)
-
+        for a in actions:
+            print(
+                f"Action: {a.appraisal.value} {a.appraisal.__class__.__name__} {a.appraisal.target}"
+            )
         # if we have priority targets, then filter out any actions that don't target them
         if self.reasoner_execution_context.priority_targets is not []:
             actions = self._filter_priority_targets(actions)
-
+        for a in actions:
+            print(
+                f"Action: {a.appraisal.value} {a.appraisal.__class__.__name__} {a.appraisal.target}"
+            )
         if len(actions) == 0:
             return None
         return actions[0]
