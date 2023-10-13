@@ -17,7 +17,7 @@ combat_manager = combat_manager_handle()
 
 
 class Moonerang(SoSAppraisal):
-    HIT_AT_POSITION_VALUE = 0.55
+    HIT_AT_POSITION_VALUE = 0.82
 
     def __init__(
         self: Self,
@@ -25,7 +25,9 @@ class Moonerang(SoSAppraisal):
         timing_type: SoSTimingType = SoSTimingType.MultiHit,
         boost: int = 0,
     ) -> None:
-        super().__init__(boost=boost, timing_type=timing_type, battle_command=SoSBattleCommand.Skill)
+        super().__init__(
+            boost=boost, timing_type=timing_type, battle_command=SoSBattleCommand.Skill
+        )
         self.value = value
         self.battle_command_targeting_type = SoSBattleCommand.Attack
         self.target_type = SoSTargetType.Enemy
