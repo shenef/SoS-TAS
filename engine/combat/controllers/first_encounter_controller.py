@@ -20,7 +20,6 @@ class FirstEncounterController(EncounterController):
         if self._should_generate_action():
             logger.debug("No action exists, creating one")
             self.action = self._get_action()
-            print(self.action)
             return True
         return False
 
