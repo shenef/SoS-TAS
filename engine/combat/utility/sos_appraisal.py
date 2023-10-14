@@ -205,6 +205,9 @@ class SoSAppraisal(Appraisal):
             return
         logger.warn("Enemy Target Not Valid, moving cursor")
         sos_ctrl().dpad.tap_right()
+        # TODO(eein): This will be improved when we have a better way to
+        # detect who we are targeting. For now we just fail after 6 failures
+        # to avoid getting stuck in a loop
         self.enemy_targeting_failures += 1
         if self.enemy_targeting_failures >= self.MAX_ENEMY_TARGETING_FAILURES:
             self.step = SoSAppraisalStep.ConfirmEnemySequence
