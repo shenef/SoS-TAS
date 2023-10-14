@@ -3,7 +3,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombat, SeqCombatAndMove, SeqCombatManual
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -72,8 +72,7 @@ class ElderMistTrialsRight(SeqList):
                         Vec3(121.830, 16.002, 105.830),
                     ],
                 ),
-                # TODO(orkaboy): Manual. Fix with correct combat
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Navigate to lever",
                     coords=[
                         Vec3(116.468, 16.002, 111.341),
@@ -103,8 +102,7 @@ class ElderMistTrialsRight(SeqList):
                         Vec3(117.830, 8.002, 88.830),
                     ],
                 ),
-                # TODO(orkaboy): Manual. Fix with correct combat
-                SeqCombatManual(  # Can also get into the fight in this segment
+                SeqCombatAndMove(  # Can also get into the fight in this segment
                     name="Move to trigger",
                     coords=[
                         Vec3(116.617, 8.002, 98.078),
@@ -152,7 +150,7 @@ class ElderMistTrialsCenter(SeqList):
                         Vec3(45.391, 10.002, 118.741),
                     ],
                 ),
-                # TODO(orkaboy): Assumes top is correct answer
+                # Assumes top is correct answer
                 SeqSelectOption("First question"),
                 SeqMove(
                     name="Move to wall",
@@ -184,7 +182,7 @@ class ElderMistTrialsCenter(SeqList):
                         Vec3(59.860, 7.002, 108.213),
                     ],
                 ),
-                # TODO(orkaboy): Assumes top is correct answer
+                # Assumes top is correct answer
                 SeqSelectOption("Second question"),
                 SeqMove(
                     name="Move to wall",
@@ -226,7 +224,7 @@ class ElderMistTrialsCenter(SeqList):
                         Vec3(43.311, 20.002, 116.665),
                     ],
                 ),
-                # TODO(orkaboy): Assumes second is correct answer
+                # Assumes second is correct answer
                 SeqSelectOption("Third Question", option=1),
                 SeqMove(
                     name="Move to pillar",
@@ -248,8 +246,7 @@ class ElderMistTrialsLeft(SeqList):
         super().__init__(
             name="Left Trial",
             children=[
-                # TODO(orkaboy): Manual. Fix with correct combat
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Move to lever",
                     coords=[
                         Vec3(3.565, 1.002, 88.080),
@@ -259,7 +256,7 @@ class ElderMistTrialsLeft(SeqList):
                     ],
                 ),
                 SeqInteract("Lever"),
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Drop ladder",
                     coords=[
                         Vec3(-17.307, 6.002, 94.302),
@@ -288,7 +285,7 @@ class ElderMistTrialsLeft(SeqList):
                         Vec3(-7.000, 14.002, 103.467),
                     ],
                 ),
-                SeqCombatManual(
+                SeqCombatAndMove(
                     name="Move to doodad",
                     coords=[
                         Vec3(-10.443, 14.002, 103.467),
@@ -373,7 +370,6 @@ class ElderMistTrials(SeqList):
                 ),
                 SeqSelectOption("Elder Mist Boss"),
                 SeqSkipUntilCombat("Elder Mist Boss"),
-                # TODO(orkaboy): Need combat priority to deal with sword
                 SeqCombat("Elder Mist Boss"),
                 SeqSkipUntilIdle("Cutscenes"),
                 SeqMove(
