@@ -22,13 +22,13 @@ from engine.seq import (
 logger = logging.getLogger(__name__)
 
 
-class CursedWoods(SeqList):
-    """Routing of Cursed Woods, from arrival until leaving for Ferryman's Vigil."""
+class ClearingWeeds(SeqList):
+    """Routing of Cursed Woods, from arrival until the gates."""
 
     def __init__(self: Self) -> None:
-        """Initialize a new CursedWoods object."""
+        """Initialize a new ClearingWeeds object."""
         super().__init__(
-            name="Cursed Woods",
+            name="Clearing Weeds",
             children=[
                 SeqCombatAndMove(
                     name="Move to save point",
@@ -46,7 +46,7 @@ class CursedWoods(SeqList):
                 ),
                 SeqCheckpoint("cursed_woods"),
                 SeqMove(
-                    name="Navigate to Boulbe",
+                    name="Navigate to first Boulbe",
                     coords=[
                         Vec3(15.350, 3.001, 33.157),
                         Vec3(14.492, 3.002, 39.770),
@@ -65,7 +65,7 @@ class CursedWoods(SeqList):
                 ),
                 SeqHoldDirectionUntilCombat("Boulbe", joy_dir=Vec2(0, -1), mash_confirm=True),
                 SeqCombatAndMove(
-                    name="Clearing weeds",
+                    name="Navigate to second Boulbe",
                     coords=[
                         Vec3(-18.234, 5.002, 38.474),
                         InteractMove(-16.383, 4.002, 36.597),
@@ -147,7 +147,7 @@ class CursedWoods(SeqList):
                     ),
                 ),
                 SeqCombatAndMove(
-                    name="Move to Boulbe",
+                    name="Navigate to third Boulbe",
                     coords=[
                         InteractMove(26.417, 3.002, 246.110),
                         InteractMove(26.417, 3.002, 251.081),
@@ -178,7 +178,7 @@ class CursedWoods(SeqList):
                 SeqSkipUntilIdle("Bone Armor"),
                 # TODO(orkaboy): Equip Bone Armor
                 SeqMove(
-                    name="Move to Boulbe",
+                    name="Navigate to fourth Boulbe",
                     coords=[
                         Vec3(55.439, 5.002, 247.276),
                         InteractMove(54.050, 3.002, 248.697),
@@ -208,7 +208,7 @@ class CursedWoods(SeqList):
                 ),
                 SeqHoldDirectionUntilCombat("Boulbe", joy_dir=Vec2(0.5, 1), mash_confirm=True),
                 SeqCombatAndMove(
-                    name="Clearing weeds",
+                    name="Go to gates",
                     coords=[
                         Vec3(-6.569, 5.002, 262.930),
                         InteractMove(-4.108, 3.002, 262.930),
@@ -224,6 +224,18 @@ class CursedWoods(SeqList):
                 ),
                 SeqHoldDirectionUntilLostControl("Follow that man!", joy_dir=Vec2(0, 1)),
                 SeqSkipUntilIdle("Garl nooo v2"),
+            ],
+        )
+
+
+class WoodsShortcut(SeqList):
+    """Routing of Cursed Woods, from Seraï joining until leaving woods."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new WoodsShortcut object."""
+        super().__init__(
+            name="Woods Shortcut",
+            children=[
                 SeqMove(
                     name="Move to cliff",
                     coords=[
@@ -252,6 +264,21 @@ class CursedWoods(SeqList):
                     ],
                 ),
                 # TODO(orkaboy): Rapids (tricky movement)
+                # TODO(orkaboy): Continue routing
+            ],
+        )
+
+
+class CursedWoods(SeqList):
+    """Routing of Cursed Woods, from arrival until leaving for Ferryman's Vigil."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new CursedWoods object."""
+        super().__init__(
+            name="Cursed Woods",
+            children=[
+                ClearingWeeds(),
+                WoodsShortcut(),
                 # TODO(orkaboy): Continue routing
             ],
         )
