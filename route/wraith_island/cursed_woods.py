@@ -263,8 +263,73 @@ class WoodsShortcut(SeqList):
                         Vec3(59.106, 10.002, 283.756),
                     ],
                 ),
-                # TODO(orkaboy): Rapids (tricky movement)
-                # TODO(orkaboy): Continue routing
+                SeqCombatAndMove(
+                    name="Rapids",
+                    coords=[
+                        InteractMove(60.336, 7.212, 277.977),
+                        InteractMove(61.945, 10.002, 260.199),
+                        Vec3(76.214, 10.002, 245.861),
+                        InteractMove(77.605, 7.321, 239.477),
+                        HoldDirection(61.192, 7.703, 157.459, joy_dir=Vec2(1, -1)),
+                        InteractMove(61.046, 9.002, 149.483),
+                        Vec3(60.870, 9.002, 128.460),
+                        InteractMove(60.869, 6.122, 125.424),
+                        HoldDirection(51.385, 6.703, 85.460, joy_dir=Vec2(0, -1)),
+                        InteractMove(51.462, 9.002, 83.425),
+                        Vec3(52.903, 9.002, 81.460),
+                        InteractMove(52.903, 8.002, 76.080),
+                        Vec3(52.903, 8.002, 60.570),
+                        Vec3(45.349, 8.002, 43.257),
+                        Vec3(31.886, 8.002, 29.764),
+                        InteractMove(31.367, 3.002, 28.981),
+                        Vec3(20.653, 3.002, 28.914),
+                        InteractMove(18.284, 1.002, 26.333),
+                        Vec3(18.284, 1.002, 18.211),
+                        Vec3(20.543, 1.002, 15.189),
+                        InteractMove(22.200, 3.002, 13.461),
+                        Vec3(22.200, 3.002, 3.974),
+                        Vec3(15.142, 3.002, -2.004),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Go to exit", joy_dir=Vec2(0, -1)),
+            ],
+        )
+
+
+class ToFerryman(SeqList):
+    """Routing of Cursed Woods, cutscene in Lucent until arriving at Ferryman's Vigil."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new ToFerryman object."""
+        super().__init__(
+            name="To Ferryman",
+            children=[
+                SeqSkipUntilIdle("Rest well, Warrior Cook"),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(32.272, 1.002, 180.286),
+                        Vec3(32.252, 1.002, 182.454),
+                        Vec3(44.627, 1.002, 182.454),
+                        Vec3(46.004, 1.002, 171.146),
+                        HoldDirection(46.000, 9.011, 123.344, joy_dir=Vec2(0, -1)),
+                        Vec3(44.703, 1.002, 113.937),
+                        Vec3(36.783, 1.002, 110.420),
+                        Vec3(34.514, 1.002, 104.122),
+                        HoldDirection(26.042, 1.002, 34.900, joy_dir=Vec2(0, -1)),
+                        Vec3(26.042, 1.002, 32.391),
+                        Vec3(68.098, 1.002, 32.391),
+                        HoldDirection(191.500, 1.002, 109.998, joy_dir=Vec2(1, 0)),
+                        Vec3(193.500, 1.002, 110.000),
+                        Vec3(193.500, 1.002, 108.000),
+                        Vec3(196.000, 1.002, 108.000),
+                        Vec3(196.000, 1.002, 106.500),
+                        Vec3(197.500, 1.002, 106.500),
+                        Vec3(197.500, 1.002, 106.000),
+                        Vec3(200.500, 1.002, 106.000),
+                    ],
+                ),
+                SeqInteract("Ferryman's Vigil"),
             ],
         )
 
@@ -279,6 +344,6 @@ class CursedWoods(SeqList):
             children=[
                 ClearingWeeds(),
                 WoodsShortcut(),
-                # TODO(orkaboy): Continue routing
+                ToFerryman(),
             ],
         )
