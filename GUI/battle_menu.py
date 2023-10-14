@@ -51,6 +51,8 @@ class BattleMenu(Menu):
         imgui.text_wrapped(f"Moonerang Bounces: {combat_manager.projectile_hit_count} |")
         imgui.same_line()
         imgui.text_wrapped(f"Moonerang Travel Speed: {combat_manager.projectile_speed:.0f}/75")
+        imgui.same_line()
+        imgui.text_wrapped(f"Ended: {combat_manager.read_back_to_slot()}")
         imgui.separator()
         imgui.columns(self.COLUMN_MAX)
 

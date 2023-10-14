@@ -1,3 +1,4 @@
+import copy
 from typing import Self
 
 from control import sos_ctrl
@@ -46,13 +47,18 @@ class SoSConsideration(Consideration):
 
         return [basic_attack]
 
+    # TODO(eein): Calculate appraisals based on skill/combo availability
     def _character_appraisals(self: Self) -> list[Appraisal]:
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
                 return [Sunball(value=100)]
             case PlayerPartyCharacter.Valere:
                 # Currently set up to use moonerang if there is only one enemy
-                if len(combat_manager.enemies) == 1:
+                enemy_count = 0
+                for enemy in combat_manager.enemies:
+                    if enemy.current_hp > 0:
+                        enemy_count += 1
+                if enemy_count == 1:
                     return [Moonerang(value=200)]
                 return [CrescentArc(value=100)]
             case PlayerPartyCharacter.Garl:
@@ -61,11 +67,29 @@ class SoSConsideration(Consideration):
                 return []
 
     def calculate_actions(self: Self) -> list[Action]:
-        # if the actor isn't enabled, return no actions
         actions = []
+        # TODO(eein): to give value to boosted appraisals we will just multiply
+        # the value by the boost for now, we can modify this when we work further on
+        # utility.
+        boosted_appraisals = []
         for appraisal in self.appraisals:
-            # TODO(eein): calculate this for every enemy.
-            actions.append(Action(self, appraisal))
+            boosts_available = round(combat_manager.small_live_mana / 5)
+            if boosts_available == 0:
+                boosted_appraisals.append(appraisal)
+                continue
+
+            for boost in range(0, boosts_available + 1):
+                new_appraisal = copy.copy(appraisal)
+                new_appraisal.boost = boost
+                new_appraisal.value = new_appraisal.value * (boost + 1)
+                boosted_appraisals.append(new_appraisal)
+
+        # takes the boosted appraisals, and creates and action for each enemy.
+        for appraisal in boosted_appraisals:
+            for enemy in combat_manager.enemies:
+                new_appraisal = copy.copy(appraisal)
+                new_appraisal.target = enemy.unique_id
+                actions.append(copy.copy(Action(self, new_appraisal)))
         return actions
 
     # execute on selecting the consideration to perform the appraisal

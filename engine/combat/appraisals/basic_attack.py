@@ -15,6 +15,7 @@ class BasicAttack(SoSAppraisal):
     def __init__(
         self: Self, timing_type: SoSTimingType = SoSTimingType.OneHit, boost: int = 0
     ) -> None:
-        super().__init__(boost=boost, timing_type=timing_type)
-        self.battle_command = SoSBattleCommand.Attack
+        super().__init__(
+            boost=boost, timing_type=timing_type, battle_command=SoSBattleCommand.Attack
+        )
         self.target_type = SoSTargetType.Enemy

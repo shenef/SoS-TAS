@@ -25,7 +25,7 @@ class LiveManaTutorialController(EncounterController):
 
     def generate_action(self: Self) -> bool:
         if self._should_generate_action():
-            logger.debug("No action exists, executing one one")
+            logger.debug("No action exists, creating one")
             self.action = self._get_action()
             return True
         return False

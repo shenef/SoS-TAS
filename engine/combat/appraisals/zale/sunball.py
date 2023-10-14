@@ -23,9 +23,10 @@ class Sunball(SoSAppraisal):
         timing_type: SoSTimingType = SoSTimingType.Charge,
         boost: int = 0,
     ) -> None:
-        super().__init__(boost=boost, timing_type=timing_type)
+        super().__init__(
+            boost=boost, timing_type=timing_type, battle_command=SoSBattleCommand.Skill
+        )
         self.value = value
-        self.battle_command = SoSBattleCommand.Skill
         self.target_type = SoSTargetType.Enemy
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.

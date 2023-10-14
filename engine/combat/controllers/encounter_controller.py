@@ -2,6 +2,7 @@ import logging
 from typing import Self
 
 from control import sos_ctrl
+from engine.combat.contexts.reasoner_execution_context import ReasonerExecutionContext
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
@@ -24,7 +25,7 @@ new_dialog_manager = new_dialog_manager_handle()
 class EncounterController:
     def __init__(self: Self) -> None:
         """Initialize a new EncounterController object."""
-        self.reasoner = SoSReasoner()
+        self.reasoner = SoSReasoner(ReasonerExecutionContext())
         self.action: Action = None
         self.block_timing = 0.0
 
@@ -58,7 +59,7 @@ class EncounterController:
         so it doesn't start executing before we have control.
         """
         if self._should_generate_action():
-            logger.debug("No action exists, executing one one")
+            logger.debug("No action exists, creating one")
             self.action = self.reasoner.execute()
             return True
         return False
@@ -80,7 +81,7 @@ class EncounterController:
                 logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
                 sos_ctrl().confirm()
 
-                return True
+            return True
         return False
 
     # TODO(eein): This should also take into considerations swapping characters into the game field.

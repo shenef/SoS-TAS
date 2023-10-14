@@ -1,6 +1,7 @@
 from memory.boat_manager import boat_manager_handle
 from memory.combat_manager import (
     CombatEncounter,
+    CombatEnemyTarget,
     CombatManager,
     CombatPlayer,
     NextCombatAction,
@@ -48,4 +49,5 @@ __all__ = [
     "NextCombatAction",
     "NextCombatEnemy",
     "CombatEncounter",
+    "CombatEnemyTarget",
 ]

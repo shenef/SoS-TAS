@@ -4,6 +4,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
+    ElderMistEncounterController,
     EncounterController,
     FirstEncounterController,
     LiveManaTutorialController,
@@ -27,6 +28,9 @@ new_dialog_manager = new_dialog_manager_handle()
 
 class CombatController:
     LEVEL_UP_TIMEOUT = 5.0
+    # TODO(eein): Use objects/mappers for these later on.
+    ELDER_MIST_ENEMY_GUID = "962aa552d33fc124782b230fce9185ce"
+    ELDER_MIST_TRIAL_LEVEL_GUID = "11810c4630980eb43abf7fecebfd5a6b"
 
     class FSM(Enum):
         """FSM States."""
@@ -126,14 +130,14 @@ class CombatController:
                 match map(lambda x: x.guid, combat_manager.enemies):
                     # Handle Enemy Specific Controllers
                     # Elder Mist Fight
-                    case _ as enemies if "962aa552d33fc124782b230fce9185ce" in enemies:
-                        return EncounterController()
+                    case _ as enemies if self.ELDER_MIST_GUID in enemies:
+                        return ElderMistEncounterController()
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
                     case _:
                         match level_manager.current_level:
                             # Elder Mist Zone
-                            case "11810c4630980eb43abf7fecebfd5a6b":
+                            case self.ELDER_MIST_TRIAL_LEVEL_GUID:
                                 return LiveManaTutorialController()
                             case _:
                                 return EncounterController()

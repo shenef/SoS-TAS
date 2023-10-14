@@ -1,3 +1,6 @@
+from engine.combat.controllers.elder_mist_controller import (
+    ElderMistEncounterController,
+)
 from engine.combat.controllers.encounter_controller import EncounterController
 from engine.combat.controllers.first_encounter_controller import (
     FirstEncounterController,
@@ -14,4 +17,5 @@ __all__ = [
     "FirstEncounterController",
     "SecondEncounterController",
     "LiveManaTutorialController",
+    "ElderMistEncounterController",
 ]
