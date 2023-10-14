@@ -28,6 +28,10 @@ route_config          : ""      # Path to a route options configuration file
 #   wizard_lab4                 # After placing Green+Red Crystals
 #   wizard_lab_boss             # Before boss fight
 #   brisk2                      # Before boarding Oakum Skiff
+#   wraith_island_docks         # After getting off Oakum Skiff
+#   cursed_woods                # First enetering Cursed Woods
+#   cursed_woods2               # Middle of Cursed Woods
+#   ferrymans_vigil             # Before speaking with Ferryman
 
 # User Interface
 ui:

@@ -143,7 +143,11 @@ class TASMenu(Menu):
                     + "wizard_lab3          (After placing Blue+Green Crystals)\n"
                     + "wizard_lab4          (After placing Green+Red Crystals)\n"
                     + "wizard_lab_boss      (Before boss fight)\n"
-                    + "brisk2               (Before boarding Oakum Skiff)"
+                    + "brisk2               (Before boarding Oakum Skiff)\n"
+                    + "wraith_island_docks  (After getting off Oakum Skiff)\n"
+                    + "cursed_woods         (First enetering Cursed Woods)\n"
+                    + "cursed_woods2        (Middle of Cursed Woods)\n"
+                    + "ferrymans_vigil      (Before speaking with Ferryman)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(

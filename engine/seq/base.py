@@ -51,19 +51,27 @@ class SeqBase:
 class SeqCheckpoint(SeqBase):
     """Checkpoint node. Used to jump to a specific point in the TAS route."""
 
-    def __init__(self: Self, checkpoint_name: str) -> None:
+    def __init__(self: Self, checkpoint_name: str, return_path: SeqBase = None) -> None:
         super().__init__(
             name="Checkpoint",
         )
         self.checkpoint = checkpoint_name
+        self.return_path = return_path
+        self.skipped_to = False
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
         blackboard().log_checkpoint(f"{self.checkpoint} (skipped)")
-        return checkpoint == self.checkpoint
+        self.skipped_to = checkpoint == self.checkpoint
+        return self.skipped_to
 
     def execute(self: Self, delta: float) -> bool:
-        blackboard().log_checkpoint(self.checkpoint)
-        return True
+        done = True
+        # Optionally, run a return to route sequence, for when the save point is out of the way
+        if self.skipped_to and self.return_path is not None:
+            done = self.return_path.execute(delta)
+        if done:
+            blackboard().log_checkpoint(self.checkpoint)
+        return done
 
 
 class SeqList(SeqBase):

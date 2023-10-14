@@ -38,11 +38,9 @@ class SeqHoldDirectionUntilLostControl(SeqBase):
         self: Self,
         name: str,
         joy_dir: Vec2,
-        precision: float = 1.0,
         func: Callable = None,
     ) -> None:
         self.joy_dir = joy_dir
-        self.precision = precision
         super().__init__(name, func)
 
     def execute(self: Self, delta: float) -> bool:
