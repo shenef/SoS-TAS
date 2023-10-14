@@ -189,6 +189,7 @@ class ClearingWeeds(SeqList):
                         Vec3(42.457, 2.977, 259.154),
                         Vec3(40.507, 2.977, 260.223),
                         Vec3(30.006, 3.002, 261.347),
+                        Vec3(20.435, 3.002, 262.952),
                         Vec3(17.139, 2.977, 262.703),
                         Vec3(15.619, 2.977, 261.151),
                         Vec3(15.619, 2.977, 258.851),
@@ -265,17 +266,26 @@ class WoodsShortcut(SeqList):
                 ),
                 SeqCombatAndMove(
                     name="Rapids",
+                    precision=1.0,
                     coords=[
+                        # Run first rapid
                         InteractMove(60.336, 7.212, 277.977),
                         InteractMove(61.945, 10.002, 260.199),
+                        Vec3(67.912, 10.002, 259.361),
+                        Vec3(73.087, 10.002, 252.734),
                         Vec3(76.214, 10.002, 245.861),
-                        InteractMove(77.605, 7.321, 239.477),
-                        HoldDirection(61.192, 7.703, 157.459, joy_dir=Vec2(1, -1)),
+                        # Run second rapid
+                        InteractMove(61.192, 7.703, 157.459),
                         InteractMove(61.046, 9.002, 149.483),
                         Vec3(60.870, 9.002, 128.460),
-                        InteractMove(60.869, 6.122, 125.424),
-                        HoldDirection(51.385, 6.703, 85.460, joy_dir=Vec2(0, -1)),
+                        InteractMove(51.385, 6.703, 85.460),
                         InteractMove(51.462, 9.002, 83.425),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Return to path",
+                    coords=[
+                        # Go through final stretch of woods
                         Vec3(52.903, 9.002, 81.460),
                         InteractMove(52.903, 8.002, 76.080),
                         Vec3(52.903, 8.002, 60.570),
