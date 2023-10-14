@@ -146,7 +146,8 @@ class TASMenu(Menu):
                     + "brisk2               (Before boarding Oakum Skiff)\n"
                     + "wraith_island_docks  (After getting off Oakum Skiff)\n"
                     + "cursed_woods         (First enetering Cursed Woods)\n"
-                    + "cursed_woods2        (Middle of Cursed Woods)"
+                    + "cursed_woods2        (Middle of Cursed Woods)\n"
+                    + "ferrymans_vigil      (Before speaking with Ferryman)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
