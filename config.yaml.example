@@ -31,7 +31,7 @@ route_config          : ""      # Path to a route options configuration file
 #   wraith_island_docks         # After getting off Oakum Skiff
 #   cursed_woods                # First enetering Cursed Woods
 #   cursed_woods2               # Middle of Cursed Woods
-#   ferrymans_vigil             # Before speaking with Ferryman
+#   flooded_graveyard           # Near Ferryman after landing
 
 # User Interface
 ui:

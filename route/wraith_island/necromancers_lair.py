@@ -28,7 +28,6 @@ class FloodedGraveyard(SeqList):
         super().__init__(
             name="Flooded Graveyard",
             children=[
-                SeqCheckpoint("ferrymans_vigil"),
                 SeqMove(
                     name="Move to ferryman",
                     coords=[
@@ -38,6 +37,7 @@ class FloodedGraveyard(SeqList):
                 ),
                 SeqInteract("Ferryman"),
                 SeqSkipUntilIdle("Ferryman"),
+                SeqCheckpoint("flooded_graveyard"),
                 SeqCombatAndMove(
                     name="Navigate Graveyard",
                     coords=[
