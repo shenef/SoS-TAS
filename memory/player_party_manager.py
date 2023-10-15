@@ -35,9 +35,7 @@ class PlayerPartyManager:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None or self.fields_base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name(
-                        "PlayerPartyManager"
-                    )
+                    singleton_ptr = self.memory.get_singleton_by_class_name("PlayerPartyManager")
                     if singleton_ptr is None:
                         return
 
@@ -68,27 +66,27 @@ class PlayerPartyManager:
                 current_party_ptr,
                 [0x10, 0x0],
             )
+
+            if current_party_ptr == self.NULL_POINTER:
+                self.current_party = []
+                return
+
+            players = []
+
+            if combat_players:
+                count = self.memory.read_int(combat_players + 0x18)
+                address = self.PLAYER_INDEX_0_ADDRESS
+
+                for _item in range(count):
+                    ptr = self.memory.follow_pointer(combat_players, [address, 0x0])
+                    definition_id = self.memory.read_string(ptr + 0x14, 8)
+
+                    players.append(PlayerPartyCharacter.parse_definition_id(definition_id))
+                    address += self.PLAYER_OBJECT_OFFSET
+                self.current_party = players
+                return
         except Exception:
             self.current_party = []
-            return
-
-        if current_party_ptr == self.NULL_POINTER:
-            self.current_party = []
-            return
-        
-        players = []
-
-        if combat_players:
-            count = self.memory.read_int(combat_players + 0x18)
-            address = self.PLAYER_INDEX_0_ADDRESS
-
-            for _item in range(count):
-                ptr = self.memory.follow_pointer(combat_players, [address, 0x0])
-                definition_id = self.memory.read_string(ptr + 0x14, 8)
-
-                players.append(PlayerPartyCharacter.parse_definition_id(definition_id))
-                address += self.PLAYER_OBJECT_OFFSET
-            self.current_party = players
             return
         self.current_party = []
 
@@ -109,9 +107,7 @@ class PlayerPartyManager:
     def _read_gameobject_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
-            gameobject_ptr = self.memory.follow_pointer(
-                self.base, [self.leader, 0x30, 0x0]
-            )
+            gameobject_ptr = self.memory.follow_pointer(self.base, [self.leader, 0x30, 0x0])
             if gameobject_ptr == 0x0:
                 self.gameobject_position = Vec3(None, None, None)
                 return
@@ -154,9 +150,7 @@ class PlayerPartyManager:
             # We just do our best with the values that are provided to
             # Determine the character we are looking at
 
-            self.leader_character = PlayerPartyCharacter.parse_definition_id(
-                definition_id
-            )
+            self.leader_character = PlayerPartyCharacter.parse_definition_id(definition_id)
 
 
 _player_party_manager_mem = PlayerPartyManager()
