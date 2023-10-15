@@ -130,7 +130,7 @@ class CombatController:
                 match map(lambda x: x.guid, combat_manager.enemies):
                     # Handle Enemy Specific Controllers
                     # Elder Mist Fight
-                    case _ as enemies if self.ELDER_MIST_GUID in enemies:
+                    case _ as enemies if self.ELDER_MIST_ENEMY_GUID in enemies:
                         return ElderMistEncounterController()
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
