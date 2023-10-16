@@ -54,7 +54,7 @@ class RouteCoord:
             case RouteCoordType.HOLD_DIRECTION:
                 return f"HoldDirection({coord}, joy_dir=Vec2(x, y))"
             case RouteCoordType.GRAPLOU:
-                return f"Graplou({coord}, joy_dir=None, hold_timer=0.0)"
+                return f"Graplou({coord}, joy_dir=Vec2(x, y), hold_timer=0.1)"
             case RouteCoordType.BRACELET:
                 joy_dir = f"Vec2({self.joy_dir.x}, {self.joy_dir.y})"
                 return f"MistralBracelet(joy_dir={joy_dir})"
