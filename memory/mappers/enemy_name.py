@@ -28,6 +28,10 @@ class EnemyName:
         "6dd1189ece4445c48a7fb978f16eb797": "Boulbe",
         "01101b1b5a47ca14b8979f4597514a59": "Woodland Spirit",
         "30372e1cddf4d8245861bd27363d5f9a": "Arentee",
+        # Wraith Island: Necromancer's Lair
+        "4cc1949eb31a81a4782b1075c32d268e": "Gulgul",
+        "f8de7842d6be99b40a6d8160044b5f62": "Mermofwizquard",
+        "a5d5e39e2ca42bb43b343c4cde2ec1e7": "Revenant",
         # Wraith Island: Haunted Mansion
         "64246a3a9059257409ea628466ced26e": "Botanical Horror",
         "3bbc6ad42918c444c9947d156e7674aa": "Bottom Flower",
