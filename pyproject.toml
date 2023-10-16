@@ -11,7 +11,7 @@ select = [
   "E",        # pycodestyle
   # "ERA",    # eradicate (removes commented out code) - wait for code changes to calm down
   "F",        # pyflakes
-  # "FURB",   # refurb - blocks pre-commit cause fully in preview
+  "FURB",     # refurb - blocks pre-commit cause fully in preview
   "I",        # isort
   "PL",       # pylint
   "RET",      # flake8-return
