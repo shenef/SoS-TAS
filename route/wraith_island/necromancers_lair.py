@@ -225,6 +225,7 @@ class NecromancersLair(SeqList):
                 ),
                 SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(0, 1)),
                 SeqSkipUntilIdle("Spooky scary skeletons"),
+                SeqCheckpoint("necro_lair"),
                 # Right room
                 # TODO(orkaboy): Split into own sequence
                 SeqCombatAndMove(

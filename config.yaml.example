@@ -32,6 +32,7 @@ route_config          : ""      # Path to a route options configuration file
 #   cursed_woods                # First enetering Cursed Woods
 #   cursed_woods2               # Middle of Cursed Woods
 #   flooded_graveyard           # Near Ferryman after landing
+#   necro_lair                  # When first entering the skeleton lock chamber
 
 # User Interface
 ui:
