@@ -30,6 +30,7 @@ from engine.seq.move import (
     SeqHoldInPlace,
     SeqManualUntilClose,
     SeqMove,
+    SeqRaft,
 )
 from engine.seq.routing import RouteBranchMode, SeqIfMainCharacterValere, SeqRouteBranch
 from engine.seq.sequencer import SequencerEngine
@@ -64,6 +65,7 @@ __all__ = [
     "SeqClimb",
     "SeqCliffMove",
     "SeqCliffClimb",
+    "SeqRaft",
     "SeqAwaitLostControl",
     "SeqHoldDirectionUntilLostControl",
     "SeqHoldDirectionDelay",
