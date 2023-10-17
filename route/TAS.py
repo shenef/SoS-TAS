@@ -149,7 +149,9 @@ class TASMenu(Menu):
                     + "cursed_woods2        (Middle of Cursed Woods)\n"
                     + "flooded_graveyard    (Near Ferryman after landing)\n"
                     + "necro_lair           (When first entering the skeleton lock chamber)\n"
-                    + "necro_lair2          (Hub area, after defeating second skeleton)"
+                    + "necro_lair2          (Hub area, after defeating second revenant)\n"
+                    + "necro_lair_boss      (Hub area, after defeating third revenant)\n"
+                    + "necro_lair_boss2     (Hub area, after defeating Romaya)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
