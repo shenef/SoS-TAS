@@ -32,6 +32,9 @@ class EnemyName:
         "4cc1949eb31a81a4782b1075c32d268e": "Gulgul",
         "f8de7842d6be99b40a6d8160044b5f62": "Mermofwizquard",
         "a5d5e39e2ca42bb43b343c4cde2ec1e7": "Revenant",
+        "5cdedb65d17f3b24c8b7ad5bcbe1bea6": "Romaya",
+        "30bd6b9747d75724496a60116d875f96": "Bone Pile",
+        "ebf760c7aea1c1d46b18e9db92c5af76": "Flesh Pile",
         # Wraith Island: Haunted Mansion
         "64246a3a9059257409ea628466ced26e": "Botanical Horror",
         "3bbc6ad42918c444c9947d156e7674aa": "Bottom Flower",
