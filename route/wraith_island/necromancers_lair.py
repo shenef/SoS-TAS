@@ -13,8 +13,8 @@ from engine.seq import (
     SeqCliffMove,
     SeqClimb,
     SeqDelay,
+    SeqGraplou,
     SeqHoldDirectionDelay,
-    SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
@@ -182,6 +182,53 @@ class FloodedGraveyard(SeqList):
                         HoldDirection(10.000, 2.002, -9.000, joy_dir=Vec2(0, 1)),
                     ],
                 ),
+            ],
+        )
+
+
+class NecromancersLairEntry(SeqList):
+    """Routing of Necromancer's Lair. Entrance to hub area."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new NecromancersLairEntry object."""
+        super().__init__(
+            name="Entry",
+            children=[
+                SeqCombatAndMove(
+                    name="Move to platform",
+                    coords=[
+                        Vec3(13.016, 2.002, -6.291),
+                        InteractMove(14.053, -0.197, -5.406),
+                        Vec3(17.323, -0.197, -1.029),
+                        Vec3(18.546, 4.010, 15.539),
+                        Vec3(18.454, 4.010, 18.992),
+                        Vec3(14.856, 4.010, 23.758),
+                        Vec3(9.911, 4.002, 23.894),
+                        HoldDirection(9.905, 1.002, 67.659, joy_dir=Vec2(0, 1)),
+                        Vec3(9.905, 1.002, 75.696),
+                        Vec3(26.313, 1.002, 91.954),
+                        InteractMove(26.313, 1.002, 101.460),
+                        Vec3(26.358, 1.002, 102.813),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Moving platform",
+                    coords=[
+                        Vec3(15.452, 1.001, 128.541),
+                        InteractMove(15.452, 1.002, 133.465),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Juking enemies",
+                    coords=[
+                        Vec3(12.818, 1.001, 133.465),
+                        Vec3(-3.442, 1.002, 149.684),
+                        HoldDirection(4.500, 1.002, 206.992, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(0, 1)),
+                SeqSkipUntilIdle("Spooky scary skeletons"),
             ],
         )
 
@@ -421,7 +468,6 @@ class NecromancersLairGraplou(SeqList):
                         HoldDirection(95.000, 1.002, 354.500, joy_dir=Vec2(0, 1)),
                     ],
                 ),
-                SeqHoldDirectionUntilCombat("Revenant", joy_dir=Vec2(0, 1), mash_confirm=True),
                 SeqCombatAndMove(
                     name="Revenant",
                     coords=[
@@ -450,6 +496,221 @@ class NecromancersLairGraplou(SeqList):
         )
 
 
+class NecromancersLairCentral(SeqList):
+    """Routing of Necromancer's Lair. Central area."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new NecromancersLairCentral object."""
+        super().__init__(
+            name="Central area",
+            children=[
+                SeqCombatAndMove(
+                    name="Revenant",
+                    coords=[
+                        Vec3(16.581, -0.994, 247.063),
+                        Vec3(15.544, -0.994, 242.682),
+                        InteractMove(14.989, 1.002, 241.347),
+                        Vec3(10.539, 1.002, 239.353),
+                        Vec3(4.585, 1.002, 240.819),
+                        Vec3(4.585, 3.010, 247.820),
+                    ],
+                ),
+                SeqInteract("Skull"),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(3.685, 1.002, 240.677),
+                        Vec3(-7.540, 1.002, 236.755),
+                        InteractMove(-10.748, 1.002, 236.755),
+                        InteractMove(-10.748, -0.998, 241.076),
+                    ],
+                ),
+            ],
+        )
+
+
+class NecromancersLairLeft(SeqList):
+    """Routing of Necromancer's Lair. Left area."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new NecromancersLairLeft object."""
+        super().__init__(
+            name="Left area",
+            children=[
+                SeqMove(
+                    name="Enter left area",
+                    coords=[
+                        Vec3(-10.280, -0.998, 244.910),
+                        InteractMove(-11.135, 1.002, 246.120),
+                        Vec3(-12.779, 1.002, 249.426),
+                        HoldDirection(-63.000, 1.002, 250.000, joy_dir=Vec2(-1, 1)),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Move to Graplou",
+                    coords=[
+                        Vec3(-72.556, 1.002, 259.556),
+                        Vec3(-72.556, 1.002, 277.646),
+                    ],
+                ),
+                SeqGraplou(),
+                SeqCombatAndMove(
+                    name="Move to lever",
+                    coords=[
+                        Vec3(-72.542, 1.002, 279.029),
+                        InteractMove(-72.542, 3.002, 287.577),
+                        Vec3(-72.542, 3.002, 289.840),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqCombatAndMove(
+                    name="Move to chest",
+                    coords=[
+                        InteractMove(-72.542, 1.002, 280.075),
+                        Vec3(-74.627, 1.002, 280.075),
+                        Vec3(-77.852, 1.002, 283.571),
+                        InteractMove(-81.748, 1.002, 283.536),
+                        InteractMove(-81.748, 8.002, 288.467),
+                        Vec3(-81.748, 8.002, 292.302),
+                        Vec3(-68.070, 8.002, 295.713),
+                        HoldDirection(-48.500, 1.002, 349.626, joy_dir=Vec2(0, 1)),
+                        Vec3(-48.500, 1.002, 352.259),
+                        Vec3(-51.274, 1.002, 357.259),
+                    ],
+                ),
+                SeqInteract("Osseous Staff"),
+                SeqSkipUntilIdle("Osseous Staff"),
+                # TODO(orkaboy): Equip
+                SeqMove(
+                    name="Graplouing around",
+                    coords=[
+                        Vec3(-48.152, 1.002, 354.438),
+                        Graplou(-34.000, 1.010, 354.593, joy_dir=Vec2(1, 0), hold_timer=0.1),
+                        Graplou(-32.980, 1.010, 372.000, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                        # TODO(orkaboy): Can grab Mooncradle Fish Pie here
+                        Vec3(-33.879, 1.002, 378.421),
+                    ],
+                ),
+                SeqGraplou("Attack enemy"),
+                SeqCombatAndMove(
+                    name="Move to lever",
+                    coords=[
+                        Vec3(-38.553, 1.002, 391.033),
+                        Vec3(-42.429, 1.002, 389.041),
+                        Vec3(-43.863, 1.002, 389.041),
+                        Graplou(-47.398, 1.002, 397.596, joy_dir=Vec2(-1, 1), hold_timer=0.1),
+                        Graplou(-56.737, 1.002, 404.682, joy_dir=Vec2(-1, 1), hold_timer=0.1),
+                        Vec3(-48.205, 2.002, 404.713),
+                        Vec3(-47.271, 2.002, 402.209),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqCombatAndMove(
+                    name="Graplouing around",
+                    coords=[
+                        Vec3(-48.133, 2.002, 404.808),
+                        Vec3(-54.118, 1.002, 404.808),
+                        Vec3(-56.543, 1.002, 402.189),
+                        Graplou(-64.280, 1.002, 393.939, joy_dir=Vec2(-1, -1), hold_timer=0.1),
+                        Graplou(-73.382, 1.002, 396.605, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Vec3(-71.100, 1.002, 388.357),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqCombatAndMove(
+                    name="Move to lever (E)",
+                    coords=[
+                        Vec3(-72.197, 1.002, 389.641),
+                        Vec3(-76.562, 1.002, 389.641),
+                        Graplou(-76.407, 1.010, 375.500, joy_dir=Vec2(0, -1), hold_timer=0.1),
+                        Vec3(-74.704, 1.010, 373.774),
+                        Vec3(-57.002, 1.002, 373.922),
+                        Vec3(-54.693, 1.410, 376.214),
+                        Vec3(-53.582, 4.002, 381.517),
+                        InteractMove(-42.461, 4.008, 381.500),
+                        Vec3(-39.627, 4.002, 381.150),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Move to lever (N)",
+                    coords=[
+                        Vec3(-41.149, 4.002, 381.500),
+                        InteractMove(-52.939, 4.002, 381.500),
+                        Vec3(-53.648, 4.002, 381.500),
+                        Vec3(-54.112, 4.002, 388.640),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqCombatAndMove(
+                    name="Move to lever (SW)",
+                    coords=[
+                        Vec3(-55.014, 1.249, 376.054),
+                        Vec3(-57.790, 1.002, 373.290),
+                        Graplou(-64.284, 1.002, 365.943, joy_dir=Vec2(-1, -1), hold_timer=0.1),
+                        Graplou(-72.027, 1.002, 358.322, joy_dir=Vec2(-1, -1), hold_timer=0.1),
+                        Vec3(-78.681, 1.002, 360.574),
+                        Vec3(-78.545, 4.002, 365.740),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Leave room",
+                    coords=[
+                        Vec3(-78.545, 1.010, 360.274),
+                        Vec3(-68.693, 1.002, 355.243),
+                        Vec3(-53.460, 2.002, 355.243),
+                        InteractMove(-51.025, 1.002, 355.243),
+                        Vec3(-48.674, 1.002, 352.299),
+                        HoldDirection(-67.958, 8.002, 297.500, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Enter left room",
+                    coords=[
+                        Vec3(-67.958, 8.002, 295.665),
+                        Vec3(-66.901, 8.002, 290.454),
+                        InteractMove(-66.901, 1.002, 289.536),
+                        Vec3(-66.901, 1.002, 283.203),
+                        Vec3(-71.192, 1.002, 278.045),
+                        Vec3(-80.092, 1.002, 264.931),
+                        Vec3(-86.479, 1.002, 264.886),
+                        Vec3(-91.546, 1.002, 269.380),
+                        Graplou(-101.540, 1.002, 269.529, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Vec3(-100.107, 1.002, 267.457),
+                        Graplou(-99.623, 1.002, 258.460, joy_dir=Vec2(0, -1), hold_timer=0.1),
+                        Vec3(-101.126, 1.002, 258.773),
+                        InteractMove(-101.701, -1.998, 258.050),
+                        Vec3(-104.322, -1.998, 255.454),
+                        InteractMove(-104.322, -2.998, 254.002),
+                        Vec3(-111.388, -2.998, 253.087),
+                        Vec3(-115.508, -2.998, 253.087),
+                        Vec3(-119.241, -2.998, 257.337),
+                        Vec3(-121.934, -2.998, 257.337),
+                        Vec3(-125.343, -6.998, 248.814),
+                        Vec3(-125.343, -6.998, 248.814),
+                        Vec3(-129.058, -6.998, 248.264),
+                        Vec3(-132.639, -6.998, 258.660),
+                        Vec3(-133.442, -6.998, 278.120),
+                        HoldDirection(-157.000, 8.002, 356.258, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Go to bottom of stairs",
+                    coords=[
+                        Vec3(-154.565, 8.002, 400.960),
+                        Vec3(-111.077, -2.998, 400.960),
+                        Vec3(-111.077, -12.990, 370.477),
+                        Vec3(-111.199, -12.998, 370.250),
+                        Vec3(-124.295, -18.998, 370.250),
+                        Vec3(-125.082, -18.998, 372.540),
+                    ],
+                ),
+                # TODO(orkaboy): Continue routing
+            ],
+        )
+
+
 class NecromancersLair(SeqList):
     """Routing of Necromancer's Lair."""
 
@@ -458,44 +719,26 @@ class NecromancersLair(SeqList):
         super().__init__(
             name="Necromancer's Lair",
             children=[
-                SeqCombatAndMove(
-                    name="Move to platform",
-                    coords=[
-                        Vec3(13.016, 2.002, -6.291),
-                        InteractMove(14.053, -0.197, -5.406),
-                        Vec3(17.323, -0.197, -1.029),
-                        Vec3(18.546, 4.010, 15.539),
-                        Vec3(18.454, 4.010, 18.992),
-                        Vec3(14.856, 4.010, 23.758),
-                        Vec3(9.911, 4.002, 23.894),
-                        HoldDirection(9.905, 1.002, 67.659, joy_dir=Vec2(0, 1)),
-                        Vec3(9.905, 1.002, 75.696),
-                        Vec3(26.313, 1.002, 91.954),
-                        InteractMove(26.313, 1.002, 101.460),
-                        Vec3(26.358, 1.002, 102.813),
-                    ],
-                ),
-                SeqInteract("Lever"),
-                SeqMove(
-                    name="Moving platform",
-                    coords=[
-                        Vec3(15.452, 1.001, 128.541),
-                        InteractMove(15.452, 1.002, 133.465),
-                    ],
-                ),
-                SeqCombatAndMove(
-                    name="Juking enemies",
-                    coords=[
-                        Vec3(12.818, 1.001, 133.465),
-                        Vec3(-3.442, 1.002, 149.684),
-                        HoldDirection(4.500, 1.002, 206.992, joy_dir=Vec2(0, 1)),
-                    ],
-                ),
-                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(0, 1)),
-                SeqSkipUntilIdle("Spooky scary skeletons"),
+                NecromancersLairEntry(),
+                # In hub area
                 SeqCheckpoint("necro_lair"),
                 # Right room
                 NecromancersLairGraplou(),
+                NecromancersLairCentral(),
+                SeqCheckpoint(
+                    "necro_lair2",
+                    return_path=SeqMove(
+                        name="Return to path",
+                        coords=[
+                            Vec3(-12.753, 1.002, 221.117),
+                            Vec3(-12.753, 1.002, 223.540),
+                            InteractMove(-12.753, -0.998, 226.408),
+                            Vec3(-13.009, -0.998, 232.323),
+                            Vec3(-13.009, -0.998, 239.893),
+                        ],
+                    ),
+                ),
+                NecromancersLairLeft(),
                 # TODO(orkaboy): Continue routing
             ],
         )
