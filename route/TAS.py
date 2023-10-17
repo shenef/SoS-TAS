@@ -148,7 +148,8 @@ class TASMenu(Menu):
                     + "cursed_woods         (First enetering Cursed Woods)\n"
                     + "cursed_woods2        (Middle of Cursed Woods)\n"
                     + "flooded_graveyard    (Near Ferryman after landing)\n"
-                    + "necro_lair           (When first entering the skeleton lock chamber)"
+                    + "necro_lair           (When first entering the skeleton lock chamber)\n"
+                    + "necro_lair2          (Hub area, after defeating second skeleton)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
