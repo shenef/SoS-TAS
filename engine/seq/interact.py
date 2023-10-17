@@ -40,10 +40,15 @@ class SeqBracelet(SeqBase):
 
 
 class SeqGraplou(SeqBase):
-    def __init__(self: Self, name: str = "Graplou") -> None:
+    def __init__(self: Self, name: str = "Graplou", until_combat: bool = False) -> None:
         super().__init__(name)
+        self.until_combat = until_combat
 
     def execute(self: Self, delta: float) -> bool:
+        if self.until_combat:
+            sos_ctrl().graplou(tapping=True)
+            return combat_manager.encounter_done is False
+
         sos_ctrl().graplou()
         return True
 
