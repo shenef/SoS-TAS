@@ -20,6 +20,7 @@ from engine.seq import (
     SeqList,
     SeqMove,
     SeqRaft,
+    SeqRouteBranch,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
@@ -720,7 +721,7 @@ class NecromancersLairLeft(SeqList):
                         Vec3(-125.408, -18.998, 388.546),
                         Graplou(-125.397, -18.998, 397.540, joy_dir=Vec2(0, 1), hold_timer=0.1),
                         Vec3(-123.457, -18.998, 396.815),
-                        Graplou(-112.660, -18.998, 395.444, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Graplou(-112.660, -18.998, 395.444, joy_dir=Vec2(1, 0), hold_timer=0.1),
                         Vec3(-117.722, -18.998, 400.543),
                     ],
                 ),
@@ -913,6 +914,63 @@ class NecromancersLairLeave(SeqList):
         )
 
 
+class GetEnchantedScarf(SeqList):
+    """Getting Enchanted Scarf in Flooded Graveyard."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new GetEnchantedScarf object."""
+        super().__init__(
+            name="Get Enchanted Scarf",
+            children=[
+                SeqMove(
+                    name="Enter puzzle room",
+                    coords=[
+                        Graplou(8.703, 10.010, 49.750, joy_dir=Vec2(1, 1), hold_timer=0.1),
+                        Graplou(19.000, 10.010, 59.000, joy_dir=Vec2(1, 1), hold_timer=0.1),
+                        Vec3(16.963, 10.002, 58.717),
+                        Graplou(8.750, 10.010, 67.000, joy_dir=Vec2(-1, 1), hold_timer=0.1),
+                        Vec3(10.902, 10.010, 76.514),
+                        HoldDirection(147.503, 1.002, 205.000, joy_dir=Vec2(0, 1)),
+                        Graplou(135.459, 1.002, 212.813, joy_dir=Vec2(-1, 1), hold_timer=0.1),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SeqGraplou("Pull wall thing"),
+                SeqMove(
+                    name="Move to right side",
+                    coords=[
+                        Vec3(138.043, 1.002, 214.166),
+                        Graplou(159.540, 1.002, 210.901, joy_dir=Vec2(1, 0), hold_timer=0.1),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SeqGraplou("Pull wall thing"),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(155.519, 1.002, 213.641),
+                        Graplou(144.553, 1.002, 214.465, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Vec3(147.533, 1.002, 218.209),
+                    ],
+                ),
+                SeqInteract("Enchanted Scarf"),
+                SeqSkipUntilIdle("Enchanted Scarf"),
+                SeqMove(
+                    name="Return to path",
+                    coords=[
+                        Vec3(146.308, 1.002, 214.501),
+                        Vec3(147.597, 1.002, 206.166),
+                        HoldDirection(11.000, 10.002, 76.889, joy_dir=Vec2(0, -1)),
+                        Vec3(11.000, 10.002, 65.193),
+                        Graplou(19.000, 10.010, 57.000, joy_dir=Vec2(1, -1), hold_timer=0.1),
+                        Graplou(8.000, 10.010, 49.106, joy_dir=Vec2(-1, -1), hold_timer=0.1),
+                        Graplou(-1.000, 10.010, 38.750, joy_dir=Vec2(-1, -1), hold_timer=0.1),
+                    ],
+                ),
+            ],
+        )
+
+
 class FloodedGraveyardLeave(SeqList):
     """Routing of Necromancer's Lair. Leaving graveyard."""
 
@@ -940,8 +998,25 @@ class FloodedGraveyardLeave(SeqList):
                         Graplou(1.000, 10.010, 39.274, joy_dir=Vec2(1, -1), hold_timer=0.1),
                     ],
                 ),
-                # TODO(orkaboy): Branch to get item
-                # TODO(orkaboy): Continue routing
+                # Branch to get item
+                SeqRouteBranch(
+                    name="Enchanted Scarf",
+                    route=["fg_enchanted_scarf"],
+                    when_true=GetEnchantedScarf(),
+                ),
+                SeqMove(
+                    name="Go to ferryman",
+                    coords=[
+                        Vec3(2.347, 10.002, 36.994),
+                        InteractMove(2.919, 4.002, 36.268),
+                        Vec3(4.383, 4.002, 32.687),
+                        Vec3(12.199, 4.002, 30.277),
+                        Vec3(17.117, 4.002, 25.265),
+                        Vec3(25.285, 6.002, 23.540),
+                        Vec3(37.547, 6.002, 22.898),
+                    ],
+                ),
+                SeqInteract("Ferryman"),
             ],
         )
 

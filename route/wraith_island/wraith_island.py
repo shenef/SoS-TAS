@@ -3,9 +3,10 @@
 import logging
 from typing import Self
 
-from engine.seq import SeqList
+from engine.seq import SeqCheckpoint, SeqList, SeqSkipUntilIdle
 from route.wraith_island.cursed_woods import CursedWoods
 from route.wraith_island.docks import WraithIslandDocks
+from route.wraith_island.haunted_mansion import HauntedMansion
 from route.wraith_island.lucent import LucentArrival
 from route.wraith_island.necromancers_lair import (
     FloodedGraveyard,
@@ -30,6 +31,9 @@ class WraithIsland(SeqList):
                 FloodedGraveyard(),
                 NecromancersLair(),
                 FloodedGraveyardLeave(),
+                SeqSkipUntilIdle("A soul restored"),
+                SeqCheckpoint("lucent"),
+                HauntedMansion(),
                 # TODO(orkaboy): Continue routing
             ],
         )
