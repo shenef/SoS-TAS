@@ -151,7 +151,8 @@ class TASMenu(Menu):
                     + "necro_lair           (When first entering the skeleton lock chamber)\n"
                     + "necro_lair2          (Hub area, after defeating second revenant)\n"
                     + "necro_lair_boss      (Hub area, after defeating third revenant)\n"
-                    + "necro_lair_boss2     (Hub area, after defeating Romaya)"
+                    + "necro_lair_boss2     (Hub area, after defeating Romaya)\n"
+                    + "lucent               (Lucent, after restoring Garl)"
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
@@ -201,6 +202,9 @@ class SoSAnyPercentMenu(TASMenu):
         RouteOption(name="ml_solar_rain", description="Moorland Solar Rain scroll", default=True),
         RouteOption(
             name="wtm_green_leaf", description="Wind Tunnel Mines Green Leaf", default=True
+        ),
+        RouteOption(
+            name="fg_enchanted_scarf", description="Flooded Graveyard Enchanted Scarf", default=True
         ),
     ]
 

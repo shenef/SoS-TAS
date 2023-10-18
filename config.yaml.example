@@ -35,6 +35,8 @@ route_config          : ""      # Path to a route options configuration file
 #   necro_lair                  # When first entering the skeleton lock chamber
 #   necro_lair2                 # Hub area, after defeating second revenant
 #   necro_lair_boss             # Hub area, after defeating third revenant
+#   necro_lair_boss2            # Hub area, after defeating Romaya
+#   lucent                      # Lucent, after restoring Garl
 
 # User Interface
 ui:
