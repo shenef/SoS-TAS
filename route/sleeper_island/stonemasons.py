@@ -30,6 +30,7 @@ from engine.seq import (
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -178,8 +179,13 @@ class WindTunnelMinesFirstFloor(SeqList):
                                     Vec3(105.640, 8.002, 113.502),
                                 ],
                             ),
-                            SeqLoot("Green Leaf", item=TRINKETS.GreenLeaf),
-                            # TODO(orkaboy): Equip?
+                            # TODO(orkaboy): Equip to whom, and where?
+                            SeqLoot(
+                                "Green Leaf",
+                                item=TRINKETS.GreenLeaf,
+                                equip_to=PlayerPartyCharacter.Valere,
+                                trinket_slot=0,
+                            ),
                             SeqMove(
                                 name="Return to route",
                                 coords=[

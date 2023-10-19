@@ -20,6 +20,7 @@ from engine.seq import (
     SeqMove,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -176,8 +177,8 @@ class ClearingWeeds(SeqList):
                         Vec3(56.990, 5.002, 247.276),
                     ],
                 ),
-                SeqLoot("Bone Armor", item=ARMORS.BoneArmor),
-                # TODO(orkaboy): Equip Bone Armor
+                # TODO(orkaboy): Equip Bone Armor to whom? Maybe move equipment with equip_node?
+                SeqLoot("Bone Armor", item=ARMORS.BoneArmor, equip_to=PlayerPartyCharacter.Valere),
                 SeqMove(
                     name="Navigate to fourth Boulbe",
                     coords=[

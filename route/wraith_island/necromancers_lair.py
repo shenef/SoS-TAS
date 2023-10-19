@@ -26,6 +26,7 @@ from engine.seq import (
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -92,8 +93,11 @@ class FloodedGraveyard(SeqList):
                         Vec3(71.857, 6.002, 217.437),
                     ],
                 ),
-                SeqLoot("Shimmering Daggers", item=WEAPONS.ShimmeringDaggers),
-                # TODO(orkaboy): Equip
+                SeqLoot(
+                    "Shimmering Daggers",
+                    item=WEAPONS.ShimmeringDaggers,
+                    equip_to=PlayerPartyCharacter.Serai,
+                ),
                 SeqMove(
                     name="Move to crypt",
                     coords=[
@@ -309,8 +313,9 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Face chest", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SeqLoot("Spectral Cape", item=ARMORS.SpectralCape),
-                # TODO(orkaboy): Equip
+                SeqLoot(
+                    "Spectral Cape", item=ARMORS.SpectralCape, equip_to=PlayerPartyCharacter.Serai
+                ),
                 SeqMove(
                     name="Move to ladder",
                     coords=[
@@ -579,8 +584,9 @@ class NecromancersLairLeft(SeqList):
                         Vec3(-51.274, 1.002, 357.259),
                     ],
                 ),
-                SeqLoot("Osseous Staff", item=WEAPONS.OsseousStaff),
-                # TODO(orkaboy): Equip
+                SeqLoot(
+                    "Osseous Staff", item=WEAPONS.OsseousStaff, equip_to=PlayerPartyCharacter.Valere
+                ),
                 SeqMove(
                     name="Graplou movement",
                     coords=[
@@ -952,8 +958,13 @@ class GetEnchantedScarf(SeqList):
                         Vec3(147.533, 1.002, 218.209),
                     ],
                 ),
-                SeqLoot("Enchanted Scarf", item=TRINKETS.EnchantedScarf),
-                # TODO(orkaboy): Equip
+                # TODO(orkaboy): Equip to whom, and where?
+                SeqLoot(
+                    "Enchanted Scarf",
+                    item=TRINKETS.EnchantedScarf,
+                    equip_to=PlayerPartyCharacter.Zale,
+                    trinket_slot=1,
+                ),
                 SeqMove(
                     name="Return to path",
                     coords=[

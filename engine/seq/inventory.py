@@ -20,49 +20,6 @@ player_party_manager = player_party_manager_handle()
 inventory_manager = get_inventory_manager()
 
 
-class SeqLoot(SeqBase):
-    """Pick up an item and track it."""
-
-    class FSM(Enum):
-        """FSM States."""
-
-        GRAB = auto()
-        CLEAR_TEXT = auto()
-
-    def __init__(self: Self, name: str, item: Item = None, amount: int = 1) -> None:
-        self.item = item
-        self.amount = amount
-        self.state = SeqLoot.FSM.GRAB
-        super().__init__(name)
-
-    def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
-        if self.item is not None:
-            inventory_manager.add_item(self.item, self.amount)
-        return False
-
-    # Execute pickup logic (interact + skip until idle FSM)
-    def execute(self: Self, delta: float) -> bool:
-        ctrl = sos_ctrl()
-        match self.state:
-            case SeqLoot.FSM.GRAB:
-                ctrl.confirm()
-                if self.item is not None:
-                    inventory_manager.add_item(self.item, self.amount)
-                self.state = SeqLoot.FSM.CLEAR_TEXT
-            case SeqLoot.FSM.CLEAR_TEXT:
-                ctrl.toggle_turbo(state=True)
-                ctrl.toggle_confirm(state=True)
-                if player_party_manager.movement_state == PlayerMovementState.Idle:
-                    ctrl.toggle_turbo(state=False)
-                    ctrl.toggle_confirm(state=False)
-                    return True
-        return False
-
-    def __repr__(self: Self) -> str:
-        item = f"{self.amount}x {self.item} " if self.item is not None else ""
-        return f"Grab loot({self.name}): {item}[{self.state.name}]"
-
-
 class EquipmentCommand(NamedTuple):
     """A command to equip a particular piece of gear on a character."""
 
@@ -215,6 +172,73 @@ class SeqEquip(SeqBase):
                 return True
 
         return False
+
+
+class SeqLoot(SeqBase):
+    """Pick up an item and track it."""
+
+    class FSM(Enum):
+        """FSM States."""
+
+        GRAB = auto()
+        CLEAR_TEXT = auto()
+        EQUIP = auto()
+
+    def __init__(
+        self: Self,
+        name: str,
+        item: Item = None,
+        amount: int = 1,
+        equip_node: SeqEquip = None,
+        equip_to: PlayerPartyCharacter = None,
+        trinket_slot: int = 0,
+    ) -> None:
+        self.item = item
+        self.amount = amount
+        self.state = SeqLoot.FSM.GRAB
+        # Optionally, initialize a new SeqEquip node
+        self.equip_node: SeqEquip = None
+        if equip_node is not None:
+            self.equip_node = equip_node
+        elif equip_to is not None:
+            self.equip_node = SeqEquip(
+                self.name,
+                commands=[
+                    EquipmentCommand(character=equip_to, item=self.item, trinket_slot=trinket_slot)
+                ],
+            )
+        super().__init__(name)
+
+    def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
+        if self.item is not None:
+            inventory_manager.add_item(self.item, self.amount)
+        return False
+
+    # Execute pickup logic (interact + skip until idle FSM)
+    def execute(self: Self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+        match self.state:
+            case SeqLoot.FSM.GRAB:
+                ctrl.confirm()
+                if self.item is not None:
+                    inventory_manager.add_item(self.item, self.amount)
+                self.state = SeqLoot.FSM.CLEAR_TEXT
+            case SeqLoot.FSM.CLEAR_TEXT:
+                ctrl.toggle_turbo(state=True)
+                ctrl.toggle_confirm(state=True)
+                if player_party_manager.movement_state == PlayerMovementState.Idle:
+                    ctrl.toggle_turbo(state=False)
+                    ctrl.toggle_confirm(state=False)
+                    if self.equip_node is None:
+                        return True
+                    self.state = SeqLoot.FSM.EQUIP
+            case SeqLoot.FSM.EQUIP:
+                return self.equip_node.execute(delta)
+        return False
+
+    def __repr__(self: Self) -> str:
+        item = f"{self.amount}x {self.item} " if self.item is not None else ""
+        return f"Grab loot({self.name}): {item}[{self.state.name}]"
 
 
 # TODO(orkaboy): Add shopping node

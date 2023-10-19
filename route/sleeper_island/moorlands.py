@@ -7,7 +7,6 @@ from engine.combat import SeqCombatAndMove
 from engine.inventory import TRINKETS, VALUABLES, WEAPONS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
-    EquipmentCommand,
     HoldDirection,
     InteractMove,
     MoveToward,
@@ -16,7 +15,6 @@ from engine.seq import (
     SeqCheckpoint,
     SeqClimb,
     SeqDelay,
-    SeqEquip,
     SeqHoldDirectionDelay,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
@@ -85,8 +83,12 @@ class Moorlands(SeqList):
                     when_true=SeqList(
                         name="",
                         children=[
-                            SeqLoot("Power Belt", item=TRINKETS.PowerBelt),
-                            # TODO(orkaboy): Equip
+                            # TODO(orkaboy): Equip to whom?
+                            SeqLoot(
+                                "Power Belt",
+                                item=TRINKETS.PowerBelt,
+                                equip_to=PlayerPartyCharacter.Garl,
+                            ),
                         ],
                     ),
                 ),
@@ -255,13 +257,7 @@ class Moorlands(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Rock Lid", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqLoot("Rock Lid", item=WEAPONS.RockLid),
-                SeqEquip(
-                    name="Equip Rock Lid",
-                    commands=[
-                        EquipmentCommand(character=PlayerPartyCharacter.Garl, item=WEAPONS.RockLid)
-                    ],
-                ),
+                SeqLoot("Rock Lid", item=WEAPONS.RockLid, equip_to=PlayerPartyCharacter.Garl),
                 SeqCombatAndMove(
                     name="Move into cave",
                     coords=[

@@ -7,14 +7,12 @@ from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.inventory import ARMORS, TRINKETS, VALUABLES
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
-    EquipmentCommand,
     HoldDirection,
     InteractMove,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
     SeqDelay,
-    SeqEquip,
     SeqHoldDirectionDelay,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
@@ -249,16 +247,12 @@ class IntroForbiddenCave(SeqList):
                                 ],
                             ),
                             SeqHoldDirectionDelay("Chest", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                            SeqLoot("Leeching Thorn", TRINKETS.LeechingThorn),
-                            SeqEquip(
-                                "Equip Leeching Thorn",
-                                commands=[
-                                    EquipmentCommand(
-                                        character=PlayerPartyCharacter.Valere,
-                                        item=TRINKETS.LeechingThorn,
-                                        trinket_slot=1,
-                                    )
-                                ],
+                            # TODO(orkaboy): Equip to whom?
+                            SeqLoot(
+                                "Leeching Thorn",
+                                TRINKETS.LeechingThorn,
+                                equip_to=PlayerPartyCharacter.Valere,
+                                trinket_slot=1,
                             ),
                             SeqMove(
                                 name="Return to route",
@@ -362,15 +356,10 @@ class IntroForbiddenCave(SeqList):
                                     Vec3(-37.746, 2.002, 302.321),
                                 ],
                             ),
-                            SeqLoot("Adventurer's Vest", ARMORS.AdventurersVest),
-                            SeqEquip(
-                                "Equip Adventurer's Vest",
-                                commands=[
-                                    EquipmentCommand(
-                                        character=PlayerPartyCharacter.Valere,
-                                        item=ARMORS.AdventurersVest,
-                                    )
-                                ],
+                            SeqLoot(
+                                "Adventurer's Vest",
+                                ARMORS.AdventurersVest,
+                                equip_to=PlayerPartyCharacter.Valere,
                             ),
                             SeqMove(
                                 name="Leave cave",

@@ -18,6 +18,7 @@ from engine.seq import (
     SeqRouteBranch,
     SeqSkipUntilClose,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +50,13 @@ class XtolsLanding(SeqList):
                                     Vec3(-491.448, 3.002, -206.558),
                                 ],
                             ),
-                            SeqLoot("Solstice Ring", item=TRINKETS.SolsticeRing),
-                            # TODO(orkaboy): Equip
+                            # TODO(orkaboy): Equip to whom?
+                            SeqLoot(
+                                "Solstice Ring",
+                                item=TRINKETS.SolsticeRing,
+                                equip_to=PlayerPartyCharacter.Zale,
+                                trinket_slot=2,
+                            ),
                             SeqMove(
                                 name="Move to chest",
                                 coords=[
