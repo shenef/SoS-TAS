@@ -492,3 +492,47 @@ class SeqBoat(SeqMove):
         ctrl = sos_ctrl()
         ctrl.set_neutral()
         ctrl.toggle_bracelet(state=False)
+
+
+class SeqRaft(SeqMove):
+    """
+    Movement function for navigating raft segments.
+
+    Use the dpad and Mistral Bracelet to move around.
+    """
+
+    def __init__(
+        self: Self,
+        name: str,
+        coords: list[Vec3],
+        precision: float = 3,
+        precision2: float = 3,
+        tap_rate: float = 0.05,
+    ) -> None:
+        super().__init__(name, coords, precision, precision2, tap_rate)
+
+    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
+        # Turn away from the direction we want to go
+        target_vec = player_pos - target_pos
+        target_vec_norm = Vec3.normalize(target_vec)
+        joy_dir = Vec2(target_vec_norm.x, target_vec_norm.z)
+
+        ctrl = sos_ctrl()
+        ctrl.set_joystick(joy_dir)
+
+    def handle_toggling_input(self: Self, delta: float, player_pos: Vec3, target: Vec3) -> None:
+        ctrl = sos_ctrl()
+        # Only tap while outside the secondary precision radius
+        if Vec3.is_close(player_pos, target, self.precision2):
+            ctrl.toggle_bracelet(False)
+        else:
+            self.timer += delta
+            if self.timer >= self.tap_rate:
+                self.confirm_state = not self.confirm_state
+                ctrl.toggle_bracelet(self.confirm_state)
+                self.timer = 0
+
+    def on_done(self: Self) -> None:
+        ctrl = sos_ctrl()
+        ctrl.set_neutral()
+        ctrl.toggle_bracelet(state=False)
