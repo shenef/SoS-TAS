@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
+from engine.inventory import ARMORS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -15,6 +16,7 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqSkipUntilIdle,
 )
@@ -174,8 +176,7 @@ class ClearingWeeds(SeqList):
                         Vec3(56.990, 5.002, 247.276),
                     ],
                 ),
-                SeqInteract("Bone Armor"),
-                SeqSkipUntilIdle("Bone Armor"),
+                SeqLoot("Bone Armor", item=ARMORS.BoneArmor),
                 # TODO(orkaboy): Equip Bone Armor
                 SeqMove(
                     name="Navigate to fourth Boulbe",

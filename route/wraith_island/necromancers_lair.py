@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatAndMove
+from engine.inventory import ARMORS, TRINKETS, VALUABLES, WEAPONS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     Graplou,
@@ -18,6 +19,7 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqRaft,
     SeqRouteBranch,
@@ -90,8 +92,8 @@ class FloodedGraveyard(SeqList):
                         Vec3(71.857, 6.002, 217.437),
                     ],
                 ),
-                SeqInteract("Shimmering Daggers"),
-                SeqSkipUntilIdle("Shimmering Daggers"),
+                SeqLoot("Shimmering Daggers", item=WEAPONS.ShimmeringDaggers),
+                # TODO(orkaboy): Equip
                 SeqMove(
                     name="Move to crypt",
                     coords=[
@@ -307,8 +309,8 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Face chest", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SeqInteract("Spectral Cape"),
-                SeqSkipUntilIdle("Spectral Cape"),
+                SeqLoot("Spectral Cape", item=ARMORS.SpectralCape),
+                # TODO(orkaboy): Equip
                 SeqMove(
                     name="Move to ladder",
                     coords=[
@@ -366,8 +368,7 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Face chest", joy_dir=Vec2(-1, -1), timeout_s=0.1),
-                SeqInteract("Obsidian Ore"),
-                SeqSkipUntilIdle("Obsidian Ore"),
+                SeqLoot("Obsidian Ore", item=VALUABLES.ObsidianOre),
                 SeqMove(
                     name="Return to route",
                     coords=[
@@ -401,8 +402,7 @@ class NecromancersLairGraplou(SeqList):
                         Vec3(311.500, 1.002, 379.940),
                     ],
                 ),
-                SeqInteract("Graplou"),
-                SeqSkipUntilIdle("Graplou"),
+                SeqLoot("Graplou"),
                 SeqCombatAndMove(
                     name="Graplou movement",
                     coords=[
@@ -579,8 +579,7 @@ class NecromancersLairLeft(SeqList):
                         Vec3(-51.274, 1.002, 357.259),
                     ],
                 ),
-                SeqInteract("Osseous Staff"),
-                SeqSkipUntilIdle("Osseous Staff"),
+                SeqLoot("Osseous Staff", item=WEAPONS.OsseousStaff),
                 # TODO(orkaboy): Equip
                 SeqMove(
                     name="Graplou movement",
@@ -953,8 +952,8 @@ class GetEnchantedScarf(SeqList):
                         Vec3(147.533, 1.002, 218.209),
                     ],
                 ),
-                SeqInteract("Enchanted Scarf"),
-                SeqSkipUntilIdle("Enchanted Scarf"),
+                SeqLoot("Enchanted Scarf", item=TRINKETS.EnchantedScarf),
+                # TODO(orkaboy): Equip
                 SeqMove(
                     name="Return to path",
                     coords=[

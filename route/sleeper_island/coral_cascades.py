@@ -11,8 +11,8 @@ from engine.seq import (
     SeqCheckpoint,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
-    SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
@@ -94,8 +94,7 @@ class CoralCascades(SeqList):
                         Vec3(18.498, -43.998, -17.651),
                     ],
                 ),
-                SeqInteract("50 Gold"),
-                SeqSkipUntilIdle("50 Gold"),
+                SeqLoot("50 Gold"),
                 SeqMove(
                     name="Rapids",
                     coords=[

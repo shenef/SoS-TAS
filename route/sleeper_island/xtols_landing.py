@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
+from engine.inventory import TRINKETS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -12,10 +13,10 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqRouteBranch,
     SeqSkipUntilClose,
-    SeqSkipUntilIdle,
 )
 
 logger = logging.getLogger(__name__)
@@ -48,8 +49,8 @@ class XtolsLanding(SeqList):
                                     Vec3(-491.448, 3.002, -206.558),
                                 ],
                             ),
-                            SeqInteract("Solstice Ring"),
-                            SeqSkipUntilIdle("Solstice Ring"),
+                            SeqLoot("Solstice Ring", item=TRINKETS.SolsticeRing),
+                            # TODO(orkaboy): Equip
                             SeqMove(
                                 name="Move to chest",
                                 coords=[
@@ -60,8 +61,7 @@ class XtolsLanding(SeqList):
                                     Vec3(-444.577, -14.998, -73.867),
                                 ],
                             ),
-                            SeqInteract("90 gold"),
-                            SeqSkipUntilIdle("90 gold"),
+                            SeqLoot("90 gold"),
                             SeqMove(
                                 name="Return to route",
                                 coords=[
