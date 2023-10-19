@@ -12,6 +12,7 @@ from engine.seq.interact import (
     SeqSkipUntilIdle,
     SeqTapDown,
 )
+from engine.seq.inventory import EquipmentCommand, SeqEquip, SeqLoot
 from engine.seq.log import SeqDebug, SeqLog
 from engine.seq.move import (
     CancelMove,
@@ -42,6 +43,8 @@ from engine.seq.time import (
 )
 
 __all__ = [
+    "SeqLoot",
+    "SeqEquip",
     "SeqAmulet",
     "SequencerEngine",
     "SeqDebug",
@@ -86,4 +89,5 @@ __all__ = [
     "SeqChangeTimeOfDay",
     "SeqBlockPuzzle",
     "MistralBracelet",
+    "EquipmentCommand",
 ]

@@ -29,14 +29,15 @@ class SeqLoot(SeqBase):
         GRAB = auto()
         CLEAR_TEXT = auto()
 
-    def __init__(self: Self, name: str, item: Item, amount: int = 1) -> None:
+    def __init__(self: Self, name: str, item: Item = None, amount: int = 1) -> None:
         self.item = item
         self.amount = amount
         self.state = SeqLoot.FSM.GRAB
         super().__init__(name)
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
-        inventory_manager.add_item(self.item, self.amount)
+        if self.item is not None:
+            inventory_manager.add_item(self.item, self.amount)
         return False
 
     # Execute pickup logic (interact + skip until idle FSM)
@@ -45,7 +46,8 @@ class SeqLoot(SeqBase):
         match self.state:
             case SeqLoot.FSM.GRAB:
                 ctrl.confirm()
-                inventory_manager.add_item(self.item, self.amount)
+                if self.item is not None:
+                    inventory_manager.add_item(self.item, self.amount)
                 self.state = SeqLoot.FSM.CLEAR_TEXT
             case SeqLoot.FSM.CLEAR_TEXT:
                 ctrl.toggle_turbo(state=True)
@@ -57,7 +59,8 @@ class SeqLoot(SeqBase):
         return False
 
     def __repr__(self: Self) -> str:
-        return f"Grab loot({self.name}): {self.amount}x {self.item} [{self.state.name}]"
+        item = f"{self.amount}x {self.item} " if self.item is not None else ""
+        return f"Grab loot({self.name}): {item}[{self.state.name}]"
 
 
 class EquipmentCommand(NamedTuple):
@@ -101,19 +104,19 @@ class SeqEquip(SeqBase):
 
     def select_character(self: Self, character: PlayerPartyCharacter) -> bool:
         """Select character with LB/RB in the equip menu."""
-        # ctrl = sos_ctrl()
-        # TODO(orkaboy): Need to read which character is currently selected
-        # if command.character in party:
-        # if command.character == current_char:
-        # Use LB/RB to swap characters
-        # ctrl.shift_left(tapping=True)
-        # ctrl.shift_right(tapping=True)
-        # return True
-        # else:
-        # logger.error(f"Character {character.name} is not in party!")
-        # return False
+        ctrl = sos_ctrl()
 
-        # TODO(orkaboy): Temp, select first char
+        party = player_party_manager.current_party
+        if character not in party:
+            return False
+
+        while character != party[self.selected_char]:
+            # Use LB/RB to swap characters
+            # TODO(orkaboy): optimize, go left
+            ctrl.shift_right(tapping=True)
+            self.selected_char += 1
+            if self.selected_char >= len(party):
+                self.selected_char = 0
         return True
 
     def select_slot(self: Self, item: Item, trinket_slot: int = 0) -> bool:
@@ -153,6 +156,11 @@ class SeqEquip(SeqBase):
         """Iterate the gear selection. Return true if item found."""
         # TODO(orkaboy): Find the correct piece of gear
         # TODO(orkaboy): Find if we don't have the gear and exit
+
+        # TODO(orkaboy): Usually, the best piece of gear is highest in the list,
+        # TODO(orkaboy): just after the currently equipped item. Tap down to select it.
+        ctrl = sos_ctrl()
+        ctrl.dpad.tap_down()
 
         return True
 
