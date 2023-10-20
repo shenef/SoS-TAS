@@ -404,7 +404,7 @@ class NecromancersLairGraplou(SeqList):
                 SeqInteract("Graplou"),
                 SeqSkipUntilIdle("Graplou"),
                 SeqCombatAndMove(
-                    name="Graplouing around",
+                    name="Graplou movement",
                     coords=[
                         Vec3(311.500, 1.002, 357.595),
                         HoldDirection(207.000, -19.998, 274.434, joy_dir=Vec2(0, -1)),
@@ -430,7 +430,7 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqMove(
-                    name="Graplouing around",
+                    name="Graplou movement",
                     coords=[
                         Vec3(211.051, -5.865, 271.348),
                         Graplou(199.342, -5.998, 271.478, joy_dir=Vec2(-1, 0), hold_timer=0.1),
@@ -583,7 +583,7 @@ class NecromancersLairLeft(SeqList):
                 SeqSkipUntilIdle("Osseous Staff"),
                 # TODO(orkaboy): Equip
                 SeqMove(
-                    name="Graplouing around",
+                    name="Graplou movement",
                     coords=[
                         Vec3(-48.152, 1.002, 354.438),
                         Graplou(-34.000, 1.010, 354.593, joy_dir=Vec2(1, 0), hold_timer=0.1),
@@ -607,7 +607,7 @@ class NecromancersLairLeft(SeqList):
                 ),
                 SeqInteract("Lever"),
                 SeqCombatAndMove(
-                    name="Graplouing around",
+                    name="Graplou movement",
                     coords=[
                         Vec3(-48.133, 2.002, 404.808),
                         Vec3(-54.118, 1.002, 404.808),
@@ -980,7 +980,7 @@ class FloodedGraveyardLeave(SeqList):
             name="Leave graveyard",
             children=[
                 SeqMove(
-                    name="Graplouing graveyard",
+                    name="Graplou movement",
                     coords=[
                         Vec3(-20.813, 6.002, 126.556),
                         InteractMove(-17.078, 6.002, 126.556),

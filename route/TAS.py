@@ -145,7 +145,7 @@ class TASMenu(Menu):
                     + "wizard_lab_boss      (Before boss fight)\n"
                     + "brisk2               (Before boarding Oakum Skiff)\n"
                     + "wraith_island_docks  (After getting off Oakum Skiff)\n"
-                    + "cursed_woods         (First enetering Cursed Woods)\n"
+                    + "cursed_woods         (First entering Cursed Woods)\n"
                     + "cursed_woods2        (Middle of Cursed Woods)\n"
                     + "flooded_graveyard    (Near Ferryman after landing)\n"
                     + "necro_lair           (When first entering the skeleton lock chamber)\n"
