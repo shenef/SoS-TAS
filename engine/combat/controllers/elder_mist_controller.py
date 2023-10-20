@@ -12,10 +12,14 @@ logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
 
 
-# This handles the elder mist fight.
-# The general basis of the fight is the sword must be prioritized first,
-# then the boss can be attacked.
 class ElderMistEncounterController(EncounterController):
+    """
+    Handles the elder mist fight.
+
+    The general basis of the fight is the sword must be prioritized first,
+    then the boss can be attacked.
+    """
+
     ELDER_MIST_SWORD_GUID = "ddc4a3bbf0edb9945ba4b06f96f9c20e"
 
     def __init__(self: Self) -> None:
