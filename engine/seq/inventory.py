@@ -6,7 +6,7 @@ from enum import Enum, auto
 from typing import NamedTuple, Self
 
 from control import sos_ctrl
-from engine.inventory import EquippedItem, Item, ItemType, get_inventory_manager
+from engine.inventory import EquippableItem, Item, ItemType, get_inventory_manager
 from engine.seq.base import SeqBase
 from memory import (
     PlayerMovementState,
@@ -24,7 +24,7 @@ class EquipmentCommand(NamedTuple):
     """A command to equip a particular piece of gear on a character."""
 
     character: PlayerPartyCharacter
-    item: EquippedItem
+    item: EquippableItem
     # 0, 1 (trinket), 2 (gold/group). Only relevant if item.item_type is ItemType.TRINKET
     trinket_slot: int = 0
 
@@ -76,7 +76,7 @@ class SeqEquip(SeqBase):
                 self.selected_char = 0
         return True
 
-    def select_slot(self: Self, item: EquippedItem, trinket_slot: int = 0) -> bool:
+    def select_slot(self: Self, item: EquippableItem, trinket_slot: int = 0) -> bool:
         """Select the equipment slot."""
         slot = SeqEquip.EquipSlot.WEAPON
         ctrl = sos_ctrl()
@@ -109,7 +109,7 @@ class SeqEquip(SeqBase):
             self.selected_slot = self.selected_slot + 1
         return True
 
-    def equip_gear(self: Self, item: EquippedItem) -> bool:
+    def equip_gear(self: Self, item: EquippableItem) -> bool:
         """Iterate the gear selection. Return true if item found."""
         # TODO(orkaboy): Find the correct piece of gear
         # TODO(orkaboy): Find if we don't have the gear and exit

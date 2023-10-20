@@ -41,7 +41,7 @@ class Item:
         return f"{self.name}({self.item_type.name})"
 
 
-class EquippedItem(Item):
+class EquippableItem(Item):
     """An Item that can be equipped."""
 
     def __init__(
