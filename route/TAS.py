@@ -112,15 +112,17 @@ class TASMenu(Menu):
             if imgui.button("Stop TAS"):
                 self.tas_is_running = False
         else:  # Not running
-            _, self.load_game_checkbox = imgui.checkbox(
-                "Load from checkpoint", self.load_game_checkbox
+            _, self.load_game_checkbox = imgui.checkbox("Load Checkpoint", self.load_game_checkbox)
+            LayoutHelper.add_tooltip(
+                "Starts from a checkpoint.\n"
+                + 'If you want to load a specific save slot, enable "Run start sequence".'
             )
 
             if self.load_game_checkbox:
                 # TODO(orkaboy): Maybe should be a dropdown of valid checkpoints
                 _, self.checkpoint = imgui.input_text("Checkpoint name", self.checkpoint)
                 LayoutHelper.add_tooltip(
-                    "intro_mooncradle (First cavern in flashback)\n"
+                    text="intro_mooncradle     (First cavern in flashback)\n"
                     + "intro_dorms          (First entering dorms of Zenith Academy)\n"
                     + "intro_dorms2         (Dorms of Zenith Academy, just before final trial)\n"
                     + "forbidden_cave       (Forbidden Cave entrance)\n"
@@ -152,18 +154,23 @@ class TASMenu(Menu):
                     + "necro_lair2          (Hub area, after defeating second revenant)\n"
                     + "necro_lair_boss      (Hub area, after defeating third revenant)\n"
                     + "necro_lair_boss2     (Hub area, after defeating Romaya)\n"
-                    + "lucent               (Lucent, after restoring Garl)"
+                    + "lucent               (Lucent, after restoring Garl)",
+                    width=-1,
                 )
 
             _, self.run_start_sequence = imgui.checkbox(
-                "Should run start sequence", self.run_start_sequence
+                "Run start sequence", self.run_start_sequence
+            )
+            LayoutHelper.add_tooltip(
+                "Selects New Game and chooses a Character before starting.\n"
+                + "When starting from a checkpoint, it loads from the specified save slot instead."
             )
             if self.run_start_sequence and self.load_game_checkbox:
                 # TODO(orkaboy): Maybe should check for valid range 1-9
                 _, self.saveslot = imgui.input_int("Save slot 1-9", self.saveslot)
                 LayoutHelper.add_tooltip(
-                    "Save slot 1-9 is valid, mapping to the in-game slot\n"
-                    + "that holds the checkpoint save."
+                    "Save slot 1-9 is valid, "
+                    + "mapping to the in-game slot that holds the checkpoint save."
                 )
 
             self.custom_gui()

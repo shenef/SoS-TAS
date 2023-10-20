@@ -161,9 +161,9 @@ class LayoutHelper:
     Provides helper functions for creating GUI elements.
 
     ```py
-    add_spacer()      # Add a horizontal line with some padding.
-    add_spacings(n)   # Add n imgui.spacing() elements.
-    add_tooltip(text) # Add a tooltip to the previous element.
+    add_spacer()             # Add a horizontal line with some padding.
+    add_spacings(n)          # Add n imgui.spacing() elements.
+    add_tooltip(text, width) # Add a tooltip to the previous element.
     ```
     """
 
@@ -181,7 +181,11 @@ class LayoutHelper:
             imgui.spacing()
 
     @staticmethod
-    def add_tooltip(text: str) -> None:
+    def add_tooltip(text: str, width: int = 300) -> None:
         """Add a tooltip to the previous element."""
-        if imgui.is_item_hovered():
-            imgui.set_tooltip(text)
+        if imgui.is_item_hovered(flags=imgui.HoveredFlags_.delay_normal) and imgui.begin_tooltip():
+            imgui.set_next_window_size(size=imgui.ImVec2(0.0, 0.0))
+            imgui.push_text_wrap_pos(width)
+            imgui.text_unformatted(text)
+            imgui.pop_text_wrap_pos()
+            imgui.end_tooltip()
