@@ -65,6 +65,7 @@ class SeqEquip(SeqBase):
 
         party = player_party_manager.current_party
         if character not in party:
+            logger.error(f"SeqEquip: Character {character} is not in party: {party}")
             return False
 
         while character != party[self.selected_char]:
@@ -74,6 +75,7 @@ class SeqEquip(SeqBase):
             self.selected_char += 1
             if self.selected_char >= len(party):
                 self.selected_char = 0
+        logger.debug(f"SeqEquip: Character {character} selected")
         return True
 
     def select_slot(self: Self, item: EquippableItem, trinket_slot: int = 0) -> bool:
@@ -107,6 +109,7 @@ class SeqEquip(SeqBase):
         while self.selected_slot != slot:
             ctrl.dpad.tap_down()
             self.selected_slot = self.selected_slot + 1
+        logger.debug(f"SeqEquip: selected slot {slot}")
         return True
 
     def equip_gear(self: Self, item: EquippableItem) -> bool:
@@ -125,17 +128,20 @@ class SeqEquip(SeqBase):
         """Go to next command. Return False if end of list is reached."""
         self.step = self.step + 1
         if self.step >= len(self.commands):
-            self.state = SeqEquip.FSM.CLOSE_MENU
             return False
         return True
 
     def execute(self: Self, delta: float) -> bool:
-        command = self.commands[self.step]
+        if self.step >= len(self.commands):
+            self.state = SeqEquip.FSM.CLOSE_MENU
+        else:
+            command = self.commands[self.step]
         ctrl = sos_ctrl()
         match self.state:
             case SeqEquip.FSM.OPEN_MENU:
                 ctrl.menu(tapping=True)
                 self.state = SeqEquip.FSM.ENTER_EQUIP
+                logger.debug("SeqEquip: Opened menu")
             case SeqEquip.FSM.ENTER_EQUIP:
                 # Select the equip option
                 ctrl.confirm(tapping=True)
@@ -144,6 +150,7 @@ class SeqEquip(SeqBase):
                 self.selected_char = 0
                 self.selected_slot = 0
                 self.state = SeqEquip.FSM.SELECT_CHAR
+                logger.debug("SeqEquip: Select equip, select first character")
             case SeqEquip.FSM.SELECT_CHAR:
                 if self.select_character(command.character):
                     self.state = SeqEquip.FSM.SELECT_SLOT
@@ -159,8 +166,10 @@ class SeqEquip(SeqBase):
                 # Select the correct piece of gear from the list
                 if self.equip_gear(command.item):
                     ctrl.confirm(tapping=True)
+                    logger.debug(f"SeqEquip: Equipped item {command.item}")
                 else:
                     ctrl.cancel(tapping=True)
+                    logger.error(f"SeqEquip: Could not equip item {command.item}")
                 # Go to the next command in the list (or end)
                 if self.next_command():
                     self.state = SeqEquip.FSM.SELECT_CHAR
@@ -169,6 +178,7 @@ class SeqEquip(SeqBase):
                 ctrl.cancel(tapping=True)
                 # Close the menu
                 ctrl.cancel()
+                logger.debug("SeqEquip: Closing menu")
                 return True
 
         return False
@@ -227,6 +237,8 @@ class SeqLoot(SeqBase):
                 ctrl.toggle_turbo(state=True)
                 ctrl.toggle_confirm(state=True)
                 if player_party_manager.movement_state == PlayerMovementState.Idle:
+                    item = f"{self.amount}x {self.item} " if self.item is not None else ""
+                    logger.info(f"Grab loot({self.name}): {item}")
                     ctrl.toggle_turbo(state=False)
                     ctrl.toggle_confirm(state=False)
                     if self.equip_node is None:
