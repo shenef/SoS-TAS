@@ -62,15 +62,15 @@ class PlayerPartyManager:
             current_party_ptr = self.memory.follow_pointer(self.base, [0x98, 0x0])
             # Item is an array of pointers of size 0x08
             # this follows playerPartyManager -> 0x98 (currentParty)
-            combat_players = self.memory.follow_pointer(
-                current_party_ptr,
-                [0x10, 0x0],
-            )
 
             if current_party_ptr == self.NULL_POINTER:
                 self.current_party = []
                 return
 
+            combat_players = self.memory.follow_pointer(
+                current_party_ptr,
+                [0x10, 0x0],
+            )
             players = []
 
             if combat_players:
@@ -79,10 +79,15 @@ class PlayerPartyManager:
 
                 for _item in range(count):
                     ptr = self.memory.follow_pointer(combat_players, [address, 0x0])
+
+                    if ptr == 0x0 or ptr is self.NULL_POINTER:
+                        break
+
                     definition_id = self.memory.read_string(ptr + 0x14, 8)
 
                     players.append(PlayerPartyCharacter.parse_definition_id(definition_id))
                     address += self.PLAYER_OBJECT_OFFSET
+
                 self.current_party = players
                 return
         except Exception:
