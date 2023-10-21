@@ -182,9 +182,13 @@ class LayoutHelper:
 
     @staticmethod
     def add_tooltip(text: str, width: int = 300) -> None:
-        """Add a tooltip to the previous element."""
+        """
+        Add a tooltip to the previous element.
+
+        Set `width` to `-1` to disable automatic text wrapping.
+        """
         if imgui.is_item_hovered(flags=imgui.HoveredFlags_.delay_normal) and imgui.begin_tooltip():
-            imgui.set_next_window_size(size=imgui.ImVec2(0.0, 0.0))
+            imgui.set_next_window_size(size=imgui.ImVec2(0.0, 0.0))  # auto-fit tooltip to content
             imgui.push_text_wrap_pos(width)
             imgui.text_unformatted(text)
             imgui.pop_text_wrap_pos()
