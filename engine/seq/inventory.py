@@ -105,11 +105,13 @@ class SeqEquip(SeqBase):
                 # Can't equip this type of item! What are you doing?!
                 logger.error(f"It's not possible to equip {item.name}!")
                 return False
+        logger.debug(f"SeqEquip: Selecting slot {slot}")
         # TODO(orkaboy): Optimize closest up/down depending on current selection
-        while self.selected_slot != slot:
+        while self.selected_slot != slot.value:
             ctrl.dpad.tap_down()
             self.selected_slot = self.selected_slot + 1
-        logger.debug(f"SeqEquip: selected slot {slot}")
+            if self.selected_slot > SeqEquip.EquipSlot.GROUP_TRINKET.value:
+                self.selected_slot = 0
         return True
 
     def equip_gear(self: Self, item: EquippableItem) -> bool:
