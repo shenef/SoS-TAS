@@ -193,6 +193,7 @@ class SeqLoot(SeqBase):
         equip_to: PlayerPartyCharacter = None,
         trinket_slot: int = 0,
     ) -> None:
+        super().__init__(name)
         self.item = item
         self.amount = amount
         self.state = SeqLoot.FSM.GRAB
@@ -202,12 +203,11 @@ class SeqLoot(SeqBase):
             self.equip_node = equip_node
         elif equip_to is not None:
             self.equip_node = SeqEquip(
-                self.name,
+                name=self.name,
                 commands=[
                     EquipmentCommand(character=equip_to, item=self.item, trinket_slot=trinket_slot)
                 ],
             )
-        super().__init__(name)
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
         if self.item is not None:
