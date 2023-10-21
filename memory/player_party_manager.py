@@ -74,10 +74,9 @@ class PlayerPartyManager:
             players = []
 
             if combat_players:
-                count = self.memory.read_int(combat_players + 0x18)
                 address = self.PLAYER_INDEX_0_ADDRESS
 
-                for _item in range(count):
+                while True:
                     ptr = self.memory.follow_pointer(combat_players, [address, 0x0])
 
                     if ptr == 0x0 or ptr is self.NULL_POINTER:
