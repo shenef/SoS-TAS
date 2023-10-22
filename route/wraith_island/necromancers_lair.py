@@ -587,7 +587,7 @@ class NecromancersLairLeft(SeqList):
                 SeqLoot(
                     "Osseous Staff", item=WEAPONS.OsseousStaff, equip_to=PlayerPartyCharacter.Valere
                 ),
-                SeqMove(
+                SeqCombatAndMove(
                     name="Graplou movement",
                     coords=[
                         Vec3(-48.152, 1.002, 354.438),
