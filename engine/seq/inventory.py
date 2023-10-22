@@ -33,7 +33,7 @@ class SeqEquip(SeqBase):
     """Sequencer node for equipping specific gear."""
 
     class FSM(Enum):
-        """FSM States."""
+        """Finite-State-Machine States."""
 
         OPEN_MENU = auto()
         ENTER_EQUIP = auto()
@@ -190,7 +190,7 @@ class SeqLoot(SeqBase):
     """Pick up an item and track it."""
 
     class FSM(Enum):
-        """FSM States."""
+        """Finite-State-Machine States."""
 
         GRAB = auto()
         CLEAR_TEXT = auto()
@@ -255,4 +255,163 @@ class SeqLoot(SeqBase):
         return f"Grab loot({self.name}): {item}[{self.state.name}]"
 
 
-# TODO(orkaboy): Add shopping node
+class ShoppingCommand:
+    """A command to buy or sell a particular item, optionally equipping it on a character."""
+
+    def __init__(
+        self: Self,
+        item: Item,
+        sell: bool = False,
+        amount: int = 1,
+        character: PlayerPartyCharacter = None,
+        trinket_slot: int = 0,
+    ) -> None:
+        """Initialize a ShoppingCommand object."""
+        self.item = item
+        self.sell = sell
+        self.amount = amount
+        # If should equip
+        self.character = character
+        # 0, 1 (trinket), 2 (gold/group). Only relevant if item.item_type is ItemType.TRINKET
+        self.trinket_slot = trinket_slot
+
+
+class SeqShop(SeqBase):
+    """Shopping node."""
+
+    SKIP_TIMEOUT = 1.0
+
+    class FSM(Enum):
+        """Finite-State-Machine States."""
+
+        OPEN_SHOP = auto()
+        SKIP_DIALOG = auto()
+        SELECT_MODE = auto()
+        SELECT_ITEM = auto()
+        SELECT_AMOUNT = auto()
+        STORE_OR_EQUIP = auto()
+        EQUIP_GEAR = auto()
+        NEXT_ITEM = auto()
+        CLOSE_SHOP = auto()
+
+    def __init__(self: Self, name: str, commands: list[ShoppingCommand]) -> None:
+        """Initialize a SeqShop node."""
+        super().__init__(name)
+        self.timer = 0.0
+        self.step = 0
+        self.commands = commands
+        self.state = SeqShop.FSM.OPEN_SHOP
+        self.sell_mode = False
+
+    def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
+        for command in self.commands:
+            if command.sell:
+                inventory_manager.sell_item(command.item)
+            else:
+                inventory_manager.buy_item(command.item)
+        return False
+
+    def next_command(self: Self) -> bool:
+        self.step += 1
+        return self.step < len(self.commands)
+
+    def execute(self: Self, delta: float) -> bool:
+        ctrl = sos_ctrl()
+
+        if self.step < len(self.commands):
+            command = self.commands[self.step]
+        # Empty command list guard
+        elif self.step == 0:
+            return True
+
+        match self.state:
+            case SeqShop.FSM.OPEN_SHOP:
+                logger.debug("SeqShop: Entering shop")
+                ctrl.toggle_confirm(state=True)
+                ctrl.toggle_turbo(state=True)
+                self.state = SeqShop.FSM.SKIP_DIALOG
+            case SeqShop.FSM.SKIP_DIALOG:
+                self.timer += delta
+                if self.timer >= SeqShop.SKIP_TIMEOUT:
+                    ctrl.toggle_turbo(state=False)
+                    ctrl.toggle_confirm(state=False)
+                    self.state = SeqShop.FSM.SELECT_MODE
+            case SeqShop.FSM.SELECT_MODE:
+                if command.sell != self.sell_mode:
+                    self.sell_mode = command.sell
+                    ctrl.dpad.tap_down()
+                    ctrl.confirm(tapping=True)
+                logger.debug(f"SeqShop: Mode = {"Sell" if self.sell_mode else "Buy"}")
+                self.state = SeqShop.FSM.SELECT_ITEM
+            case SeqShop.FSM.SELECT_ITEM:
+                # TODO(orkaboy): Need to know which slot the item we want is in from memory
+
+                # TODO(orkaboy): For now, skip to next command
+                logger.debug(f"SeqShop:   Item = {command.item}")
+                ctrl.confirm(tapping=True)
+                # TODO(orkaboy): Need to handle logic for Relics?
+                if command.sell or not isinstance(command.item, EquippableItem):
+                    self.state = SeqShop.FSM.SELECT_AMOUNT
+                else:
+                    self.state = SeqShop.FSM.STORE_OR_EQUIP
+            case SeqShop.FSM.SELECT_AMOUNT:
+                # TODO(orkaboy): Could optimize this with up/down for amounts > 10
+                for _ in range(command.amount - 1):
+                    ctrl.dpad.tap_right()
+
+                # TODO(orkaboy): Actually buy the item
+                # ctrl.confirm(tapping=True)
+                inventory_manager.buy_item(command.item, command.amount)
+
+                # TODO(orkaboy): Temp, just cancel out
+                ctrl.cancel(tapping=True)
+
+                self.state = SeqShop.FSM.NEXT_ITEM
+            case SeqShop.FSM.STORE_OR_EQUIP:
+                # Equip is selected by default
+                if command.character is None:
+                    ctrl.dpad.tap_left()
+                    # TODO(orkaboy): Actually buy the item
+                    # ctrl.confirm(tapping=True)
+
+                    # TODO(orkaboy): Temp, just cancel out
+                    ctrl.cancel(tapping=True)
+
+                    self.state = SeqShop.FSM.NEXT_ITEM
+                else:
+                    ctrl.confirm(tapping=True)
+                    self.state = SeqShop.FSM.EQUIP_GEAR
+                inventory_manager.buy_item(command.item)
+            case SeqShop.FSM.EQUIP_GEAR:
+                # TODO(orkaboy): Select the character. Need to get currently selected from memory
+                selected_char = command.character  # TODO(orkaboy): Temp, should get from memory
+                if selected_char != command.character:
+                    ctrl.dpad.tap_down()
+                    return False
+                logger.debug(f"SeqShop:    Selected character {command.character.name}")
+                # TODO(orkaboy): Actually buy the item
+                # ctrl.confirm(tapping=True)
+
+                # TODO(orkaboy): Temp, quit out from menu to item selection
+                ctrl.cancel(tapping=True)
+                ctrl.cancel(tapping=True)
+
+                self.state = SeqShop.FSM.NEXT_ITEM
+            case SeqShop.FSM.NEXT_ITEM:
+                if self.next_command():
+                    command = self.commands[self.step]
+                    if command.sell != self.sell_mode:
+                        ctrl.cancel(tapping=True)
+                        self.state = SeqShop.FSM.SELECT_MODE
+                    else:
+                        self.state = SeqShop.FSM.SELECT_ITEM
+                else:
+                    self.state = SeqShop.FSM.CLOSE_SHOP
+            case SeqShop.FSM.CLOSE_SHOP:
+                logger.debug("SeqShop: Closing shop")
+                ctrl.cancel(tapping=True)
+                ctrl.cancel()
+                logger.info("SeqShop: Finished shopping segment")
+                return True
+
+        return False

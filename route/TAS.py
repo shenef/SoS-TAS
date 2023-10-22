@@ -23,9 +23,9 @@ from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import LayoutHelper, Menu, Window
 from route.battle_test import BattleTest
 
-# Old routing, TODO(orkaboy): Remove
 # Routing
 from route.evermist_island import EvermistIsland
+from route.shop_test import ShopTest
 from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
 from route.wraith_island import WraithIsland
@@ -299,3 +299,26 @@ class SoSBattleTestMenu(TASMenu):
         imgui.text_wrapped(
             "Warning! This mode is only intended for testing the Utility AI combat system."
         )
+
+
+class SoSShopTestMenu(TASMenu):
+    """Used for testing purposes."""
+
+    def __init__(self: Self, window: Window, config_data: dict) -> None:
+        super().__init__(window, config_data, title="Shop Test")
+
+    # Override
+    def init_TAS(self: Self) -> None:
+        # This is the root node of the TAS
+        TAS_root = SeqList(
+            name="ShopTest",
+            children=[
+                ShopTest(),
+                SeqLog(name="SYSTEM", text="ShopTest Done!"),
+            ],
+        )
+        # This initializes the sequencer engine that will execute the TAS
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
+
+    def custom_gui(self: Self) -> None:
+        imgui.text_wrapped("Warning! This mode is only intended for testing the shopping system.")
