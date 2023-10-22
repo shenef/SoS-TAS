@@ -526,7 +526,7 @@ class NecromancersLairCentral(SeqList):
                 ),
                 SeqInteract("Skull"),
                 SeqMove(
-                    name="",
+                    name="Move to save point",
                     coords=[
                         Vec3(3.685, 1.002, 240.677),
                         Vec3(-7.540, 1.002, 236.755),

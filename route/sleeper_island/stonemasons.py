@@ -850,7 +850,7 @@ class LeavingOutpost(SeqList):
                 SeqInteract("Elevator"),
                 SeqSkipUntilClose("Say hi to Wentworth", coord=Vec3(124.500, 6.000, 148.500)),
                 SeqMove(
-                    name="",
+                    name="Move to Coral Cascades",
                     coords=[
                         Vec3(124.500, 6.002, 147.500),
                         Vec3(126.500, 6.002, 147.500),

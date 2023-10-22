@@ -81,7 +81,7 @@ class Moorlands(SeqList):
                     name="Power Belt",
                     route=["ml_power_belt"],
                     when_true=SeqList(
-                        name="",
+                        name="Power Belt",
                         children=[
                             # TODO(orkaboy): Equip to whom?
                             SeqLoot(

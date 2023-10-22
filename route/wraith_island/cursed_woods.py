@@ -318,7 +318,7 @@ class ToFerryman(SeqList):
             children=[
                 SeqSkipUntilIdle("Rest well, Warrior Cook"),
                 SeqMove(
-                    name="",
+                    name="Move to Ferryman's Vigil",
                     coords=[
                         Vec3(32.272, 1.002, 180.286),
                         Vec3(32.252, 1.002, 182.454),
