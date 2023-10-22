@@ -22,3 +22,6 @@ class Action:
 
     def execute(self: Self) -> None:
         pass
+
+    def __repr__(self: Self) -> str:
+        return f"{self.consideration}->{self.appraisal}"
