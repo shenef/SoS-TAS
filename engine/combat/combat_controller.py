@@ -33,7 +33,7 @@ class CombatController:
     ELDER_MIST_TRIAL_LEVEL_GUID = "11810c4630980eb43abf7fecebfd5a6b"
 
     class FSM(Enum):
-        """FSM States."""
+        """Finite-state machine States."""
 
         IDLE = auto()
         COMBAT = auto()
@@ -50,10 +50,13 @@ class CombatController:
         return self.state in [CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT]
 
     def update_state(self: Self, delta: float) -> None:
-        """Update the FSM. Should be called before execute_combat."""
-        # Assign a controller, or the correct controller if it changes.
-        # This is because sometimes when we check, the controller has not been
-        # set by the game yet, or potentially a change in controllers during a fight.
+        """
+        Update the FSM. Should be called before execute_combat.
+
+        Assign a controller, or the correct controller if it changes.
+        This is because sometimes when we check, the controller has not been
+        set by the game yet, or potentially a change in controllers during a fight.
+        """
         if (
             self.controller is None
             or self.controller.__class__.__name__
@@ -86,8 +89,8 @@ class CombatController:
                 if level_up_manager.level_up_screen_active is False:
                     self.state = CombatController.FSM.IDLE
 
-    # returns a bool to feed to the sequencer
     def execute_combat(self: Self, delta: float) -> bool:
+        """Return a bool to feed to the sequencer."""
         sos_ctrl().set_neutral()
 
         if self.state == CombatController.FSM.LEVEL_UP_SCREEN:

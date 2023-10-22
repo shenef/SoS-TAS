@@ -44,7 +44,7 @@ class SoSReasoner(Reasoner):
         # sort and return the results by their value in desc order
         actions.sort(key=lambda action: action.appraisal.value, reverse=True)
 
-        # filter enemies with no HP (elder mist & botantical horror)
+        # filter enemies with no HP (elder mist & botanical horror)
         actions = self._filter_disabled_enemies(actions)
 
         # if we have priority targets, then filter out any actions that don't target them

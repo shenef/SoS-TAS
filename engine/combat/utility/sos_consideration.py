@@ -18,17 +18,16 @@ class SoSConsideration(Consideration):
         self.actor = actor
         super().__init__()
 
-    # Generates a list of appraisals for a character.
     def generate_appraisals(self: Self) -> list[Appraisal]:
+        """Generate a list of appraisals for a character."""
         appraisals = self._default_appraisals() + self._character_appraisals()
         return list(filter(self._has_resources_for_appraisal, appraisals))
 
     def _has_resources_for_appraisal(self: Self, appraisal: Appraisal) -> bool:
         return appraisal.has_resources(self.actor)
 
-    # if the selected character is NONE or we are on the selected character, considered valid'
-    # and do nothing else here.
     def valid(self: Self, selected_character: PlayerPartyCharacter, action: Action) -> bool:
+        """Check if the consideration is valid."""
         return selected_character is PlayerPartyCharacter.NONE or self.on_selected_character(
             selected_character, action
         )
@@ -39,9 +38,9 @@ class SoSConsideration(Consideration):
         actor: CombatPlayer = action.consideration.actor
         return selected_character is actor.character
 
-    # Generates default appraisals generic to every consideration
     # TODO(eein): Add item appraisals + dont use physical attacks and the appraisal value
     def _default_appraisals(self: Self) -> list[Appraisal]:
+        """Generate default appraisals generic to every consideration."""
         basic_attack = BasicAttack()
         basic_attack.value = self.actor.physical_attack
 
@@ -68,9 +67,8 @@ class SoSConsideration(Consideration):
 
     def calculate_actions(self: Self) -> list[Action]:
         actions = []
-        # TODO(eein): to give value to boosted appraisals we will just multiply
-        # the value by the boost for now, we can modify this when we work further on
-        # utility.
+        # TODO(eein): To give value to boosted appraisals we will just multiply the value by
+        # the boost for now, we can modify this when we work further on utility.
         boosted_appraisals = []
         for appraisal in self.appraisals:
             boosts_available = round(combat_manager.small_live_mana / 5)
@@ -84,7 +82,7 @@ class SoSConsideration(Consideration):
                 new_appraisal.value = new_appraisal.value * (boost + 1)
                 boosted_appraisals.append(new_appraisal)
 
-        # takes the boosted appraisals, and creates and action for each enemy.
+        # Takes the boosted appraisals, and creates an action for each enemy.
         for appraisal in boosted_appraisals:
             for enemy in combat_manager.enemies:
                 new_appraisal = copy.copy(appraisal)
@@ -92,8 +90,10 @@ class SoSConsideration(Consideration):
                 actions.append(copy.copy(Action(self, new_appraisal)))
         return actions
 
-    # execute on selecting the consideration to perform the appraisal
     def execute(self: Self) -> None:
-        # This should select the character based on the memory
-        # just press left for now
+        """
+        Execute on selecting the consideration to perform the appraisal.
+
+        This should select the character based on the memory. Just pressing left for now.
+        """
         sos_ctrl().dpad.tap_left()

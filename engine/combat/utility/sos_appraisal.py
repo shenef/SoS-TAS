@@ -11,8 +11,9 @@ from memory.mappers.player_party_character import PlayerPartyCharacter
 logger = logging.getLogger(__name__)
 
 
-# An action that a player can take. See AppraisalType
 class SoSBattleCommand(Enum):
+    """Actions that a player can take. See `AppraisalType`."""
+
     Attack = 0
     Skill = 1
     Combo = 2
@@ -81,8 +82,8 @@ class SoSAppraisal(Appraisal):
         self.boost = boost
         self.enemy_targeting_failures = 0
 
-    # selects the step to perform based on the current step
     def execute(self: Self) -> None:
+        """Select the step to perform based on the current step."""
         match self.step:
             case SoSAppraisalStep.SelectingCommand:
                 self.execute_selecting_command()
@@ -107,11 +108,14 @@ class SoSAppraisal(Appraisal):
             case _:
                 logger.debug("Appraisal Step OUT OF BOUNDS")
 
-    # attempt to select the battle command set to self.battle_command
-    # if the battle command is already selected, set the appraisal step and
-    # confirm
-    # if it is not selected, tap down until it is selected
     def execute_selecting_command(self: Self) -> None:
+        """
+        Execute battle command selection.
+
+        Attempt to select the battle command set to `self.battle_command` if the battle command
+        is already selected, set the appraisal step and confirm if it is not selected,
+        tap down until it is selected
+        """
         if (
             self.combat_manager.battle_command_has_focus
             and self.combat_manager.battle_command_index != self.battle_command.value

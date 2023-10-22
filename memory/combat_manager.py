@@ -249,10 +249,10 @@ class CombatManager:
                 return
         self.next_combat_enemy = None
 
-    # Helper function for updating itself and ensuring an internal function doesn't run without
-    # the base. This is different than other modules as an attempt to improve performance of the
-    # combat manager module.
     def _should_update(self: Self) -> None:
+        # Helper function for updating itself and ensuring an internal function doesn't run without
+        # the base. This is different than other modules as an attempt to improve performance of the
+        # combat manager module.
         return self.memory.ready_for_updates and self.current_encounter_base is not None
 
     def _read_current_target(self: Self) -> None:
@@ -401,8 +401,8 @@ class CombatManager:
                 return 0.0
         return 0.0
 
-    # How many times the projectile has been sent back to the enemy
     def read_projectile_bounce_count(self: Self) -> int:
+        """How many times the projectile has been sent back to the enemy."""
         if self._should_update():
             try:
                 progress_ptr = self.memory.follow_pointer(self.base, [0x168, 0x18, 0x20, 0x0])
@@ -413,8 +413,8 @@ class CombatManager:
                 return 0
         return 0
 
-    # how many times the projectile has hit something (usually 1 more than bounce count)
     def read_projectile_hit_count(self: Self) -> int:
+        """How many times the projectile has hit something (usually 1 more than bounce count)."""
         if self._should_update():
             try:
                 progress_ptr = self.memory.follow_pointer(self.base, [0x168, 0x18, 0x20, 0x0])
