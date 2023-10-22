@@ -33,12 +33,12 @@ class SoSReasoner(Reasoner):
 
     def _select_action(self: Self) -> Action:
         """Calculate value for each consideration and return the highest value action."""
-        actions = []
+        actions: list[Action] = []
         for consideration in self.considerations:
             calculated_actions = consideration.calculate_actions()
             actions.extend(calculated_actions)
 
-        if actions == []:
+        if not actions:
             return None
 
         # sort and return the results by their value in desc order
@@ -48,10 +48,10 @@ class SoSReasoner(Reasoner):
         actions = self._filter_disabled_enemies(actions)
 
         # if we have priority targets, then filter out any actions that don't target them
-        if self.reasoner_execution_context.priority_targets is not []:
+        if self.reasoner_execution_context.priority_targets != []:
             actions = self._filter_priority_targets(actions)
 
-        if len(actions) == 0:
+        if not actions:
             return None
         return actions[0]
 

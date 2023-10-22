@@ -4,6 +4,7 @@ from typing import Self
 from control import sos_ctrl
 from engine.combat.contexts.reasoner_execution_context import ReasonerExecutionContext
 from engine.combat.utility.core.action import Action
+from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
     NextCombatAction,
@@ -28,6 +29,9 @@ class EncounterController:
         self.reasoner = SoSReasoner(ReasonerExecutionContext())
         self.action: Action = None
         self.block_timing = 0.0
+        # State variables for preventing spam
+        self.is_blocking_attack = False
+        self.is_blocking_spell = False
 
     def encounter_done(self: Self) -> bool:
         """If combat is done, just exit."""
@@ -59,8 +63,8 @@ class EncounterController:
         so it doesn't start executing before we have control.
         """
         if self._should_generate_action():
-            logger.debug("No action exists, creating one")
             self.action = self.reasoner.execute()
+            logger.info(f"New action: {self.action}")
             return True
         return False
 
@@ -74,14 +78,25 @@ class EncounterController:
             combat_manager.read_next_combat_enemy()
             next_combat_enemy = combat_manager.next_combat_enemy
 
-            if self._is_blocking_attack(next_combat_enemy):
-                logger.debug(f"Spam Block for {next_combat_enemy.move_name} Attack")
+            blocking_attack = self._is_blocking_attack(next_combat_enemy)
+            blocking_spell = self._is_blocking_spell(next_combat_enemy)
+
+            if blocking_attack:
+                if not self.is_blocking_attack:
+                    logger.debug(f"Spam Block for {next_combat_enemy.move_name} Attack")
                 sos_ctrl().confirm()
-            elif self._is_blocking_spell(next_combat_enemy):
-                logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
+            elif blocking_spell:
+                if not self.is_blocking_spell:
+                    logger.debug(f"Spam Block for {next_combat_enemy.move_name} Casting")
                 sos_ctrl().confirm()
 
+            self.is_blocking_attack = blocking_attack
+            self.is_blocking_spell = blocking_spell
+
             return True
+        # Reset logging state variables
+        self.is_blocking_attack = False
+        self.is_blocking_spell = False
         return False
 
     # TODO(eein): This should also take into considerations swapping characters into the game field.
@@ -94,8 +109,9 @@ class EncounterController:
         until it finds the one it expects.
         """
         if not self._consideration_valid():
-            logger.warning("Consideration is not valid, move cursor")
-            self.action.consideration.execute()
+            # logger.warning("Consideration is not valid, move cursor")
+            consideration: SoSConsideration = self.action.consideration
+            consideration.execute()
             return True
         return False
 
@@ -148,4 +164,5 @@ class EncounterController:
 
     def _consideration_valid(self: Self) -> bool:
         """Check the consideration to see if it's valid and return true if so."""
-        return self.action.consideration.valid(combat_manager.selected_character, self.action)
+        consideration: SoSConsideration = self.action.consideration
+        return consideration.valid(combat_manager.selected_character, self.action)

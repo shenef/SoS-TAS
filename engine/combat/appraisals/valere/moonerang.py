@@ -26,7 +26,10 @@ class Moonerang(SoSAppraisal):
         boost: int = 0,
     ) -> None:
         super().__init__(
-            boost=boost, timing_type=timing_type, battle_command=SoSBattleCommand.Skill
+            name="Moonerang",
+            boost=boost,
+            timing_type=timing_type,
+            battle_command=SoSBattleCommand.Skill,
         )
         self.value = value
         self.battle_command_targeting_type = SoSBattleCommand.Attack

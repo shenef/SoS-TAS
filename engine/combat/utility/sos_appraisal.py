@@ -59,11 +59,12 @@ class SoSAppraisal(Appraisal):
 
     def __init__(
         self: Self,
+        name: str,
         timing_type: SoSTimingType = SoSTimingType.NONE,
         boost: int = 0,
         battle_command: SoSBattleCommand = SoSBattleCommand.Attack,
     ) -> None:
-        super().__init__()
+        super().__init__(name=name)
 
         self.combat_manager = combat_manager_handle()
         self.complete = False
@@ -81,6 +82,22 @@ class SoSAppraisal(Appraisal):
         self.cost = 0
         self.boost = boost
         self.enemy_targeting_failures = 0
+
+    def __repr__(self: Self) -> str:
+        name = f"[{self.name}]" if self.battle_command != SoSBattleCommand.Attack else ""
+        target = ""
+        if self.target is not None:
+            enemy_name = ""
+            enemy_idx = 0
+            for idx, enemy in enumerate(self.combat_manager.enemies):
+                if self.target is enemy.unique_id:
+                    enemy_idx = idx
+                    enemy_name = enemy.name
+            if enemy_name != "":
+                target = f" (target = {enemy_name}[{enemy_idx}])"
+            else:
+                target = f" (target = {self.target})"
+        return f"{self.battle_command.name}{name}{target}"
 
     def execute(self: Self) -> None:
         """Select the step to perform based on the current step."""
@@ -106,7 +123,7 @@ class SoSAppraisal(Appraisal):
             case SoSAppraisalStep.ActionComplete:
                 self.execute_action_complete()
             case _:
-                logger.debug("Appraisal Step OUT OF BOUNDS")
+                logger.error(f"Appraisal Step {self.step} OUT OF BOUNDS")
 
     def execute_selecting_command(self: Self) -> None:
         """
@@ -123,18 +140,18 @@ class SoSAppraisal(Appraisal):
             sos_ctrl().dpad.tap_down()
         else:
             self.step = SoSAppraisalStep.Boost
-            logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
+            # logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
 
     def execute_boost(self: Self) -> None:
         # TODO(eein): Check if theres a flag that shows when live mana is available and use
         # that to guard this function as well
         if self.boost > 0:
-            logger.debug(f"Boosting: {self.battle_command.name} {self.boost} times")
+            logger.debug(f"Boosting: {self.name} {self.boost} times")
             sos_ctrl().toggle_boost(True)
             time.sleep(0.5)
 
             for boost in range(self.boost):
-                logger.debug(f"Triggering Boost: {boost + 1}")
+                logger.debug(f"  Triggering Boost: {boost + 1}")
                 sos_ctrl().confirm(tapping=True)
 
             sos_ctrl().toggle_boost(False)
@@ -158,12 +175,12 @@ class SoSAppraisal(Appraisal):
                 case SoSBattleCommand.Item:
                     self.step = SoSAppraisalStep.SelectingSkill
                 case _:
-                    logger.debug("Invalid Battle Command")
+                    logger.error(f"Invalid Battle Command: {self.battle_command}")
 
             # set the character here for use later - since it drops from memory
             self.character = self.combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
-            logger.debug(f"Entering step: {self.step.name}")
+            # logger.debug(f"Entering step: {self.step.name}")
 
     def execute_selecting_skill(self: Self) -> None:
         if (
@@ -174,7 +191,7 @@ class SoSAppraisal(Appraisal):
             sos_ctrl().dpad.tap_down()
         else:
             self.step = SoSAppraisalStep.ConfirmSkill
-            logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
+            # logger.debug(f"Selecting Battle Skill: {self.name}")
 
     def execute_confirm_skill(self: Self) -> None:
         if (
@@ -185,17 +202,19 @@ class SoSAppraisal(Appraisal):
             sos_ctrl().confirm()
             # Attack skips to selecting enemy sequence
             match self.battle_command:
+                # TODO(orkaboy): This is technically wrong; healing combos and skills like
+                # TODO(orkaboy): Zale's heal would target a player character
                 case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
                     self.step = SoSAppraisalStep.SelectingEnemySequence
                 case SoSBattleCommand.Item:
                     self.step = SoSAppraisalStep.SelectingPlayerSequence
                 case _:
-                    logger.debug("Invalid Skill Command")
+                    logger.error("Invalid Skill Command")
 
             # set the character here for use later - since it drops from memory
 
-            logger.debug(f"Confirmed Skill Command: {self.battle_command.name}")
-            logger.debug(f"Entering step: {self.step.name}")
+            logger.debug(f"Confirmed Skill Command: {self.name}")
+            # logger.debug(f"Entering step: {self.step.name}")
 
     def execute_selecting_enemy_sequence(self: Self) -> None:
         if (
@@ -205,9 +224,9 @@ class SoSAppraisal(Appraisal):
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
-            logger.debug("Selected Target")
+            # logger.debug(f"Selected Target {self.target}")
             return
-        logger.warn("Enemy Target Not Valid, moving cursor")
+        # logger.warn("Enemy Target Not Valid, moving cursor")
         sos_ctrl().dpad.tap_right()
         # TODO(eein): This will be improved when we have a better way to
         # detect who we are targeting. For now we just fail after 6 failures
@@ -219,11 +238,11 @@ class SoSAppraisal(Appraisal):
 
     def execute_confirm_enemy_sequence(self: Self) -> None:
         if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
-            logger.debug("Confirming Enemy")
+            logger.debug(f"Confirming Enemy {self.target}")
             sos_ctrl().confirm()
         else:
             self.step = SoSAppraisalStep.TimingSequence
-            logger.debug("Confirmed Target")
+            # logger.debug(f"Confirmed Target {self.target}")
 
     def execute_timing_sequence(self: Self) -> None:
         match self.timing_type:
@@ -231,7 +250,7 @@ class SoSAppraisal(Appraisal):
                 # wait for timing and press button
                 # need a way to bail out if missed timing
                 if self.is_player_timed_attack_ready():
-                    logger.debug("Executing Timing Attack")
+                    logger.debug(f"Executing Timing Attack, Tap ({self.name})")
                     sos_ctrl().confirm()
                     self.step = SoSAppraisalStep.ActionComplete
             case SoSTimingType.Charge:
@@ -240,14 +259,14 @@ class SoSAppraisal(Appraisal):
                 sos_ctrl().toggle_confirm(True)
                 if self.is_player_timed_attack_ready():
                     sos_ctrl().toggle_confirm(False)
-                    logger.debug("Executing Timing Attack")
+                    logger.debug(f"Executing Timing Attack, Charge ({self.name})")
                     self.step = SoSAppraisalStep.ActionComplete
             case _:
                 self.step = SoSAppraisalStep.ActionComplete
 
     def execute_action_complete(self: Self) -> None:
         self.complete = True
-        # logger.debug("Action Complete")
+        logger.debug("Action Complete")
 
     def _enemy_targeted(self: Self) -> bool:
         # If we are doing some custom controller stuff that doesn't need a target, just return True
