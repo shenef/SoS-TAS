@@ -264,7 +264,6 @@ class ShoppingCommand:
         sell: bool = False,
         amount: int = 1,
         character: PlayerPartyCharacter = None,
-        trinket_slot: int = 0,
     ) -> None:
         """Initialize a ShoppingCommand object."""
         self.item = item
@@ -272,8 +271,6 @@ class ShoppingCommand:
         self.amount = amount
         # If should equip
         self.character = character
-        # 0, 1 (trinket), 2 (gold/group). Only relevant if item.item_type is ItemType.TRINKET
-        self.trinket_slot = trinket_slot
 
 
 class SeqShop(SeqBase):
@@ -345,6 +342,8 @@ class SeqShop(SeqBase):
                 self.state = SeqShop.FSM.SELECT_ITEM
             case SeqShop.FSM.SELECT_ITEM:
                 # TODO(orkaboy): Need to know which slot the item we want is in from memory
+
+                # TODO(orkaboy): In sell mode, we need to be in the correct cathegory (LB/RB)
 
                 # TODO(orkaboy): For now, skip to next command
                 logger.debug(f"SeqShop:   Item = {command.item}")
