@@ -20,7 +20,7 @@ class CrescentArc(SoSAppraisal):
         boost: int = 0,
     ) -> None:
         super().__init__(
-            name="Cresent Arc",
+            name="Crescent Arc",
             boost=boost,
             timing_type=timing_type,
             battle_command=SoSBattleCommand.Skill,
