@@ -48,5 +48,5 @@ class Sunball(SoSAppraisal):
             sos_ctrl().toggle_confirm(True)
             if self.ability_time <= datetime.utcnow():
                 sos_ctrl().toggle_confirm(False)
-                logger.debug("Executing Timing Attack")
+                logger.debug(f"Executing Timing Attack, Charge ({self.name})")
                 self.step = SoSAppraisalStep.ActionComplete

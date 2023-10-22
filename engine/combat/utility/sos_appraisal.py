@@ -140,7 +140,7 @@ class SoSAppraisal(Appraisal):
             sos_ctrl().dpad.tap_down()
         else:
             self.step = SoSAppraisalStep.Boost
-            logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
+            # logger.debug(f"Selecting Battle Command: {self.battle_command.name}")
 
     def execute_boost(self: Self) -> None:
         # TODO(eein): Check if theres a flag that shows when live mana is available and use
@@ -180,7 +180,7 @@ class SoSAppraisal(Appraisal):
             # set the character here for use later - since it drops from memory
             self.character = self.combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
-            logger.debug(f"Entering step: {self.step.name}")
+            # logger.debug(f"Entering step: {self.step.name}")
 
     def execute_selecting_skill(self: Self) -> None:
         if (
@@ -191,7 +191,7 @@ class SoSAppraisal(Appraisal):
             sos_ctrl().dpad.tap_down()
         else:
             self.step = SoSAppraisalStep.ConfirmSkill
-            logger.debug(f"Selecting Battle Skill: {self.name}")
+            # logger.debug(f"Selecting Battle Skill: {self.name}")
 
     def execute_confirm_skill(self: Self) -> None:
         if (
@@ -224,7 +224,7 @@ class SoSAppraisal(Appraisal):
             and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
-            logger.debug(f"Selected Target {self.target}")
+            # logger.debug(f"Selected Target {self.target}")
             return
         # logger.warn("Enemy Target Not Valid, moving cursor")
         sos_ctrl().dpad.tap_right()
@@ -242,7 +242,7 @@ class SoSAppraisal(Appraisal):
             sos_ctrl().confirm()
         else:
             self.step = SoSAppraisalStep.TimingSequence
-            logger.debug(f"Confirmed Target  {self.target}")
+            # logger.debug(f"Confirmed Target {self.target}")
 
     def execute_timing_sequence(self: Self) -> None:
         match self.timing_type:
