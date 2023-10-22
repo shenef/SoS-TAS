@@ -26,9 +26,12 @@ from engine.seq import (
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
+from memory.combat_manager import combat_manager_handle
 from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
+
+combat_manager = combat_manager_handle()
 
 
 class FloodedGraveyard(SeqList):
@@ -535,6 +538,11 @@ class NecromancersLairCentral(SeqList):
         )
 
 
+def combat_emergency_skip() -> bool:
+    """Hack that detects if we are in combat and skips a node in that case."""
+    return combat_manager.encounter_done is False
+
+
 class NecromancersLairLeft(SeqList):
     """Routing of Necromancer's Lair. Left area."""
 
@@ -596,6 +604,8 @@ class NecromancersLairLeft(SeqList):
                         # TODO(orkaboy): Can grab Mooncradle Fish Pie here
                         Vec3(-33.879, 1.002, 378.421),
                     ],
+                    # Not pretty, but maybe needed if the TAS accidentally Graplous the wizard
+                    emergency_skip=combat_emergency_skip,
                 ),
                 SeqGraplou("Attack enemy"),
                 SeqCombatAndMove(
