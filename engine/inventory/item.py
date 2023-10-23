@@ -3,6 +3,8 @@
 from enum import Enum, auto
 from typing import Self
 
+from memory.player_party_manager import PlayerPartyCharacter
+
 # TODO(orkaboy): Create item base class (What fields are relevant?)
 
 
@@ -49,6 +51,7 @@ class EquippableItem(Item):
         guid: str,
         item_type: ItemType,
         name: str,
+        equippable_by: list[PlayerPartyCharacter] = None,
         cost: int = 0,
         sell_value: int = 0,
         phy_def: int = 0,
@@ -61,3 +64,5 @@ class EquippableItem(Item):
         self.phy_atk = phy_atk
         self.mag_def = mag_def
         self.mag_atk = mag_atk
+        # If set to None, all characters can equip it
+        self.equippable_by = equippable_by

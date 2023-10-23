@@ -1,6 +1,7 @@
 """Static namespace to hold armor definitions."""
 
 from engine.inventory.item import EquippableItem, ItemType
+from memory.player_party_manager import PlayerPartyCharacter
 
 
 class ARMORS:
@@ -15,6 +16,12 @@ class ARMORS:
         sell_value=6,
         phy_def=5,
         mag_def=5,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+        ],
     )
     BoxerShorts = EquippableItem(
         guid="a1d886ffc9682c54ebda876deeed58b4",
@@ -24,6 +31,12 @@ class ARMORS:
         sell_value=35,
         phy_def=0,
         mag_def=0,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+        ],
     )
     PirateGarb = EquippableItem(
         guid="0626cb583af926649b435bcf63c101a7",
@@ -33,6 +46,12 @@ class ARMORS:
         sell_value=9,
         phy_def=19,
         mag_def=15,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+        ],
     )
 
     # Armors (Zale, Valere)
@@ -44,6 +63,10 @@ class ARMORS:
         sell_value=7,
         phy_def=13,
         mag_def=9,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     BoneArmor = EquippableItem(
         guid="581aaf64cd0270b4bbf12d9ce9ea4ec0",
@@ -53,6 +76,10 @@ class ARMORS:
         sell_value=12,
         phy_def=22,
         mag_def=20,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     DocarriArmor = EquippableItem(
         guid="98223d461dbc41a409926f2a1409f7ec",
@@ -62,6 +89,10 @@ class ARMORS:
         sell_value=23,
         phy_def=28,
         mag_def=22,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     EclipseArmor = EquippableItem(
         guid="911324cc7daad5b41a0af317180a42db",
@@ -71,6 +102,10 @@ class ARMORS:
         sell_value=38,
         phy_def=53,
         mag_def=49,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     MageKnightArmor = EquippableItem(
         guid="1b92e304b4f82144eb3e123ccb755b2c",
@@ -80,6 +115,10 @@ class ARMORS:
         sell_value=15,
         phy_def=15,
         mag_def=28,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     OakenArmor = EquippableItem(
         guid="ebb0e8958a73d394da97e174d0b5b018",
@@ -89,6 +128,10 @@ class ARMORS:
         sell_value=26,
         phy_def=34,
         mag_def=27,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     RevenantArmor = EquippableItem(
         guid="a0890c10ae319b0409d43f08af673ffd",
@@ -98,6 +141,10 @@ class ARMORS:
         sell_value=12,
         phy_def=23,
         mag_def=25,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     SparkmeshArmor = EquippableItem(
         guid="ccc69fb007cbda342844f25126c90377",
@@ -107,6 +154,10 @@ class ARMORS:
         sell_value=38,
         phy_def=46,
         mag_def=41,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
     WireplateArmor = EquippableItem(
         guid="67e51219a3a7ea14fa14e9eb4e8643e4",
@@ -116,6 +167,10 @@ class ARMORS:
         sell_value=38,
         phy_def=43,
         mag_def=36,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+            PlayerPartyCharacter.Valere,
+        ],
     )
 
     # Zale
@@ -127,6 +182,9 @@ class ARMORS:
         sell_value=34,
         phy_def=40,
         mag_def=32,
+        equippable_by=[
+            PlayerPartyCharacter.Zale,
+        ],
     )
 
     # Valere
@@ -138,6 +196,9 @@ class ARMORS:
         sell_value=34,
         phy_def=38,
         mag_def=35,
+        equippable_by=[
+            PlayerPartyCharacter.Valere,
+        ],
     )
 
     # Capes (Garl, Seraï, Resh'an)
@@ -149,6 +210,11 @@ class ARMORS:
         sell_value=32,
         phy_def=33,
         mag_def=39,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
     CosmicCape = EquippableItem(
         guid="d1d1bcd5dbc41d648a812fbc7d1861b2",
@@ -158,6 +224,11 @@ class ARMORS:
         sell_value=36,
         phy_def=45,
         mag_def=50,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
     LeafCape = EquippableItem(
         guid="b441ba29ad2257445a55095e6cb1d537",
@@ -167,6 +238,11 @@ class ARMORS:
         sell_value=24,
         phy_def=28,
         mag_def=33,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
     PliantshellVest = EquippableItem(
         guid="7fdba9db0aa4cbd4e8fa3315f94876ab",
@@ -176,6 +252,11 @@ class ARMORS:
         sell_value=36,
         phy_def=37,
         mag_def=41,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
     SparkmeshCape = EquippableItem(
         guid="fe4a8a4cada2d4a4999403d31f73a50a",
@@ -185,6 +266,11 @@ class ARMORS:
         sell_value=36,
         phy_def=43,
         mag_def=44,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
     SpectralCape = EquippableItem(
         guid="d2fd56a9405f9c04fb303795c7840f2f",
@@ -194,6 +280,11 @@ class ARMORS:
         sell_value=11,
         phy_def=19,
         mag_def=23,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
     TatteredCape = EquippableItem(
         guid="ecf26467374cebc4b812538e7fbe44a4",
@@ -203,6 +294,11 @@ class ARMORS:
         sell_value=23,
         phy_def=26,
         mag_def=33,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
 
     # Cloaks (Seraï, Resh'an)
@@ -214,6 +310,10 @@ class ARMORS:
         sell_value=24,
         phy_def=25,
         mag_def=33,
+        equippable_by=[
+            PlayerPartyCharacter.Serai,
+            PlayerPartyCharacter.Reshan,
+        ],
     )
 
     # Garl
@@ -225,6 +325,9 @@ class ARMORS:
         sell_value=36,
         phy_def=50,
         mag_def=50,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+        ],
     )
     MinersSmock = EquippableItem(
         guid="f23fec51c068c00418db6127c54fcc8e",
@@ -234,6 +337,9 @@ class ARMORS:
         sell_value=8,
         phy_def=18,
         mag_def=12,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+        ],
     )
     PearlescentApron = EquippableItem(
         guid="bd7a12ffa698146418723ed43e6a5eea",
@@ -243,6 +349,9 @@ class ARMORS:
         sell_value=22,
         phy_def=25,
         mag_def=25,
+        equippable_by=[
+            PlayerPartyCharacter.Garl,
+        ],
     )
 
     # B'st
@@ -254,6 +363,9 @@ class ARMORS:
         sell_value=36,
         phy_def=45,
         mag_def=42,
+        equippable_by=[
+            PlayerPartyCharacter.Bst,
+        ],
     )
     DullSimulacrum = EquippableItem(
         guid="e26fa36b128e76041938bf3c86ad8eef",
@@ -263,6 +375,9 @@ class ARMORS:
         sell_value=36,
         phy_def=37,
         mag_def=37,
+        equippable_by=[
+            PlayerPartyCharacter.Bst,
+        ],
     )
     VitricSimulacrum = EquippableItem(
         guid="ebe89a4a81e46c245bd98a337df06eb8",
@@ -272,4 +387,7 @@ class ARMORS:
         sell_value=36,
         phy_def=53,
         mag_def=51,
+        equippable_by=[
+            PlayerPartyCharacter.Bst,
+        ],
     )

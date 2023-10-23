@@ -341,11 +341,11 @@ class SeqShop(SeqBase):
                 logger.debug(f"SeqShop: Mode = {"Sell" if self.sell_mode else "Buy"}")
                 self.state = SeqShop.FSM.SELECT_ITEM
             case SeqShop.FSM.SELECT_ITEM:
-                # TODO(orkaboy): Need to know which slot the item we want is in from memory
+                # TODO(orkaboy): Need to know which slot the item we want is in, from memory?
 
                 # TODO(orkaboy): In sell mode, we need to be in the correct cathegory (LB/RB)
 
-                # TODO(orkaboy): For now, skip to next command
+                # TODO(orkaboy): For now, select whatever's first in the list (not correct!)
                 logger.debug(f"SeqShop:   Item = {command.item}")
                 ctrl.confirm(tapping=True)
                 # TODO(orkaboy): Need to handle logic for Relics?
@@ -354,46 +354,53 @@ class SeqShop(SeqBase):
                 else:
                     self.state = SeqShop.FSM.STORE_OR_EQUIP
             case SeqShop.FSM.SELECT_AMOUNT:
+                # Select the amount to buy/sell (starts at 1)
+                # TODO(orkaboy): Currently doesn't check for if we CAN buy this amount of items
                 # TODO(orkaboy): Could optimize this with up/down for amounts > 10
                 for _ in range(command.amount - 1):
                     ctrl.dpad.tap_right()
 
-                # TODO(orkaboy): Actually buy the item
-                # ctrl.confirm(tapping=True)
-                inventory_manager.buy_item(command.item, command.amount)
-
-                # TODO(orkaboy): Temp, just cancel out
-                ctrl.cancel(tapping=True)
+                # Actually buy/sell the item
+                ctrl.confirm(tapping=True)
+                if command.sell:
+                    inventory_manager.sell_item(command.item, command.amount)
+                else:
+                    inventory_manager.buy_item(command.item, command.amount)
 
                 self.state = SeqShop.FSM.NEXT_ITEM
             case SeqShop.FSM.STORE_OR_EQUIP:
                 # Equip is selected by default
                 if command.character is None:
+                    # Select "Store"
                     ctrl.dpad.tap_left()
-                    # TODO(orkaboy): Actually buy the item
-                    # ctrl.confirm(tapping=True)
-
-                    # TODO(orkaboy): Temp, just cancel out
-                    ctrl.cancel(tapping=True)
-
+                    # Actually buy the item
+                    ctrl.confirm(tapping=True)
+                    inventory_manager.buy_item(command.item)
                     self.state = SeqShop.FSM.NEXT_ITEM
                 else:
                     ctrl.confirm(tapping=True)
                     self.state = SeqShop.FSM.EQUIP_GEAR
-                inventory_manager.buy_item(command.item)
             case SeqShop.FSM.EQUIP_GEAR:
-                # TODO(orkaboy): Select the character. Need to get currently selected from memory
-                selected_char = command.character  # TODO(orkaboy): Temp, should get from memory
-                if selected_char != command.character:
-                    ctrl.dpad.tap_down()
-                    return False
-                logger.debug(f"SeqShop:    Selected character {command.character.name}")
-                # TODO(orkaboy): Actually buy the item
-                # ctrl.confirm(tapping=True)
+                item: EquippableItem = command.item
+                party = player_party_manager.current_party
+                if item.equippable_by is not None:
+                    party = list(filter(lambda character: character in item.equippable_by, party))
 
-                # TODO(orkaboy): Temp, quit out from menu to item selection
-                ctrl.cancel(tapping=True)
-                ctrl.cancel(tapping=True)
+                try:
+                    # Tap down in the list to target character
+                    index = party.index(command.character)
+                    for _ in range(index):
+                        ctrl.dpad.tap_down()
+                    logger.debug(f"SeqShop:    Equipping {item} on {command.character.name}")
+                    # Actually buy + equip the item
+                    ctrl.confirm(tapping=True)
+                    inventory_manager.buy_item(command.item)
+                except ValueError:
+                    logger.warning(
+                        f"SeqShop:    Can't equip {item} to any character in current party!"
+                    )
+                    ctrl.cancel(tapping=True)
+                    ctrl.cancel(tapping=True)
 
                 self.state = SeqShop.FSM.NEXT_ITEM
             case SeqShop.FSM.NEXT_ITEM:
