@@ -11,7 +11,7 @@ class CurrencyManager:
         """Initialize a new CurrencyManager object."""
         self.memory = mem_handle()
         self.base = None
-        self.currency = 0
+        self.money = 0
 
     def update(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -46,10 +46,10 @@ class CurrencyManager:
                 # currencyQuantities -> _entries + 0x20 for first entry
                 ptr = self.memory.follow_pointer(self.base, [0x28, 0x18, 0x0])
                 if ptr:
-                    self.currency = self.memory.read_int(ptr + 0x30)
+                    self.money = self.memory.read_int(ptr + 0x30)
 
             except Exception:
-                self.currency = 0
+                self.money = 0
 
 
 _currency_manager_mem = CurrencyManager()
