@@ -3,7 +3,7 @@
 from enum import Enum, auto
 from typing import Self
 
-from memory.player_party_manager import PlayerPartyCharacter
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 # TODO(orkaboy): Create item base class (What fields are relevant?)
 
@@ -19,6 +19,7 @@ class ItemType(Enum):
     KEY = auto()
     INGREDIENT = auto()
     RECIPE = auto()
+    UNKNOWN = auto()
 
 
 class Item:

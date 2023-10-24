@@ -6,11 +6,12 @@ from imgui_bundle import imgui
 from engine.inventory import ItemType, get_inventory_manager
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
-from memory.currency_manager import currency_manager_handle
+from memory import currency_manager_handle, inventory_manager_mem_handle
 
 logger = logging.getLogger(__name__)
 
 inventory_manager = get_inventory_manager()
+inventory_manager_mem = inventory_manager_mem_handle()
 currency_manager = currency_manager_handle()
 
 
@@ -28,6 +29,19 @@ class InventoryHelper(Menu):
         imgui.text(f"Money: {currency_manager.money}")
         LayoutHelper.add_spacer()
 
+        # TODO(orkaboy): Should be elsewhere
+        inventory_manager.update()
+
+        self.show_inventory()
+        self.show_unknown()
+
+        ret = False
+        if not top_level and imgui.button("Back"):
+            ret = True
+        self.window.end_window()
+        return ret
+
+    def show_inventory(self: Self) -> None:
         for item_type in [
             ItemType.VALUABLE,
             ItemType.KEY,
@@ -45,8 +59,18 @@ class InventoryHelper(Menu):
                     for item, amount in items:
                         imgui.text(f"{amount}x {item}")
 
-        ret = False
-        if not top_level and imgui.button("Back"):
-            ret = True
-        self.window.end_window()
-        return ret
+    def show_unknown(self: Self) -> None:
+        items = inventory_manager.get_items_by_type(ItemType.UNKNOWN)
+        if len(items):
+            header_open, visible = imgui.collapsing_header("UNKNOWN", True, flags=32)
+            if header_open and visible:
+                for idx, ref in enumerate(items):
+                    guid, amount = ref
+                    imgui.text(f"({idx}) guid")
+                    imgui.same_line()
+                    imgui.input_text(f"##{idx}", guid)
+                    imgui.same_line()
+                    imgui.text(f"x{amount}")
+                    LayoutHelper.add_tooltip(
+                        "Enter this data in engine > inventory > items > <type>.py"
+                    )

@@ -11,6 +11,9 @@ class ItemReference:
         self.guid = guid
         self.quantity = quantity
 
+    def __repr__(self: Self) -> str:
+        return f"ItemRef[{self.guid}, {self.quantity}]"
+
 
 class InventoryManagerMem:
     INVENTORY_ITEM_OFFSET = 0x18
@@ -56,7 +59,7 @@ class InventoryManagerMem:
                         guid_ptr = self.memory.follow_pointer(ptr, [0x8, 0x0])
                         if guid_ptr == 0x0:
                             break
-                        guid = self.memory.read_guid(guid_ptr + 0x14)
+                        guid = self.memory.read_guid(guid_ptr + 0x14).replace("\x00", "")
                         quantity = self.memory.read_int(ptr + 0x10)
                         items.append(ItemReference(guid, quantity))
                         address += self.INVENTORY_ITEM_OFFSET

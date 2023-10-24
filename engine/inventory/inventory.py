@@ -3,6 +3,10 @@
 from typing import Self
 
 from engine.inventory.item import Item, ItemType
+from memory import inventory_manager_mem_handle
+from memory.mappers.items import ItemMapper
+
+inventory_manager_mem = inventory_manager_mem_handle()
 
 
 # TODO(orkaboy): Add validation when removing/buying/selling stuff
@@ -12,7 +16,7 @@ class InventoryManager:
 
     def __init__(self: Self) -> None:
         # Dictionary of Items and amounts carried
-        self.items: dict[Item, int] = {}
+        self.items: dict[Item | str, int] = {}
         self.money: int = 0
 
     def reset(self: Self) -> None:
@@ -48,11 +52,21 @@ class InventoryManager:
         """Increase money held in wallet."""
         self.money += amount
 
-    def get_items_by_type(self: Self, item_type: ItemType) -> list[tuple[Item, int]]:
+    # TODO(orkaboy): Move elsewhere; code above is not needed anymore
+    def update(self: Self) -> None:
+        self.items = {
+            ItemMapper.items.get(item_ref.guid, item_ref.guid): item_ref.quantity
+            for item_ref in inventory_manager_mem.items
+        }
+
+    def get_items_by_type(self: Self, item_type: ItemType) -> list[tuple[Item | str, int]]:
         """Return a list of items held, based on item type."""
-        ret: list[tuple[Item, int]] = []
+        ret: list[tuple[Item | str, int]] = []
         for item, amount in self.items.items():
-            if item.item_type == item_type:
+            if isinstance(item, Item):
+                if item.item_type == item_type:
+                    ret.append((item, amount))
+            elif item_type == ItemType.UNKNOWN:
                 ret.append((item, amount))
         return ret
 

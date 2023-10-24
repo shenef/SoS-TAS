@@ -1,9 +1,6 @@
 from engine.inventory.inventory import InventoryManager, get_inventory_manager
 from engine.inventory.item import EquippableItem, Item, ItemType
-from engine.inventory.items.armors import ARMORS
-from engine.inventory.items.trinkets import TRINKETS
-from engine.inventory.items.valuables import VALUABLES
-from engine.inventory.items.weapons import WEAPONS
+from engine.inventory.items import ARMORS, TRINKETS, VALUABLES, WEAPONS
 
 __all__ = [
     "InventoryManager",
@@ -11,8 +8,8 @@ __all__ = [
     "Item",
     "ItemType",
     "EquippableItem",
-    "TRINKETS",
     "ARMORS",
-    "VALUABLES",
     "WEAPONS",
+    "VALUABLES",
+    "TRINKETS",
 ]
