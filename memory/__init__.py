@@ -9,6 +9,7 @@ from memory.combat_manager import (
     combat_manager_handle,
 )
 from memory.core import SoSMemory, mem_handle
+from memory.currency_manager import currency_manager_handle
 from memory.inventory_manager_mem import inventory_manager_mem_handle
 from memory.level_manager import level_manager_handle
 from memory.level_up_manager import (
@@ -37,6 +38,7 @@ __all__ = [
     "LevelUpUpgrade",
     "LevelUpUpgradeType",
     "level_manager_handle",
+    "currency_manager_handle",
     "new_dialog_manager_handle",
     "player_party_manager_handle",
     "time_of_day_manager_handle",

@@ -17,6 +17,7 @@ from imgui_bundle import imgui
 from memory import (
     boat_manager_handle,
     combat_manager_handle,
+    currency_manager_handle,
     inventory_manager_mem_handle,
     level_manager_handle,
     level_up_manager_handle,
@@ -82,6 +83,7 @@ def update_memory() -> None:
             combat_manager_handle().update()
             new_dialog_manager_handle().update()
             inventory_manager_mem_handle().update()
+            currency_manager_handle().update()
             if "WorldMap" in scene_name:
                 boat_manager_handle().update()
 
