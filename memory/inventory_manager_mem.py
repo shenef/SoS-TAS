@@ -19,13 +19,15 @@ class InventoryManagerMem:
         """Initialize a new InventoryManagerMem object."""
         self.memory = mem_handle()
         self.base = None
-        self.items = []
+        self.items: list[ItemReference] = []
 
     def update(self: Self) -> None:
         if self.memory.ready_for_updates:
             try:
                 if self.base is None:
-                    singleton_ptr = self.memory.get_singleton_by_class_name("InventoryManager")
+                    singleton_ptr = self.memory.get_singleton_by_class_name(
+                        "InventoryManager"
+                    )
                     if singleton_ptr is None:
                         return
 
@@ -42,7 +44,7 @@ class InventoryManagerMem:
                 self.__init__()
 
     def _read_items(self: Self) -> None:
-        items = []
+        items: list[ItemReference] = []
         address = 0x0
         if self.memory.ready_for_updates:
             try:
@@ -50,7 +52,9 @@ class InventoryManagerMem:
                 count_ptr = self.memory.follow_pointer(self.base, [0x70, 0x20, 0x20])
                 count = self.memory.read_int(count_ptr)
                 for _i in range(count):
-                    ptr = self.memory.follow_pointer(self.base, [0x70, 0x20, 0x18, 0x20 + address])
+                    ptr = self.memory.follow_pointer(
+                        self.base, [0x70, 0x20, 0x18, 0x20 + address]
+                    )
                     if ptr:
                         guid_ptr = self.memory.follow_pointer(ptr, [0x8, 0x0])
                         if guid_ptr == 0x0:
