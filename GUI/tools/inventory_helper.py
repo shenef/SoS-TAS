@@ -6,10 +6,12 @@ from imgui_bundle import imgui
 from engine.inventory import ItemType, get_inventory_manager
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
+from memory.currency_manager import currency_manager_handle
 
 logger = logging.getLogger(__name__)
 
 inventory_manager = get_inventory_manager()
+currency_manager = currency_manager_handle()
 
 
 class InventoryHelper(Menu):
@@ -23,7 +25,7 @@ class InventoryHelper(Menu):
         imgui.set_window_size(imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
-        imgui.text(f"Money: {inventory_manager.money}")
+        imgui.text(f"Money: {currency_manager.money}")
         LayoutHelper.add_spacer()
 
         for item_type in [
