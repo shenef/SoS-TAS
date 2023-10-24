@@ -12,14 +12,13 @@ class ItemReference:
         self.quantity = quantity
 
 
-class InventoryManager:
+class InventoryManagerMem:
     INVENTORY_ITEM_OFFSET = 0x18
 
     def __init__(self: Self) -> None:
         """Initialize a new InventoryManagerMem object."""
         self.memory = mem_handle()
         self.base = None
-        # TODO(orkaboy): Declare data fields
         self.items = []
 
     def update(self: Self) -> None:
@@ -36,7 +35,6 @@ class InventoryManager:
                     pass
 
                 else:
-                    # TODO(orkaboy): Update fields
                     self._read_items()
                     pass
             except Exception as _e:
@@ -67,8 +65,8 @@ class InventoryManager:
         self.items = items
 
 
-_inventory_manager_mem = InventoryManager()
+_inventory_manager_mem = InventoryManagerMem()
 
 
-def inventory_manager_handle() -> InventoryManager:
+def inventory_manager_mem_handle() -> InventoryManagerMem:
     return _inventory_manager_mem
