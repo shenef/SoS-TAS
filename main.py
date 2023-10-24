@@ -8,7 +8,7 @@ which runs all the sub-menus of the imgui window.
 """
 
 import config
-from GUI import Menu, MenuManager, Window
+from GUI import Menu, MenuManager, TASWindow
 from GUI.battle_menu import BattleMenu
 from GUI.debug_menu import DebugMenu
 from GUI.tools.inventory_helper import InventoryHelper
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     config_logging = config_data.get("logging", {})
     config_ui = config_data.get("ui", {})
 
-    gui = Window(config_ui)
+    gui = TASWindow(config_ui)
 
     # The menu manager will capture control until the GUI window is closed
     # It allows for navigating between submenus and starting the TAS

@@ -8,25 +8,12 @@ backend side of imgui rendering and event polling.
 import ctypes
 import logging
 import sys
+import time
 from typing import Any, Self
 
 import glfw
 import OpenGL.GL as gl
 from imgui_bundle import imgui
-
-from memory import (
-    boat_manager_handle,
-    combat_manager_handle,
-    currency_manager_handle,
-    inventory_manager_mem_handle,
-    level_manager_handle,
-    level_up_manager_handle,
-    mem_handle,
-    new_dialog_manager_handle,
-    player_party_manager_handle,
-    time_of_day_manager_handle,
-    title_sequence_manager_handle,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -66,28 +53,6 @@ def create_glfw_window(
     return window
 
 
-def update_memory() -> None:
-    """Update all game memory modules."""
-    mem_handle().update()
-    if mem_handle().ready_for_updates:
-        level_manager_handle().update()
-        scene_name = level_manager_handle().scene_name
-        loading = level_manager_handle().loading
-
-        if scene_name == "TitleScreen":
-            title_sequence_manager_handle().update()
-        elif scene_name is not None and loading is False:
-            player_party_manager_handle().update()
-            time_of_day_manager_handle().update()
-            level_up_manager_handle().update()
-            combat_manager_handle().update()
-            new_dialog_manager_handle().update()
-            inventory_manager_mem_handle().update()
-            currency_manager_handle().update()
-            if "WorldMap" in scene_name:
-                boat_manager_handle().update()
-
-
 class Window:
     """Class to handle the top level GUI window."""
 
@@ -118,6 +83,13 @@ class Window:
         window_address = ctypes.cast(self.window, ctypes.c_void_p).value
         imgui.backends.glfw_init_for_opengl(window_address, True)
         imgui.backends.opengl3_init(glsl_version)
+        self.timestamp = time.time()
+
+    def _get_deltatime(self: Self) -> float:
+        now = time.time()
+        delta = now - self.timestamp
+        self.timestamp = now
+        return delta
 
     def is_open(self: Self) -> bool:
         """Return True while the GUI window is open. Return False if the user quits the program."""
@@ -126,10 +98,15 @@ class Window:
     def start_frame(self: Self) -> None:
         """Call at start of frame to handle imgui setup, memory readout and event polling."""
         glfw.poll_events()
-        update_memory()
+        delta = self._get_deltatime()
+        self.update(delta)
         imgui.backends.opengl3_new_frame()
         imgui.backends.glfw_new_frame()
         imgui.new_frame()
+
+    def update(self: Self, delta: float) -> None:
+        """Override."""
+        pass
 
     # TODO(orkaboy): start_window/end_window should be static (or removed)
     def start_window(self: Self, title: str) -> None:

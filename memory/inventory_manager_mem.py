@@ -14,6 +14,7 @@ class ItemReference:
 
 class InventoryManagerMem:
     INVENTORY_ITEM_OFFSET = 0x18
+    UPDATE_FREQUENCY = 0.0
 
     def __init__(self: Self) -> None:
         """Initialize a new InventoryManagerMem object."""
