@@ -120,79 +120,83 @@ class TRINKETS:
         sell_value=55,
     )
 
+
+class GROUPTRINKETS:
+    """Static namespace to hold group trinket definitions."""
+
     # Group trinkets
     Abacus = EquippableItem(
         guid="6a39fd9b315b53a4faa9e3736d820eff",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Abacus",
         cost=36,
         sell_value=9,
     )
     AmuletOfOnboarding = EquippableItem(
         guid="b6acbe8e6e78e014d830094e248870af",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Amulet Of Onboarding",
         cost=150,
         sell_value=120,
     )
     Cornucopia = EquippableItem(
         guid="fb067e7ba3b744342bbca13afcfb2a50",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Cornucopia",
         cost=300,
     )
     EyeOfYomara = EquippableItem(
         guid="e7e2fc32454eda44d9d93ba6009d8752",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Eye Of Yomara",
         cost=888,
         sell_value=87,
     )
     GamblersEarring = EquippableItem(
         guid="478d680b15f759d44987b2cef327ce2f",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Gambler's Earring",
         cost=150,
         sell_value=120,
     )
     LucentShard = EquippableItem(
         guid="92e2af189aebd9949a662314b01ab847",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Lucent Shard",
         cost=150,
         sell_value=120,
     )
     MagicPocket = EquippableItem(
         guid="8c32a9ec62778cc4f8cef577c6d80812",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Magic Pocket",
         cost=328,
         sell_value=82,
     )
     NanoInjector = EquippableItem(
         guid="8c4cbe75847cc6249b3bd79cb5a29e8c",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Nano Injector",
         cost=344,
         sell_value=86,
     )
     NinjaSpirit = EquippableItem(
         guid="1d744837c9ee072498a3e668104325ac",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Ninja Spirit",
         cost=300,
         sell_value=75,
     )
     ReapersMercy = EquippableItem(
         guid="427eaeae77b247442a8ec3e014542890",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Reaper's Mercy",
         cost=300,
         sell_value=75,
     )
     SolsticeRing = EquippableItem(
         guid="c7eb103c76a21974c844159ab0f5a0d2",
-        item_type=ItemType.TRINKET,
+        item_type=ItemType.GROUPTRINKET,
         name="Solstice Ring",
         cost=999,
         sell_value=125,

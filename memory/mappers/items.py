@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from engine.inventory.item import Item
-from engine.inventory.items import ARMORS, TRINKETS, VALUABLES, WEAPONS
+from engine.inventory.items import ARMORS, GROUPTRINKETS, TRINKETS, VALUABLES, WEAPONS
 
 
 def _get_class_values(Class: Callable) -> list[Item]:
@@ -32,5 +32,6 @@ class ItemMapper:
             + _get_class_values(WEAPONS)
             + _get_class_values(ARMORS)
             + _get_class_values(TRINKETS)
+            + _get_class_values(GROUPTRINKETS)
         )
     }

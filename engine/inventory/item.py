@@ -15,6 +15,7 @@ class ItemType(Enum):
     WEAPON = auto()
     ARMOR = auto()
     TRINKET = auto()
+    GROUPTRINKET = auto()
     FOOD = auto()
     KEY = auto()
     INGREDIENT = auto()
