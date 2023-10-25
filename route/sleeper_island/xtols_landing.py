@@ -4,7 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
-from engine.inventory import TRINKETS
+from engine.inventory import GROUPTRINKETS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -53,9 +53,8 @@ class XtolsLanding(SeqList):
                             # TODO(orkaboy): Equip to whom?
                             SeqLoot(
                                 "Solstice Ring",
-                                item=TRINKETS.SolsticeRing,
+                                item=GROUPTRINKETS.SolsticeRing,
                                 equip_to=PlayerPartyCharacter.Zale,
-                                trinket_slot=2,
                             ),
                             SeqMove(
                                 name="Move to chest",

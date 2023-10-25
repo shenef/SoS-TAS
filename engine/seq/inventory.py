@@ -93,14 +93,14 @@ class SeqEquip(SeqBase):
                         slot = SeqEquip.EquipSlot.TRINKET1
                     case 1:
                         slot = SeqEquip.EquipSlot.TRINKET2
-                    case 2:
-                        slot = SeqEquip.EquipSlot.GROUP_TRINKET
                     case _:
                         # Can't put accessory in this slot! What are you doing?!
                         logger.error(
                             f"It's not possible to equip {item.name} in slot {trinket_slot}!"
                         )
                         return False
+            case ItemType.GROUPTRINKET:
+                slot = SeqEquip.EquipSlot.GROUP_TRINKET
             case _:
                 # Can't equip this type of item! What are you doing?!
                 logger.error(f"It's not possible to equip {item.name}!")
