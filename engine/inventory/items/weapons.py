@@ -214,10 +214,10 @@ class WEAPONS:
             PlayerPartyCharacter.Valere,
         ],
     )
-    LuanaStaff = EquippableItem(
+    MoonBo = EquippableItem(
         guid="95ac264461a94a0458a14a39954e3afc",
         item_type=ItemType.WEAPON,
-        name="Luana Staff",
+        name="Moon Bo",
         cost=168,
         sell_value=42,
         phy_atk=58,
