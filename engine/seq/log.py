@@ -6,6 +6,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.seq.base import SeqBase
+from GUI.tools.commentary import CommentaryAuthor, CommentaryEntry, get_commentary_log
 
 logger = logging.getLogger(__name__)
 
@@ -82,3 +83,18 @@ class SeqTextCrawl(SeqBase):
             return ""
         cur_text, _ = self.text_nodes[self.step]
         return f"\n{cur_text}\n"
+
+
+class SeqCommentary(SeqBase):
+    """Prints text entries to a side window that looks like a chat."""
+
+    def __init__(self: Self, author: CommentaryAuthor, text: str, lifetime: float = 60.0) -> None:
+        """Initialize a SeqCommentary node."""
+        super().__init__()
+        self.entry = CommentaryEntry(author, text, lifetime)
+
+    def execute(self: Self, delta: float) -> bool:
+        log = get_commentary_log()
+        # Push data to commentary buffer
+        log.append(self.entry)
+        return True
