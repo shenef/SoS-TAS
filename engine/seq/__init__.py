@@ -12,7 +12,7 @@ from engine.seq.interact import (
     SeqSkipUntilIdle,
     SeqTapDown,
 )
-from engine.seq.log import SeqDebug, SeqLog, SeqTextCrawl
+from engine.seq.log import SeqCommentary, SeqDebug, SeqLog, SeqTextCrawl
 from engine.seq.move import (
     CancelMove,
     Graplou,
@@ -47,6 +47,7 @@ __all__ = [
     "SeqDebug",
     "SeqLog",
     "SeqTextCrawl",
+    "SeqCommentary",
     "SeqBase",
     "SeqList",
     "SeqIf",
