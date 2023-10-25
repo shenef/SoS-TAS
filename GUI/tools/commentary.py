@@ -57,9 +57,9 @@ class CommentaryLog(Menu):
 
         for entry in log:
             entry.timer += delta
-            imgui.text_colored(entry.author.color, entry.author.name)
+            imgui.text_colored(entry.author.color, f"{entry.author.name}:")
             imgui.same_line()
-            imgui.text_wrapped(f": {entry.text}")
+            imgui.text_wrapped(entry.text)
 
         imgui.set_scroll_y(imgui.get_scroll_max_y())
 
