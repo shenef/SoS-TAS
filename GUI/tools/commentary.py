@@ -1,6 +1,7 @@
 """Menu window showing a scrolling log."""
 
 import logging
+import random as rnd
 import time
 from typing import Self
 
@@ -24,7 +25,12 @@ class CommentaryAuthor:
 class AUTHORS:
     """Static namespace of CommentaryAuthors."""
 
+    tas = CommentaryAuthor(
+        name="TAS", color=imgui.ImVec4(rnd.random(), rnd.uniform(0.4, 1), rnd.random(), 1.0)
+    )
     orkaboy = CommentaryAuthor(name="orkaboy", color=imgui.ImVec4(0.7, 0.1, 0.5, 1.0))
+    eein = CommentaryAuthor(name="Eein", color=imgui.ImVec4(1.0, 1.0, 0.0, 1.0))
+    shenef = CommentaryAuthor(name="shenef", color=imgui.ImVec4(0.5, 0.0, 1.0, 1.0))
 
 
 class CommentaryEntry:
@@ -59,7 +65,7 @@ class CommentaryLog(Menu):
             entry.timer += delta
             imgui.text_colored(entry.author.color, entry.author.name)
             imgui.same_line()
-            imgui.text_wrapped(f": {entry.text}")
+            imgui.text_wrapped(entry.text)
 
         imgui.set_scroll_y(imgui.get_scroll_max_y())
 
