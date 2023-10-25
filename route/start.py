@@ -7,6 +7,7 @@ from control import sos_ctrl
 from engine.blackboard import blackboard, clear_blackboard
 from engine.seq import (
     SeqBase,
+    SeqCommentary,
     SeqDebug,
     SeqDelay,
     SeqIf,
@@ -14,6 +15,7 @@ from engine.seq import (
     SeqList,
     SeqLog,
 )
+from GUI import AUTHORS
 from log_init import reset_logging_time_reference
 from memory import (
     TitleCursorPosition,
@@ -132,6 +134,14 @@ class SoSStartGame(SeqList):
                 # ! The SoS window will not recognize input unless it is in focus!
                 SeqDelay(name="MANUAL: Focus SoS window!", timeout_in_s=2.5),
                 SeqDebug(name="SYSTEM", text="Press start to activate main menu."),
+                SeqCommentary(
+                    author=AUTHORS.tas,
+                    text="https://github.com/shenef/SoS-TAS\n"
+                    + "Thanks to everyone that contributed to the project:",
+                ),
+                SeqCommentary(author=AUTHORS.orkaboy, text="https://github.com/orkaboy"),
+                SeqCommentary(author=AUTHORS.eein, text="https://github.com/Eein"),
+                SeqCommentary(author=AUTHORS.shenef, text="https://github.com/shenef"),
                 SeqMenuStartButton(),
                 SeqDelay(name="Menu", timeout_in_s=1.5),
                 SeqIfNewGame(
