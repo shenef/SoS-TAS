@@ -68,3 +68,34 @@ class EquippableItem(Item):
         self.mag_atk = mag_atk
         # If set to None, all characters can equip it
         self.equippable_by = equippable_by
+
+
+class FoodItem(Item):
+    """An Item that can be eaten."""
+
+    def __init__(
+        self: Self,
+        guid: str,
+        name: str,
+        cost: int = 0,
+        sell_value: int = 0,
+        is_aoe: bool = False,
+        hp_to_restore: int = 0,
+        mp_to_restore: int = 0,
+        # Restore mode
+        hp_use_percent: bool = False,
+        mp_use_percent: bool = False,
+        # 0.0-1.0
+        hp_percent_to_restore: float = 0.0,
+        mp_percent_to_restore: float = 0.0,
+    ) -> None:
+        super().__init__(
+            guid=guid, item_type=ItemType.FOOD, name=name, cost=cost, sell_value=sell_value
+        )
+        self.is_aoe = is_aoe
+        self.hp_to_restore = hp_to_restore
+        self.mp_to_restore = mp_to_restore
+        self.hp_use_percent = hp_use_percent
+        self.mp_use_percent = mp_use_percent
+        self.hp_percent_to_restore = hp_percent_to_restore
+        self.mp_percent_to_restore = mp_percent_to_restore
