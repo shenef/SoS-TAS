@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatAndMove
+from engine.inventory import TRINKETS, VALUABLES
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -22,12 +23,14 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqRouteBranch,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -176,9 +179,13 @@ class WindTunnelMinesFirstFloor(SeqList):
                                     Vec3(105.640, 8.002, 113.502),
                                 ],
                             ),
-                            SeqInteract("Green Leaf"),
-                            SeqSkipUntilIdle("Green Leaf"),
-                            # TODO(orkaboy): Equip?
+                            # TODO(orkaboy): Equip to whom, and where?
+                            SeqLoot(
+                                "Green Leaf",
+                                item=TRINKETS.GreenLeaf,
+                                equip_to=PlayerPartyCharacter.Valere,
+                                trinket_slot=0,
+                            ),
                             SeqMove(
                                 name="Return to route",
                                 coords=[
@@ -240,8 +247,7 @@ class WindTunnelMinesFirstFloor(SeqList):
                         Vec3(164.040, 8.002, 86.548),
                     ],
                 ),
-                SeqInteract("Teal Amber Ore"),
-                SeqSkipUntilIdle("Teal Amber Ore"),
+                SeqLoot("Teal Amber Ore", item=VALUABLES.TealAmberOre),
                 SeqMove(
                     name="Move to fight",
                     coords=[
@@ -493,8 +499,7 @@ class WindTunnelMinesLowerFloor(SeqList):
                         Vec3(233.500, 1.002, -75.200),
                     ],
                 ),
-                SeqInteract("Mistral Bracelet"),
-                SeqSkipUntilIdle("Mistral Bracelet"),
+                SeqLoot("Mistral Bracelet"),
                 SeqMove(
                     name="Move to block",
                     coords=[
@@ -845,7 +850,7 @@ class LeavingOutpost(SeqList):
                 SeqInteract("Elevator"),
                 SeqSkipUntilClose("Say hi to Wentworth", coord=Vec3(124.500, 6.000, 148.500)),
                 SeqMove(
-                    name="",
+                    name="Move to Coral Cascades",
                     coords=[
                         Vec3(124.500, 6.002, 147.500),
                         Vec3(126.500, 6.002, 147.500),

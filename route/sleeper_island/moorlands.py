@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
+from engine.inventory import TRINKETS, VALUABLES, WEAPONS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -19,11 +20,13 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqRouteBranch,
     SeqSelectOption,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -78,10 +81,14 @@ class Moorlands(SeqList):
                     name="Power Belt",
                     route=["ml_power_belt"],
                     when_true=SeqList(
-                        name="",
+                        name="Power Belt",
                         children=[
-                            SeqInteract("Power Belt"),
-                            SeqSkipUntilIdle("Power Belt"),
+                            # TODO(orkaboy): Equip to whom?
+                            SeqLoot(
+                                "Power Belt",
+                                item=TRINKETS.PowerBelt,
+                                equip_to=PlayerPartyCharacter.Garl,
+                            ),
                         ],
                     ),
                 ),
@@ -212,8 +219,7 @@ class Moorlands(SeqList):
                                     Vec3(175.603, 8.002, -8.224),
                                 ],
                             ),
-                            SeqInteract("Teal Amber Ore"),
-                            SeqSkipUntilIdle("Teal Amber Ore"),
+                            SeqLoot("Teal Amber Ore", item=VALUABLES.TealAmberOre),
                             SeqMove(
                                 name="Return to route",
                                 coords=[
@@ -251,8 +257,7 @@ class Moorlands(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Rock Lid", joy_dir=Vec2(0, -1), timeout_s=0.2),
-                SeqInteract("Rock Lid"),
-                SeqSkipUntilIdle("Rock Lid"),
+                SeqLoot("Rock Lid", item=WEAPONS.RockLid, equip_to=PlayerPartyCharacter.Garl),
                 SeqCombatAndMove(
                     name="Move into cave",
                     coords=[
@@ -337,8 +342,7 @@ class Moorlands(SeqList):
                                     Vec3(444.492, 1.002, -2.917),
                                 ],
                             ),
-                            SeqInteract("Solar Rain"),
-                            SeqSkipUntilIdle("Solar Rain"),
+                            SeqLoot("Solar Rain"),
                         ],
                     ),
                 ),

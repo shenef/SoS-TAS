@@ -774,7 +774,7 @@ class CombatManager:
 
                     enemy = CombatEnemyTarget()
                     enemy.guid = enemy_guid.replace("\x00", "")
-                    enemy.name = EnemyName().get(enemy.guid)
+                    enemy.name = EnemyName.get(enemy.guid)
                     enemy.current_hp = current_hp
                     enemy.max_hp = max_hp
                     enemy.physical_attack = physical_attack

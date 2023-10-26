@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatAndMove
+from engine.inventory import ARMORS, TRINKETS, VALUABLES
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -16,12 +17,14 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMashUntilIdle,
     SeqMove,
     SeqRouteBranch,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -146,8 +149,7 @@ class IntroForbiddenCave(SeqList):
                         Vec3(54.157, 16.002, 144.114),
                     ],
                 ),
-                SeqInteract("Forbidden Cavern Key"),
-                SeqSkipUntilIdle("Forbidden Cavern Key"),
+                SeqLoot("Forbidden Cavern Key"),
                 SeqMove(
                     name="Jump down",
                     coords=[
@@ -184,8 +186,8 @@ class IntroForbiddenCave(SeqList):
                         Vec3(69.064, 6.002, 205.976),
                     ],
                 ),
-                SeqInteract("Picnic basket"),
-                SeqSkipUntilIdle("Picnic basket"),
+                # TODO(orkaboy): SeqLoot Item?
+                SeqLoot("Picnic basket"),
                 SeqMove(
                     name="Move to scroll",
                     coords=[
@@ -194,16 +196,14 @@ class IntroForbiddenCave(SeqList):
                         Vec3(63.918, 6.002, 209.744),
                     ],
                 ),
-                SeqInteract("Combo scroll"),
-                SeqSkipUntilIdle("Combo scroll"),
+                SeqLoot("Combo scroll"),
                 SeqMove(
                     name="Move to chest",
                     coords=[
                         Vec3(62.138, 6.002, 210.357),
                     ],
                 ),
-                SeqInteract("Shiny Pearl"),
-                SeqSkipUntilIdle("Shiny Pearl"),
+                SeqLoot("Shiny Pearl", item=VALUABLES.ShinyPearl),
                 SeqMove(
                     name="Move to wall",
                     coords=[
@@ -247,8 +247,13 @@ class IntroForbiddenCave(SeqList):
                                 ],
                             ),
                             SeqHoldDirectionDelay("Chest", joy_dir=Vec2(-1, 0), timeout_s=0.2),
-                            SeqInteract("Leeching Thorn"),
-                            SeqSkipUntilIdle("Leeching Thorn"),
+                            # TODO(orkaboy): Equip to whom?
+                            SeqLoot(
+                                "Leeching Thorn",
+                                TRINKETS.LeechingThorn,
+                                equip_to=PlayerPartyCharacter.Valere,
+                                trinket_slot=1,
+                            ),
                             SeqMove(
                                 name="Return to route",
                                 coords=[
@@ -344,16 +349,18 @@ class IntroForbiddenCave(SeqList):
                                     Vec3(-40.479, 2.002, 302.318),
                                 ],
                             ),
-                            SeqInteract("60 gold"),
-                            SeqSkipUntilIdle("60 gold"),
+                            SeqLoot("60 gold"),
                             SeqMove(
                                 name="Move to chest",
                                 coords=[
                                     Vec3(-37.746, 2.002, 302.321),
                                 ],
                             ),
-                            SeqInteract("Adventurer's Vest"),
-                            SeqSkipUntilIdle("Adventurer's Vest"),
+                            SeqLoot(
+                                "Adventurer's Vest",
+                                ARMORS.AdventurersVest,
+                                equip_to=PlayerPartyCharacter.Valere,
+                            ),
                             SeqMove(
                                 name="Leave cave",
                                 coords=[

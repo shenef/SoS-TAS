@@ -8,14 +8,15 @@ which runs all the sub-menus of the imgui window.
 """
 
 import config
-from GUI import Menu, MenuManager, Window
+from GUI import Menu, MenuManager, TASWindow
 from GUI.battle_menu import BattleMenu
 from GUI.debug_menu import DebugMenu
 from GUI.tools.commentary import CommentaryLog
+from GUI.tools.inventory_helper import InventoryHelper
 from GUI.tools.nav_helper import NavHelper
 from GUI.tools.route_helper import RouteHelper
 from log_init import initialize_logging
-from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu
+from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu, SoSShopTestMenu
 
 if __name__ == "__main__":
     # Read config data from file
@@ -24,7 +25,7 @@ if __name__ == "__main__":
     config_logging = config_data.get("logging", {})
     config_ui = config_data.get("ui", {})
 
-    gui = Window(config_ui)
+    gui = TASWindow(config_ui)
 
     # The menu manager will capture control until the GUI window is closed
     # It allows for navigating between submenus and starting the TAS
@@ -38,12 +39,14 @@ if __name__ == "__main__":
                 children=[
                     SoSAnyPercentMenu(window=gui, config_data=config_data),
                     SoSBattleTestMenu(window=gui, config_data=config_data),
+                    SoSShopTestMenu(window=gui, config_data=config_data),
                 ],
             ),
             DebugMenu(window=gui),
             NavHelper(window=gui),
             RouteHelper(window=gui),
             BattleMenu(window=gui),
+            InventoryHelper(window=gui),
             CommentaryLog(window=gui),
         ],
     )

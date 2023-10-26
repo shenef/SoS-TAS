@@ -21,6 +21,7 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMashUntilIdle,
     SeqMove,
     SeqSelectOption,
@@ -85,8 +86,7 @@ class WizardLabEnterTower(SeqList):
                         InteractMove(7.100, 6.002, 33.171),
                     ],
                 ),
-                SeqInteract("Green crystal"),
-                SeqSkipUntilIdle("Green crystal"),
+                SeqLoot("Green crystal"),
                 SeqMove(
                     name="Go to altar",
                     coords=[
@@ -179,8 +179,7 @@ class WizardLabGreenArea(SeqList):
                         InteractMove(-78.839, 6.002, -3.181),
                     ],
                 ),
-                SeqInteract("Blue Crystal"),
-                SeqSkipUntilIdle(name="Blue Crystal"),
+                SeqLoot("Blue Crystal"),
                 SeqMove(
                     name="Leave room",
                     coords=[
@@ -466,8 +465,7 @@ class WizardLabTealArea(SeqList):
                         Vec3(-77.809, 5.002, 157.422),
                     ],
                 ),
-                SeqInteract("Red Crystal"),
-                SeqSkipUntilIdle("Red Crystal"),
+                SeqLoot("Red Crystal"),
                 SeqMove(
                     name="Move to pillar",
                     coords=[

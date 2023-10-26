@@ -3,6 +3,8 @@ from typing import Self
 
 
 class PlayerPartyCharacter(Enum):
+    """Definitions for a character that can be in your party."""
+
     NONE = "None"
     Zale = "Zale"
     Valere = "Valere"

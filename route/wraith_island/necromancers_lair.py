@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatAndMove
+from engine.inventory import ARMORS, TRINKETS, VALUABLES, WEAPONS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     Graplou,
@@ -18,14 +19,19 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqRaft,
     SeqRouteBranch,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
+from memory.combat_manager import combat_manager_handle
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
+
+combat_manager = combat_manager_handle()
 
 
 class FloodedGraveyard(SeqList):
@@ -90,8 +96,11 @@ class FloodedGraveyard(SeqList):
                         Vec3(71.857, 6.002, 217.437),
                     ],
                 ),
-                SeqInteract("Shimmering Daggers"),
-                SeqSkipUntilIdle("Shimmering Daggers"),
+                SeqLoot(
+                    "Shimmering Daggers",
+                    item=WEAPONS.ShimmeringDaggers,
+                    equip_to=PlayerPartyCharacter.Serai,
+                ),
                 SeqMove(
                     name="Move to crypt",
                     coords=[
@@ -307,8 +316,9 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Face chest", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SeqInteract("Spectral Cape"),
-                SeqSkipUntilIdle("Spectral Cape"),
+                SeqLoot(
+                    "Spectral Cape", item=ARMORS.SpectralCape, equip_to=PlayerPartyCharacter.Serai
+                ),
                 SeqMove(
                     name="Move to ladder",
                     coords=[
@@ -366,8 +376,7 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Face chest", joy_dir=Vec2(-1, -1), timeout_s=0.1),
-                SeqInteract("Obsidian Ore"),
-                SeqSkipUntilIdle("Obsidian Ore"),
+                SeqLoot("Obsidian Ore", item=VALUABLES.ObsidianOre),
                 SeqMove(
                     name="Return to route",
                     coords=[
@@ -401,8 +410,7 @@ class NecromancersLairGraplou(SeqList):
                         Vec3(311.500, 1.002, 379.940),
                     ],
                 ),
-                SeqInteract("Graplou"),
-                SeqSkipUntilIdle("Graplou"),
+                SeqLoot("Graplou"),
                 SeqCombatAndMove(
                     name="Graplou movement",
                     coords=[
@@ -518,7 +526,7 @@ class NecromancersLairCentral(SeqList):
                 ),
                 SeqInteract("Skull"),
                 SeqMove(
-                    name="",
+                    name="Move to save point",
                     coords=[
                         Vec3(3.685, 1.002, 240.677),
                         Vec3(-7.540, 1.002, 236.755),
@@ -528,6 +536,11 @@ class NecromancersLairCentral(SeqList):
                 ),
             ],
         )
+
+
+def combat_emergency_skip() -> bool:
+    """Hack that detects if we are in combat and skips a node in that case."""
+    return combat_manager.encounter_done is False
 
 
 class NecromancersLairLeft(SeqList):
@@ -579,10 +592,10 @@ class NecromancersLairLeft(SeqList):
                         Vec3(-51.274, 1.002, 357.259),
                     ],
                 ),
-                SeqInteract("Osseous Staff"),
-                SeqSkipUntilIdle("Osseous Staff"),
-                # TODO(orkaboy): Equip
-                SeqMove(
+                SeqLoot(
+                    "Osseous Staff", item=WEAPONS.OsseousStaff, equip_to=PlayerPartyCharacter.Valere
+                ),
+                SeqCombatAndMove(
                     name="Graplou movement",
                     coords=[
                         Vec3(-48.152, 1.002, 354.438),
@@ -591,6 +604,8 @@ class NecromancersLairLeft(SeqList):
                         # TODO(orkaboy): Can grab Mooncradle Fish Pie here
                         Vec3(-33.879, 1.002, 378.421),
                     ],
+                    # Not pretty, but maybe needed if the TAS accidentally Graplous the wizard
+                    emergency_skip=combat_emergency_skip,
                 ),
                 SeqGraplou("Attack enemy"),
                 SeqCombatAndMove(
@@ -953,8 +968,13 @@ class GetEnchantedScarf(SeqList):
                         Vec3(147.533, 1.002, 218.209),
                     ],
                 ),
-                SeqInteract("Enchanted Scarf"),
-                SeqSkipUntilIdle("Enchanted Scarf"),
+                # TODO(orkaboy): Equip to whom, and where?
+                SeqLoot(
+                    "Enchanted Scarf",
+                    item=TRINKETS.EnchantedScarf,
+                    equip_to=PlayerPartyCharacter.Zale,
+                    trinket_slot=1,
+                ),
                 SeqMove(
                     name="Return to path",
                     coords=[

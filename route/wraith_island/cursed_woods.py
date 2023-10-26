@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
+from engine.inventory import ARMORS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
@@ -15,9 +16,11 @@ from engine.seq import (
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
     SeqSkipUntilIdle,
 )
+from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -174,9 +177,8 @@ class ClearingWeeds(SeqList):
                         Vec3(56.990, 5.002, 247.276),
                     ],
                 ),
-                SeqInteract("Bone Armor"),
-                SeqSkipUntilIdle("Bone Armor"),
-                # TODO(orkaboy): Equip Bone Armor
+                # TODO(orkaboy): Equip Bone Armor to whom? Maybe move equipment with equip_node?
+                SeqLoot("Bone Armor", item=ARMORS.BoneArmor, equip_to=PlayerPartyCharacter.Valere),
                 SeqMove(
                     name="Navigate to fourth Boulbe",
                     coords=[
@@ -316,7 +318,7 @@ class ToFerryman(SeqList):
             children=[
                 SeqSkipUntilIdle("Rest well, Warrior Cook"),
                 SeqMove(
-                    name="",
+                    name="Move to Ferryman's Vigil",
                     coords=[
                         Vec3(32.272, 1.002, 180.286),
                         Vec3(32.252, 1.002, 182.454),
