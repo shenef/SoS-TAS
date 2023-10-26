@@ -27,11 +27,18 @@ class Item:
     """An Item that can be tracked, picked up, bought and sold."""
 
     def __init__(
-        self: Self, guid: str, item_type: ItemType, name: str, cost: int = 0, sell_value: int = 0
+        self: Self,
+        guid: str,
+        item_type: ItemType,
+        name: str,
+        order_prio: int,
+        cost: int = 0,
+        sell_value: int = 0,
     ) -> None:
         self.guid = guid
         self.item_type = item_type
         self.name = name
+        self.order_prio = order_prio
         self.cost = cost
         self.sell_value = sell_value
 
@@ -53,6 +60,7 @@ class EquippableItem(Item):
         guid: str,
         item_type: ItemType,
         name: str,
+        order_prio: int,
         equippable_by: list[PlayerPartyCharacter] = None,
         cost: int = 0,
         sell_value: int = 0,
@@ -61,7 +69,14 @@ class EquippableItem(Item):
         phy_atk: int = 0,
         mag_atk: int = 0,
     ) -> None:
-        super().__init__(guid, item_type, name, cost, sell_value)
+        super().__init__(
+            guid=guid,
+            item_type=item_type,
+            name=name,
+            order_prio=order_prio,
+            cost=cost,
+            sell_value=sell_value,
+        )
         self.phy_def = phy_def
         self.phy_atk = phy_atk
         self.mag_def = mag_def
@@ -77,6 +92,7 @@ class FoodItem(Item):
         self: Self,
         guid: str,
         name: str,
+        order_prio: int,
         cost: int = 0,
         sell_value: int = 0,
         is_aoe: bool = False,
@@ -90,7 +106,12 @@ class FoodItem(Item):
         mp_percent_to_restore: float = 0.0,
     ) -> None:
         super().__init__(
-            guid=guid, item_type=ItemType.FOOD, name=name, cost=cost, sell_value=sell_value
+            guid=guid,
+            item_type=ItemType.FOOD,
+            name=name,
+            order_prio=order_prio,
+            cost=cost,
+            sell_value=sell_value,
         )
         self.is_aoe = is_aoe
         self.hp_to_restore = hp_to_restore

@@ -17,6 +17,11 @@ class ItemReference:
     def __repr__(self: Self) -> str:
         return f"ItemRef[{self.guid} ({self.item}), {self.quantity}]"
 
+    def __lt__(self: Self, other: Self) -> bool:
+        if self.item is None or other.item is None:
+            return False
+        return self.item.order_prio < other.item.order_prio
+
 
 class InventoryManager:
     INVENTORY_ITEM_OFFSET = 0x18
@@ -40,6 +45,8 @@ class InventoryManager:
                     ret.append(item_ref)
             elif item_type == ItemType.UNKNOWN:
                 ret.append(item_ref)
+        if item_type != ItemType.UNKNOWN:
+            return sorted(ret, reverse=True)
         return ret
 
     def update(self: Self) -> None:
@@ -53,8 +60,6 @@ class InventoryManager:
                     self.base = self.memory.get_class_base(singleton_ptr)
                     if self.base == 0x0:
                         return
-                    pass
-
                 else:
                     self._read_items()
                     self.items_mapped = [

@@ -60,7 +60,9 @@ class InventoryHelper(Menu):
                 header_open, visible = imgui.collapsing_header(item_type.name, True, flags=32)
                 if header_open and visible:
                     for item_ref in items:
-                        imgui.text(f"{item_ref.quantity}x {item_ref.item}")
+                        imgui.text(
+                            f"[{item_ref.item.order_prio}] {item_ref.quantity}x {item_ref.item}"
+                        )
 
     def show_unknown(self: Self) -> None:
         """Show the list of unknown items."""
