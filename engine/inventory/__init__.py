@@ -1,5 +1,13 @@
 from engine.inventory.item import EquippableItem, Item, ItemType
-from engine.inventory.items import ARMORS, FOOD, GROUPTRINKETS, TRINKETS, VALUABLES, WEAPONS
+from engine.inventory.items import (
+    ARMORS,
+    FOOD,
+    GROUPTRINKETS,
+    INGREDIENTS,
+    TRINKETS,
+    VALUABLES,
+    WEAPONS,
+)
 
 __all__ = [
     "Item",
@@ -11,4 +19,5 @@ __all__ = [
     "TRINKETS",
     "GROUPTRINKETS",
     "FOOD",
+    "INGREDIENTS",
 ]
