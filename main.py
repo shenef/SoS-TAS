@@ -11,6 +11,7 @@ import config
 from GUI import Menu, MenuManager, TASWindow
 from GUI.battle_menu import BattleMenu
 from GUI.debug_menu import DebugMenu
+from GUI.tools.commentary import CommentaryLog
 from GUI.tools.inventory_helper import InventoryHelper
 from GUI.tools.nav_helper import NavHelper
 from GUI.tools.route_helper import RouteHelper
@@ -46,6 +47,7 @@ if __name__ == "__main__":
             RouteHelper(window=gui),
             BattleMenu(window=gui),
             InventoryHelper(window=gui),
+            CommentaryLog(window=gui),
         ],
     )
     menu_manager.run()

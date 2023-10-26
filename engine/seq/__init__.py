@@ -13,7 +13,7 @@ from engine.seq.interact import (
     SeqTapDown,
 )
 from engine.seq.inventory import EquipmentCommand, SeqEquip, SeqLoot, SeqShop, ShoppingCommand
-from engine.seq.log import SeqDebug, SeqLog
+from engine.seq.log import SeqCommentary, SeqDebug, SeqLog, SeqTextCrawl
 from engine.seq.move import (
     CancelMove,
     Graplou,
@@ -50,6 +50,8 @@ __all__ = [
     "SequencerEngine",
     "SeqDebug",
     "SeqLog",
+    "SeqTextCrawl",
+    "SeqCommentary",
     "SeqBase",
     "SeqList",
     "SeqIf",

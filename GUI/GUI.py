@@ -70,6 +70,10 @@ class Window:
         self.io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard
         self.io.config_flags |= imgui.ConfigFlags_.docking_enable
 
+        self.io.fonts.add_font_from_file_ttf(
+            filename="assets/fonts/FiraSans-Regular.ttf", size_pixels=16
+        )
+
         imgui.style_colors_dark()
 
         vsync = config.get("vsync", True)
