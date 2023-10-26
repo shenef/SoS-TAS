@@ -110,7 +110,7 @@ class ARMORS:
     MageKnightArmor = EquippableItem(
         guid="1b92e304b4f82144eb3e123ccb755b2c",
         item_type=ItemType.ARMOR,
-        name="Mage Knight Armor",
+        name="Mage-Knight Armor",
         cost=60,
         sell_value=15,
         phy_def=15,
