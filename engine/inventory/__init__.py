@@ -4,6 +4,7 @@ from engine.inventory.items import (
     FOOD,
     GROUPTRINKETS,
     INGREDIENTS,
+    KEY,
     TRINKETS,
     VALUABLES,
     WEAPONS,
@@ -20,4 +21,5 @@ __all__ = [
     "GROUPTRINKETS",
     "FOOD",
     "INGREDIENTS",
+    "KEY",
 ]
