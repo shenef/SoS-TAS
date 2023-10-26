@@ -55,6 +55,10 @@ class CommentaryLog(Menu):
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
 
+        imgui.set_window_pos(self.title, imgui.ImVec2(5, 110), imgui.Cond_.first_use_ever)
+        imgui.set_window_size(imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
+        imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
+
         now = time.time()
         delta = now - self.timestamp
         self.timestamp = now
