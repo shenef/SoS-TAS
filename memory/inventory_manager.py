@@ -17,12 +17,12 @@ class ItemReference:
         return f"ItemRef[{self.guid}, {self.quantity}]"
 
 
-class InventoryManagerMem:
+class InventoryManager:
     INVENTORY_ITEM_OFFSET = 0x18
     UPDATE_FREQUENCY = 0.0
 
     def __init__(self: Self) -> None:
-        """Initialize a new InventoryManagerMem object."""
+        """Initialize a new InventoryManager object."""
         self.memory = mem_handle()
         self.base = None
         self.items: list[ItemReference] = []
@@ -89,8 +89,8 @@ class InventoryManagerMem:
         self.items = items
 
 
-_inventory_manager_mem = InventoryManagerMem()
+_inventory_manager = InventoryManager()
 
 
-def inventory_manager_mem_handle() -> InventoryManagerMem:
-    return _inventory_manager_mem
+def inventory_manager_handle() -> InventoryManager:
+    return _inventory_manager

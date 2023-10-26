@@ -5,7 +5,7 @@ from memory import (
     boat_manager_handle,
     combat_manager_handle,
     currency_manager_handle,
-    inventory_manager_mem_handle,
+    inventory_manager_handle,
     level_manager_handle,
     level_up_manager_handle,
     mem_handle,
@@ -45,7 +45,7 @@ class TASWindow(Window):
                 # These don't need to be updated all the time
                 if self.timer >= TASWindow.INVENTORY_UPDATE_TIME:
                     self.timer = 0.0
-                    inventory_manager_mem_handle().update()
+                    inventory_manager_handle().update()
                     currency_manager_handle().update()
                 if "WorldMap" in scene_name:
                     boat_manager_handle().update()

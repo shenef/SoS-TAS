@@ -10,7 +10,7 @@ from memory.combat_manager import (
 )
 from memory.core import SoSMemory, mem_handle
 from memory.currency_manager import currency_manager_handle
-from memory.inventory_manager_mem import inventory_manager_mem_handle
+from memory.inventory_manager import inventory_manager_handle
 from memory.level_manager import level_manager_handle
 from memory.level_up_manager import (
     LevelUpManager,
@@ -43,7 +43,7 @@ __all__ = [
     "player_party_manager_handle",
     "time_of_day_manager_handle",
     "title_sequence_manager_handle",
-    "inventory_manager_mem_handle",
+    "inventory_manager_handle",
     "PlayerPartyCharacter",
     "PlayerMovementState",
     "TitleCursorPosition",
