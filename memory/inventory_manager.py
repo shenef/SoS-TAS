@@ -9,12 +9,13 @@ logger = logging.getLogger(__name__)
 
 
 class ItemReference:
-    def __init__(self: Self, guid: str, quantity: int) -> None:
+    def __init__(self: Self, guid: str, quantity: int, item: Item = None) -> None:
         self.guid = guid
         self.quantity = quantity
+        self.item = item
 
     def __repr__(self: Self) -> str:
-        return f"ItemRef[{self.guid}, {self.quantity}]"
+        return f"ItemRef[{self.guid} ({self.item}), {self.quantity}]"
 
 
 class InventoryManager:
@@ -27,17 +28,18 @@ class InventoryManager:
         self.base = None
         self.items: list[ItemReference] = []
         # Dictionary of Items and amounts carried
-        self.items_mapped: dict[Item | str, int] = {}
+        self.items_mapped: list[ItemReference] = []
 
-    def get_items_by_type(self: Self, item_type: ItemType) -> list[tuple[Item | str, int]]:
+    def get_items_by_type(self: Self, item_type: ItemType) -> list[ItemReference]:
         """Return a list of items held, based on item type."""
-        ret: list[tuple[Item | str, int]] = []
-        for item, amount in self.items_mapped.items():
-            if isinstance(item, Item):
+        ret: list[ItemReference] = []
+        for item_ref in self.items_mapped:
+            item = item_ref.item
+            if item is not None:
                 if item.item_type == item_type:
-                    ret.append((item, amount))
+                    ret.append(item_ref)
             elif item_type == ItemType.UNKNOWN:
-                ret.append((item, amount))
+                ret.append(item_ref)
         return ret
 
     def update(self: Self) -> None:
@@ -55,10 +57,14 @@ class InventoryManager:
 
                 else:
                     self._read_items()
-                    self.items_mapped = {
-                        ItemMapper.items.get(item_ref.guid, item_ref.guid): item_ref.quantity
+                    self.items_mapped = [
+                        ItemReference(
+                            guid=item_ref.guid,
+                            quantity=item_ref.quantity,
+                            item=ItemMapper.items.get(item_ref.guid),
+                        )
                         for item_ref in self.items
-                    }
+                    ]
             except Exception as _e:
                 logger.debug(f"InventoryManager Reloading {type(_e)}")
                 self.__init__()

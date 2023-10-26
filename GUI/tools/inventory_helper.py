@@ -53,21 +53,20 @@ class InventoryHelper(Menu):
             if len(items):
                 header_open, visible = imgui.collapsing_header(item_type.name, True, flags=32)
                 if header_open and visible:
-                    for item, amount in items:
-                        imgui.text(f"{amount}x {item}")
+                    for item_ref in items:
+                        imgui.text(f"{item_ref.quantity}x {item_ref.item}")
 
     def show_unknown(self: Self) -> None:
         items = inventory_manager.get_items_by_type(ItemType.UNKNOWN)
         if len(items):
             header_open, visible = imgui.collapsing_header("UNKNOWN", True, flags=32)
             if header_open and visible:
-                for idx, ref in enumerate(items):
-                    guid, amount = ref
+                for idx, item_ref in enumerate(items):
                     imgui.text(f"({idx}) guid")
                     imgui.same_line()
-                    imgui.input_text(f"##{idx}", guid)
+                    imgui.input_text(f"##{idx}", item_ref.guid)
                     imgui.same_line()
-                    imgui.text(f"x{amount}")
+                    imgui.text(f"x{item_ref.quantity}")
                     LayoutHelper.add_tooltip(
                         "Enter this data in engine > inventory > items > <type>.py"
                     )
