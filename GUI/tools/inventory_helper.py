@@ -1,3 +1,5 @@
+"""GUI window for showing inventory contents."""
+
 import logging
 from typing import Self
 
@@ -15,7 +17,10 @@ currency_manager = currency_manager_handle()
 
 
 class InventoryHelper(Menu):
+    """GUI window for showing inventory contents."""
+
     def __init__(self: Self, window: Window) -> None:
+        """Initialze an InventoryHelper object."""
         super().__init__(window, title="Inventory helper")
 
     def execute(self: Self, top_level: bool) -> bool:
@@ -38,6 +43,7 @@ class InventoryHelper(Menu):
         return ret
 
     def show_inventory(self: Self) -> None:
+        """Show the known item types, in collapsible category tabs."""
         for item_type in [
             ItemType.VALUABLE,
             ItemType.KEY,
@@ -57,6 +63,7 @@ class InventoryHelper(Menu):
                         imgui.text(f"{item_ref.quantity}x {item_ref.item}")
 
     def show_unknown(self: Self) -> None:
+        """Show the list of unknown items."""
         items = inventory_manager.get_items_by_type(ItemType.UNKNOWN)
         if len(items):
             header_open, visible = imgui.collapsing_header("UNKNOWN", True, flags=32)
