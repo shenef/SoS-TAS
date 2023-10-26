@@ -42,7 +42,7 @@ class Item:
         return hash(self.guid)
 
     def __repr__(self: Self) -> str:
-        return f"{self.name}({self.item_type.name})"
+        return f"{self.name} ({self.item_type.name})"
 
 
 class EquippableItem(Item):
