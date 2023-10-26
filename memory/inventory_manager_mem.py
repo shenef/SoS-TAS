@@ -1,7 +1,9 @@
 import logging
 from typing import Self
 
+from engine.inventory.item import Item, ItemType
 from memory.core import mem_handle
+from memory.mappers.items import ItemMapper
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +26,19 @@ class InventoryManagerMem:
         self.memory = mem_handle()
         self.base = None
         self.items: list[ItemReference] = []
+        # Dictionary of Items and amounts carried
+        self.items_mapped: dict[Item | str, int] = {}
+
+    def get_items_by_type(self: Self, item_type: ItemType) -> list[tuple[Item | str, int]]:
+        """Return a list of items held, based on item type."""
+        ret: list[tuple[Item | str, int]] = []
+        for item, amount in self.items_mapped.items():
+            if isinstance(item, Item):
+                if item.item_type == item_type:
+                    ret.append((item, amount))
+            elif item_type == ItemType.UNKNOWN:
+                ret.append((item, amount))
+        return ret
 
     def update(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -40,7 +55,10 @@ class InventoryManagerMem:
 
                 else:
                     self._read_items()
-                    pass
+                    self.items_mapped = {
+                        ItemMapper.items.get(item_ref.guid, item_ref.guid): item_ref.quantity
+                        for item_ref in self.items
+                    }
             except Exception as _e:
                 logger.debug(f"InventoryManager Reloading {type(_e)}")
                 self.__init__()

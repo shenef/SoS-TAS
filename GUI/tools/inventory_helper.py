@@ -3,14 +3,13 @@ from typing import Self
 
 from imgui_bundle import imgui
 
-from engine.inventory import ItemType, get_inventory_manager
+from engine.inventory import ItemType
 from GUI.GUI import LayoutHelper, Window
 from GUI.menu import Menu
 from memory import currency_manager_handle, inventory_manager_mem_handle
 
 logger = logging.getLogger(__name__)
 
-inventory_manager = get_inventory_manager()
 inventory_manager_mem = inventory_manager_mem_handle()
 currency_manager = currency_manager_handle()
 
@@ -28,9 +27,6 @@ class InventoryHelper(Menu):
 
         imgui.text(f"Money: {currency_manager.money}")
         LayoutHelper.add_spacer()
-
-        # TODO(orkaboy): Should be elsewhere
-        inventory_manager.update()
 
         self.show_inventory()
         self.show_unknown()
@@ -53,7 +49,7 @@ class InventoryHelper(Menu):
             ItemType.RECIPE,
             ItemType.INGREDIENT,
         ]:
-            items = inventory_manager.get_items_by_type(item_type)
+            items = inventory_manager_mem.get_items_by_type(item_type)
             if len(items):
                 header_open, visible = imgui.collapsing_header(item_type.name, True, flags=32)
                 if header_open and visible:
@@ -61,7 +57,7 @@ class InventoryHelper(Menu):
                         imgui.text(f"{amount}x {item}")
 
     def show_unknown(self: Self) -> None:
-        items = inventory_manager.get_items_by_type(ItemType.UNKNOWN)
+        items = inventory_manager_mem.get_items_by_type(ItemType.UNKNOWN)
         if len(items):
             header_open, visible = imgui.collapsing_header("UNKNOWN", True, flags=32)
             if header_open and visible:

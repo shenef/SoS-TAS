@@ -6,7 +6,7 @@ from enum import Enum, auto
 from typing import NamedTuple, Self
 
 from control import sos_ctrl
-from engine.inventory import EquippableItem, Item, ItemType, get_inventory_manager
+from engine.inventory import EquippableItem, Item, ItemType
 from engine.seq.base import SeqBase
 from memory import (
     PlayerMovementState,
@@ -17,7 +17,6 @@ from memory import (
 logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
-inventory_manager = get_inventory_manager()
 
 
 class EquipmentCommand(NamedTuple):
@@ -222,8 +221,6 @@ class SeqLoot(SeqBase):
             )
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
-        if self.item is not None:
-            inventory_manager.add_item(self.item, self.amount)
         return False
 
     # Execute pickup logic (interact + skip until idle FSM)
@@ -232,8 +229,6 @@ class SeqLoot(SeqBase):
         match self.state:
             case SeqLoot.FSM.GRAB:
                 ctrl.confirm()
-                if self.item is not None:
-                    inventory_manager.add_item(self.item, self.amount)
                 self.state = SeqLoot.FSM.CLEAR_TEXT
             case SeqLoot.FSM.CLEAR_TEXT:
                 ctrl.toggle_turbo(state=True)
@@ -301,11 +296,6 @@ class SeqShop(SeqBase):
         self.sell_mode = False
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
-        for command in self.commands:
-            if command.sell:
-                inventory_manager.sell_item(command.item)
-            else:
-                inventory_manager.buy_item(command.item)
         return False
 
     def next_command(self: Self) -> bool:
@@ -362,10 +352,6 @@ class SeqShop(SeqBase):
 
                 # Actually buy/sell the item
                 ctrl.confirm(tapping=True)
-                if command.sell:
-                    inventory_manager.sell_item(command.item, command.amount)
-                else:
-                    inventory_manager.buy_item(command.item, command.amount)
 
                 self.state = SeqShop.FSM.NEXT_ITEM
             case SeqShop.FSM.STORE_OR_EQUIP:
@@ -375,7 +361,6 @@ class SeqShop(SeqBase):
                     ctrl.dpad.tap_left()
                     # Actually buy the item
                     ctrl.confirm(tapping=True)
-                    inventory_manager.buy_item(command.item)
                     self.state = SeqShop.FSM.NEXT_ITEM
                 else:
                     ctrl.confirm(tapping=True)
@@ -394,7 +379,6 @@ class SeqShop(SeqBase):
                     logger.debug(f"SeqShop:    Equipping {item} on {command.character.name}")
                     # Actually buy + equip the item
                     ctrl.confirm(tapping=True)
-                    inventory_manager.buy_item(command.item)
                 except ValueError:
                     logger.warning(
                         f"SeqShop:    Can't equip {item} to any character in current party!"
