@@ -9,7 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class ItemReference:
+    """Item, guid and quantity (one entry in the memory inventory list)."""
+
     def __init__(self: Self, guid: str, quantity: int, item: Item = None) -> None:
+        """Initialize a new ItemReference object."""
         self.guid = guid
         self.quantity = quantity
         self.item = item
@@ -24,6 +27,8 @@ class ItemReference:
 
 
 class InventoryManager:
+    """Memory manager that handles items."""
+
     INVENTORY_ITEM_OFFSET = 0x18
     UPDATE_FREQUENCY = 0.0
 
@@ -104,4 +109,5 @@ _inventory_manager = InventoryManager()
 
 
 def inventory_manager_handle() -> InventoryManager:
+    """Return a handle to the inventory manager."""
     return _inventory_manager
