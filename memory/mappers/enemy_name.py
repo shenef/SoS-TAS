@@ -1,7 +1,6 @@
-from typing import Self
-
-
 class EnemyName:
+    """Static namespace for guid to enemy name mapping."""
+
     NAMES = {
         # Evermist Island: Mountain Trail
         "c3a2f1d99be4e0c42aca0ae1ff590028": "Wanderer",
@@ -102,5 +101,7 @@ class EnemyName:
         "a071d2cccf4848746bbc63e27a0af3b9": "Owlsassin",
     }
 
-    def get(self: Self, guid: str) -> str:
-        return self.NAMES.get(guid)
+    @staticmethod
+    def get(guid: str) -> str:
+        """Fetch name from the mapping."""
+        return EnemyName.NAMES.get(guid)

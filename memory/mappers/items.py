@@ -24,6 +24,8 @@ def _get_class_values(Class: Callable) -> list[Item]:
 
 
 class ItemMapper:
+    """Static namespace for guid to Item mapping."""
+
     # Key is guid, value is the Item
     items: dict[str, Item] = {
         v.guid: v
