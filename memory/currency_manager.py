@@ -7,6 +7,8 @@ logger = logging.getLogger(__name__)
 
 
 class CurrencyManager:
+    """Memory manager than handles money."""
+
     def __init__(self: Self) -> None:
         """Initialize a new CurrencyManager object."""
         self.memory = mem_handle()
@@ -56,4 +58,5 @@ _currency_manager_mem = CurrencyManager()
 
 
 def currency_manager_handle() -> CurrencyManager:
+    """Return a handle to the currency manager."""
     return _currency_manager_mem
