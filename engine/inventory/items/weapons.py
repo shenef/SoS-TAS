@@ -92,10 +92,10 @@ class WEAPONS:
             PlayerPartyCharacter.Zale,
         ],
     )
-    ShimmeringBlade = EquippableItem(
+    ShimmeringSword = EquippableItem(
         guid="10e93ab756357f142b3c6ef3ec7a7c4b",
         item_type=ItemType.WEAPON,
-        name="Shimmering Blade",
+        name="Shimmering Sword",
         cost=80,
         sell_value=20,
         phy_atk=15,
@@ -470,10 +470,10 @@ class WEAPONS:
             PlayerPartyCharacter.Serai,
         ],
     )
-    ShroomyDaggers = EquippableItem(
+    ShroomyShivs = EquippableItem(
         guid="aa8b7c8001ca94d4eaa65d1ffb58a5e2",
         item_type=ItemType.WEAPON,
-        name="Shroomy Daggers",
+        name="Shroomy Shivs",
         cost=144,
         sell_value=36,
         phy_atk=20,

@@ -53,7 +53,7 @@ class XtolsLanding(SeqList):
                             # TODO(orkaboy): Equip to whom?
                             SeqLoot(
                                 "Solstice Ring",
-                                item=GROUPTRINKETS.SolsticeRing,
+                                item=GROUPTRINKETS.SolsticeMageRing,
                                 equip_to=PlayerPartyCharacter.Zale,
                             ),
                             SeqMove(

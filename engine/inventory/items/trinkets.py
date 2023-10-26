@@ -17,7 +17,7 @@ class TRINKETS:
     AssassinsPin = EquippableItem(
         guid="88810f8353ed7404bb576582cc39189f",
         item_type=ItemType.TRINKET,
-        name="Assassins Pin",
+        name="Assassin's Pin",
         cost=328,
         sell_value=82,
     )
@@ -84,10 +84,10 @@ class TRINKETS:
         cost=44,
         sell_value=11,
     )
-    MoonstoneBracelet = EquippableItem(
+    MoonstoneBracer = EquippableItem(
         guid="4441ac030d9882445867b6ee06fbe941",
         item_type=ItemType.TRINKET,
-        name="Moonstone Bracelet",
+        name="Moonstone Bracer",
         cost=200,
         sell_value=50,
     )
@@ -159,10 +159,10 @@ class GROUPTRINKETS:
         cost=150,
         sell_value=120,
     )
-    LucentShard = EquippableItem(
+    LucentCrystal = EquippableItem(
         guid="92e2af189aebd9949a662314b01ab847",
         item_type=ItemType.GROUPTRINKET,
-        name="Lucent Shard",
+        name="Lucent Crystal",
         cost=150,
         sell_value=120,
     )
@@ -180,10 +180,10 @@ class GROUPTRINKETS:
         cost=344,
         sell_value=86,
     )
-    NinjaSpirit = EquippableItem(
+    SpiritOfNinja = EquippableItem(
         guid="1d744837c9ee072498a3e668104325ac",
         item_type=ItemType.GROUPTRINKET,
-        name="Ninja Spirit",
+        name="Spirit of Ninja",
         cost=300,
         sell_value=75,
     )
@@ -194,10 +194,10 @@ class GROUPTRINKETS:
         cost=300,
         sell_value=75,
     )
-    SolsticeRing = EquippableItem(
+    SolsticeMageRing = EquippableItem(
         guid="c7eb103c76a21974c844159ab0f5a0d2",
         item_type=ItemType.GROUPTRINKET,
-        name="Solstice Ring",
+        name="Solstice Mage Ring",
         cost=999,
         sell_value=125,
     )
