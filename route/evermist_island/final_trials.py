@@ -4,11 +4,11 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatAndMove
+from engine.inventory.items import RELICS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
     InteractMove,
-    SeqAmulet,
     SeqClimb,
     SeqHoldDirectionUntilCombat,
     SeqInteract,
@@ -18,6 +18,7 @@ from engine.seq import (
     SeqRouteBranch,
     SeqSkipUntilClose,
     SeqSkipUntilCombat,
+    SeqToggleRelic,
 )
 
 logger = logging.getLogger(__name__)
@@ -187,7 +188,10 @@ class IntroFinalTrial(SeqList):
                 # Activate storytelling amulet
                 SeqRouteBranch(
                     name="Storytelling Amulet",
-                    when_true=SeqAmulet("Activate Amulet"),
+                    when_true=SeqToggleRelic(
+                        name="Activate Amulet",
+                        relics=[RELICS.AmuletOfStorytelling],
+                    ),
                     route=["amulet"],
                 ),
                 SeqMove(

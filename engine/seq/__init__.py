@@ -1,4 +1,3 @@
-from engine.seq.amulet import SeqAmulet
 from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.block_puzzle import MistralBracelet, SeqBlockPuzzle
 from engine.seq.interact import (
@@ -33,6 +32,7 @@ from engine.seq.move import (
     SeqMove,
     SeqRaft,
 )
+from engine.seq.relics import SeqToggleRelic
 from engine.seq.routing import RouteBranchMode, SeqIfMainCharacterValere, SeqRouteBranch
 from engine.seq.sequencer import SequencerEngine
 from engine.seq.time import (
@@ -46,7 +46,7 @@ __all__ = [
     "SeqLoot",
     "SeqEquip",
     "SeqShop",
-    "SeqAmulet",
+    "SeqToggleRelic",
     "SequencerEngine",
     "SeqDebug",
     "SeqLog",
