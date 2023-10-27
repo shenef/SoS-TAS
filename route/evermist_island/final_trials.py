@@ -190,7 +190,7 @@ class IntroFinalTrial(SeqList):
                     name="Storytelling Amulet",
                     when_true=SeqToggleRelic(
                         name="Activate Amulet",
-                        relics=[RELICS.AmuletOfStorytelling],
+                        relics=[RELICS.AmuletOfStorytelling, RELICS.SequentFlare],
                     ),
                     route=["amulet"],
                 ),
