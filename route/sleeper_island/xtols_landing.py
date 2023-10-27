@@ -4,7 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombatAndMove
-from engine.inventory import GROUPTRINKETS
+from engine.inventory.items import GROUPTRINKETS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
