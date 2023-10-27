@@ -54,6 +54,7 @@ class InventoryHelper(Menu):
             ItemType.FOOD,
             ItemType.RECIPE,
             ItemType.INGREDIENT,
+            ItemType.RELIC,
         ]:
             items = inventory_manager.get_items_by_type(item_type)
             if len(items):

@@ -1,6 +1,6 @@
 from typing import Self
 
-from engine.inventory import ARMORS
+from engine.inventory.items import ARMORS
 from engine.seq import (
     SeqDelay,
     SeqList,

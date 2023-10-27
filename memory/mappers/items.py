@@ -7,6 +7,8 @@ from engine.inventory.items import (
     GROUPTRINKETS,
     INGREDIENTS,
     KEY,
+    RECIPES,
+    RELICS,
     TRINKETS,
     VALUABLES,
     WEAPONS,
@@ -47,5 +49,7 @@ class ItemMapper:
             + _get_class_values(FOOD)
             + _get_class_values(INGREDIENTS)
             + _get_class_values(KEY)
+            + _get_class_values(RECIPES)
+            + _get_class_values(RELICS)
         )
     }

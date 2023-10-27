@@ -4,7 +4,7 @@ import logging
 from typing import Self
 
 from engine.combat import SeqCombat, SeqCombatAndMove
-from engine.inventory import ARMORS, TRINKETS, VALUABLES
+from engine.inventory.items import ARMORS, TRINKETS, VALUABLES
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,

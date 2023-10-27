@@ -20,6 +20,7 @@ class ItemType(Enum):
     KEY = auto()
     INGREDIENT = auto()
     RECIPE = auto()
+    RELIC = auto()
     UNKNOWN = auto()
 
 

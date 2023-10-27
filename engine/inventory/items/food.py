@@ -79,7 +79,7 @@ class FOOD:
         mp_to_restore=5,
     )
     GourmetBurger = FoodItem(
-        guid="",
+        guid="918caccd92d8f7540929427a743d1f15",
         name="Gourmet Burger",
         order_prio=55,
         cost=40,
