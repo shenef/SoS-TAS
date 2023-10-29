@@ -108,10 +108,10 @@ class TASMenu(Menu):
                 self.sequencer.run()
             else:
                 self.start_game_sequencer.run()
-            # End the TAS
+            imgui.same_line()
             if imgui.button("Stop TAS"):
                 self.tas_is_running = False
-        else:  # Not running
+        else:  # TAS is not running
             _, self.load_game_checkbox = imgui.checkbox("Load Checkpoint", self.load_game_checkbox)
             LayoutHelper.add_tooltip(
                 "Starts from a checkpoint.\n"
