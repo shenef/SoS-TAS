@@ -84,6 +84,7 @@ class CombatPlayer:
         self.current_hp: int = None
         self.current_mp: int = None
         self.physical_attack: int = None
+        self.magical_attack: int = None
         self.selected = False
         self.definition_id: str = None
         self.timed_attack_ready = False
@@ -654,12 +655,16 @@ class CombatManager:
                     match character:
                         case PlayerPartyCharacter.Zale:
                             player.physical_attack = 20
+                            player.magical_attack = 25  # TODO(orkaboy): Maybe not correct
                         case PlayerPartyCharacter.Valere:
                             player.physical_attack = 22
+                            player.magical_attack = 20  # TODO(orkaboy): Maybe not correct
                         case PlayerPartyCharacter.Garl:
                             player.physical_attack = 26
+                            player.magical_attack = 10  # TODO(orkaboy): Maybe not correct
                         case _:
                             player.physical_attack = 1
+                            player.magical_attack = 1  # TODO(orkaboy): Not correct
 
                     player.current_hp = current_hp
                     player.current_mp = current_mp

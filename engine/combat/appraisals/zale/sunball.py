@@ -11,6 +11,7 @@ from engine.combat.utility.sos_appraisal import (
     SoSTargetType,
     SoSTimingType,
 )
+from memory.combat_manager import CombatDamageType
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +32,12 @@ class Sunball(SoSAppraisal):
         )
         self.value = value
         self.target_type = SoSTargetType.Enemy
+        self.damage_type = [CombatDamageType.Sun]
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         # This ability is 2nd index until you learn dash strike.. then it's 3rd.
         self.skill_command_index = 1
-        self.ability_time = None
+        self.ability_time: datetime = None
         self.resource = SoSResource.Mana
         self.hold_time = hold_time
         self.cost = 8  # add modifier for mana cost reduction?
