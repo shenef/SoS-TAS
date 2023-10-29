@@ -1,10 +1,11 @@
 from typing import Self
 
-from engine.inventory.items import ARMORS
+from engine.inventory.items import ARMORS, RELICS
 from engine.seq import (
     SeqDelay,
     SeqList,
     SeqShop,
+    SeqToggleRelic,
     ShoppingCommand,
 )
 from memory.player_party_manager import PlayerPartyCharacter
@@ -21,6 +22,20 @@ class ShopTest(SeqList):
             name="ShopTest",
             children=[
                 SeqDelay(name="MANUAL: Focus SoS window!", timeout_in_s=2.5),
+                SeqToggleRelic(
+                    "Relic test 1",
+                    relics=[
+                        RELICS.AmuletOfStorytelling,
+                        RELICS.ArtfulGambit,
+                        RELICS.DubiousDare,
+                        RELICS.AdamantShard,
+                        RELICS.AmuletOfStorytelling,
+                        RELICS.BearingReel,
+                        RELICS.GoldTooth,
+                        RELICS.ExtraPockets,
+                        RELICS.AmuletOfStorytelling,
+                    ],
+                ),
                 SeqShop(
                     name="Equipment Shop",
                     commands=[
