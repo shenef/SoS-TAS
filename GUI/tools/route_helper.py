@@ -138,7 +138,7 @@ class RouteHelper(Menu):
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
                 segment_type=segment_type,
             )
-        if segment_type not in (RouteSegmentType.BOAT, RouteSegmentType.BLOCK_PUZZLE):
+        if segment_type not in {RouteSegmentType.BOAT, RouteSegmentType.BLOCK_PUZZLE}:
             imgui.same_line()
             if imgui.button(f"Interact##{idx}"):
                 self.add_coord(
