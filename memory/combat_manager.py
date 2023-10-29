@@ -39,18 +39,6 @@ class CombatDamageType(Enum):
     Magical = 252
 
 
-class CombatSpellLock:
-    def __init__(self: Self, damage_type: CombatDamageType = CombatDamageType.NONE) -> None:
-        self.name_loc_id = None
-        self.damage_type = damage_type
-
-
-class CombatCastingData:
-    def __init__(self: Self) -> None:
-        """Initialize a new CombatCastingData object."""
-        self.spell_locks: list[CombatDamageType] = []
-
-
 class CombatEnemyTarget:
     def __init__(self: Self) -> None:
         """Initialize a new CombatEnemyTarget object."""
@@ -63,11 +51,10 @@ class CombatEnemyTarget:
         self.speed: int = None
         self.guid: str = None
         self.name: str = None
-        self.casting_data = CombatCastingData()
         self.turns_to_action: int = None
         self.unique_id: str = None
         self.total_spell_locks: int = 0
-        self.spell_locks: list[CombatSpellLock] = []
+        self.spell_locks: list[CombatDamageType] = []
 
 
 class NextCombatAction(Enum):
@@ -745,7 +732,7 @@ class CombatManager:
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
-                    spell_locks: list[CombatSpellLock] = []
+                    spell_locks: list[CombatDamageType] = []
 
                     # A try is used here due to enemy dropping the spell lock when it starts to
                     # attack. This prevents the edge case and safely returns.
@@ -766,7 +753,7 @@ class CombatManager:
                                 continue
 
                             lock = self.memory.read_int(spell_locks_base + 0x40)
-                            spell_locks.append(CombatSpellLock(damage_type=CombatDamageType(lock)))
+                            spell_locks.append(CombatDamageType(lock))
 
                             spell_locks_addr += self.ITEM_OBJECT_OFFSET
                     except Exception:
