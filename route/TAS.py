@@ -232,7 +232,7 @@ class SoSAnyPercentMenu(TASMenu):
 
     def _save_route_config(self: Self) -> None:
         """Save route config to file."""
-        with open(self.route_config_path, mode="w") as file:
+        with open(self.route_config_path, mode="w", encoding="utf-8") as file:
             yaml.dump(self.route_config, file, Dumper=Dumper)
 
     # Override
