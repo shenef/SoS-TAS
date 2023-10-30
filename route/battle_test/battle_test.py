@@ -3,6 +3,7 @@ from typing import Self
 from engine.combat import SeqCombatAndMove
 from engine.seq import (
     InteractMove,
+    SeqBlackboard,
     SeqDelay,
     SeqList,
 )
@@ -30,6 +31,7 @@ class BattleTestSequence(SeqList):
         super().__init__(
             name="Testing Fight",
             children=[
+                SeqBlackboard("Dash Strike", key="dash_strike", value=True),
                 SeqCombatAndMove(
                     name="Fights",
                     coords=[
