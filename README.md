@@ -15,7 +15,8 @@ If you want to contribute code, please run `pip install -r dev-requirements.txt`
 
 ## Progress log
 
-- **2023/09/21:** Lots of internal, tooling and GUI improvements. Route progress: Defeated Bosslug. Battle progress: We are starting to have the first few dynamic decisions in battle (use some skills if MP available), some attacks can be blocked and Z/V basic attacks can be timed successfully.
+- **2023/10/30:** Route progress: Start of Haunted Mansion on Wraith Island. Battle progress: TAS can make decisions on breaking locks, which allows for much less manual supervision during fights.
+- 2023/09/21: Lots of internal, tooling and GUI improvements. Route progress: Defeated Bosslug. Battle progress: We are starting to have the first few dynamic decisions in battle (use some skills if MP available), some attacks can be blocked and Z/V basic attacks can be timed successfully.
 - 2023/08/29: It's the day of the release and we made good progress. Aside from more internal preparations and adding the first parts of a battle system, the route has been expanded to include the full first room of the Wizard's Lab. Current progress video: <https://youtu.be/yHHF6upZRB4>  
 This might mark the end of the work on the demo TAS, with the full game releasing today, there is a lot of new work ahead of us.  
   (Edit: Demo is now deprecated. The code for it is available [here](https://github.com/shenef/SoS-TAS/releases/tag/demo_build).)
