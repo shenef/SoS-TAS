@@ -27,11 +27,11 @@ class DashStrike(SoSAppraisal):
             battle_command=SoSBattleCommand.Skill,
         )
         self.value = value
-        # TODO(orkaboy): SoSTargetType.AllEnemies
+        # TODO(orkaboy): SoSTargetType.AllEnemies?
         # no such target type exists but there are a couple cases where something like
         # `AllEnemies`, `AllPlayers` and just `All` could be useful
         self.target_type = SoSTargetType.Enemy
         self.damage_type = [CombatDamageType.Sword, CombatDamageType.Sun]
         self.skill_command_index = 1
         self.resource = SoSResource.Mana
-        self.cost = 8
+        self.cost = 7
