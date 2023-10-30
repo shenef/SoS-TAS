@@ -93,7 +93,7 @@ class SoSAppraisal(Appraisal):
                 if self.target is enemy.unique_id:
                     enemy_idx = idx
                     enemy_name = enemy.name
-            if enemy_name != "":
+            if not enemy_name:
                 target = f" (target = {enemy_name}[{enemy_idx}])"
             else:
                 target = f" (target = {self.target})"

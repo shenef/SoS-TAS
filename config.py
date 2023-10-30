@@ -17,7 +17,7 @@ CONFIG_FILE_PATH = "config.yaml"
 def open_config() -> dict:
     """Open the config file and parse the yaml contents."""
     try:
-        with open(CONFIG_FILE_PATH) as config_file:
+        with open(CONFIG_FILE_PATH, encoding="utf-8") as config_file:
             try:
                 return yaml.load(config_file, Loader=Loader)
             except Exception:
@@ -40,7 +40,7 @@ def open_route_config(path: str) -> bool:
     """
     global _route_config
     try:
-        with open(path) as route_config:
+        with open(path, encoding="utf-8") as route_config:
             try:
                 _route_config = yaml.load(route_config, Loader=Loader)
                 return True

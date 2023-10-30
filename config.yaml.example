@@ -1,50 +1,16 @@
 # Game mode
-saveslot              : 0       # 0 for new game or 1-9 for load game
-checkpoint            : ""      # When loading game, what checkpoint should the TAS jump to?
-route_config          : ""      # Path to a route options configuration file
-
-# Valid checkpoints (SoS Any%):
-#   intro_mooncradle            # First cavern in flashback
-#   intro_dorms                 # First entering dorms of Zenith Academy
-#   intro_dorms2                # Dorms of Zenith Academy, just before final trial
-#   forbidden_cave              # Forbidden Cave entrance
-#   forbidden_cave2             # Forbidden Cave campfire
-#   mountain_trail              # Mountain Trail, just north of campfire
-#   mountain_trail2             # Mountain Trail, campfire in cave
-#   elder_mist                  # Elder Mist trials, campfire after tutorial
-#   elder_mist_boss             # Elder Mist trials, just before the boss
-#   elder_mist_boss2            # Elder Mist trials, just after the boss
-#   moorlands                   # When just entering Moorlands
-#   moorlands2                  # By the campfire at the Runestone
-#   wind_tunnel_mines           # First floor, by the elevator
-#   wind_tunnel_mines2          # After defeating first Bushtroo
-#   wind_tunnel_mines3          # Campfire just before Mistral Bracelet
-#   wind_tunnel_mines4          # First floor, with Mistral Bracelet
-#   coral_cascades              # Top of Coral Cascades
-#   brisk                       # At port, just after first pirates cutscene
-#   wizard_lab                  # After placing Green Crystal
-#   wizard_lab2                 # After placing Blue Crystal
-#   wizard_lab3                 # After placing Blue+Green Crystals
-#   wizard_lab4                 # After placing Green+Red Crystals
-#   wizard_lab_boss             # Before boss fight
-#   brisk2                      # Before boarding Oakum Skiff
-#   wraith_island_docks         # After getting off Oakum Skiff
-#   cursed_woods                # First enetering Cursed Woods
-#   cursed_woods2               # Middle of Cursed Woods
-#   flooded_graveyard           # Near Ferryman after landing
-#   necro_lair                  # When first entering the skeleton lock chamber
-#   necro_lair2                 # Hub area, after defeating second revenant
-#   necro_lair_boss             # Hub area, after defeating third revenant
-#   necro_lair_boss2            # Hub area, after defeating Romaya
-#   lucent                      # Lucent, after restoring Garl
+saveslot          : 0         # 0 for new game or 1-9 for load game.
+checkpoint        : ""        # When loading game, what checkpoint should the TAS jump to?
+                              # For valid checkpoints, see /route/TAS.py.
+route_config      : ""        # Path to a route options configuration file.
 
 # User Interface
 ui:
-  vsync               : True    # Caps framerate at monitor refresh rate
+  vsync           : True      # Caps framerate at monitor refresh rate.
 
 # Logging
 logging:
-  color_log           : True    # Colors the console output. May not work on some systems.
-  verbosity           : DEBUG   # Verbosity of log messages in the console.
-                                # These are the valid levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
-                                # Full log will always be available in a file.
+  color_log       : True      # Colors the console output. May not work on some systems.
+  verbosity       : DEBUG     # Verbosity of log messages in the console.
+                              # Valid log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+                              # Log files are also written to the Logs folder.

@@ -47,7 +47,7 @@ class CombatController:
         self.timer = 0
 
     def is_done(self: Self) -> bool:
-        return self.state in [CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT]
+        return self.state in {CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT}
 
     def update_state(self: Self, delta: float) -> None:
         """
