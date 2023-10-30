@@ -2,9 +2,10 @@ import copy
 from typing import Self
 
 from control import sos_ctrl
+from engine.blackboard import blackboard
 from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.appraisals.valere import CrescentArc, Moonerang
-from engine.combat.appraisals.zale import Sunball
+from engine.combat.appraisals.zale import DashStrike, Sunball
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
 from engine.combat.utility.sos_appraisal import SoSAppraisal
@@ -92,7 +93,14 @@ class SoSConsideration(Consideration):
             char_appraisals: list[SoSAppraisal] = []
             match self.actor.character:
                 case PlayerPartyCharacter.Zale:
-                    char_appraisals.append(Sunball(value=100))
+                    # Logic for handling learning Dash Strike
+                    has_dash_strike = blackboard().get_dict(key="dash_strike", default=False)
+                    sunball_index = 1
+                    if has_dash_strike:
+                        sunball_index = 2
+                    char_appraisals.append(Sunball(value=100, skill_command_index=sunball_index))
+                    if has_dash_strike:
+                        char_appraisals.append(DashStrike(value=50))
                 case PlayerPartyCharacter.Valere:
                     # Currently set up to use moonerang if there is only one enemy
                     enemy_count = 0
