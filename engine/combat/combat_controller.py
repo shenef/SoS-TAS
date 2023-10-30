@@ -42,9 +42,9 @@ class CombatController:
 
     def __init__(self: Self) -> None:
         """Initialize a new CombatController object."""
-        self.controller = None
+        self.controller: EncounterController = None
         self.state = CombatController.FSM.IDLE
-        self.timer = 0
+        self.timer: float = 0.0
 
     def is_done(self: Self) -> bool:
         return self.state in {CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT}
@@ -74,7 +74,7 @@ class CombatController:
                 pass
             case CombatController.FSM.COMBAT:
                 if self.controller.encounter_done():
-                    self.timer = 0
+                    self.timer = 0.0
                     self.state = CombatController.FSM.AFTER_COMBAT
             # This is a somewhat janky way of detecting level up,
             # while still allowing for starting movement in SeqMove.

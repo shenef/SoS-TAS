@@ -9,6 +9,7 @@ from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
 from engine.combat.utility.sos_appraisal import SoSAppraisal
 from memory import CombatPlayer, PlayerPartyCharacter, combat_manager_handle
+from memory.combat_manager import CombatDamageType
 
 combat_manager = combat_manager_handle()
 
@@ -24,6 +25,9 @@ class SoSConsideration(Consideration):
         return list(filter(self._has_resources_for_appraisal, appraisals))
 
     def _has_resources_for_appraisal(self: Self, appraisal: SoSAppraisal) -> bool:
+        boosts_available = round(combat_manager.small_live_mana / 5)
+        if appraisal.boost > boosts_available:
+            return False
         return appraisal.has_resources(self.actor)
 
     def valid(self: Self, selected_character: PlayerPartyCharacter, action: Action) -> bool:
@@ -41,51 +45,85 @@ class SoSConsideration(Consideration):
     # TODO(eein): Add item appraisals + dont use physical attacks and the appraisal value
     def _default_appraisals(self: Self) -> list[SoSAppraisal]:
         """Generate default appraisals generic to every consideration."""
-        basic_attack = BasicAttack()
+        match self.actor.character:
+            case PlayerPartyCharacter.Zale:
+                primary_damage_type = CombatDamageType.Sword
+                secondary_damage_type = CombatDamageType.Sun
+            case PlayerPartyCharacter.Valere:
+                primary_damage_type = CombatDamageType.Blunt
+                secondary_damage_type = CombatDamageType.Moon
+            case PlayerPartyCharacter.Garl:
+                primary_damage_type = CombatDamageType.Blunt
+                secondary_damage_type = CombatDamageType.NONE
+            case PlayerPartyCharacter.Serai:
+                primary_damage_type = CombatDamageType.Sword
+                secondary_damage_type = CombatDamageType.Poison
+            case PlayerPartyCharacter.Reshan:
+                primary_damage_type = CombatDamageType.Poison
+                secondary_damage_type = CombatDamageType.Arcane
+            case PlayerPartyCharacter.Bst:
+                primary_damage_type = CombatDamageType.Blunt
+                secondary_damage_type = CombatDamageType.Arcane
+        # TODO(orkaboy): Should account for gear too; this should probably be a function?
+        basic_attack = BasicAttack(primary_damage_type=primary_damage_type)
         basic_attack.value = self.actor.physical_attack
 
-        return [basic_attack]
+        attacks = [basic_attack]
+        for boost in range(1, 4):  # Generate [1,2,3]
+            boosted_attack = BasicAttack(
+                boost=boost,
+                primary_damage_type=primary_damage_type,
+                secondary_damage_type=secondary_damage_type,
+            )
+            # TODO(orkaboy): Correct damage formula
+            boosted_attack.value = (
+                self.actor.physical_attack + boost * self.actor.magical_attack / 3
+            )
+            attacks.append(boosted_attack)
+
+        return attacks
 
     # TODO(eein): Calculate appraisals based on skill/combo availability
     def _character_appraisals(self: Self) -> list[SoSAppraisal]:
-        match self.actor.character:
-            case PlayerPartyCharacter.Zale:
-                return [Sunball(value=100)]
-            case PlayerPartyCharacter.Valere:
-                # Currently set up to use moonerang if there is only one enemy
-                enemy_count = 0
-                for enemy in combat_manager.enemies:
-                    if enemy.current_hp > 0:
-                        enemy_count += 1
-                if enemy_count == 1:
-                    return [Moonerang(value=200)]
-                return [CrescentArc(value=100)]
-            case PlayerPartyCharacter.Garl:
-                return []
-            case _:
-                return []
+        appraisals: list[SoSAppraisal] = []
+        # Generate appraisals based on boost level (0-3)
+        for boost in range(0, 4):
+            # Create a list of appraisals based on the character acting
+            char_appraisals: list[SoSAppraisal] = []
+            match self.actor.character:
+                case PlayerPartyCharacter.Zale:
+                    char_appraisals.append(Sunball(value=100))
+                case PlayerPartyCharacter.Valere:
+                    # Currently set up to use moonerang if there is only one enemy
+                    enemy_count = 0
+                    for enemy in combat_manager.enemies:
+                        if enemy.current_hp > 0:
+                            enemy_count += 1
+                    if enemy_count == 1:
+                        char_appraisals.append(Moonerang(value=200))
+                    char_appraisals.append(CrescentArc(value=100))
+                # TODO(orkaboy): Add more skills/characters
+            # TODO(orkaboy): For now, multiply utility by boost value
+            for appraisal in char_appraisals:
+                appraisal.value *= boost + 1
+            appraisals.extend(char_appraisals)
+        return appraisals
 
     def calculate_actions(self: Self) -> list[Action]:
         actions = []
-        # TODO(eein): To give value to boosted appraisals we will just multiply the value by
-        # the boost for now, we can modify this when we work further on utility.
-        boosted_appraisals: list[SoSAppraisal] = []
+        # Takes the appraisals, and creates an action for each enemy.
         for appraisal in self.appraisals:
-            boosts_available = round(combat_manager.small_live_mana / 5)
-            if boosts_available == 0:
-                boosted_appraisals.append(appraisal)
-                continue
-
-            for boost in range(0, boosts_available + 1):
-                new_appraisal: SoSAppraisal = copy.copy(appraisal)
-                new_appraisal.boost = boost
-                new_appraisal.value = new_appraisal.value * (boost + 1)
-                boosted_appraisals.append(new_appraisal)
-
-        # Takes the boosted appraisals, and creates an action for each enemy.
-        for appraisal in boosted_appraisals:
             for enemy in combat_manager.enemies:
-                new_appraisal = copy.copy(appraisal)
+                new_appraisal: SoSAppraisal = copy.copy(appraisal)
+                # Adjust value according to if we can break locks
+                damage_type: list[CombatDamageType] = copy.copy(new_appraisal.damage_type)
+                lock_multiplier = 1.0
+                for lock in enemy.spell_locks:
+                    if lock in damage_type:
+                        damage_type.remove(lock)
+                        lock_multiplier += 1.0
+                # Make a unique action for each appraisal and enemy combination
+                new_appraisal.value *= lock_multiplier
                 new_appraisal.target = enemy.unique_id
                 actions.append(copy.copy(Action(self, new_appraisal)))
         return actions

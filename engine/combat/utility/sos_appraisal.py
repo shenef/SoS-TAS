@@ -5,7 +5,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.utility.core import Appraisal
-from memory.combat_manager import CombatPlayer, combat_manager_handle
+from memory.combat_manager import CombatDamageType, CombatPlayer, combat_manager_handle
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
@@ -71,6 +71,7 @@ class SoSAppraisal(Appraisal):
         self.battle_command: SoSBattleCommand = battle_command
         self.skill_command_index = 0
         self.target_type = SoSTargetType.Enemy
+        self.damage_type: list[CombatDamageType] = []
         # the following provides an alternative targeting type for moves that break out of
         # the normal controller types. Moonerang is an example of this, which acts like a
         # basic attack when it targets, but is a skill when it is selected

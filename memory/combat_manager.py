@@ -39,18 +39,6 @@ class CombatDamageType(Enum):
     Magical = 252
 
 
-class CombatSpellLock:
-    def __init__(self: Self, damage_type: CombatDamageType = CombatDamageType.NONE) -> None:
-        self.name_loc_id = None
-        self.damage_type = damage_type
-
-
-class CombatCastingData:
-    def __init__(self: Self) -> None:
-        """Initialize a new CombatCastingData object."""
-        self.spell_locks: list[CombatDamageType] = []
-
-
 class CombatEnemyTarget:
     def __init__(self: Self) -> None:
         """Initialize a new CombatEnemyTarget object."""
@@ -63,11 +51,10 @@ class CombatEnemyTarget:
         self.speed: int = None
         self.guid: str = None
         self.name: str = None
-        self.casting_data = CombatCastingData()
         self.turns_to_action: int = None
         self.unique_id: str = None
         self.total_spell_locks: int = 0
-        self.spell_locks: list[CombatSpellLock] = []
+        self.spell_locks: list[CombatDamageType] = []
 
 
 class NextCombatAction(Enum):
@@ -97,6 +84,7 @@ class CombatPlayer:
         self.current_hp: int = None
         self.current_mp: int = None
         self.physical_attack: int = None
+        self.magical_attack: int = None
         self.selected = False
         self.definition_id: str = None
         self.timed_attack_ready = False
@@ -667,12 +655,16 @@ class CombatManager:
                     match character:
                         case PlayerPartyCharacter.Zale:
                             player.physical_attack = 20
+                            player.magical_attack = 25  # TODO(orkaboy): Maybe not correct
                         case PlayerPartyCharacter.Valere:
                             player.physical_attack = 22
+                            player.magical_attack = 20  # TODO(orkaboy): Maybe not correct
                         case PlayerPartyCharacter.Garl:
                             player.physical_attack = 26
+                            player.magical_attack = 10  # TODO(orkaboy): Maybe not correct
                         case _:
                             player.physical_attack = 1
+                            player.magical_attack = 1  # TODO(orkaboy): Not correct
 
                     player.current_hp = current_hp
                     player.current_mp = current_mp
@@ -745,7 +737,7 @@ class CombatManager:
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
-                    spell_locks: list[CombatSpellLock] = []
+                    spell_locks: list[CombatDamageType] = []
 
                     # A try is used here due to enemy dropping the spell lock when it starts to
                     # attack. This prevents the edge case and safely returns.
@@ -766,7 +758,7 @@ class CombatManager:
                                 continue
 
                             lock = self.memory.read_int(spell_locks_base + 0x40)
-                            spell_locks.append(CombatSpellLock(damage_type=CombatDamageType(lock)))
+                            spell_locks.append(CombatDamageType(lock))
 
                             spell_locks_addr += self.ITEM_OBJECT_OFFSET
                     except Exception:

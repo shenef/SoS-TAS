@@ -10,7 +10,7 @@ from engine.combat.utility.sos_appraisal import (
     SoSTargetType,
     SoSTimingType,
 )
-from memory.combat_manager import combat_manager_handle
+from memory.combat_manager import CombatDamageType, combat_manager_handle
 
 logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
@@ -34,6 +34,7 @@ class Moonerang(SoSAppraisal):
         self.value = value
         self.battle_command_targeting_type = SoSBattleCommand.Attack
         self.target_type = SoSTargetType.Enemy
+        self.damage_type = [CombatDamageType.Moon] * 10
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         self.skill_command_index = 1
