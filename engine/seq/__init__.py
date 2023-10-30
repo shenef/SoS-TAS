@@ -1,4 +1,4 @@
-from engine.seq.base import SeqBase, SeqCheckpoint, SeqIf, SeqList, SeqWhile
+from engine.seq.base import SeqBase, SeqBlackboard, SeqCheckpoint, SeqIf, SeqList, SeqWhile
 from engine.seq.block_puzzle import MistralBracelet, SeqBlockPuzzle
 from engine.seq.interact import (
     SeqBracelet,
@@ -57,6 +57,7 @@ __all__ = [
     "SeqIf",
     "SeqWhile",
     "SeqCheckpoint",
+    "SeqBlackboard",
     "SeqDelay",
     "SeqHoldConfirm",
     "SeqTurboMashDelay",
