@@ -10,6 +10,7 @@ from engine.seq import (
     Graplou,
     HoldDirection,
     InteractMove,
+    SeqBlackboard,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
@@ -185,6 +186,7 @@ class FloodedGraveyard(SeqList):
                 SeqSkipUntilCombat("None shall pass"),
                 SeqCombat("Duke Aventry"),
                 SeqSkipUntilIdle("Learning Dash Strike"),
+                SeqBlackboard(name="Dash Strike", key="dash_strike", value=True),
                 SeqMove(
                     name="Enter Necromancer's Lair",
                     coords=[
