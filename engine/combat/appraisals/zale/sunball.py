@@ -23,6 +23,7 @@ class Sunball(SoSAppraisal):
         hold_time: float = 4.0,
         timing_type: SoSTimingType = SoSTimingType.Charge,
         boost: int = 0,
+        skill_command_index: int = 1,
     ) -> None:
         super().__init__(
             name="Sunball",
@@ -36,7 +37,7 @@ class Sunball(SoSAppraisal):
         # this needs to move to a system that tracks available abilities.
         # May take significant work to determine this unless we do it manually.
         # This ability is 2nd index until you learn dash strike.. then it's 3rd.
-        self.skill_command_index = 1
+        self.skill_command_index = skill_command_index
         self.ability_time: datetime = None
         self.resource = SoSResource.Mana
         self.hold_time = hold_time

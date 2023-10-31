@@ -8,7 +8,7 @@ complex behavior.
 # Libraries and Core Files
 import logging
 from collections.abc import Callable
-from typing import Self
+from typing import Any, Self
 
 from engine.blackboard import blackboard
 
@@ -245,3 +245,20 @@ class SeqWhile(SeqBase):
         if self.result is None:
             return self.name
         return f"While({self.name}): {self.child.__repr__()}"
+
+
+class SeqBlackboard(SeqBase):
+    """Set an attribute in the blackboard. Can be used for progress markers."""
+
+    def __init__(self: Self, name: str, key: str, value: Any) -> None:  # noqa: ANN401
+        super().__init__(name)
+        self.key = key
+        self.value = value
+
+    def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
+        blackboard().set_dict(self.key, self.value)
+        return False
+
+    def execute(self: Self, delta: float) -> bool:
+        blackboard().set_dict(self.key, self.value)
+        return True
