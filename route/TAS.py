@@ -52,6 +52,42 @@ class TASMenu(Menu):
     Individual routes should inherit from the TASMenu class.
     """
 
+    CHECKPOINTS: list[tuple[str, str]] = [
+        ("intro_mooncradle", "First cavern in flashback"),
+        ("intro_dorms", "First entering dorms of Zenith Academy"),
+        ("intro_dorms2", "Dorms of Zenith Academy, just before final trial"),
+        ("forbidden_cave", "Forbidden Cave entrance"),
+        ("forbidden_cave2", "Forbidden Cave campfire"),
+        ("mountain_trail", "Mountain Trail, just north of campfire"),
+        ("mountain_trail2", "Mountain Trail, campfire in cave"),
+        ("elder_mist", "Elder Mist trials, campfire after tutorial"),
+        ("elder_mist_boss", "Elder Mist trials, just before the boss"),
+        ("elder_mist_boss2", "Elder Mist trials, just after the boss"),
+        ("moorlands", "When just entering Moorlands"),
+        ("moorlands2", "By the campfire at the Runestone"),
+        ("wind_tunnel_mines", "First floor, by the elevator"),
+        ("wind_tunnel_mines2", "After defeating first Bushtroo"),
+        ("wind_tunnel_mines3", "Campfire just before Mistral Bracelet"),
+        ("wind_tunnel_mines4", "First floor, with Mistral Bracelet"),
+        ("coral_cascades", "Top of Coral Cascades"),
+        ("brisk", "At port, just after first pirates cutscene"),
+        ("wizard_lab", "After placing Green Crystal"),
+        ("wizard_lab2", "After placing Blue Crystal"),
+        ("wizard_lab3", "After placing Blue+Green Crystals"),
+        ("wizard_lab4", "After placing Green+Red Crystals"),
+        ("wizard_lab_boss", "Before boss fight"),
+        ("brisk2", "Before boarding Oakum Skiff"),
+        ("wraith_island_docks", "After getting off Oakum Skiff"),
+        ("cursed_woods", "First entering Cursed Woods"),
+        ("cursed_woods2", "Middle of Cursed Woods"),
+        ("flooded_graveyard", "Near Ferryman after landing"),
+        ("necro_lair", "When first entering the skeleton lock chamber"),
+        ("necro_lair2", "Hub area, after defeating second revenant"),
+        ("necro_lair_boss", "Hub area, after defeating third revenant"),
+        ("necro_lair_boss2", "Hub area, after defeating Romaya"),
+        ("lucent", "Lucent, after restoring Garl"),
+    ]
+
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
         super().__init__(window, title)
         self.tas_is_running = False
@@ -118,45 +154,17 @@ class TASMenu(Menu):
                 + 'If you want to load a specific save slot, enable "Run start sequence".'
             )
 
-            if self.load_game_checkbox:
-                # TODO(orkaboy): Maybe should be a dropdown of valid checkpoints
-                _, self.checkpoint = imgui.input_text("Checkpoint name", self.checkpoint)
-                LayoutHelper.add_tooltip(
-                    text="intro_mooncradle     (First cavern in flashback)\n"
-                    + "intro_dorms          (First entering dorms of Zenith Academy)\n"
-                    + "intro_dorms2         (Dorms of Zenith Academy, just before final trial)\n"
-                    + "forbidden_cave       (Forbidden Cave entrance)\n"
-                    + "forbidden_cave2      (Forbidden Cave campfire)\n"
-                    + "mountain_trail       (Mountain Trail, just north of campfire)\n"
-                    + "mountain_trail2      (Mountain Trail, campfire in cave)\n"
-                    + "elder_mist           (Elder Mist trials, campfire after tutorial)\n"
-                    + "elder_mist_boss      (Elder Mist trials, just before the boss)\n"
-                    + "elder_mist_boss2     (Elder Mist trials, just after the boss)\n"
-                    + "moorlands            (When just entering Moorlands)\n"
-                    + "moorlands2           (By the campfire at the Runestone)\n"
-                    + "wind_tunnel_mines    (First floor, by the elevator)\n"
-                    + "wind_tunnel_mines2   (After defeating first Bushtroo)\n"
-                    + "wind_tunnel_mines3   (Campfire just before Mistral Bracelet)\n"
-                    + "wind_tunnel_mines4   (First floor, with Mistral Bracelet)\n"
-                    + "coral_cascades       (Top of Coral Cascades)\n"
-                    + "brisk                (At port, just after first pirates cutscene)\n"
-                    + "wizard_lab           (After placing Green Crystal)\n"
-                    + "wizard_lab2          (After placing Blue Crystal)\n"
-                    + "wizard_lab3          (After placing Blue+Green Crystals)\n"
-                    + "wizard_lab4          (After placing Green+Red Crystals)\n"
-                    + "wizard_lab_boss      (Before boss fight)\n"
-                    + "brisk2               (Before boarding Oakum Skiff)\n"
-                    + "wraith_island_docks  (After getting off Oakum Skiff)\n"
-                    + "cursed_woods         (First entering Cursed Woods)\n"
-                    + "cursed_woods2        (Middle of Cursed Woods)\n"
-                    + "flooded_graveyard    (Near Ferryman after landing)\n"
-                    + "necro_lair           (When first entering the skeleton lock chamber)\n"
-                    + "necro_lair2          (Hub area, after defeating second revenant)\n"
-                    + "necro_lair_boss      (Hub area, after defeating third revenant)\n"
-                    + "necro_lair_boss2     (Hub area, after defeating Romaya)\n"
-                    + "lucent               (Lucent, after restoring Garl)",
-                    width=-1,
-                )
+            if self.load_game_checkbox and imgui.begin_combo(
+                label="Checkpoint", preview_value=self.checkpoint
+            ):
+                for checkpoint, tooltip in TASMenu.CHECKPOINTS:
+                    is_selected = checkpoint == self.checkpoint
+                    _, is_selected = imgui.selectable(label=checkpoint, p_selected=is_selected)
+                    if is_selected:
+                        self.checkpoint = checkpoint
+                        imgui.set_item_default_focus()
+                    LayoutHelper.add_tooltip(tooltip)
+                imgui.end_combo()
 
             _, self.run_start_sequence = imgui.checkbox(
                 "Run start sequence", self.run_start_sequence
