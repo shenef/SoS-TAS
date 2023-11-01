@@ -9,6 +9,7 @@ from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
     InteractMove,
+    SeqBlackboard,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
@@ -196,7 +197,8 @@ class IntroForbiddenCave(SeqList):
                         Vec3(63.918, 6.002, 209.744),
                     ],
                 ),
-                SeqLoot("Combo scroll"),
+                SeqLoot("Mending Light"),
+                SeqBlackboard("Mending Light", key="mending_light", value=True),
                 SeqMove(
                     name="Move to chest",
                     coords=[
