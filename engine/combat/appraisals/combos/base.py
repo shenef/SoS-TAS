@@ -6,6 +6,7 @@ from typing import Self
 from engine.combat.utility.sos_appraisal import (
     SoSAppraisal,
     SoSBattleCommand,
+    SoSResource,
     SoSTargetType,
     SoSTimingType,
 )
@@ -36,6 +37,7 @@ class ComboSkill(SoSAppraisal):
         self.target_type = SoSTargetType.Enemy
         self.casters = casters
         self.combo_cost = combo_cost
+        self.resource = SoSResource.ComboPoints
 
     def can_use(self: Self) -> bool:
         """Check if the combo skill can be used right now."""

@@ -33,6 +33,8 @@ class SoSAppraisalStep(Enum):
     ConfirmCommand = auto()
     SelectingSkill = auto()
     ConfirmSkill = auto()
+    SelectingCombo = auto()
+    ConfirmCombo = auto()
     SelectingAction = auto()
     SelectingEnemySequence = auto()
     ConfirmEnemySequence = auto()
@@ -115,6 +117,10 @@ class SoSAppraisal(Appraisal):
                 self.execute_selecting_skill()
             case SoSAppraisalStep.ConfirmSkill:
                 self.execute_confirm_skill()
+            case SoSAppraisalStep.SelectingCombo:
+                self.execute_select_combo()
+            case SoSAppraisalStep.ConfirmCombo:
+                self.execute_confirm_combo()
             case SoSAppraisalStep.SelectingEnemySequence:
                 self.execute_selecting_enemy_sequence()
             case SoSAppraisalStep.ConfirmEnemySequence:
@@ -173,8 +179,7 @@ class SoSAppraisal(Appraisal):
                 case SoSBattleCommand.Skill:
                     self.step = SoSAppraisalStep.SelectingSkill
                 case SoSBattleCommand.Combo:
-                    # combos reflect as skills in the menu
-                    self.step = SoSAppraisalStep.SelectingSkill
+                    self.step = SoSAppraisalStep.SelectingCombo
                 case SoSBattleCommand.Item:
                     self.step = SoSAppraisalStep.SelectingSkill
                 case _:
@@ -218,6 +223,33 @@ class SoSAppraisal(Appraisal):
 
             logger.debug(f"Confirmed Skill Command: {self.name}")
             # logger.debug(f"Entering step: {self.step.name}")
+
+    def execute_select_combo(self: Self) -> None:
+        if (
+            self.combat_manager.battle_command_has_focus is True
+            and self.combat_manager.battle_command_index != self.skill_command_index
+        ):
+            sos_ctrl().dpad.tap_down()
+        else:
+            self.step = SoSAppraisalStep.ConfirmCombo
+            # logger.debug(f"Selecting Battle Combo: {self.name}")
+
+    def execute_confirm_combo(self: Self) -> None:
+        if (
+            self.combat_manager.battle_command_has_focus is True
+            and self.combat_manager.battle_command_index == self.skill_command_index
+        ):
+            sos_ctrl().confirm()
+            # TODO(orkaboy): Check targeting type
+            match self.target_type:
+                case SoSTargetType.Enemy:
+                    self.step = SoSAppraisalStep.SelectingEnemySequence
+                case SoSTargetType.Player:
+                    self.step = SoSAppraisalStep.SelectingPlayerSequence
+                case _:
+                    logger.error(f"Unimplemented Combo Target type {self.target_type}")
+
+            logger.debug(f"Confirmed Combo Command: {self.name}")
 
     def execute_selecting_enemy_sequence(self: Self) -> None:
         if (

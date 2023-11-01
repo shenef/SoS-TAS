@@ -4,6 +4,7 @@ from typing import Self
 from control import sos_ctrl
 from engine.blackboard import blackboard
 from engine.combat.appraisals.basic_attack import BasicAttack
+from engine.combat.appraisals.combos import SolsticeStrike
 from engine.combat.appraisals.valere import CrescentArc, Moonerang
 from engine.combat.appraisals.zale import DashStrike, Sunball
 from engine.combat.utility.core.action import Action
@@ -101,6 +102,12 @@ class SoSConsideration(Consideration):
                     char_appraisals.append(Sunball(value=100, skill_command_index=sunball_index))
                     if has_dash_strike:
                         char_appraisals.append(DashStrike(value=50))
+                    # Combos
+                    solstice_strike = SolsticeStrike(
+                        main_caster=self.actor.character, value=100, boost=boost
+                    )
+                    if solstice_strike.can_use():
+                        char_appraisals.append(solstice_strike)
                 case PlayerPartyCharacter.Valere:
                     # Currently set up to use moonerang if there is only one enemy
                     enemy_count = 0
@@ -110,6 +117,12 @@ class SoSConsideration(Consideration):
                     if enemy_count == 1:
                         char_appraisals.append(Moonerang(value=200))
                     char_appraisals.append(CrescentArc(value=100))
+                    # Combos
+                    solstice_strike = SolsticeStrike(
+                        main_caster=self.actor.character, value=100, boost=boost
+                    )
+                    if solstice_strike.can_use():
+                        char_appraisals.append(solstice_strike)
                 # TODO(orkaboy): Add more skills/characters
             # TODO(orkaboy): For now, multiply utility by boost value
             for appraisal in char_appraisals:
