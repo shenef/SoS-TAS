@@ -91,6 +91,8 @@ class CombatPlayer:
         self.dead = False
         self.character = PlayerPartyCharacter.NONE
         self.enabled: bool = None
+        self.combo_points: int = 0
+        self.ultimate_guage: float = 0.0
         self.mana_charge_count: int = None
 
 
@@ -124,6 +126,9 @@ class CombatManager:
         self.selected_attack_target_guid: str = None
         self.selected_skill_target_guid: str = None
         self.next_combat_enemy: NextCombatEnemy = None
+        self.current_combo_points: int = 0
+        self.current_filled_combo_points: int = 0
+        self.ultimate_progress: float = 0.0
         # Moonerang
         self.projectile_hit_count = 0
         self.projectile_speed = 0.0
@@ -151,6 +156,7 @@ class CombatManager:
                         return
 
                     self._read_combat_controller()
+                    self._read_combo_and_ultimates()
                     self._read_players()
                     self._read_enemies()
                     self._read_battle_commands()
@@ -164,6 +170,36 @@ class CombatManager:
         except Exception as e:  # noqa: F841
             # logger.debug(f"Combat Manager Reloading - {type(e)}")
             self.__init__()
+
+    def _read_combo_and_ultimates(self: Self) -> None:
+        if self._should_update():
+            try:
+                combo_points_panel_ptr = self.memory.follow_pointer(
+                    self.base,
+                    [
+                        self.current_encounter_base,
+                        0x120,
+                        0x98,
+                        0x50,
+                        0x0,
+                    ],
+                )
+                ult_meter_ptr = self.memory.follow_pointer(combo_points_panel_ptr, [0x28, 0x0])
+                combo_points_meter_ptr = self.memory.follow_pointer(
+                    combo_points_panel_ptr, [0x30, 0x0]
+                )
+
+                ult_progress = self.memory.read_float(ult_meter_ptr + 0x40)
+                combo_points = self.memory.read_int(combo_points_meter_ptr + 0x58)
+                filled_combo_points = self.memory.read_int(combo_points_meter_ptr + 0x5C)
+
+                self.ultimate_progress = ult_progress
+                self.current_combo_points = combo_points
+                self.current_filled_combo_points = filled_combo_points
+            except Exception:
+                self.current_combo_points = 0
+                self.current_filled_combo_points = 0
+                self.ultimate_progress = 0.0
 
     def read_next_combat_enemy(self: Self) -> None:
         if self._should_update():
@@ -671,6 +707,8 @@ class CombatManager:
                     player.definition_id = definition_id
                     player.character = character
                     player.selected = selected
+                    player.ultimate_guage = self.ultimate_progress
+                    player.combo_points = self.current_filled_combo_points
                     player.dead = dead
                     player.enabled = enabled
                     player.timed_attack_ready = timed_attack_value
