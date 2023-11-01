@@ -76,13 +76,15 @@ class SoSAppraisal(Appraisal):
         # the normal controller types. Moonerang is an example of this, which acts like a
         # basic attack when it targets, but is a skill when it is selected
         self.battle_command_targeting_type: SoSBattleCommand = self.battle_command
-        self.timing_type = timing_type
+        self.timing_type: SoSTimingType = timing_type
         self.step = SoSAppraisalStep.SelectingCommand
         self.character = PlayerPartyCharacter.NONE
         self.resource = SoSResource.NONE
-        self.cost = 0
-        self.boost = boost
-        self.enemy_targeting_failures = 0
+        self.cost: int = 0
+        self.combo_cost: int = None
+        self.ultimate: float = False
+        self.boost: int = boost
+        self.enemy_targeting_failures: int = 0
 
     def __repr__(self: Self) -> str:
         name = f"[{self.name}]" if self.battle_command != SoSBattleCommand.Attack else ""
@@ -290,11 +292,10 @@ class SoSAppraisal(Appraisal):
         match self.resource:
             case SoSResource.Mana:
                 return actor.current_mp >= self.cost
-            # TODO(eein): Not yet implemented
-            # case SoSResource.ComboPoints:
-            #     return actor.combo_points >= self.cost
-            # case SoSResource.UltimateGauge:
-            #     return actor.ultimate_gauge >= self.cost
+            case SoSResource.ComboPoints:
+                return actor.combo_points >= self.combo_cost
+            case SoSResource.UltimateGauge:
+                return actor.ultimate_guage >= 1
             case _:
                 return True
 
