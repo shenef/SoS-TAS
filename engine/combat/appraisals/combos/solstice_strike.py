@@ -5,6 +5,7 @@ from typing import Self
 
 from engine.combat.appraisals.combos.base import ComboSkill
 from engine.combat.utility.sos_appraisal import (
+    SoSBattleCommand,
     SoSTargetType,
     SoSTimingType,
 )
@@ -39,3 +40,4 @@ class SolsticeStrike(ComboSkill):
         self.skill_command_index = 0
         self.target_type = SoSTargetType.Enemy
         self.value = value
+        self.battle_command_targeting_type = SoSBattleCommand.Attack
