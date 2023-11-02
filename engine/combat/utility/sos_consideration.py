@@ -47,6 +47,7 @@ class SoSConsideration(Consideration):
     # TODO(eein): Add item appraisals + dont use physical attacks and the appraisal value
     def _default_appraisals(self: Self) -> list[SoSAppraisal]:
         """Generate default appraisals generic to every consideration."""
+        # TODO(orkaboy): Move this code to BasicAttack class instead
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
                 primary_damage_type = CombatDamageType.Sword
@@ -139,10 +140,12 @@ class SoSConsideration(Consideration):
                 # Adjust value according to if we can break locks
                 damage_type: list[CombatDamageType] = copy.copy(new_appraisal.damage_type)
                 lock_multiplier = 1.0
-                for lock in enemy.spell_locks:
-                    if lock in damage_type:
-                        damage_type.remove(lock)
-                        lock_multiplier += 1.0
+                # Sometimes locks remain after action has been taken, so check first.
+                if enemy.turns_to_action > 0:
+                    for lock in enemy.spell_locks:
+                        if lock in damage_type:
+                            damage_type.remove(lock)
+                            lock_multiplier += 1.0
                 # Make a unique action for each appraisal and enemy combination
                 new_appraisal.value *= lock_multiplier
                 new_appraisal.target = enemy.unique_id
