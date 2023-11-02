@@ -81,6 +81,8 @@ class SoSAppraisal(Appraisal):
         self.character = PlayerPartyCharacter.NONE
         self.resource = SoSResource.NONE
         self.cost = 0
+        self.combo_cost = None
+        self.ultimate = False
         self.boost = boost
         self.enemy_targeting_failures = 0
 
@@ -290,11 +292,10 @@ class SoSAppraisal(Appraisal):
         match self.resource:
             case SoSResource.Mana:
                 return actor.current_mp >= self.cost
-            # TODO(eein): Not yet implemented
-            # case SoSResource.ComboPoints:
-            #     return actor.combo_points >= self.cost
-            # case SoSResource.UltimateGauge:
-            #     return actor.ultimate_gauge >= self.cost
+            case SoSResource.ComboPoints:
+                return actor.combo_points >= self.combo_cost
+            case SoSResource.UltimateGauge:
+                return actor.ultimate_guage >= 1
             case _:
                 return True
 
