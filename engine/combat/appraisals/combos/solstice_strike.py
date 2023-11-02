@@ -30,7 +30,12 @@ class SolsticeStrike(ComboSkill):
             casters=[PlayerPartyCharacter.Valere, PlayerPartyCharacter.Zale],
             combo_cost=1,
         )
-        self.damage_type = [CombatDamageType.Blunt, CombatDamageType.Sword]
+        self.damage_type = [
+            CombatDamageType.Blunt,
+            CombatDamageType.Blunt,
+            CombatDamageType.Sword,
+            CombatDamageType.Sword,
+        ]
         if self.boost >= 1:
             match main_caster:
                 case PlayerPartyCharacter.Valere:
