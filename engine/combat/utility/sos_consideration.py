@@ -138,14 +138,19 @@ class SoSConsideration(Consideration):
             for enemy in combat_manager.enemies:
                 new_appraisal: SoSAppraisal = copy.copy(appraisal)
                 # Adjust value according to if we can break locks
-                damage_type: list[CombatDamageType] = copy.copy(new_appraisal.damage_type)
                 lock_multiplier = 1.0
+                num_enemy_locks = len(enemy.spell_locks)
                 # Sometimes locks remain after action has been taken, so check first.
-                if enemy.turns_to_action > 0:
+                if num_enemy_locks > 0 and enemy.turns_to_action > 0:
+                    damage_type: list[CombatDamageType] = copy.copy(new_appraisal.damage_type)
                     for lock in enemy.spell_locks:
                         if lock in damage_type:
                             damage_type.remove(lock)
                             lock_multiplier += 1.0
+                            num_enemy_locks -= 1
+                    # Further reward clearing all locks on an enemy.
+                    if num_enemy_locks == 0:
+                        lock_multiplier += 1.0
                 # Make a unique action for each appraisal and enemy combination
                 new_appraisal.value *= lock_multiplier
                 new_appraisal.target = enemy.unique_id
