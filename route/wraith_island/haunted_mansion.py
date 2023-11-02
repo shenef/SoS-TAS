@@ -193,7 +193,7 @@ class MakeMeASandwich(SeqList):
                         Vec3(-98.458, 1.002, 91.533),
                     ],
                 ),
-                SeqSelectOption("Rust", option=0),
+                SeqSelectOption("Rust", option=0, skip_dialog_check=True),
                 SeqMove(
                     name="Move to Loaf of Dread",
                     coords=[
@@ -202,14 +202,14 @@ class MakeMeASandwich(SeqList):
                         Vec3(-104.024, 1.002, 96.540),
                     ],
                 ),
-                SeqSelectOption("Loaf of Dread", option=1),
+                SeqSelectOption("Loaf of Dread", option=1, skip_dialog_check=True),
                 SeqMove(
                     name="Move to sugar",
                     coords=[
                         Vec3(-105.546, 1.002, 92.470),
                     ],
                 ),
-                SeqSelectOption("Sugar", option=2),
+                SeqSelectOption("Sugar", option=2, skip_dialog_check=True),
                 SeqMove(
                     name="Move to dust",
                     coords=[
@@ -219,14 +219,14 @@ class MakeMeASandwich(SeqList):
                         Vec3(-110.522, 1.002, 90.350),
                     ],
                 ),
-                SeqSelectOption("Dust", option=3),
+                SeqSelectOption("Dust", option=3, skip_dialog_check=True),
                 SeqMove(
                     name="Move to Hepar",
                     coords=[
                         Vec3(-106.271, 1.002, 83.458),
                     ],
                 ),
-                SeqSelectOption("Hepar", option=1),
+                SeqSelectOption("Hepar", option=1, skip_dialog_check=True),
                 SeqMove(
                     name="Move to cook",
                     coords=[
@@ -243,7 +243,7 @@ class MakeMeASandwich(SeqList):
                         Vec3(-56.938, 1.002, 100.669),
                     ],
                 ),
-                SeqSelectOption("Here's your sandwich"),
+                SeqSelectOption("Here's your sandwich", skip_dialog_check=True),
                 SeqSkipUntilIdle("Nom nom nom"),
             ],
         )
