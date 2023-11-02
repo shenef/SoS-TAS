@@ -1,25 +1,35 @@
 """Routing of Haunted Mansion and Dweller of Woe section of Wraith Island."""
 
 import logging
+from enum import Enum, auto
 from typing import Self
 
+from control import sos_ctrl
 from engine.combat import SeqCombatAndMove
-from engine.inventory.items import VALUABLES
+from engine.inventory.items import ARMORS, VALUABLES
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    Graplou,
     HoldDirection,
     InteractMove,
+    SeqBase,
+    SeqBlackboard,
     SeqCheckpoint,
+    SeqCliffMove,
+    SeqClimb,
     SeqGraplou,
+    SeqHoldDirectionDelay,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
     SeqLoot,
+    SeqMashUntilIdle,
     SeqMove,
     SeqRouteBranch,
     SeqSelectOption,
     SeqSkipUntilIdle,
 )
+from memory.combat_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -234,7 +244,7 @@ class MakeMeASandwich(SeqList):
                     ],
                 ),
                 SeqSelectOption("Let him cook"),
-                SeqSkipUntilIdle("Let him cook"),
+                SeqMashUntilIdle("Let him cook"),
                 SeqMove(
                     name="Move to ghost",
                     coords=[
@@ -244,9 +254,48 @@ class MakeMeASandwich(SeqList):
                     ],
                 ),
                 SeqSelectOption("Here's your sandwich", skip_dialog_check=True),
-                SeqSkipUntilIdle("Nom nom nom"),
+                SeqMashUntilIdle("Nom nom nom"),
             ],
         )
+
+
+class SkullPuzzleFlip(SeqBase):
+    """Node to flip skulls as part of the library puzzle."""
+
+    FLIP_DELAY = 0.5
+
+    class FSM(Enum):
+        """Finite State Machine states."""
+
+        FLIP = auto()
+        WAIT = auto()
+
+    def __init__(self: Self, name: str, num_flips: int) -> None:
+        """Initialize a SkullPuzzleFlip object."""
+        super().__init__(name)
+        self.num_flips = num_flips
+        self.step = 0
+        self.state = SkullPuzzleFlip.FSM.FLIP
+        self.timer = 0.0
+
+    def execute(self: Self, delta: float) -> bool:
+        if self.step < self.num_flips:
+            ctrl = sos_ctrl()
+            match self.state:
+                case SkullPuzzleFlip.FSM.FLIP:
+                    self.step += 1
+                    ctrl.confirm()
+                    self.state = SkullPuzzleFlip.FSM.WAIT
+                case SkullPuzzleFlip.FSM.WAIT:
+                    self.timer += delta
+                    if self.timer >= SkullPuzzleFlip.FLIP_DELAY:
+                        self.timer = 0.0
+                        self.state = SkullPuzzleFlip.FSM.FLIP
+            return False
+        return True
+
+    def __repr__(self: Self) -> str:
+        return f"SkullPuzzleFlip({self.name}): Flipping {self.step + 1}/{self.num_flips}"
 
 
 class LeftWing(SeqList):
@@ -282,6 +331,201 @@ class LeftWing(SeqList):
                         Vec3(-62.917, 1.002, 133.265),
                         Vec3(-48.665, 1.002, 152.629),
                         HoldDirection(-63.958, 1.002, 186.600, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Move to right statue",
+                    coords=[
+                        Vec3(-58.038, 1.002, 191.313),
+                        Vec3(-47.484, 1.002, 191.313),
+                        Vec3(-41.560, 1.002, 196.725),
+                        Vec3(-35.329, 1.002, 196.725),
+                        Vec3(-34.979, 1.002, 200.982),
+                    ],
+                ),
+                SeqSelectOption("Take helmet", skip_dialog_check=True),
+                SeqCombatAndMove(
+                    name="Move to left statue",
+                    coords=[
+                        Vec3(-40.493, 1.002, 195.347),
+                        Vec3(-50.049, 1.002, 191.377),
+                        Vec3(-58.297, 1.002, 191.377),
+                        Vec3(-62.562, 1.002, 197.588),
+                        Vec3(-69.444, 1.002, 201.336),
+                        Vec3(-76.879, 1.002, 206.943),
+                    ],
+                ),
+                SeqSelectOption("Place helmet", skip_dialog_check=True),
+                SeqCombatAndMove(
+                    name="Move to crown",
+                    coords=[
+                        Vec3(-82.556, 1.002, 203.363),
+                        Vec3(-84.325, 1.002, 204.542),
+                        InteractMove(-84.500, 10.002, 205.467),
+                        Vec3(-85.724, 10.002, 206.580),
+                        Vec3(-87.352, 10.002, 206.580),
+                        Vec3(-92.431, 10.002, 202.648),
+                    ],
+                ),
+                SeqLoot("Crown"),
+                SeqCombatAndMove(
+                    name="Move to right statue",
+                    coords=[
+                        Vec3(-87.988, 10.002, 206.180),
+                        InteractMove(-77.410, 10.002, 206.500),
+                        Vec3(-71.300, 10.002, 203.848),
+                        Vec3(-69.630, 10.002, 201.648),
+                        Graplou(-58.200, 10.010, 199.600, joy_dir=Vec2(1, 0), hold_timer=0.1),
+                        Vec3(-58.200, 10.010, 201.483),
+                        Vec3(-52.327, 10.002, 206.436),
+                        InteractMove(-41.868, 10.002, 206.434),
+                        Vec3(-39.532, 10.002, 205.821),
+                        Vec3(-32.726, 10.002, 198.983),
+                        InteractMove(-32.892, 1.002, 194.755),
+                        Vec3(-34.245, 1.002, 195.179),
+                        Vec3(-34.298, 1.002, 200.823),
+                    ],
+                ),
+                SeqSelectOption("Place crown", skip_dialog_check=True),
+                # Skull puzzle
+                SeqCombatAndMove(
+                    name="Move to first skull",
+                    coords=[
+                        Vec3(-34.235, 1.002, 195.179),
+                        Vec3(-32.786, 1.002, 195.179),
+                        InteractMove(-32.800, 10.002, 198.926),
+                        Vec3(-41.532, 10.002, 207.543),
+                    ],
+                ),
+                SkullPuzzleFlip("R1", num_flips=2),
+                SeqMove(
+                    name="Move to second skull",
+                    coords=[
+                        Vec3(-43.974, 10.002, 207.543),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SkullPuzzleFlip("R2", num_flips=2),
+                SeqCliffMove(
+                    name="Move to third skull",
+                    coords=[
+                        Vec3(-43.660, 10.002, 206.379),
+                        Vec3(-45.660, 10.002, 206.500),
+                        InteractMove(-50.267, 10.002, 206.500),
+                        Vec3(-50.267, 10.002, 207.540),
+                    ],
+                ),
+                SkullPuzzleFlip("R3", num_flips=2),
+                SeqMove(
+                    name="Move to fourth skull",
+                    coords=[
+                        Vec3(-52.926, 10.002, 207.540),
+                    ],
+                ),
+                SkullPuzzleFlip("R4", num_flips=2),
+                SeqMove(
+                    name="Move to fifth skull",
+                    coords=[
+                        Vec3(-58.807, 10.002, 201.421),
+                        Graplou(-70.200, 10.010, 199.500, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Vec3(-70.200, 10.010, 201.058),
+                        Vec3(-75.132, 10.002, 207.540),
+                    ],
+                ),
+                SkullPuzzleFlip("L1", num_flips=1),
+                SeqMove(
+                    name="Move to sixth skull",
+                    coords=[
+                        Vec3(-77.733, 10.002, 207.540),
+                    ],
+                ),
+                SkullPuzzleFlip("L2", num_flips=2),
+                SeqMove(
+                    name="Move to seventh skull",
+                    coords=[
+                        Vec3(-77.907, 10.002, 206.439),
+                        InteractMove(-84.281, 10.002, 206.500),
+                        Vec3(-84.281, 10.002, 207.540),
+                    ],
+                ),
+                SkullPuzzleFlip("L3", num_flips=3),
+                SeqMove(
+                    name="Move to eight skull",
+                    coords=[
+                        Vec3(-86.498, 10.002, 207.540),
+                    ],
+                ),
+                SkullPuzzleFlip("L4", num_flips=2),
+                SeqMove(
+                    name="Move to combo scroll",
+                    coords=[
+                        Vec3(-84.872, 10.002, 206.547),
+                        InteractMove(-77.369, 10.002, 206.500),
+                        Vec3(-75.352, 10.002, 206.500),
+                        Vec3(-67.838, 10.002, 200.973),
+                        InteractMove(-65.542, 1.002, 200.973),
+                        Vec3(-64.157, 1.002, 201.083),
+                    ],
+                ),
+                SeqLoot("X-Strike"),
+                SeqBlackboard("X-Strike", key="x_strike", value=True),
+                SeqCombatAndMove(
+                    name="Enter right corridor",
+                    coords=[
+                        Vec3(-58.074, 1.002, 201.083),
+                        Vec3(-52.599, 1.002, 206.453),
+                        Vec3(-41.697, 1.002, 205.997),
+                        Vec3(-36.714, 1.002, 204.052),
+                        HoldDirection(-141.922, 22.002, 273.992, joy_dir=Vec2(1, 1)),
+                        Vec3(-140.093, 22.002, 275.737),
+                        Vec3(-130.988, 22.002, 275.737),
+                        Vec3(-114.267, 14.002, 258.847),
+                        Vec3(-111.176, 14.002, 255.727),
+                        Graplou(-110.631, 14.010, 256.036, joy_dir=Vec2(1, 1), hold_timer=0.1),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        Vec3(-109.812, 21.586, 257.147),
+                        Vec3(-110.651, 21.298, 257.986),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(-113.106, 21.002, 256.167),
+                        Graplou(-103.000, 21.010, 247.000, joy_dir=Vec2(1, -1), hold_timer=0.1),
+                        Vec3(-101.594, 21.002, 244.052),
+                        InteractMove(-100.531, 14.002, 243.819),
+                        Vec3(-101.201, 14.002, 246.154),
+                    ],
+                ),
+                SeqLoot(
+                    "Spectral Cape", item=ARMORS.SpectralCape, equip_to=PlayerPartyCharacter.Garl
+                ),
+                SeqMove(
+                    name="Graplou wall",
+                    coords=[
+                        Graplou(-100.276, 14.010, 246.145, joy_dir=Vec2(1, 0), hold_timer=0.1),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        Vec3(-97.357, 23.851, 244.693),
+                        Vec3(-88.365, 24.023, 235.698),
+                    ],
+                ),
+                SeqMove(
+                    name="Enter ball room",
+                    coords=[
+                        Vec3(-88.183, 22.002, 233.834),
+                        HoldDirection(124.000, 1.002, 142.000, joy_dir=Vec2(0, -1)),
+                        Vec3(119.848, 1.002, 142.000),
+                        Vec3(117.898, 1.002, 149.858),
+                        Vec3(109.282, 1.002, 153.187),
+                        HoldDirection(117.542, 1.002, 193.056, joy_dir=Vec2(0, 1)),
                     ],
                 ),
                 # TODO(orkaboy): Continue routing
