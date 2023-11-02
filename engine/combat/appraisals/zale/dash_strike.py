@@ -35,3 +35,4 @@ class DashStrike(SoSAppraisal):
         self.skill_command_index = 1
         self.resource = SoSResource.Mana
         self.cost = 7
+        self.battle_command_targeting_type = SoSBattleCommand.Attack

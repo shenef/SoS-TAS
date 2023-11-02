@@ -86,6 +86,7 @@ class TASMenu(Menu):
         ("necro_lair_boss", "Hub area, after defeating third revenant"),
         ("necro_lair_boss2", "Hub area, after defeating Romaya"),
         ("lucent", "Lucent, after restoring Garl"),
+        ("haunted_mansion", "Haunted Mansion, first save point"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
@@ -220,6 +221,9 @@ class SoSAnyPercentMenu(TASMenu):
         ),
         RouteOption(
             name="fg_enchanted_scarf", description="Flooded Graveyard Enchanted Scarf", default=True
+        ),
+        RouteOption(
+            name="hm_obsidian_ingot", description="Haunted Mansion Obsidian Ingot", default=True
         ),
     ]
 

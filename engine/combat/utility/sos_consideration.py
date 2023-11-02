@@ -4,6 +4,7 @@ from typing import Self
 from control import sos_ctrl
 from engine.blackboard import blackboard
 from engine.combat.appraisals.basic_attack import BasicAttack
+from engine.combat.appraisals.combos import SolsticeStrike
 from engine.combat.appraisals.valere import CrescentArc, Moonerang
 from engine.combat.appraisals.zale import DashStrike, Sunball
 from engine.combat.utility.core.action import Action
@@ -46,6 +47,7 @@ class SoSConsideration(Consideration):
     # TODO(eein): Add item appraisals + dont use physical attacks and the appraisal value
     def _default_appraisals(self: Self) -> list[SoSAppraisal]:
         """Generate default appraisals generic to every consideration."""
+        # TODO(orkaboy): Move this code to BasicAttack class instead
         match self.actor.character:
             case PlayerPartyCharacter.Zale:
                 primary_damage_type = CombatDamageType.Sword
@@ -101,6 +103,12 @@ class SoSConsideration(Consideration):
                     char_appraisals.append(Sunball(value=100, skill_command_index=sunball_index))
                     if has_dash_strike:
                         char_appraisals.append(DashStrike(value=50))
+                    # Combos
+                    solstice_strike = SolsticeStrike(
+                        main_caster=self.actor.character, value=100, boost=boost
+                    )
+                    if solstice_strike.can_use():
+                        char_appraisals.append(solstice_strike)
                 case PlayerPartyCharacter.Valere:
                     # Currently set up to use moonerang if there is only one enemy
                     enemy_count = 0
@@ -110,6 +118,12 @@ class SoSConsideration(Consideration):
                     if enemy_count == 1:
                         char_appraisals.append(Moonerang(value=200))
                     char_appraisals.append(CrescentArc(value=100))
+                    # Combos
+                    solstice_strike = SolsticeStrike(
+                        main_caster=self.actor.character, value=100, boost=boost
+                    )
+                    if solstice_strike.can_use():
+                        char_appraisals.append(solstice_strike)
                 # TODO(orkaboy): Add more skills/characters
             # TODO(orkaboy): For now, multiply utility by boost value
             for appraisal in char_appraisals:
@@ -124,11 +138,18 @@ class SoSConsideration(Consideration):
             for enemy in combat_manager.enemies:
                 new_appraisal: SoSAppraisal = copy.copy(appraisal)
                 # Adjust value according to if we can break locks
-                damage_type: list[CombatDamageType] = copy.copy(new_appraisal.damage_type)
                 lock_multiplier = 1.0
-                for lock in enemy.spell_locks:
-                    if lock in damage_type:
-                        damage_type.remove(lock)
+                num_enemy_locks = len(enemy.spell_locks)
+                # Sometimes locks remain after action has been taken, so check first.
+                if num_enemy_locks > 0 and enemy.turns_to_action > 0:
+                    damage_type: list[CombatDamageType] = copy.copy(new_appraisal.damage_type)
+                    for lock in enemy.spell_locks:
+                        if lock in damage_type:
+                            damage_type.remove(lock)
+                            lock_multiplier += 1.0
+                            num_enemy_locks -= 1
+                    # Further reward clearing all locks on an enemy.
+                    if num_enemy_locks == 0:
                         lock_multiplier += 1.0
                 # Make a unique action for each appraisal and enemy combination
                 new_appraisal.value *= lock_multiplier

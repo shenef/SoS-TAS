@@ -489,6 +489,7 @@ class WizardLabTealArea(SeqList):
                     ],
                 ),
                 SeqSelectOption("Remove Blue Crystal", skip_dialog_check=True),
+                SeqDelay("Wait", timeout_in_s=1.0),
                 SeqSelectOption("Place Red Crystal", skip_dialog_check=True),
                 SeqMove(
                     name="Move to save branch",
