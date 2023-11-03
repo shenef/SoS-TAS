@@ -347,11 +347,15 @@ class SeqMove(SeqBase):
             if target.joy_dir is None:
                 target.joy_dir = Vec2(target.x - player_pos.x, target.z - player_pos.z)
             if self.hold_timer >= target.hold_timer:
-                self.timer += delta
-                if self.timer >= self.tap_rate:
-                    self.confirm_state = not self.confirm_state
-                    ctrl.toggle_graplou(self.confirm_state)
-                    self.timer = 0
+                # Only Graplou while outside the secondary precision radius
+                if Vec3.is_close(player_pos, target, self.precision2):
+                    ctrl.toggle_graplou(False)
+                else:
+                    self.timer += delta
+                    if self.timer >= self.tap_rate:
+                        self.confirm_state = not self.confirm_state
+                        ctrl.toggle_graplou(self.confirm_state)
+                        self.timer = 0
 
     def handle_movement(self: Self, player_pos: Vec3, target: Vec3) -> None:
         ctrl = sos_ctrl()
