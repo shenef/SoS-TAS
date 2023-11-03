@@ -19,6 +19,7 @@ except ImportError:
 from imgui_bundle import imgui
 
 from config import get_route_config, open_route_config, set_route_config
+from engine.blackboard import clear_blackboard
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import LayoutHelper, Menu, Window
 from route.battle_test import BattleTest
@@ -191,6 +192,7 @@ class TASMenu(Menu):
                     self.saveslot if (self.load_game_checkbox and self.run_start_sequence) else 0
                 )
 
+                clear_blackboard()
                 if self.run_start_sequence:
                     self.init_start_sequence(saveslot)
                 self.init_TAS()
