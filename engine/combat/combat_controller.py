@@ -116,7 +116,7 @@ class CombatController:
         if self.controller.execute_consideration():
             return False
 
-        if self.controller.action.appraisal.execute():
+        if self.controller.execute_appraisal():
             return False
 
         return False
