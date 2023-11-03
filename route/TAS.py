@@ -102,6 +102,7 @@ class TASMenu(Menu):
         self.checkpoint = config_data.get("checkpoint", "NONE")
         self.load_game_checkbox = self.saveslot != 0
         self.run_start_sequence = True
+        self.show_seq_tree = False
 
     def init_start_sequence(self: Self, saveslot: int) -> None:
         """Initialize the sequence that navigates the main menu into the game."""
@@ -203,8 +204,25 @@ class TASMenu(Menu):
 
             if not top_level and imgui.button("Back"):
                 ret = True
+
+        _, self.show_seq_tree = imgui.checkbox("Show Seq Tree (slow)", self.show_seq_tree)
+        LayoutHelper.add_tooltip("Shows the Sequencer nodes in a tree view. May slow down TAS!")
+        if self.show_seq_tree:
+            self.render_seq_tree()
+
         self.window.end_window()
         return ret
+
+    def render_seq_tree(self: Self) -> None:
+        """Render the Seqencer nodes as a tree."""
+        imgui.begin("Sequencer Tree", True)
+        if self.sequencer is None:
+            imgui.text("No Sequencer loaded.")
+        else:
+            imgui.begin_child("tree_scroll_area")
+            self.sequencer.root.render_tree(parent_path="", selected=True)
+            imgui.end_child()
+        imgui.end()
 
 
 class SoSAnyPercentMenu(TASMenu):
