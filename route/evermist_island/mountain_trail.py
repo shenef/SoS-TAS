@@ -323,7 +323,7 @@ class MountainTrail(SeqList):
                         Vec3(173.540, 24.002, 136.120),
                     ],
                 ),
-                SeqCombatAndMove(
+                SeqMove(
                     name="Navigate trail",
                     coords=[
                         Vec3(178.474, 24.002, 132.236),
@@ -331,6 +331,11 @@ class MountainTrail(SeqList):
                         Vec3(186.408, 24.002, 127.659),
                         Vec3(188.581, 24.002, 124.294),
                         HoldDirection(105.206, 49.002, 123.163, joy_dir=Vec2(1, -1)),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Navigate trail",
+                    coords=[
                         Vec3(105.206, 49.002, 119.837),
                         Vec3(86.618, 49.002, 116.410),
                         InteractMove(79.059, 45.002, 116.298),
