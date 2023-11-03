@@ -167,7 +167,7 @@ class CombatManager:
                     self.projectile_hit_count = self.read_projectile_hit_count()
                     self.projectile_speed = self.read_projectile_speed()
 
-        except Exception:
+        except Exception as e:  # noqa: F841
             # logger.debug(f"Combat Manager Reloading - {type(e)}")
             self.__init__()
 

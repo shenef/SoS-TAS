@@ -51,10 +51,9 @@ class Moonerang(SoSAppraisal):
                 return
 
         if (
-            # if we jump back after a failure
-            # combat_manager.read_back_to_slot() is True
-            # or if we kill the boss/enemy
+            # if you can select a character again
             combat_manager.selected_character is not PlayerPartyCharacter.NONE
+            # if we kill the boss/enemy
             or combat_manager.encounter_done is True
         ):
             self.step = SoSAppraisalStep.ActionComplete
