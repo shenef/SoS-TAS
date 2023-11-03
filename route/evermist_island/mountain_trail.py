@@ -385,14 +385,22 @@ class MountainTrail(SeqList):
                         Vec3(66.825, 73.002, 137.150),
                         Vec3(68.642, 73.002, 134.562),
                         InteractMove(83.560, 73.002, 134.500),
+                        # Base of cliff
                         Vec3(87.935, 73.002, 138.962),
+                        # A point up the cliff, slightly into it to force move up
+                        InteractMove(87.986, 80.950, 139.600),
                     ],
+                    recovery_path=SeqMove(
+                        name="Return to base of hill",
+                        coords=[
+                            Vec3(88.037, 73.002, 139.546),
+                        ],
+                    ),
                 ),
                 SeqClimb(
                     name="Climb cliff",
                     coords=[
                         # TODO(orkaboy): There's a risk of being caught by the enemy here
-                        InteractMove(87.935, 77.453, 139.530),
                         Vec3(88.451, 83.540, 139.530),
                         Vec3(89.655, 83.986, 139.990),
                         Vec3(88.993, 89.002, 140.653),
