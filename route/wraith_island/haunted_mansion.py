@@ -243,7 +243,7 @@ class MakeMeASandwich(SeqList):
                         Vec3(-102.284, 1.002, 93.717),
                     ],
                 ),
-                SeqSelectOption("Let him cook"),
+                SeqSelectOption("Let him cook", skip_dialog_check=True),
                 SeqMashUntilIdle("Let him cook"),
                 SeqMove(
                     name="Move to ghost",
