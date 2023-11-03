@@ -20,7 +20,7 @@ class InventoryHelper(Menu):
     """GUI window for showing inventory contents."""
 
     def __init__(self: Self, window: Window) -> None:
-        """Initialze an InventoryHelper object."""
+        """Initialize an InventoryHelper object."""
         super().__init__(window, title="Inventory helper")
 
     def execute(self: Self, top_level: bool) -> bool:
@@ -62,7 +62,7 @@ class InventoryHelper(Menu):
                 if header_open and visible:
                     for item_ref in items:
                         imgui.text(
-                            f"[{item_ref.item.order_prio}] {item_ref.quantity}x {item_ref.item}"
+                            f"{item_ref.quantity}x {item_ref.item} [{item_ref.item.order_prio}]"
                         )
 
     def show_unknown(self: Self) -> None:

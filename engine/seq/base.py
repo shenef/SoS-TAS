@@ -159,12 +159,12 @@ class SeqList(SeqBase):
     def __repr__(self: Self) -> str:
         num_children = len(self.children)
         if self.step >= num_children:
-            return f"{self.name}[{num_children}/{num_children}]"
+            return f"{self.name} [{num_children}/{num_children}]"
         cur_child = self.children[self.step]
         if self.shadow:
             return f"{cur_child}"
         cur_step = self.step + 1
-        return f"{self.name}[{cur_step}/{num_children}] =>\n  {cur_child}"
+        return f"{self.name} [{cur_step}/{num_children}] =>\n  {cur_child}"
 
 
 class SeqIf(SeqBase):

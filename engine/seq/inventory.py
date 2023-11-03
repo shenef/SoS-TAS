@@ -247,7 +247,7 @@ class SeqLoot(SeqBase):
 
     def __repr__(self: Self) -> str:
         item = f"{self.amount}x {self.item} " if self.item is not None else ""
-        return f"Grab loot({self.name}): {item}[{self.state.name}]"
+        return f"Grab loot({self.name}): {item} [{self.state.name}]"
 
 
 class ShoppingCommand:

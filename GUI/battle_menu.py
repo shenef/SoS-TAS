@@ -34,11 +34,11 @@ class BattleMenu(Menu):
         imgui.text_wrapped(f"Live Mana Small: {combat_manager.small_live_mana} |")
         imgui.same_line()
         imgui.text_wrapped(f"Big: {combat_manager.big_live_mana}")
-        imgui.text_wrapped(f"Combo Points: {combat_manager.current_combo_points} |")
+        imgui.text_wrapped(f"Combo: {combat_manager.current_combo_points}/3000 |")
         imgui.same_line()
-        imgui.text_wrapped(f"Filled: {combat_manager.current_filled_combo_points} |")
+        imgui.text_wrapped(f"Filled: {combat_manager.current_filled_combo_points}/3 |")
         imgui.same_line()
-        imgui.text_wrapped(f"Ultimate Progress: {combat_manager.ultimate_progress}")
+        imgui.text_wrapped(f"Ultimate Progress: {100 * combat_manager.ultimate_progress:.2f}%")
         imgui.text_wrapped(f"Selected Character: {combat_manager.selected_character.value}")
         att_target = (
             combat_manager.selected_attack_target_guid.replace("\x00", "")
@@ -102,7 +102,6 @@ class BattleMenu(Menu):
                 imgui.same_line()
                 imgui.text_wrapped(f"MP: {player.current_mp}")
                 imgui.text_wrapped(f"Dead: {player.dead}")
-                imgui.text_wrapped(f"Selected: {player.selected}")
                 imgui.text_wrapped(f"Enabled: {player.enabled}")
                 imgui.text_wrapped(f"Mana Charge: {player.mana_charge_count}")
 
