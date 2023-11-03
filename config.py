@@ -49,7 +49,7 @@ def open_route_config(path: str) -> bool:
                 logger.exception()
                 return False
     except Exception:
-        logger.info(f"Didn't find route config file {path}")
+        logger.warning(f"Didn't find route config file {path}")
         return False
 
 
