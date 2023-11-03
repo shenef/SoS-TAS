@@ -284,18 +284,19 @@ class CombatManager:
 
         selected_attack_target_guid = ""
         selected_skill_target_guid = ""
-        first_player_ptr = self.memory.follow_pointer(
-            self.base,
-            [
-                self.current_encounter_base,
-                0x120,
-                0x98,
-                0x40,
-                0x10,
-                0x20,
-                0x0,
-            ],
-        )
+        with contextlib.suppress(Exception):
+            first_player_ptr = self.memory.follow_pointer(
+                self.base,
+                [
+                    self.current_encounter_base,
+                    0x120,
+                    0x98,
+                    0x40,
+                    0x10,
+                    0x20,
+                    0x0,
+                ],
+            )
         with contextlib.suppress(Exception):
             target_unique_id_base = self.memory.follow_pointer(
                 first_player_ptr,
