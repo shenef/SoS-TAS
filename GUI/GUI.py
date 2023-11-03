@@ -81,6 +81,14 @@ class Window:
         )
 
         imgui.style_colors_dark()
+        gui_rounding = 3
+        imgui.get_style().frame_rounding = gui_rounding
+        imgui.get_style().window_rounding = gui_rounding
+        imgui.get_style().popup_rounding = gui_rounding
+        imgui.get_style().child_rounding = gui_rounding
+        imgui.get_style().tab_rounding = gui_rounding
+        imgui.get_style().scrollbar_rounding = gui_rounding
+        imgui.get_style().grab_rounding = gui_rounding
 
         vsync = config.get("vsync", True)
         glfw.swap_interval(1 if vsync else 0)
