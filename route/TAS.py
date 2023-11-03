@@ -272,11 +272,15 @@ class SoSAnyPercentMenu(TASMenu):
         route_config_tab, visible = imgui.collapsing_header("Route config", True, flags=32)
         if route_config_tab and visible:
             # Load/Save route config from file UI
+            if self.route_config_path == "":
+                imgui.begin_disabled()
             if imgui.button("Load config"):
                 self._load_route_config()
             imgui.same_line()
             if imgui.button("Save config"):
                 self._save_route_config()
+            if self.route_config_path == "":
+                imgui.end_disabled()
             _, self.route_config_path = imgui.input_text(
                 "Route config path", self.route_config_path
             )
