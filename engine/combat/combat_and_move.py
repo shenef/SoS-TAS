@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Callable
 from enum import Enum, auto
 from typing import Any, Self
@@ -16,6 +17,7 @@ from engine.seq import (
 )
 from memory import combat_manager_handle, level_up_manager_handle
 
+logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
 level_up_manager = level_up_manager_handle()
 
@@ -129,12 +131,15 @@ class SeqCombatAndMove(SeqMove):
                     ctrl.set_neutral()
                     ctrl.toggle_confirm(False)
                     if self.recovery_path is not None:
+                        logger.info("Finished combat, executing recovery path")
                         self.state = SeqCombatAndMove.FSM.RECOVER
                     else:
+                        logger.info("Finished combat, continuing navigation")
                         self.state = SeqCombatAndMove.FSM.MOVE
             case SeqCombatAndMove.FSM.RECOVER:
                 # After combat, run the recovery node, then continue regular movement
                 if self.recovery_path.execute(delta):
+                    logger.info("Finished recovery path, continuing navigation")
                     self.state = SeqCombatAndMove.FSM.MOVE
 
     def __repr__(self: Self) -> str:
