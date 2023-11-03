@@ -7,6 +7,7 @@ from engine.combat.combat_controller import CombatController
 from engine.mathlib import Vec3
 from engine.seq import (
     CancelMove,
+    Graplou,
     HoldDirection,
     InteractMove,
     MoveToward,
@@ -72,10 +73,18 @@ class SeqCombat(SeqBase):
 class SeqCombatAndMove(SeqMove):
     _TOGGLE_TIME = 0.05
 
+    class FSM(Enum):
+        """Finite State Machine states."""
+
+        MOVE = auto()
+        COMBAT = auto()
+        RECOVER = auto()
+
     def __init__(
         self: Self,
         name: str,
-        coords: list[Vec3 | InteractMove | CancelMove | HoldDirection | MoveToward],
+        coords: list[Vec3 | InteractMove | CancelMove | HoldDirection | MoveToward | Graplou],
+        recovery_path: SeqBase = None,
         precision: float = 0.2,
         precision2: float = 1.0,
         tap_rate: float = 0.1,
@@ -97,22 +106,36 @@ class SeqCombatAndMove(SeqMove):
         )
         self.combat_controller = CombatController()
         self.encounter_done = True
+        self.state = SeqCombatAndMove.FSM.MOVE
+        self.recovery_path = recovery_path
 
     # Override
     def navigate_to_checkpoint(self: Self, delta: float) -> None:
         self.combat_controller.update_state(delta)
-
         encounter_done = self.combat_controller.is_done()
-        if encounter_done:
-            # If there is no active fight, move along the designated path
-            super().navigate_to_checkpoint(delta)
-        elif self.encounter_done:
-            ctrl = sos_ctrl()
-            ctrl.set_neutral()
-            ctrl.toggle_confirm(False)
-        else:
-            self.combat_controller.execute_combat(delta)
-        self.encounter_done = encounter_done
+
+        # If we run into a battle for any reason, switch to the combat state
+        if encounter_done is False:
+            self.state = SeqCombatAndMove.FSM.COMBAT
+
+        match self.state:
+            case SeqCombatAndMove.FSM.MOVE:
+                # If there is no active fight, move along the designated path
+                super().navigate_to_checkpoint(delta)
+            case SeqCombatAndMove.FSM.COMBAT:
+                self.combat_controller.execute_combat(delta)
+                if encounter_done:
+                    ctrl = sos_ctrl()
+                    ctrl.set_neutral()
+                    ctrl.toggle_confirm(False)
+                    if self.recovery_path is not None:
+                        self.state = SeqCombatAndMove.FSM.RECOVER
+                    else:
+                        self.state = SeqCombatAndMove.FSM.MOVE
+            case SeqCombatAndMove.FSM.RECOVER:
+                # After combat, run the recovery node, then continue regular movement
+                if self.recovery_path.execute(delta):
+                    self.state = SeqCombatAndMove.FSM.MOVE
 
     def __repr__(self: Self) -> str:
         if self.combat_controller.is_done():
