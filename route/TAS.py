@@ -87,6 +87,7 @@ class TASMenu(Menu):
         ("necro_lair_boss2", "Hub area, after defeating Romaya"),
         ("lucent", "Lucent, after restoring Garl"),
         ("haunted_mansion", "Haunted Mansion, first save point"),
+        ("haunted_mansion2", "Garden, before Botanical Horror"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
