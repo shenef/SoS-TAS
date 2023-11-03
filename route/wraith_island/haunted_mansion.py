@@ -5,7 +5,7 @@ from enum import Enum, auto
 from typing import Self
 
 from control import sos_ctrl
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.inventory.items import ARMORS, VALUABLES
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
@@ -19,6 +19,7 @@ from engine.seq import (
     SeqClimb,
     SeqGraplou,
     SeqHoldDirectionDelay,
+    SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
@@ -243,7 +244,7 @@ class MakeMeASandwich(SeqList):
                         Vec3(-102.284, 1.002, 93.717),
                     ],
                 ),
-                SeqSelectOption("Let him cook"),
+                SeqSelectOption("Let him cook", skip_dialog_check=True),
                 SeqMashUntilIdle("Let him cook"),
                 SeqMove(
                     name="Move to ghost",
@@ -298,41 +299,14 @@ class SkullPuzzleFlip(SeqBase):
         return f"SkullPuzzleFlip({self.name}): Flipping {self.step + 1}/{self.num_flips}"
 
 
-class LeftWing(SeqList):
-    """Routing of path through left wing of Haunted Mansion."""
+class Library(SeqList):
+    """Routing of path through library of Haunted Mansion."""
 
     def __init__(self: Self) -> None:
-        """Initialize a new LeftWing object."""
+        """Initialize a new Library object."""
         super().__init__(
-            name="Left Wing",
+            name="Library",
             children=[
-                SeqMove(
-                    name="Move to left wing",
-                    coords=[
-                        Vec3(-36.000, 1.002, 45.686),
-                        HoldDirection(-47.971, 1.002, 85.971, joy_dir=Vec2(-1, 1)),
-                    ],
-                ),
-                SeqGraplou(),
-                SeqCombatAndMove(
-                    name="Move to ghost",
-                    coords=[
-                        Vec3(-62.443, 1.002, 92.936),
-                        Vec3(-62.443, 1.002, 97.423),
-                        Vec3(-57.241, 1.002, 100.993),
-                    ],
-                ),
-                MakeMeASandwich(),
-                SeqMove(
-                    name="Move to library",
-                    coords=[
-                        Vec3(-54.052, 1.002, 101.767),
-                        HoldDirection(-62.917, 1.002, 130.364, joy_dir=Vec2(0, 1)),
-                        Vec3(-62.917, 1.002, 133.265),
-                        Vec3(-48.665, 1.002, 152.629),
-                        HoldDirection(-63.958, 1.002, 186.600, joy_dir=Vec2(0, 1)),
-                    ],
-                ),
                 SeqCombatAndMove(
                     name="Move to right statue",
                     coords=[
@@ -368,17 +342,34 @@ class LeftWing(SeqList):
                     ],
                 ),
                 SeqLoot("Crown"),
-                SeqCombatAndMove(
-                    name="Move to right statue",
+                SeqCliffMove(
+                    name="Cross beam(L)",
                     coords=[
-                        Vec3(-87.988, 10.002, 206.180),
-                        InteractMove(-77.410, 10.002, 206.500),
+                        Vec3(-87.551, 10.002, 206.500),
+                        Vec3(-81.742, 10.000, 206.500),
+                        InteractMove(-78.252, 10.002, 206.500),
+                    ],
+                ),
+                SeqMove(
+                    name="Move accross gap",
+                    coords=[
                         Vec3(-71.300, 10.002, 203.848),
                         Vec3(-69.630, 10.002, 201.648),
                         Graplou(-58.200, 10.010, 199.600, joy_dir=Vec2(1, 0), hold_timer=0.1),
-                        Vec3(-58.200, 10.010, 201.483),
-                        Vec3(-52.327, 10.002, 206.436),
-                        InteractMove(-41.868, 10.002, 206.434),
+                    ],
+                ),
+                SeqCliffMove(
+                    name="Cross beam(R)",
+                    coords=[
+                        Vec3(-58.200, 10.010, 201.178),
+                        Vec3(-52.710, 10.002, 206.420),
+                        Vec3(-47.855, 10.000, 206.490),
+                        InteractMove(-44.227, 10.002, 206.490),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Move to right statue",
+                    coords=[
                         Vec3(-39.532, 10.002, 205.821),
                         Vec3(-32.726, 10.002, 198.983),
                         InteractMove(-32.892, 1.002, 194.755),
@@ -409,10 +400,10 @@ class LeftWing(SeqList):
                 SeqCliffMove(
                     name="Move to third skull",
                     coords=[
-                        Vec3(-43.660, 10.002, 206.379),
-                        Vec3(-45.660, 10.002, 206.500),
-                        InteractMove(-50.267, 10.002, 206.500),
-                        Vec3(-50.267, 10.002, 207.540),
+                        Vec3(-44.383, 10.002, 206.500),
+                        Vec3(-46.323, 10.000, 206.500),
+                        InteractMove(-49.539, 10.002, 206.500),
+                        Vec3(-50.108, 10.002, 207.546),
                     ],
                 ),
                 SkullPuzzleFlip("R3", num_flips=2),
@@ -440,12 +431,13 @@ class LeftWing(SeqList):
                     ],
                 ),
                 SkullPuzzleFlip("L2", num_flips=2),
-                SeqMove(
+                SeqCliffMove(
                     name="Move to seventh skull",
                     coords=[
-                        Vec3(-77.907, 10.002, 206.439),
-                        InteractMove(-84.281, 10.002, 206.500),
-                        Vec3(-84.281, 10.002, 207.540),
+                        Vec3(-78.025, 10.002, 206.500),
+                        Vec3(-80.156, 10.000, 206.500),
+                        InteractMove(-83.881, 10.002, 206.487),
+                        Vec3(-84.051, 10.002, 207.543),
                     ],
                 ),
                 SkullPuzzleFlip("L3", num_flips=3),
@@ -456,19 +448,32 @@ class LeftWing(SeqList):
                     ],
                 ),
                 SkullPuzzleFlip("L4", num_flips=2),
-                SeqMove(
+                SeqCliffMove(
                     name="Move to combo scroll",
                     coords=[
-                        Vec3(-84.872, 10.002, 206.547),
-                        InteractMove(-77.369, 10.002, 206.500),
-                        Vec3(-75.352, 10.002, 206.500),
-                        Vec3(-67.838, 10.002, 200.973),
-                        InteractMove(-65.542, 1.002, 200.973),
-                        Vec3(-64.157, 1.002, 201.083),
+                        Vec3(-84.062, 10.002, 206.469),
+                        Vec3(-81.589, 10.000, 206.500),
+                        InteractMove(-78.194, 10.002, 206.500),
+                        Vec3(-75.234, 10.002, 206.500),
+                        Vec3(-70.059, 10.002, 201.563),
+                        InteractMove(-65.542, 1.002, 201.563),
+                        Vec3(-64.710, 1.002, 201.398),
                     ],
                 ),
                 SeqLoot("X-Strike"),
                 SeqBlackboard("X-Strike", key="x_strike", value=True),
+            ],
+        )
+
+
+class SecretTunnel(SeqList):
+    """Routing of path through secret tunnel in Haunted Mansion."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new SecretTunnel object."""
+        super().__init__(
+            name="Secret Tunnel",
+            children=[
                 SeqCombatAndMove(
                     name="Enter right corridor",
                     coords=[
@@ -481,9 +486,10 @@ class LeftWing(SeqList):
                         Vec3(-130.988, 22.002, 275.737),
                         Vec3(-114.267, 14.002, 258.847),
                         Vec3(-111.176, 14.002, 255.727),
-                        Graplou(-110.631, 14.010, 256.036, joy_dir=Vec2(1, 1), hold_timer=0.1),
                     ],
                 ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(1, 1), timeout_s=0.1),
+                SeqGraplou("Grab wall"),
                 SeqClimb(
                     name="Climb wall",
                     coords=[
@@ -492,22 +498,28 @@ class LeftWing(SeqList):
                     ],
                 ),
                 SeqMove(
-                    name="Move to chest",
+                    name="Graplou across gap",
                     coords=[
                         Vec3(-113.106, 21.002, 256.167),
                         Graplou(-103.000, 21.010, 247.000, joy_dir=Vec2(1, -1), hold_timer=0.1),
-                        Vec3(-101.594, 21.002, 244.052),
-                        InteractMove(-100.531, 14.002, 243.819),
-                        Vec3(-101.201, 14.002, 246.154),
+                    ],
+                    precision2=2,
+                ),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(-100.819, 21.002, 244.831),
+                        InteractMove(-100.170, 14.002, 244.182),
+                        Vec3(-102.038, 14.002, 246.043),
                     ],
                 ),
                 SeqLoot(
                     "Spectral Cape", item=ARMORS.SpectralCape, equip_to=PlayerPartyCharacter.Garl
                 ),
                 SeqMove(
-                    name="Graplou wall",
+                    name="Grab wall",
                     coords=[
-                        Graplou(-100.276, 14.010, 246.145, joy_dir=Vec2(1, 0), hold_timer=0.1),
+                        Graplou(-97.875, 14.411, 245.209, joy_dir=Vec2(1, 0), hold_timer=0.1),
                     ],
                 ),
                 SeqClimb(
@@ -528,6 +540,147 @@ class LeftWing(SeqList):
                         HoldDirection(117.542, 1.002, 193.056, joy_dir=Vec2(0, 1)),
                     ],
                 ),
+            ],
+        )
+
+
+class LeftWing(SeqList):
+    """Routing of path through left wing of Haunted Mansion."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new LeftWing object."""
+        super().__init__(
+            name="Left Wing",
+            children=[
+                SeqMove(
+                    name="Move to left wing",
+                    coords=[
+                        Vec3(-36.000, 1.002, 45.686),
+                        HoldDirection(-47.971, 1.002, 85.971, joy_dir=Vec2(-1, 1)),
+                    ],
+                ),
+                SeqGraplou(),
+                SeqCombatAndMove(
+                    name="Move to ghost",
+                    coords=[
+                        Vec3(-62.443, 1.002, 92.936),
+                        Vec3(-62.443, 1.002, 97.423),
+                        Vec3(-57.241, 1.002, 100.993),
+                    ],
+                ),
+                # Kitchen section
+                MakeMeASandwich(),
+                SeqMove(
+                    name="Move to library",
+                    coords=[
+                        Vec3(-54.052, 1.002, 101.767),
+                        HoldDirection(-62.917, 1.002, 130.364, joy_dir=Vec2(0, 1)),
+                        Vec3(-62.917, 1.002, 133.265),
+                        Vec3(-48.665, 1.002, 152.629),
+                        HoldDirection(-63.958, 1.002, 186.600, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                # Library section
+                Library(),
+                # Tunnel section
+                SecretTunnel(),
+                # Ballroom section
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(1, 1), timeout_s=0.1),
+                SeqGraplou("Grab enemy", until_combat=True),
+                SeqCombatAndMove(
+                    name="Fight Waltzers",
+                    coords=[
+                        Vec3(113.645, 1.002, 198.903),
+                    ],
+                ),
+                SeqGraplou("Grab enemy", until_combat=True),
+                SeqCombatAndMove(
+                    name="Fight Waltzers",
+                    coords=[
+                        Vec3(115.422, 1.002, 204.335),
+                    ],
+                ),
+                SeqInteract("Granny ghost"),
+                SeqSkipUntilIdle("Granny ghost"),
+                SeqMove(
+                    name="Move to garden",
+                    coords=[
+                        Vec3(86.584, 1.002, 204.335),
+                        HoldDirection(62.000, 1.002, 216.058, joy_dir=Vec2(-1, 1)),
+                        Vec3(59.488, 1.002, 217.973),
+                        Vec3(48.973, 1.002, 217.973),
+                        HoldDirection(46.387, 1.002, 145.293, joy_dir=Vec2(-1, -1)),
+                    ],
+                ),
+            ],
+        )
+
+
+class Garden(SeqList):
+    """Routing of Garden section of Haunted Mansion."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new Garden object."""
+        super().__init__(
+            name="Garden",
+            children=[
+                # Right Boulbe
+                SeqMove(
+                    name="Move through maze",
+                    coords=[
+                        Vec3(27.402, 1.002, 145.293),
+                        Vec3(25.066, 1.002, 147.565),
+                        Vec3(25.066, 1.002, 155.787),
+                        Vec3(28.655, 1.002, 157.689),
+                        Vec3(28.655, 1.002, 162.767),
+                        Vec3(25.241, 1.002, 164.672),
+                        Vec3(25.241, 1.002, 168.433),
+                        Vec3(32.407, 1.002, 167.053),
+                        Vec3(33.548, 1.002, 164.430),
+                        Vec3(43.588, 1.002, 164.430),
+                        Vec3(43.588, 1.002, 167.048),
+                        Vec3(36.411, 1.002, 168.446),
+                        Vec3(36.362, 1.002, 171.522),
+                        Vec3(41.688, 1.002, 173.302),
+                        Vec3(41.876, 1.002, 176.210),
+                    ],
+                ),
+                SeqGraplou("Attack enemy", until_combat=True),
+                SeqCombatAndMove(
+                    name="Clearing weeds",
+                    coords=[
+                        Vec3(32.385, 1.002, 180.989),
+                        Vec3(25.324, 1.002, 180.989),
+                        Vec3(24.364, 1.002, 172.334),
+                        Vec3(22.493, 1.002, 169.067),
+                        Vec3(19.566, 1.002, 168.188),
+                        Vec3(17.549, 1.002, 168.188),
+                        Vec3(16.551, 1.002, 173.557),
+                        Vec3(11.269, 1.002, 173.541),
+                        Vec3(11.269, 1.002, 174.895),
+                    ],
+                ),
+                SeqGraplou("Attack enemy", until_combat=True),
+                SeqCombatAndMove(
+                    name="Clearing weeds",
+                    coords=[
+                        Vec3(12.085, 1.002, 182.295),
+                    ],
+                ),
+                # Before Botanical Horror
+                SeqCheckpoint("haunted_mansion2"),
+                SeqMove(
+                    name="Move to greenhouse",
+                    coords=[
+                        Vec3(21.485, 1.002, 181.846),
+                        Vec3(24.945, 1.002, 184.639),
+                    ],
+                ),
+                SeqHoldDirectionUntilCombat(
+                    "Enter greenhouse",
+                    joy_dir=Vec2(0, 1),
+                ),
+                SeqCombat("Botanical Horror"),
                 # TODO(orkaboy): Continue routing
             ],
         )
@@ -544,6 +697,7 @@ class HauntedMansion(SeqList):
                 HeadToMansion(),
                 RightWing(),
                 LeftWing(),
+                Garden(),
                 # TODO(orkaboy): Continue routing
             ],
         )

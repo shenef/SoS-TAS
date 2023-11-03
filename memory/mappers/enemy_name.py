@@ -35,6 +35,8 @@ class EnemyName:
         "30bd6b9747d75724496a60116d875f96": "Bone Pile",
         "ebf760c7aea1c1d46b18e9db92c5af76": "Flesh Pile",
         # Wraith Island: Haunted Mansion
+        "8c69440417c1b28438d94128cd86af6d": "SpellBook",
+        "d98c3fb06819d104aa554170cbc05e56": "Waltzers",
         "64246a3a9059257409ea628466ced26e": "Botanical Horror",
         "3bbc6ad42918c444c9947d156e7674aa": "Bottom Flower",
         "621eeda6cacd76740b9b24518c3d211b": "Top Flower",

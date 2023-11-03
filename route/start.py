@@ -4,7 +4,7 @@ import math
 from typing import Self
 
 from control import sos_ctrl
-from engine.blackboard import blackboard, clear_blackboard
+from engine.blackboard import blackboard
 from engine.seq import (
     SeqBase,
     SeqCommentary,
@@ -126,7 +126,6 @@ class SoSStartGame(SeqList):
         super().__init__(
             name="Start game",
             children=[
-                SeqBase(func=clear_blackboard),
                 SeqLog(
                     name="SYSTEM",
                     text="Starting Sea of Stars TAS main menu sequence.",
