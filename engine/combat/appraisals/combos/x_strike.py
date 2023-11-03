@@ -14,8 +14,8 @@ from memory.combat_manager import CombatDamageType, PlayerPartyCharacter
 logger = logging.getLogger(__name__)
 
 
-class SolarRain(ComboSkill):
-    """Solar Rain appraisal."""
+class XStrike(ComboSkill):
+    """X-Strike appraisal."""
 
     def __init__(
         self: Self,
@@ -24,13 +24,15 @@ class SolarRain(ComboSkill):
         boost: int = 0,
     ) -> None:
         super().__init__(
-            name="Solar Rain",
-            timing_type=SoSTimingType.Charge,
+            name="X-Strike",
+            timing_type=SoSTimingType.OneHit,
             boost=boost,
-            casters=[PlayerPartyCharacter.Zale, PlayerPartyCharacter.Garl],
+            casters=[PlayerPartyCharacter.Zale, PlayerPartyCharacter.Serai],
             combo_cost=2,
         )
         self.damage_type = [
+            CombatDamageType.Sword,
+            CombatDamageType.Poison,
             CombatDamageType.Sun,
         ]
         self.skill_command_index = skill_command_index
