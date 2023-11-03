@@ -4,6 +4,7 @@ from typing import Self
 from control import sos_ctrl
 from engine.combat.contexts.reasoner_execution_context import ReasonerExecutionContext
 from engine.combat.utility.core.action import Action
+from engine.combat.utility.sos_appraisal import SoSAppraisalStep
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
@@ -108,6 +109,9 @@ class EncounterController:
         consideration (character). This will rotate the cursor to the next available consideration
         until it finds the one it expects.
         """
+        if self.action.appraisal.step != SoSAppraisalStep.SelectingCommand:
+            return False
+
         if not self._consideration_valid():
             # logger.warning("Consideration is not valid, move cursor")
             consideration: SoSConsideration = self.action.consideration

@@ -11,6 +11,7 @@ from engine.combat.utility.sos_appraisal import (
     SoSTimingType,
 )
 from memory.combat_manager import CombatDamageType, combat_manager_handle
+from memory.mappers.player_party_character import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
@@ -51,8 +52,9 @@ class Moonerang(SoSAppraisal):
 
         if (
             # if we jump back after a failure
-            combat_manager.read_back_to_slot() is True
+            # combat_manager.read_back_to_slot() is True
             # or if we kill the boss/enemy
+            combat_manager.selected_character is not PlayerPartyCharacter.NONE
             or combat_manager.encounter_done is True
         ):
             self.step = SoSAppraisalStep.ActionComplete
