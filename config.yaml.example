@@ -6,6 +6,8 @@ route_config      : ""        # Path to a route options configuration file.
 
 # User Interface
 ui:
+  width           : 480       # Set the GUI width in pixels.
+  height          : 800       # Set the GUI height in pixels.
   vsync           : True      # Caps framerate at monitor refresh rate.
 
 # Logging

@@ -15,12 +15,18 @@ import glfw
 import OpenGL.GL as gl
 from imgui_bundle import imgui
 
+import config
+
 logger = logging.getLogger(__name__)
+
+config_ui = config.open_config().get("ui", {})
 
 
 # Create the window that our GUI/visualization will be in
 def create_glfw_window(
-    window_name: str = "Sea of Stars TAS", width: int = 480, height: int = 800
+    window_name: str = "Sea of Stars TAS",
+    width: int = config_ui.get("width", 480),
+    height: int = config_ui.get("height", 800),
 ) -> Any:  # noqa: ANN401
     """Initialize the glfw window and OpenGL context."""
     if not glfw.init():
