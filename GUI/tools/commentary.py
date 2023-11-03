@@ -59,6 +59,7 @@ class CommentaryLog(Menu):
         imgui.set_window_size(imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
+        imgui.begin_child("scroll_area")
         now = time.time()
         delta = now - self.timestamp
         self.timestamp = now
@@ -78,6 +79,7 @@ class CommentaryLog(Menu):
         ret = False
         if not top_level and imgui.button("Back"):
             ret = True
+        imgui.end_child()
         self.window.end_window()
         return ret
 

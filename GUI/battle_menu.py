@@ -131,6 +131,7 @@ class BattleMenu(Menu):
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
         imgui.set_window_size(self.title, imgui.ImVec2(470, 585), cond=imgui.Cond_.first_use_ever)
 
+        imgui.begin_child("scroll_area")
         imgui.text_wrapped(f"Encounter done: {combat_manager.encounter_done} |")
         imgui.same_line()
         imgui.text_wrapped(f"Combat Controller: {combat_manager.combat_controller.name}")
@@ -145,5 +146,6 @@ class BattleMenu(Menu):
         ret = False
         if not top_level and imgui.button("Back"):
             ret = True
+        imgui.end_child()
         self.window.end_window()
         return ret
