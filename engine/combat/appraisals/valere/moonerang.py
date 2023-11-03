@@ -19,6 +19,7 @@ combat_manager = combat_manager_handle()
 
 class Moonerang(SoSAppraisal):
     HIT_AT_POSITION_VALUE = 0.82
+    MAX_HITS = 100
 
     def __init__(
         self: Self,
@@ -52,7 +53,8 @@ class Moonerang(SoSAppraisal):
 
         if (
             # if you can select a character again
-            combat_manager.selected_character is not PlayerPartyCharacter.NONE
+            combat_manager.read_projectile_hit_count() >= self.MAX_HITS
+            or combat_manager.selected_character is not PlayerPartyCharacter.NONE
             # if we kill the boss/enemy
             or combat_manager.encounter_done is True
         ):
