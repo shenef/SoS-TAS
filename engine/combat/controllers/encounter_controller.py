@@ -108,6 +108,9 @@ class EncounterController:
         If the consideration doesn't believe the situation is valid, execute changing the selected
         consideration (character). This will rotate the cursor to the next available consideration
         until it finds the one it expects.
+
+        If the appraisal step is not the initial step, we should not be executing the consideration
+        to prevent it from moving the cursor when we are in an actions lifecycle.
         """
         if self.action.appraisal.step != SoSAppraisalStep.SelectingCommand:
             return False
