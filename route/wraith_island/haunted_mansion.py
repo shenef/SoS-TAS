@@ -28,6 +28,7 @@ from engine.seq import (
     SeqMove,
     SeqRouteBranch,
     SeqSelectOption,
+    SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
 from memory.combat_manager import PlayerPartyCharacter
@@ -691,7 +692,145 @@ class Garden(SeqList):
                     joy_dir=Vec2(0, 1),
                 ),
                 SeqCombat("Botanical Horror"),
-                # TODO(orkaboy): Continue routing
+                SeqSkipUntilIdle("Weeds wacked"),
+                SeqMove(
+                    name="Leave greenhouse",
+                    coords=[
+                        Vec3(28.593, 1.002, 257.763),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Leave greenhouse", joy_dir=Vec2(0, -1)),
+                SeqSkipUntilIdle("Seraï leaves party"),
+                SeqMove(
+                    name="Move to shortcut",
+                    coords=[
+                        Vec3(25.014, 1.002, 180.197),
+                        Vec3(25.587, 1.002, 164.504),
+                        Vec3(28.519, 1.002, 162.352),
+                        Vec3(28.519, 1.002, 157.425),
+                        Vec3(25.477, 1.002, 155.417),
+                        Vec3(25.446, 1.002, 146.396),
+                        Vec3(45.930, 1.002, 146.396),
+                        HoldDirection(47.000, 1.002, 216.000, joy_dir=Vec2(1, 1)),
+                        Vec3(48.492, 1.002, 217.312),
+                        Vec3(60.130, 1.002, 217.312),
+                        HoldDirection(87.132, 1.002, 203.868, joy_dir=Vec2(1, -1)),
+                        Vec3(117.301, 1.002, 195.240),
+                        HoldDirection(109.000, 1.002, 155.500, joy_dir=Vec2(0, -1)),
+                        Vec3(109.000, 1.002, 153.433),
+                        Vec3(117.858, 1.002, 148.705),
+                        Vec3(120.211, 1.002, 143.474),
+                        Vec3(123.055, 1.002, 136.590),
+                        Vec3(123.750, 1.002, 125.449),
+                    ],
+                ),
+                SeqInteract("Open shortcut"),
+                SeqSkipUntilIdle("Open shortcut"),
+                SeqMove(
+                    name="Move to save point",
+                    coords=[
+                        HoldDirection(123.850, 1.002, 97.126, joy_dir=Vec2(0, -1)),
+                        Vec3(120.410, 1.002, 93.506),
+                        Vec3(116.299, 1.002, 93.506),
+                    ],
+                ),
+            ],
+        )
+
+
+class MissionGarl(SeqList):
+    """Routing of Garl's section of Dweller of Woe."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new MissionGarl object."""
+        super().__init__(
+            name="Mission: Garl",
+            children=[
+                SeqMove(
+                    name="Go to ladder",
+                    coords=[
+                        Vec3(15.939, 1.002, 47.307),
+                        Vec3(17.020, 1.002, 44.888),
+                        Vec3(19.540, 1.002, 44.888),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb to roof",
+                    coords=[
+                        InteractMove(19.542, 5.540, 45.530),
+                        HoldDirection(75.530, 12.002, 93.370, joy_dir=Vec2(0, 1)),
+                    ],
+                ),
+                SeqSkipUntilIdle("Let's do this!"),
+                SeqMove(
+                    name="Move to rubble #1",
+                    coords=[
+                        Vec3(67.363, 12.002, 96.727),
+                    ],
+                ),
+                SeqInteract("Rubble #1"),
+                SeqSkipUntilIdle("Rubble #1"),
+                SeqMove(
+                    name="Move to rubble #2",
+                    coords=[
+                        Vec3(67.150, 12.002, 90.626),
+                        Vec3(67.150, 12.002, 89.443),
+                        Vec3(68.860, 12.002, 88.452),
+                    ],
+                ),
+                SeqInteract("Rubble #2"),
+                SeqSkipUntilIdle("Rubble #2"),
+                SeqMove(
+                    name="Move to rubble #3",
+                    coords=[
+                        Vec3(61.787, 12.002, 91.872),
+                        Vec3(60.124, 12.002, 95.233),
+                    ],
+                ),
+                SeqInteract("Rubble #3"),
+                SeqSkipUntilIdle("Rubble #3"),
+                SeqMove(
+                    name="Move to rubble #4",
+                    coords=[
+                        Vec3(63.202, 12.002, 98.628),
+                    ],
+                ),
+                SeqInteract("Rubble #4"),
+                SeqBlackboard("Cooker Surprise", key="cooker_surprise", value=True),
+                SeqSkipUntilCombat("Garl's Cooker Surprise"),
+            ],
+        )
+
+
+class DwellerOfWoe(SeqList):
+    """Routing of Dweller of Woe section of Haunted Mansion."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new HauntedMansion object."""
+        super().__init__(
+            name="Dweller of Woe",
+            children=[
+                SeqMove(
+                    name="Go to hub area",
+                    coords=[
+                        Vec3(109.991, 1.002, 92.854),
+                        Vec3(104.050, 1.002, 84.236),
+                        HoldDirection(70.434, 1.002, 46.434, joy_dir=Vec2(-1, -1)),
+                        Vec3(70.077, 1.002, 20.401),
+                        HoldDirection(28.000, 1.002, -12.734, joy_dir=Vec2(0, -1)),
+                        Vec3(19.711, 1.002, -22.859),
+                        Vec3(16.601, 1.002, -22.859),
+                        Vec3(14.015, 3.865, -16.015),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Go to Moraine", joy_dir=Vec2(0, 1)),
+                SeqSkipUntilCombat("Brace yourselves!"),
+                SeqCombat("DoW Phase 1"),
+                SeqSkipUntilIdle("This is pointless!"),
+                # Garl goes to the roof and blows a hole in it
+                MissionGarl(),
+                SeqCombat("DoW Phase 2"),
+                SeqSkipUntilIdle("Betrayal! Dweller of Strife descends", hold_cancel=True),
             ],
         )
 
@@ -708,6 +847,7 @@ class HauntedMansion(SeqList):
                 RightWing(),
                 LeftWing(),
                 Garden(),
-                # TODO(orkaboy): Continue routing
+                SeqCheckpoint("haunted_mansion3"),
+                DwellerOfWoe(),
             ],
         )

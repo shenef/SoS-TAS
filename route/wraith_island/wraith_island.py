@@ -4,6 +4,7 @@ import logging
 from typing import Self
 
 from engine.seq import SeqCheckpoint, SeqList, SeqSkipUntilIdle
+from route.wraith_island.brisk_destroyed import BriskDestroyed
 from route.wraith_island.cursed_woods import CursedWoods
 from route.wraith_island.docks import WraithIslandDocks
 from route.wraith_island.haunted_mansion import HauntedMansion
@@ -34,6 +35,6 @@ class WraithIsland(SeqList):
                 SeqSkipUntilIdle("A soul restored"),
                 SeqCheckpoint("lucent"),
                 HauntedMansion(),
-                # TODO(orkaboy): Continue routing
+                BriskDestroyed(),
             ],
         )

@@ -147,6 +147,9 @@ class SeqMashUntilIdle(SeqBase):
         self.state = False
         self.timer = 0.0
 
+    def is_done(self: Self) -> bool:
+        return player_party_manager.movement_state == PlayerMovementState.Idle
+
     # Mash through cutscene while holding the turbo button
     def execute(self: Self, delta: float) -> bool:
         self.timer = self.timer + delta
@@ -159,7 +162,7 @@ class SeqMashUntilIdle(SeqBase):
             ctrl.toggle_confirm(self.state)
 
         # Check if we have control
-        done = player_party_manager.movement_state == PlayerMovementState.Idle
+        done = self.is_done()
         if done:
             ctrl.toggle_turbo(state=False)
             ctrl.toggle_confirm(state=False)
@@ -167,6 +170,14 @@ class SeqMashUntilIdle(SeqBase):
 
     def __repr__(self: Self) -> str:
         return f"Mashing confirm while waiting for control ({self.name})."
+
+
+class SeqMashUntilCombat(SeqSkipUntilIdle):
+    def is_done(self: Self) -> bool:
+        return combat_manager.encounter_done is False
+
+    def __repr__(self: Self) -> str:
+        return f"Holding turbo + mash confirm while waiting for combat ({self.name})."
 
 
 class SeqSelectOption(SeqBase):
