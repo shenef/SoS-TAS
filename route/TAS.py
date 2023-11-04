@@ -89,6 +89,7 @@ class TASMenu(Menu):
         ("lucent", "Lucent, after restoring Garl"),
         ("haunted_mansion", "Haunted Mansion, first save point"),
         ("haunted_mansion2", "Garden, before Botanical Horror"),
+        ("brisk3", "First save after DoW"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
@@ -264,6 +265,7 @@ class SoSAnyPercentMenu(TASMenu):
                 EvermistIsland(),
                 SleeperIsland(),
                 WraithIsland(),
+                # TODO(orkaboy): Continue routing
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
         )

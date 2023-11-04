@@ -42,9 +42,9 @@ class EnemyName:
         "621eeda6cacd76740b9b24518c3d211b": "Top Flower",
         "807fd9a36ea523f4aa7d532ddc565a69": "Dweller of Woe",
         "e1685476dd793e44c9c8909fe0b3622f": "DoW Clone",
-        "bcde1eb0ea076f846a0ee20287d88204": "DoW Phase 2",
-        "ec0b935c78a26044f89a236921671642": "Brugraves?",
-        "1dc70fb2d0f1b374cbecf052b953824b": "Erlina?",
+        "bcde1eb0ea076f846a0ee20287d88204": "True Dweller of Woe",
+        "ec0b935c78a26044f89a236921671642": "Brugraves",
+        "1dc70fb2d0f1b374cbecf052b953824b": "Erlina",
         # Watcher Island: Jungle Path
         "d34eee0d16a720248a3ce2e6ce2b108b": "Skullpion",
         "fb69218273345394baef9abf6fa9a345": "Prapra",
