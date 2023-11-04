@@ -23,6 +23,7 @@ from engine.blackboard import clear_blackboard
 from engine.seq import SeqList, SeqLog, SequencerEngine
 from GUI import LayoutHelper, Menu, Window
 from route.battle_test import BattleTest
+from route.cataclysm import Cataclysm
 
 # Routing
 from route.evermist_island import EvermistIsland
@@ -90,6 +91,7 @@ class TASMenu(Menu):
         ("haunted_mansion", "Haunted Mansion, first save point"),
         ("haunted_mansion2", "Garden, before Botanical Horror"),
         ("brisk3", "First save after DoW"),
+        ("vespertine", "After grabbing Map"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
@@ -283,6 +285,7 @@ class SoSAnyPercentMenu(TASMenu):
                 EvermistIsland(),
                 SleeperIsland(),
                 WraithIsland(),
+                Cataclysm(),
                 # TODO(orkaboy): Continue routing
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
