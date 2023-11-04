@@ -333,7 +333,7 @@ class SeqShop(SeqBase):
             case SeqShop.FSM.SELECT_ITEM:
                 # TODO(orkaboy): Need to know which slot the item we want is in, from memory?
 
-                # TODO(orkaboy): In sell mode, we need to be in the correct cathegory (LB/RB)
+                # TODO(orkaboy): In sell mode, we need to be in the correct category (LB/RB)
 
                 # TODO(orkaboy): For now, select whatever's first in the list (not correct!)
                 logger.debug(f"SeqShop:   Item = {command.item}")
