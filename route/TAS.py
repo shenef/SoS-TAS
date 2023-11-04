@@ -220,7 +220,7 @@ class TASMenu(Menu):
         return ret
 
     def render_seq_tree(self: Self) -> None:
-        """Render the Seqencer nodes as a tree."""
+        """Render the Sequencer nodes as a tree."""
         imgui.begin("Sequencer Tree", True)
         if self.sequencer is None:
             imgui.text("No Sequencer loaded.")
