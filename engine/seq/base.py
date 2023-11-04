@@ -70,15 +70,14 @@ class SeqCheckpoint(SeqBase):
 
     def __init__(self: Self, checkpoint_name: str, return_path: SeqBase = None) -> None:
         super().__init__(
-            name="Checkpoint",
+            name=checkpoint_name,
         )
-        self.checkpoint = checkpoint_name
         self.return_path = return_path
         self.skipped_to = False
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
-        blackboard().log_checkpoint(f"{self.checkpoint} (skipped)")
-        self.skipped_to = checkpoint == self.checkpoint
+        blackboard().log_checkpoint(f"{self.name} (skipped)")
+        self.skipped_to = checkpoint == self.name
         return self.skipped_to
 
     def execute(self: Self, delta: float) -> bool:
@@ -87,7 +86,7 @@ class SeqCheckpoint(SeqBase):
         if self.skipped_to and self.return_path is not None:
             done = self.return_path.execute(delta)
         if done:
-            blackboard().log_checkpoint(self.checkpoint)
+            blackboard().log_checkpoint(self.name)
         return done
 
 
