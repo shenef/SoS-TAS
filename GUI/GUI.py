@@ -80,7 +80,6 @@ class Window:
             filename="assets/fonts/FiraSans-Regular.ttf", size_pixels=16
         )
 
-        imgui.style_colors_dark()
         gui_rounding = 3
         imgui.get_style().frame_rounding = gui_rounding
         imgui.get_style().window_rounding = gui_rounding

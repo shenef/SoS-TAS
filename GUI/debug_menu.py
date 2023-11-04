@@ -80,6 +80,8 @@ class DebugMenu(Menu):
         if self.show_test:
             imgui.show_demo_window()
 
+        imgui.show_style_selector("Default color schemes")
+
         ret = False
         if not top_level and imgui.button("Back"):
             ret = True
