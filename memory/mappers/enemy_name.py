@@ -19,9 +19,15 @@ class EnemyName:
         # Sleeper Island: Moorlands
         "e6ac627711e4ee44da103c47d1cd5736": "Ant Bruiser",
         "2a9a0b40f493b11429febb5d927ef84b": "Srower",
+        # Sleeper Island: Wind Tunnel Mines
+        "fd131c994e11300458464a864480d743": "Drill Bat",
+        "d6d70e14dba609e49888445e42647a8d": "Bushtroo",
         "d0f2cf59f69f42842ac0703193f39c85": "Salamander",
         "810980f005079324fb9fb643243eccee": "Malkomud",
         "fc51f181f5f913f4e99195da947b1425": "Malkomount",
+        # Sleeper Island: Wizard Lab
+        "90c4097a7ecb8d6439bdc8d7a48b8992": "Crystal Tulip",
+        "a3b51cc4bda782c41a9ada029c202824": "Chromatic Apparition",
         # Wraith Island: Cursed Woods
         "f93fa5cbb04648047902c7c612f418ee": "Lonzon",
         "6dd1189ece4445c48a7fb978f16eb797": "Boulbe",
