@@ -329,6 +329,7 @@ class ElderMistTrials(SeqList):
                         Vec3(49.410, 1.002, 26.971),
                         InteractMove(49.432, 1.002, 30.748),
                     ],
+                    recovery_path=SeqSkipUntilIdle("Skip cutscene"),
                 ),
                 SeqCheckpoint("elder_mist"),
                 SeqMove(
