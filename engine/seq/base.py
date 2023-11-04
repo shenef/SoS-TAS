@@ -10,6 +10,8 @@ import logging
 from collections.abc import Callable
 from typing import Any, Self
 
+from imgui_bundle import imgui
+
 from engine.blackboard import blackboard
 
 logger = logging.getLogger(__name__)
@@ -42,6 +44,21 @@ class SeqBase:
 
     def render(self: Self) -> None:
         """Render code for the current node (can apply to the GL canvas or the imgui window)."""
+
+    def render_tree(self: Self, parent_path: str, selected: bool) -> None:
+        """Render imgui tree view."""
+        imgui.push_id(parent_path)
+        if selected:
+            imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.1, 0.9, 0.1, 1.0))
+        imgui.tree_node_ex(
+            f"{self.__class__.__name__}({self.name})",
+            imgui.TreeNodeFlags_.no_tree_push_on_open
+            | imgui.TreeNodeFlags_.leaf
+            | imgui.TreeNodeFlags_.span_full_width,
+        )
+        if selected:
+            imgui.pop_style_color()
+        imgui.pop_id()
 
     # Should be overloaded
     def __repr__(self: Self) -> str:
@@ -122,6 +139,24 @@ class SeqList(SeqBase):
         cur_child = self.children[self.step]
         cur_child.render()
 
+    def render_tree(self: Self, parent_path: str, selected: bool) -> None:
+        """Render imgui tree view."""
+        imgui.push_id(parent_path)
+        if selected:
+            imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.1, 0.9, 0.1, 1.0))
+        tree_node = imgui.tree_node_ex(
+            f"{self.__class__.__name__}({self.name})",
+            imgui.TreeNodeFlags_.span_full_width | imgui.TreeNodeFlags_.default_open,
+        )
+        if selected:
+            imgui.pop_style_color()
+        if tree_node:
+            for idx, child in enumerate(self.children):
+                child_selected = selected and idx == self.step
+                child.render_tree(parent_path + self.name, selected=child_selected)
+            imgui.tree_pop()
+        imgui.pop_id()
+
     def __repr__(self: Self) -> str:
         num_children = len(self.children)
         if self.step >= num_children:
@@ -197,6 +232,27 @@ class SeqIf(SeqBase):
             return f"{self.name}({self.selection}): {branch.__repr__()}"
         return f"{self.name}({self.selection}): Null"
 
+    def render_tree(self: Self, parent_path: str, selected: bool) -> None:
+        """Render imgui tree view."""
+        imgui.push_id(parent_path)
+        if selected:
+            imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.1, 0.9, 0.1, 1.0))
+        tree_node = imgui.tree_node_ex(
+            f"{self.__class__.__name__}({self.name})",
+            imgui.TreeNodeFlags_.span_full_width | imgui.TreeNodeFlags_.default_open,
+        )
+        if selected:
+            imgui.pop_style_color()
+        if tree_node:
+            if self.when_true:
+                branch_selected = selected and self.selection is True
+                self.when_true.render_tree(parent_path + self.name, selected=branch_selected)
+            if self.when_false:
+                branch_selected = selected and self.selection is False
+                self.when_false.render_tree(parent_path + self.name, selected=branch_selected)
+            imgui.tree_pop()
+        imgui.pop_id()
+
 
 class SeqWhile(SeqBase):
     """
@@ -245,6 +301,23 @@ class SeqWhile(SeqBase):
         if self.result is None:
             return self.name
         return f"While({self.name}): {self.child.__repr__()}"
+
+    def render_tree(self: Self, parent_path: str, selected: bool) -> None:
+        """Render imgui tree view."""
+        imgui.push_id(parent_path)
+        if selected:
+            imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.1, 0.9, 0.1, 1.0))
+        tree_node = imgui.tree_node_ex(
+            f"{self.__class__.__name__}({self.name})",
+            imgui.TreeNodeFlags_.span_full_width | imgui.TreeNodeFlags_.default_open,
+        )
+        if selected:
+            imgui.pop_style_color()
+        if tree_node:
+            if self.child:
+                self.child.render_tree(parent_path + self.name, selected=selected)
+            imgui.tree_pop()
+        imgui.pop_id()
 
 
 class SeqBlackboard(SeqBase):

@@ -4,6 +4,8 @@ import logging
 from collections.abc import Callable
 from typing import Self
 
+from imgui_bundle import imgui
+
 from control import sos_ctrl
 from engine.mathlib import Vec2, Vec3
 from engine.seq.base import SeqBase
@@ -124,3 +126,33 @@ class SeqBlockPuzzle(SeqBase):
         target = self.coords[self.step]
         step = self.step + 1
         return f"Block Puzzle - {self.name}[{step}/{num_coords}]: {target}"
+
+    def render_tree(self: Self, parent_path: str, selected: bool) -> None:
+        """Render imgui tree view."""
+        imgui.push_id(parent_path)
+        if selected:
+            imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.1, 0.9, 0.1, 1.0))
+        tree_node = imgui.tree_node_ex(
+            f"{self.__class__.__name__}({self.name})", imgui.TreeNodeFlags_.span_full_width
+        )
+        if selected:
+            imgui.pop_style_color()
+        if tree_node:
+            self.render_coords(selected)
+            imgui.tree_pop()
+        imgui.pop_id()
+
+    def render_coords(self: Self, selected: bool) -> None:
+        """Render imgui tree leaf (coords)."""
+        for idx, coord in enumerate(self.coords):
+            child_selected = selected and idx == self.step
+            if child_selected:
+                imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.1, 0.5, 0.1, 1.0))
+            imgui.tree_node_ex(
+                f"[{idx}] {coord}",
+                imgui.TreeNodeFlags_.no_tree_push_on_open
+                | imgui.TreeNodeFlags_.leaf
+                | imgui.TreeNodeFlags_.span_full_width,
+            )
+            if child_selected:
+                imgui.pop_style_color()
