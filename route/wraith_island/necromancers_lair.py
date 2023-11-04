@@ -670,9 +670,16 @@ class NecromancersLairLeft(SeqList):
                         Vec3(-78.681, 1.002, 360.574),
                         Vec3(-78.545, 4.002, 365.740),
                     ],
+                    # If we're caught by the 4 Gulguls, this should reset us so we can use the lever
+                    recovery_path=SeqMove(
+                        name="Return to foot of stairs",
+                        coords=[
+                            Vec3(-78.681, 1.002, 360.574),
+                        ],
+                    ),
                 ),
                 SeqInteract("Lever"),
-                SeqMove(
+                SeqCombatAndMove(
                     name="Leave room",
                     coords=[
                         Vec3(-78.545, 1.010, 360.274),
