@@ -133,9 +133,13 @@ class SoSConsideration(Consideration):
                     # TODO(orkaboy): Need to increase value on Disorient based on locks/turns
                     # TODO(orkaboy): Balance value
                     if False:
-                        char_appraisals.append(Disorient(value=100, boost=boost))
-                        char_appraisals.append(VenomFlurry(value=100, boost=boost))
-                        char_appraisals.append(PhaseShiv(value=150, boost=boost))
+                        char_appraisals.extend(
+                            (
+                                Disorient(value=100, boost=boost),
+                                VenomFlurry(value=100, boost=boost),
+                                PhaseShiv(value=150, boost=boost),
+                            )
+                        )
                         has_x_strike = blackboard().get_dict(key="x_strike", default=False)
                         if has_x_strike:
                             char_appraisals.append(
