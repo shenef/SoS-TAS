@@ -385,52 +385,59 @@ class Library(SeqList):
                         Vec3(-34.235, 1.002, 195.179),
                         Vec3(-32.786, 1.002, 195.179),
                         InteractMove(-32.800, 10.002, 198.926),
-                        Vec3(-41.532, 10.002, 207.543),
                     ],
                 ),
-                SkullPuzzleFlip("R1", num_flips=2),
                 SeqMove(
-                    name="Move to second skull",
+                    name="Between skulls",
                     coords=[
-                        Vec3(-43.974, 10.002, 207.543),
+                        Vec3(-42.594, 10.002, 207.540),
                     ],
+                    precision=0.1,
                 ),
                 SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SkullPuzzleFlip("R2", num_flips=2),
+                SkullPuzzleFlip("R1&2", num_flips=2),
                 SeqCliffMove(
                     name="Move to third skull",
                     coords=[
                         Vec3(-44.383, 10.002, 206.500),
                         Vec3(-46.323, 10.000, 206.500),
                         InteractMove(-49.539, 10.002, 206.500),
-                        Vec3(-50.108, 10.002, 207.546),
                     ],
                 ),
-                SkullPuzzleFlip("R3", num_flips=2),
                 SeqMove(
-                    name="Move to fourth skull",
+                    name="Between skulls",
                     coords=[
-                        Vec3(-52.926, 10.002, 207.540),
+                        Vec3(-51.510, 10.002, 207.546),
                     ],
+                    precision=0.1,
                 ),
-                SkullPuzzleFlip("R4", num_flips=2),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SkullPuzzleFlip("R3&4", num_flips=2),
                 SeqMove(
                     name="Move to fifth skull",
                     coords=[
                         Vec3(-58.807, 10.002, 201.421),
                         Graplou(-70.200, 10.010, 199.500, joy_dir=Vec2(-1, 0), hold_timer=0.1),
                         Vec3(-70.200, 10.010, 201.058),
-                        Vec3(-75.132, 10.002, 207.540),
                     ],
                 ),
-                SkullPuzzleFlip("L1", num_flips=1),
+                SeqMove(
+                    name="Between skulls",
+                    coords=[
+                        Vec3(-76.999, 10.002, 207.546),
+                        Vec3(-76.358, 10.002, 207.546),
+                    ],
+                    precision=0.1,
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SkullPuzzleFlip("L1&L2", num_flips=1),
                 SeqMove(
                     name="Move to sixth skull",
                     coords=[
                         Vec3(-77.733, 10.002, 207.540),
                     ],
                 ),
-                SkullPuzzleFlip("L2", num_flips=2),
+                SkullPuzzleFlip("L2", num_flips=1),
                 SeqCliffMove(
                     name="Move to seventh skull",
                     coords=[
@@ -440,14 +447,17 @@ class Library(SeqList):
                         Vec3(-84.051, 10.002, 207.543),
                     ],
                 ),
-                SkullPuzzleFlip("L3", num_flips=3),
+                SkullPuzzleFlip("L3", num_flips=1),
                 SeqMove(
                     name="Move to eight skull",
                     coords=[
-                        Vec3(-86.498, 10.002, 207.540),
+                        Vec3(-85.867, 10.002, 207.546),
+                        Vec3(-85.426, 10.002, 207.546),
                     ],
+                    precision=0.1,
                 ),
-                SkullPuzzleFlip("L4", num_flips=2),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SkullPuzzleFlip("L3&L4", num_flips=2),
                 SeqCliffMove(
                     name="Move to combo scroll",
                     coords=[
