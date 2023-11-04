@@ -110,7 +110,7 @@ class WizardLabEnterTower(SeqList):
                     ],
                 ),
                 # Checkpoint: Wizard lab
-                SeqCheckpoint(checkpoint_name="wizard_lab"),
+                SeqCheckpoint("wizard_lab"),
                 SeqMove(
                     name="Enter green portal",
                     coords=[
@@ -228,7 +228,7 @@ class WizardLabPlaceBlueCrystal(SeqList):
                     ],
                 ),
                 # Checkpoint: Wizard lab
-                SeqCheckpoint(checkpoint_name="wizard_lab2"),
+                SeqCheckpoint("wizard_lab2"),
                 SeqMove(
                     name="Enter blue portal",
                     coords=[

@@ -31,7 +31,7 @@ class IntroMooncradle(SeqList):
         super().__init__(
             name="Mooncradle",
             children=[
-                SeqCheckpoint(checkpoint_name="intro_mooncradle"),
+                SeqCheckpoint("intro_mooncradle"),
                 SeqMove(
                     name="Move to cliff",
                     coords=[
