@@ -47,6 +47,7 @@ class TheVespertine(SeqList):
                     coords=[
                         Vec3(-14.091, 24.540, 11.244),
                         Vec3(-15.540, 24.539, 10.530),
+                        Vec3(-15.499, 24.002, 9.460),
                     ],
                 ),
                 SeqMove(
