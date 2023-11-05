@@ -9,6 +9,7 @@ from engine.seq import (
     Graplou,
     HoldDirection,
     InteractMove,
+    SeqBoat,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
@@ -150,6 +151,13 @@ class TheVespertine(SeqList):
                 ),
                 SeqSelectOption("Give map", skip_dialog_check=True),
                 # TODO(orkaboy): Cutscene into boat movement
+                SeqBoat(
+                    "Cutscene into boat",
+                    coords=[
+                        # TODO(orkaboy): Location near start
+                    ],
+                    hold_skip=True,
+                ),
                 # TODO(orkaboy): Continue routing
             ],
         )

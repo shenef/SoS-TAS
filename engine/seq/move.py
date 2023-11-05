@@ -488,6 +488,7 @@ class SeqBoat(SeqMove):
         func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
+        hold_skip: bool = False,
     ) -> None:
         super().__init__(
             name,
@@ -500,6 +501,7 @@ class SeqBoat(SeqMove):
             emergency_skip,
             invert,
         )
+        self.hold_skip = hold_skip
 
     def player_position(self: Self) -> Vec3:
         return boat_manager.position
@@ -523,11 +525,17 @@ class SeqBoat(SeqMove):
 
         ctrl.set_joystick(joy)
         ctrl.toggle_bracelet(state=True)
+        if self.hold_skip:
+            ctrl.toggle_turbo(state=True)
+            ctrl.toggle_confirm(state=True)
 
     def on_done(self: Self) -> None:
         ctrl = sos_ctrl()
         ctrl.set_neutral()
         ctrl.toggle_bracelet(state=False)
+        if self.hold_skip:
+            ctrl.toggle_turbo(state=False)
+            ctrl.toggle_confirm(state=False)
 
 
 class SeqRaft(SeqMove):
