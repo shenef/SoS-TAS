@@ -88,6 +88,27 @@ class Window:
         imgui.get_style().tab_rounding = gui_rounding
         imgui.get_style().scrollbar_rounding = gui_rounding
         imgui.get_style().grab_rounding = gui_rounding
+        imgui.get_style().scrollbar_size = 12
+
+        color_background = imgui.ImVec4(0.08, 0.11, 0.16, 1.00)
+        color_primary = imgui.ImVec4(0.05, 0.25, 0.43, 1.00)
+        color_primary_light = imgui.ImVec4(0.13, 0.75, 1.00, 1.00)
+        color_primary_dark = imgui.ImVec4(0.05, 0.05, 0.08, 1.00)
+        LayoutHelper.set_gui_color("window_bg", color_background)
+        LayoutHelper.set_gui_color("button", color_primary)
+        LayoutHelper.set_gui_color("button_active", color_primary_dark)
+        LayoutHelper.set_gui_color("button_hovered", color_primary_light)
+        LayoutHelper.set_gui_color("header", color_primary)
+        LayoutHelper.set_gui_color("header_hovered", color_primary_light)
+        LayoutHelper.set_gui_color("tab", color_primary_dark)
+        LayoutHelper.set_gui_color("tab_active", color_primary)
+        LayoutHelper.set_gui_color("tab_hovered", color_primary_light)
+        LayoutHelper.set_gui_color("tab_unfocused", color_primary_dark)
+        LayoutHelper.set_gui_color("tab_unfocused_active", color_primary)
+        LayoutHelper.set_gui_color("frame_bg", color_primary_dark)
+        LayoutHelper.set_gui_color("check_mark", color_primary_light)
+        LayoutHelper.set_gui_color("slider_grab", color_primary_light)
+        LayoutHelper.set_gui_color("title_bg_active", color_primary_light)
 
         vsync = config.get("vsync", True)
         glfw.swap_interval(1 if vsync else 0)
@@ -191,3 +212,16 @@ class LayoutHelper:
             imgui.text_unformatted(text)
             imgui.pop_text_wrap_pos()
             imgui.end_tooltip()
+
+    @staticmethod
+    def set_gui_color(ui_element: str, color: imgui.ImVec4) -> None:
+        """
+        Set the color of a GUI element.
+
+        Args:
+        ----
+            ui_element: Check the demo window for valid values
+            color: Tuple of (r, g, b, a) values.
+        """
+        ui_element = getattr(imgui.Col_, ui_element)
+        imgui.get_style().set_color_(ui_element, color)
