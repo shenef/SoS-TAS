@@ -94,6 +94,7 @@ class TASMenu(Menu):
         ("brisk3", "First save after DoW"),
         ("brisk4", "After clearing out minions"),
         ("vespertine", "After grabbing Map"),
+        ("sea_of_nightmare1", "Southwest island"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:

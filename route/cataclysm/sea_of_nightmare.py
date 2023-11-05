@@ -15,6 +15,7 @@ from engine.seq import (
     SeqClimb,
     SeqGraplou,
     SeqHoldDirectionDelay,
+    SeqInteract,
     SeqList,
     SeqLoot,
     SeqMove,
@@ -151,13 +152,61 @@ class TheVespertine(SeqList):
                     ],
                 ),
                 SeqSelectOption("Give map", skip_dialog_check=True),
-                # TODO(orkaboy): Cutscene into boat movement
+                # Cutscene into boat movement
                 SeqBoat(
                     "Cutscene into boat",
                     coords=[
-                        # TODO(orkaboy): Location near start
+                        Vec3(-5.286, 0.500, -18.804),
                     ],
                     hold_skip=True,
+                ),
+            ],
+        )
+
+
+class SouthwestIsland(SeqList):
+    """Routing of Southwest Island in the Sea of Nightmare."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new SouthwestIsland object."""
+        super().__init__(
+            name="Southwest Island",
+            children=[
+                SeqBoat(
+                    name="Move to SW island",
+                    coords=[
+                        Vec3(-18.638, 0.500, -35.009),
+                    ],
+                ),
+                SeqInteract("Disembark"),
+                SeqMove(
+                    name="Overworld movement",
+                    coords=[
+                        Vec3(-22.500, 1.002, -36.500),
+                        Vec3(-22.500, 1.002, -36.000),
+                        Vec3(-24.000, 1.002, -36.000),
+                        Vec3(-24.000, 1.002, -35.000),
+                        Vec3(-25.500, 1.002, -35.000),
+                        Vec3(-25.500, 1.002, -34.500),
+                        Vec3(-26.000, 1.002, -34.500),
+                        Vec3(-26.000, 1.002, -34.000),
+                        Vec3(-26.500, 1.002, -34.000),
+                        Vec3(-26.500, 1.002, -32.000),
+                    ],
+                ),
+                SeqInteract("Enter area"),
+                SeqMove(
+                    name="Move to save branch",
+                    coords=[
+                        Vec3(6.564, 5.121, 19.926),
+                    ],
+                ),
+                SeqCheckpoint("sea_of_nightmare1"),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(6.564, 6.010, 30.135),
+                    ],
                 ),
                 # TODO(orkaboy): Continue routing
             ],
@@ -174,6 +223,7 @@ class SeaOfNightmare(SeqList):
             children=[
                 SeqSkipUntilIdle("Board the Vespertine"),
                 TheVespertine(),
+                SouthwestIsland(),
                 # TODO(orkaboy): Continue routing
             ],
         )
