@@ -691,7 +691,7 @@ class Garden(SeqList):
                     "Enter greenhouse",
                     joy_dir=Vec2(0, 1),
                 ),
-                SeqCombat("Botanical Horror"),
+                SeqCombat("Botanical Horror", level_up_timeout=10.0),
                 SeqSkipUntilIdle("Weeds wacked"),
                 SeqMove(
                     name="Leave greenhouse",

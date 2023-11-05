@@ -27,7 +27,6 @@ new_dialog_manager = new_dialog_manager_handle()
 
 
 class CombatController:
-    LEVEL_UP_TIMEOUT = 5.0
     # TODO(eein): Use objects/mappers for these later on.
     ELDER_MIST_ENEMY_GUID = "962aa552d33fc124782b230fce9185ce"
     ELDER_MIST_TRIAL_LEVEL_GUID = "11810c4630980eb43abf7fecebfd5a6b"
@@ -40,11 +39,12 @@ class CombatController:
         AFTER_COMBAT = auto()
         LEVEL_UP_SCREEN = auto()
 
-    def __init__(self: Self) -> None:
+    def __init__(self: Self, level_up_timeout: float) -> None:
         """Initialize a new CombatController object."""
         self.controller: EncounterController = None
         self.state = CombatController.FSM.IDLE
         self.timer: float = 0.0
+        self.level_up_timeout = level_up_timeout
 
     def is_done(self: Self) -> bool:
         return self.state in {CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT}
@@ -80,7 +80,7 @@ class CombatController:
             # while still allowing for starting movement in SeqMove.
             case CombatController.FSM.AFTER_COMBAT:
                 self.timer += delta
-                if self.timer >= self.LEVEL_UP_TIMEOUT:
+                if self.timer >= self.level_up_timeout:
                     self.state = CombatController.FSM.IDLE
                 if level_up_manager.level_up_screen_active:
                     self.state = CombatController.FSM.LEVEL_UP_SCREEN

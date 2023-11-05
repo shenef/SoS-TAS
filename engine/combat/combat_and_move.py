@@ -29,11 +29,19 @@ class EncounterState(Enum):
     LEVEL_UP = auto()
 
 
+LEVEL_UP_TIMEOUT = 5.0
+
+
 class SeqCombat(SeqBase):
-    def __init__(self: Self, name: str, func: Callable[..., Any] = None) -> None:
+    def __init__(
+        self: Self,
+        name: str,
+        level_up_timeout: float = LEVEL_UP_TIMEOUT,
+        func: Callable[..., Any] = None,
+    ) -> None:
         super().__init__(name, func)
         self.state = EncounterState.BEFORE_COMBAT
-        self.combat_controller = CombatController()
+        self.combat_controller = CombatController(level_up_timeout)
 
     def execute(self: Self, delta: float) -> bool:
         self.combat_controller.update_state(delta)
@@ -94,6 +102,7 @@ class SeqCombatAndMove(SeqMove):
         func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
+        level_up_timeout: float = LEVEL_UP_TIMEOUT,
     ) -> None:
         super().__init__(
             name,
@@ -106,7 +115,7 @@ class SeqCombatAndMove(SeqMove):
             emergency_skip,
             invert,
         )
-        self.combat_controller = CombatController()
+        self.combat_controller = CombatController(level_up_timeout)
         self.encounter_done = True
         self.state = SeqCombatAndMove.FSM.MOVE
         self.recovery_path = recovery_path
