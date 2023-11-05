@@ -14,6 +14,7 @@ from engine.seq import (
     SeqBracelet,
     SeqCheckpoint,
     SeqGraplou,
+    SeqHoldDirectionDelay,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
@@ -68,7 +69,7 @@ class BriskDestroyed(SeqList):
                         HoldDirection(237.875, 1.002, -12.278, joy_dir=Vec2(1, 1)),
                         Vec3(237.875, 1.002, -2.175),
                         Vec3(228.486, 2.655, 7.136),
-                        Graplou(228.296, 3.009, 8.428, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                        Graplou(226.460, 3.804, 15.530, joy_dir=Vec2(0, 1), hold_timer=0.1),
                         HoldDirection(110.503, 7.002, -12.533, joy_dir=Vec2(0, 1)),
                         Vec3(109.633, 7.002, -12.313),
                         Vec3(107.608, 7.002, -14.454),
@@ -116,6 +117,7 @@ class BriskDestroyed(SeqList):
                         Vec3(62.645, 13.002, 37.535),
                     ],
                 ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(1, 1), timeout_s=0.1),
                 SeqGraplou("Attack enemies", until_combat=True),
                 SeqCombatAndMove(
                     name="Destroy Dweller minions",
@@ -125,6 +127,16 @@ class BriskDestroyed(SeqList):
                 ),
                 SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(1, 0)),
                 SeqSkipUntilIdle("We need a boat"),
+                SeqCheckpoint(
+                    "brisk4",
+                    return_path=SeqMove(
+                        name="Return to path",
+                        coords=[
+                            Vec3(50.703, 4.002, -21.002),
+                            Vec3(59.898, 4.002, -21.002),
+                        ],
+                    ),
+                ),
                 SeqMove(
                     name="Go to Captain Klee'shaë",
                     coords=[

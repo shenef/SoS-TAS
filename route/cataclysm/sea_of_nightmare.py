@@ -39,7 +39,7 @@ class TheVespertine(SeqList):
                         Vec3(-9.024, 2.010, 17.861),
                         Vec3(-11.835, 2.002, 14.575),
                         Vec3(-11.835, 2.002, 11.381),
-                        Graplou(-12.777, 2.010, 11.393, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Graplou(-14.158, 2.946, 11.177, joy_dir=Vec2(-1, 0), hold_timer=0.1),
                     ],
                 ),
                 SeqClimb(
@@ -47,12 +47,12 @@ class TheVespertine(SeqList):
                     coords=[
                         Vec3(-14.091, 24.540, 11.244),
                         Vec3(-15.540, 24.539, 10.530),
-                        Vec3(-15.499, 24.002, 9.460),
                     ],
                 ),
                 SeqMove(
                     name="Move to rope",
                     coords=[
+                        Vec3(-15.499, 24.002, 9.460),
                         Vec3(-14.324, 24.002, 9.457),
                         Vec3(-13.324, 24.002, 9.457),
                         Vec3(-12.509, 24.002, 10.318),
@@ -142,7 +142,7 @@ class TheVespertine(SeqList):
                     name="Go to Hortence",
                     coords=[
                         Vec3(-7.611, 2.002, 11.889),
-                        Graplou(-8.560, 2.010, 11.889, joy_dir=Vec2(-1, 0), hold_timer=0.1),
+                        Graplou(-14.158, 2.946, 11.177, joy_dir=Vec2(-1, 0), hold_timer=0.1),
                         Vec3(-13.996, 2.002, 9.464),
                         Vec3(-15.205, 2.002, 7.478),
                         Vec3(-20.883, 6.002, 7.478),
