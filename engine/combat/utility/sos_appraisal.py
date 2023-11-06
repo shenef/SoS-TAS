@@ -308,6 +308,20 @@ class SoSAppraisal(Appraisal):
         logger.debug("Action Complete")
 
     def _fallback_for_missing_action_complete(self: Self) -> None:
+        """
+        Handle falling back when a timing attack sequence isn't finished by the appraisal.
+
+        The default state for coming back to command selection from doing an attack is
+        Battle Command Has Focus: True and Skill Command Has Focus: True.
+
+        So we check:
+        - We are on the command selection step
+        - The current Character is not NONE,
+        - and the current appraisal step is in the timing sequence (to isolate it for this bug)
+
+        If we know we are in the above state, we should be selecting an action, not waiting on
+        timing, so complete the action so a new one can be generated.
+        """
         if (
             self.combat_manager.battle_command_has_focus
             and self.combat_manager.skill_command_has_focus
