@@ -30,11 +30,11 @@ class FirstEncounterController(EncounterController):
                     case PlayerPartyCharacter.Valere:
                         return Action(
                             SoSConsideration(player),
-                            BasicAttack(timing_type=SoSTimingType.NONE),
+                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
                         )
                     case PlayerPartyCharacter.Zale:
                         return Action(
                             SoSConsideration(player),
-                            BasicAttack(timing_type=SoSTimingType.NONE),
+                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
                         )
         return None

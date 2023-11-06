@@ -55,7 +55,7 @@ class SecondEncounterController(EncounterController):
                             )
                         return Action(
                             SoSConsideration(player),
-                            BasicAttack(timing_type=SoSTimingType.NONE),
+                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
                         )
                     case PlayerPartyCharacter.Zale:
                         if self.second_attack is True:
@@ -65,7 +65,7 @@ class SecondEncounterController(EncounterController):
                             )
                         return Action(
                             SoSConsideration(player),
-                            BasicAttack(timing_type=SoSTimingType.NONE),
+                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
                         )
 
         return None

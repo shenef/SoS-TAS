@@ -36,11 +36,13 @@ class LiveManaTutorialController(EncounterController):
                 if combat_manager.small_live_mana >= self.MIN_LIVE_MANA:
                     return Action(
                         SoSConsideration(player),
-                        BasicAttack(timing_type=SoSTimingType.NONE, boost=1),
+                        BasicAttack(
+                            caster=player.character, timing_type=SoSTimingType.NONE, boost=1
+                        ),
                     )
                 return Action(
                     SoSConsideration(player),
-                    BasicAttack(timing_type=SoSTimingType.NONE),
+                    BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
                 )
 
         return None

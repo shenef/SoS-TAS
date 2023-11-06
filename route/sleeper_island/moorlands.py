@@ -336,6 +336,7 @@ class Moorlands(SeqList):
                             SeqChangeTimeOfDay("Right Moon Rune", time_target=20),
                             SeqDelay("Right Moon Rune", timeout_in_s=4),
                             SeqChangeTimeOfDay("Sun Rune", time_target=12),
+                            SeqSkipUntilIdle("Wait for control"),
                             SeqAwaitLostControl("Sun Rune"),
                             SeqMove(
                                 name="Go to scroll",
