@@ -63,6 +63,15 @@ class EncounterController:
         We also check if battle command has focus,
         so it doesn't start executing before we have control.
         """
+        if (
+            self.action is None
+            and not combat_manager.battle_command_has_focus
+            and combat_manager.selected_character is not PlayerPartyCharacter.NONE
+        ):
+            logger.warn("In command menu - cancel action")
+            sos_ctrl().cancel()
+            return True
+
         if self._should_generate_action():
             self.action = self.reasoner.execute()
             logger.info(f"New action: {self.action}")

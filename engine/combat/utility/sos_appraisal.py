@@ -106,6 +106,10 @@ class SoSAppraisal(Appraisal):
 
     def execute(self: Self) -> None:
         """Select the step to perform based on the current step."""
+        # Fallback for missing action complete step after timing sequence
+        # This can happen if the boss overrides the timing attack to do something.
+        self._fallback_for_missing_action_complete()
+
         match self.step:
             case SoSAppraisalStep.SelectingCommand:
                 self.execute_selecting_command()
@@ -302,6 +306,16 @@ class SoSAppraisal(Appraisal):
     def execute_action_complete(self: Self) -> None:
         self.complete = True
         logger.debug("Action Complete")
+
+    def _fallback_for_missing_action_complete(self: Self) -> None:
+        if (
+            self.combat_manager.battle_command_has_focus
+            and self.combat_manager.skill_command_has_focus
+            and self.combat_manager.selected_character is not PlayerPartyCharacter.NONE
+            and self.step is SoSAppraisalStep.TimingSequence
+        ):
+            logger.warn("Missing Action Complete, Fallback")
+            self.step = SoSAppraisalStep.ActionComplete
 
     def _enemy_targeted(self: Self) -> bool:
         # If we are doing some custom controller stuff that doesn't need a target, just return True
