@@ -48,42 +48,21 @@ class SoSConsideration(Consideration):
     # TODO(eein): Add item appraisals + dont use physical attacks and the appraisal value
     def _default_appraisals(self: Self) -> list[SoSAppraisal]:
         """Generate default appraisals generic to every consideration."""
-        # TODO(orkaboy): Move this code to BasicAttack class instead
-        match self.actor.character:
-            case PlayerPartyCharacter.Zale:
-                primary_damage_type = CombatDamageType.Sword
-                secondary_damage_type = CombatDamageType.Sun
-            case PlayerPartyCharacter.Valere:
-                primary_damage_type = CombatDamageType.Blunt
-                secondary_damage_type = CombatDamageType.Moon
-            case PlayerPartyCharacter.Garl:
-                primary_damage_type = CombatDamageType.Blunt
-                secondary_damage_type = CombatDamageType.NONE
-            case PlayerPartyCharacter.Serai:
-                primary_damage_type = CombatDamageType.Sword
-                secondary_damage_type = CombatDamageType.Poison
-            case PlayerPartyCharacter.Reshan:
-                primary_damage_type = CombatDamageType.Poison
-                secondary_damage_type = CombatDamageType.Arcane
-            case PlayerPartyCharacter.Bst:
-                primary_damage_type = CombatDamageType.Blunt
-                secondary_damage_type = CombatDamageType.Arcane
-        # TODO(orkaboy): Should account for gear too; this should probably be a function?
-        basic_attack = BasicAttack(primary_damage_type=primary_damage_type)
-        basic_attack.value = self.actor.physical_attack
-
-        attacks = [basic_attack]
-        for boost in range(1, 4):  # Generate [1,2,3]
-            boosted_attack = BasicAttack(
+        attacks: list[BasicAttack] = []
+        for boost in range(0, 4):  # Generate [0,1,2,3]
+            basic_attack = BasicAttack(
+                caster=self.actor.character,
                 boost=boost,
-                primary_damage_type=primary_damage_type,
-                secondary_damage_type=secondary_damage_type,
             )
+            # TODO(orkaboy): Should account for gear too; this should probably be a function?
             # TODO(orkaboy): Correct damage formula
-            boosted_attack.value = (
-                self.actor.physical_attack + boost * self.actor.magical_attack / 3
-            )
-            attacks.append(boosted_attack)
+            if boost == 0:
+                basic_attack.value = self.actor.physical_attack
+            else:
+                basic_attack.value = (
+                    self.actor.physical_attack + boost * self.actor.magical_attack / 3
+                )
+            attacks.append(basic_attack)
 
         return attacks
 

@@ -172,7 +172,7 @@ class SeqMashUntilIdle(SeqBase):
         return f"Mashing confirm while waiting for control ({self.name})."
 
 
-class SeqMashUntilCombat(SeqSkipUntilIdle):
+class SeqMashUntilCombat(SeqMashUntilIdle):
     def is_done(self: Self) -> bool:
         return combat_manager.encounter_done is False
 

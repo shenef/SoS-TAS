@@ -488,6 +488,7 @@ class SeqBoat(SeqMove):
         func: Callable = None,
         emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
+        hold_skip: bool = False,
     ) -> None:
         super().__init__(
             name,
@@ -500,12 +501,19 @@ class SeqBoat(SeqMove):
             emergency_skip,
             invert,
         )
+        self.hold_skip = hold_skip
 
     def player_position(self: Self) -> Vec3:
-        return boat_manager.position
+        boat_pos = boat_manager.position
+        if boat_pos is None:
+            return Vec3(0.0, 0.0, 0.0)
+        return boat_pos
 
     def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
         ctrl = sos_ctrl()
+        if self.hold_skip:
+            ctrl.toggle_turbo(state=True)
+            ctrl.toggle_confirm(state=True)
         # Get the trajectory between the player pos and the target
         target_vec = target_pos - player_pos
         target_vec_v2 = Vec2(target_vec.x, target_vec.z)
@@ -528,6 +536,9 @@ class SeqBoat(SeqMove):
         ctrl = sos_ctrl()
         ctrl.set_neutral()
         ctrl.toggle_bracelet(state=False)
+        if self.hold_skip:
+            ctrl.toggle_turbo(state=False)
+            ctrl.toggle_confirm(state=False)
 
 
 class SeqRaft(SeqMove):

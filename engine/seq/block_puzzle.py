@@ -22,7 +22,7 @@ player_party_manager = player_party_manager_handle()
 class MistralBracelet:
     """Action: Use Mistral Bracelet in a given direction."""
 
-    def __init__(self: Self, joy_dir: Vec2, timeout_s: float = 0.2) -> None:
+    def __init__(self: Self, joy_dir: Vec2, timeout_s: float = 0.1) -> None:
         self.joy_dir = joy_dir
         self.timeout_s = timeout_s
 

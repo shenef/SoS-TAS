@@ -51,6 +51,9 @@ class EnemyName:
         "bcde1eb0ea076f846a0ee20287d88204": "True Dweller of Woe",
         "ec0b935c78a26044f89a236921671642": "Brugraves",
         "1dc70fb2d0f1b374cbecf052b953824b": "Erlina",
+        # Sea of Nightmare
+        "1b827e3f77cf5e44cbb3c8fbfde8c1df": "Ranged Matey",
+        "6081b4ccf00a36343827bc45999f0df2": "Melee Matey",
         # Watcher Island: Jungle Path
         "d34eee0d16a720248a3ce2e6ce2b108b": "Skullpion",
         "fb69218273345394baef9abf6fa9a345": "Prapra",
@@ -73,7 +76,8 @@ class EnemyName:
         "3e00a15f95b3e1d4cb68e71021579758": "Cukoo Monster",
         "090c2ec246656b643a5d1e5b0bb3db28": "Clock Zombie",
         "ffe45f0323cb8924e8296b7cc86d9d1b": "Strife Minion",
-        "cc767e360aab54d4ca314a206e32ffee": "Brugraves",
+        "22ceeba2aa09ad8499fcade71c0b283d": "Eyeball",
+        "cc767e360aab54d4ca314a206e32ffee": "Brugaves",
         "1894c41627be94d408bd64295ab6dd18": "Erlina",
         "a5d39cc10d1848d478b59c892f636e3b": "Dweller of Strife",
         # The Acolytes
