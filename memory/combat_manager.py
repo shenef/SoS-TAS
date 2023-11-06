@@ -167,8 +167,8 @@ class CombatManager:
                     self.projectile_hit_count = self.read_projectile_hit_count()
                     self.projectile_speed = self.read_projectile_speed()
 
-        except Exception as e:  # noqa: F841
-            # logger.debug(f"Combat Manager Reloading - {type(e)}")
+        except Exception as _e:
+            # logger.debug(f"Combat Manager Reloading - {type(_e)}")
             self.__init__()
 
     def _read_combo_and_ultimates(self: Self) -> None:
@@ -555,13 +555,17 @@ class CombatManager:
     # This makes it a bit frustrating to use in conditional statements, so be wary.
     def _read_encounter_done(self: Self) -> None:
         if self._should_update():
-            current_encounter = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x0]
-            )
-            if current_encounter:
-                done = self.memory.read_bool(current_encounter + 0x162)
-                self.encounter_done = done
+            try:
+                current_encounter = self.memory.follow_pointer(
+                    self.base, [self.current_encounter_base, 0x0]
+                )
+                if current_encounter:
+                    done = self.memory.read_bool(current_encounter + 0x162)
+                    self.encounter_done = done
+                    return
+            except Exception:
                 return
+
         self.encounter_done = True
 
     # Reads the `small mana` on the ground and the `big mana` being charged for Boost

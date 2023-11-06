@@ -106,6 +106,10 @@ class SoSAppraisal(Appraisal):
 
     def execute(self: Self) -> None:
         """Select the step to perform based on the current step."""
+        # Fallback for missing action complete step after timing sequence
+        # This can happen if the boss overrides the timing attack to do something.
+        self._fallback_for_missing_action_complete()
+
         match self.step:
             case SoSAppraisalStep.SelectingCommand:
                 self.execute_selecting_command()
@@ -302,6 +306,30 @@ class SoSAppraisal(Appraisal):
     def execute_action_complete(self: Self) -> None:
         self.complete = True
         logger.debug("Action Complete")
+
+    def _fallback_for_missing_action_complete(self: Self) -> None:
+        """
+        Handle falling back when a timing attack sequence isn't finished by the appraisal.
+
+        The default state for coming back to command selection from doing an attack is
+        Battle Command Has Focus: True and Skill Command Has Focus: True.
+
+        So we check:
+        - We are on the command selection step
+        - The current Character is not NONE,
+        - and the current appraisal step is in the timing sequence (to isolate it for this bug)
+
+        If we know we are in the above state, we should be selecting an action, not waiting on
+        timing, so complete the action so a new one can be generated.
+        """
+        if (
+            self.combat_manager.battle_command_has_focus
+            and self.combat_manager.skill_command_has_focus
+            and self.combat_manager.selected_character is not PlayerPartyCharacter.NONE
+            and self.step is SoSAppraisalStep.TimingSequence
+        ):
+            logger.warn("Missing Action Complete, Fallback")
+            self.step = SoSAppraisalStep.ActionComplete
 
     def _enemy_targeted(self: Self) -> bool:
         # If we are doing some custom controller stuff that doesn't need a target, just return True
