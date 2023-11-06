@@ -99,7 +99,7 @@ class SoSAppraisal(Appraisal):
                     enemy_idx = idx
                     enemy_name = enemy.name
             if not enemy_name:
-                target = f" (target = {enemy_name}[{enemy_idx}])"
+                target = f" (target = {enemy_name} [{enemy_idx}])"
             else:
                 target = f" (target = {self.target})"
         return f"{self.battle_command.name}{name}{target}"
@@ -355,7 +355,7 @@ class SoSAppraisal(Appraisal):
             case SoSResource.ComboPoints:
                 return actor.combo_points >= self.combo_cost
             case SoSResource.UltimateGauge:
-                return actor.ultimate_guage >= 1
+                return actor.ultimate_gauge >= 1
             case _:
                 return True
 

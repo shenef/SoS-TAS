@@ -92,7 +92,7 @@ class CombatPlayer:
         self.character = PlayerPartyCharacter.NONE
         self.enabled: bool = None
         self.combo_points: int = 0
-        self.ultimate_guage: float = 0.0
+        self.ultimate_gauge: float = 0.0
         self.mana_charge_count: int = None
 
 
@@ -712,7 +712,7 @@ class CombatManager:
                     player.definition_id = definition_id
                     player.character = character
                     player.selected = selected
-                    player.ultimate_guage = self.ultimate_progress
+                    player.ultimate_gauge = self.ultimate_progress
                     player.combo_points = self.current_filled_combo_points
                     player.dead = dead
                     player.enabled = enabled

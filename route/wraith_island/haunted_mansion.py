@@ -352,7 +352,7 @@ class Library(SeqList):
                     ],
                 ),
                 SeqMove(
-                    name="Move accross gap",
+                    name="Move across gap",
                     coords=[
                         Vec3(-71.300, 10.002, 203.848),
                         Vec3(-69.630, 10.002, 201.648),
@@ -692,7 +692,7 @@ class Garden(SeqList):
                     joy_dir=Vec2(0, 1),
                 ),
                 SeqCombat("Botanical Horror", level_up_timeout=10.0),
-                SeqSkipUntilIdle("Weeds wacked"),
+                SeqSkipUntilIdle("Weeds whacked"),
                 SeqMove(
                     name="Leave greenhouse",
                     coords=[

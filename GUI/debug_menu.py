@@ -27,8 +27,8 @@ level_up_manager = level_up_manager_handle()
 class DebugMenu(Menu):
     def __init__(self: Self, window: Window) -> None:
         super().__init__(window, title="Debug menu")
-        self.show_metrics = False
-        self.show_test = False
+        self.show_metrics_window = False
+        self.show_demo_window = False
 
     def execute(self: Self, top_level: bool) -> bool:
         self.window.start_window(self.title)
@@ -72,13 +72,17 @@ class DebugMenu(Menu):
         LayoutHelper.add_spacer()
         imgui.text_wrapped(f"Dialog Open: {new_dialog_manager.dialog_open}")
         LayoutHelper.add_spacer()
-        _, self.show_metrics = imgui.checkbox("Show performance metrics", self.show_metrics)
-        if self.show_metrics:
+        _, self.show_metrics_window = imgui.checkbox(
+            "Show performance metrics", self.show_metrics_window
+        )
+        if self.show_metrics_window:
             imgui.show_metrics_window()
 
-        _, self.show_test = imgui.checkbox("Show UI test window", self.show_test)
-        if self.show_test:
+        _, self.show_demo_window = imgui.checkbox("Show UI demo window", self.show_demo_window)
+        if self.show_demo_window:
             imgui.show_demo_window()
+
+        imgui.show_style_selector("Default color schemes")
 
         ret = False
         if not top_level and imgui.button("Back"):

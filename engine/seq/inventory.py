@@ -247,7 +247,7 @@ class SeqLoot(SeqBase):
 
     def __repr__(self: Self) -> str:
         item = f"{self.amount}x {self.item} " if self.item is not None else ""
-        return f"Grab loot({self.name}): {item}[{self.state.name}]"
+        return f"Grab loot({self.name}): {item} [{self.state.name}]"
 
 
 class ShoppingCommand:
@@ -333,7 +333,7 @@ class SeqShop(SeqBase):
             case SeqShop.FSM.SELECT_ITEM:
                 # TODO(orkaboy): Need to know which slot the item we want is in, from memory?
 
-                # TODO(orkaboy): In sell mode, we need to be in the correct cathegory (LB/RB)
+                # TODO(orkaboy): In sell mode, we need to be in the correct category (LB/RB)
 
                 # TODO(orkaboy): For now, select whatever's first in the list (not correct!)
                 logger.debug(f"SeqShop:   Item = {command.item}")

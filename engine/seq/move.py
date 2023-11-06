@@ -420,10 +420,10 @@ class SeqMove(SeqBase):
     def __repr__(self: Self) -> str:
         num_coords = len(self.coords)
         if self.step >= num_coords:
-            return f"{self.name}[{num_coords}/{num_coords}]"
+            return f"{self.name} [{num_coords}/{num_coords}]"
         target = self.coords[self.step]
         step = self.step + 1
-        return f"{self.name}[{step}/{num_coords}]: {target}"
+        return f"{self.name} [{step}/{num_coords}]: {target}"
 
     def render_tree(self: Self, parent_path: str, selected: bool) -> None:
         """Render imgui tree view."""
