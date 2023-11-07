@@ -33,3 +33,5 @@ class VenomFlurry(SoSAppraisal):
         self.skill_command_index = 0
         self.resource = SoSResource.Mana
         self.cost = 6
+
+    # TODO(orkaboy): Implement timing

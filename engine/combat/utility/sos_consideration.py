@@ -5,7 +5,7 @@ from control import sos_ctrl
 from engine.blackboard import blackboard
 from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.appraisals.combos import SolarRain, SolsticeStrike, XStrike
-from engine.combat.appraisals.serai import Disorient, PhaseShiv, VenomFlurry
+from engine.combat.appraisals.serai import Disorient, PhaseShiv
 from engine.combat.appraisals.valere import CrescentArc, Moonerang
 from engine.combat.appraisals.zale import DashStrike, Sunball
 from engine.combat.utility.core.action import Action
@@ -92,20 +92,16 @@ class SoSConsideration(Consideration):
                     if solstice_strike.can_use():
                         char_appraisals.append(solstice_strike)
                     # Logic for handling learning Combos
-                    # TODO(orkaboy): Activate these. Need to be able to swap characters
-                    if False:
-                        has_solar_rain = blackboard().get_dict(key="solar_rain", default=False)
-                        has_x_strike = blackboard().get_dict(key="x_strike", default=False)
-                        x_strike_index = 2
-                        if has_solar_rain:
-                            x_strike_index += 1
-                            char_appraisals.append(
-                                SolarRain(value=200, boost=boost, skill_command_index=2)
-                            )
-                        if has_x_strike:
-                            char_appraisals.append(
-                                XStrike(value=150, boost=boost, skill_command_index=x_strike_index)
-                            )
+                    solar_rain = SolarRain(value=200, boost=boost, skill_command_index=2)
+                    has_solar_rain = blackboard().get_dict(key="solar_rain", default=False)
+                    has_x_strike = blackboard().get_dict(key="x_strike", default=False)
+                    x_strike_index = 2
+                    if has_solar_rain and solar_rain.can_use():
+                        x_strike_index += 1
+                        char_appraisals.append(solar_rain)
+                    x_strike = XStrike(value=150, boost=boost, skill_command_index=x_strike_index)
+                    if has_x_strike and x_strike.can_use():
+                        char_appraisals.append(x_strike)
                 case PlayerPartyCharacter.Valere:
                     # Currently set up to use moonerang if there is only one enemy
                     enemy_count = 0
@@ -122,29 +118,27 @@ class SoSConsideration(Consideration):
                     if solstice_strike.can_use():
                         char_appraisals.append(solstice_strike)
                 case PlayerPartyCharacter.Garl:
+                    # TODO(orkaboy): Add skills
                     # Logic for handling learning Solar Rain
+                    solar_rain = SolarRain(value=200, boost=boost, skill_command_index=0)
                     has_solar_rain = blackboard().get_dict(key="solar_rain", default=False)
-                    if has_solar_rain:
-                        char_appraisals.append(
-                            SolarRain(value=200, boost=boost, skill_command_index=0)
-                        )
+                    if has_solar_rain and solar_rain.can_use():
+                        char_appraisals.append(solar_rain)
                 case PlayerPartyCharacter.Serai:
-                    # TODO(orkaboy): Activate these. Need to be able to swap characters
                     # TODO(orkaboy): Need to increase value on Disorient based on locks/turns
                     # TODO(orkaboy): Balance value
-                    if False:
-                        char_appraisals.extend(
-                            (
-                                Disorient(value=100, boost=boost),
-                                VenomFlurry(value=100, boost=boost),
-                                PhaseShiv(value=150, boost=boost),
-                            )
+                    char_appraisals.extend(
+                        (
+                            Disorient(value=100, boost=boost),
+                            # TODO(orkaboy): Need to implement correct timing/memory access
+                            # VenomFlurry(value=100, boost=boost),
+                            PhaseShiv(value=150, boost=boost),
                         )
-                        has_x_strike = blackboard().get_dict(key="x_strike", default=False)
-                        if has_x_strike:
-                            char_appraisals.append(
-                                XStrike(value=150, boost=boost, skill_command_index=0)
-                            )
+                    )
+                    has_x_strike = blackboard().get_dict(key="x_strike", default=False)
+                    x_strike = XStrike(value=150, boost=boost, skill_command_index=0)
+                    if has_x_strike and x_strike.can_use():
+                        char_appraisals.append(x_strike)
                 # TODO(orkaboy): Add more skills/characters
             # TODO(orkaboy): For now, multiply utility by boost value
             for appraisal in char_appraisals:
