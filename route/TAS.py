@@ -97,6 +97,8 @@ class TASMenu(Menu):
         ("sea_of_nightmare", "Southwest island"),
         ("sea_of_nightmare2", "Southeast island"),
         ("sea_of_nightmare3", "North island"),
+        ("sea_of_nightmare_boss", "Maelstrom Point"),
+        ("brisk5", "After getting the Vespertine"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:

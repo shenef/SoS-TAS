@@ -3,7 +3,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     Graplou,
@@ -13,15 +13,19 @@ from engine.seq import (
     SeqBlockPuzzle,
     SeqBoat,
     SeqCheckpoint,
+    SeqCliffClimb,
     SeqCliffMove,
     SeqClimb,
     SeqGraplou,
     SeqHoldDirectionDelay,
+    SeqHoldDirectionUntilCombat,
+    SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
     SeqLoot,
     SeqMove,
     SeqSelectOption,
+    SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
 
@@ -601,7 +605,222 @@ class NorthIsland(SeqList):
                     ],
                 ),
                 SeqCheckpoint("sea_of_nightmare3"),
-                # TODO(orkaboy): Continue routing
+                SeqMove(
+                    name="Move to fight",
+                    coords=[
+                        Vec3(25.105, 1.002, 4.105),
+                        InteractMove(29.050, 2.002, 4.324),
+                        InteractMove(37.776, 1.002, 12.952),
+                        InteractMove(47.331, 1.002, 12.952),
+                        Vec3(47.452, 8.002, 23.540),
+                        InteractMove(47.452, 9.002, 24.525),
+                        Vec3(41.460, 9.002, 24.525),
+                        InteractMove(38.519, 9.002, 24.525),
+                        Vec3(36.236, 9.002, 24.525),
+                        Vec3(28.088, 9.002, 15.881),
+                        Vec3(26.449, 9.002, 11.753),
+                        Vec3(24.570, 9.002, 9.685),
+                        Vec3(13.731, 9.002, 9.685),
+                    ],
+                ),
+                SeqHoldDirectionUntilCombat("Ambush!", joy_dir=Vec2(-1, 0)),
+                SeqCombatAndMove(
+                    name="Navigate area",
+                    coords=[
+                        Vec3(9.229, 9.002, 8.188),
+                        InteractMove(0.519, 9.002, 8.188),
+                        Vec3(0.540, 9.002, 7.449),
+                        Vec3(-1.048, 9.002, 6.470),
+                        Vec3(-2.566, 9.002, 7.440),
+                        Vec3(-5.645, 9.001, 7.460),
+                        Vec3(-9.776, 6.448, 7.495),
+                        Graplou(-4.007, 6.077, 19.342, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                        HoldDirection(-3.170, 14.002, 19.830, joy_dir=Vec2(0, 1)),
+                        Vec3(3.568, 14.002, 20.853),
+                        Vec3(6.275, 14.002, 13.445),
+                        InteractMove(17.072, 14.002, 13.500),
+                        Vec3(19.636, 14.002, 13.478),
+                        Vec3(24.906, 14.002, 18.446),
+                        Vec3(24.906, 19.010, 24.803),
+                        Vec3(23.332, 19.002, 24.803),
+                        Vec3(17.620, 19.002, 18.564),
+                        Vec3(21.730, 19.068, 14.360),
+                        Graplou(34.932, 19.076, 1.268, joy_dir=Vec2(1, -1), hold_timer=0.1),
+                    ],
+                ),
+                SeqGraplou("Crush crystal"),
+                SeqMove(
+                    name="Move to crystal",
+                    coords=[
+                        Graplou(22.300, 19.076, 13.700, joy_dir=Vec2(-1, 1), hold_timer=0.1),
+                        Vec3(17.521, 19.009, 18.668),
+                        Vec3(14.662, 19.002, 18.146),
+                        Vec3(7.524, 19.002, 16.601),
+                        Vec3(6.549, 19.002, 15.516),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(-1, -1), timeout_s=0.1),
+                SeqGraplou("Crush crystal"),
+                SeqMove(
+                    name="Climb to crystal",
+                    coords=[
+                        Vec3(7.948, 19.002, 16.875),
+                        Vec3(8.049, 19.002, 22.562),
+                        Vec3(7.120, 19.002, 23.556),
+                        Vec3(5.921, 19.002, 23.547),
+                        Vec3(4.457, 19.002, 25.232),
+                        Graplou(4.993, 19.755, 31.342, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                        Vec3(5.655, 24.002, 32.005),
+                        Vec3(8.514, 24.002, 32.005),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, -1), timeout_s=0.1),
+                SeqGraplou("Crush crystal"),
+                SeqMove(
+                    name="Move into position",
+                    coords=[
+                        Vec3(9.625, 24.002, 31.265),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(1, -1), timeout_s=0.1),
+                SeqGraplou("Crush crystal"),
+                SeqMove(
+                    name="Leave area",
+                    coords=[
+                        Vec3(17.774, 19.002, 18.135),
+                        Vec3(21.873, 19.070, 14.090),
+                        Vec3(21.577, 19.068, 11.454),
+                        InteractMove(20.277, 9.002, 10.540),
+                        Vec3(15.677, 9.002, 2.769),
+                        InteractMove(15.677, 1.002, 0.968),
+                        Vec3(13.992, 1.002, -9.176),
+                        HoldDirection(5.000, 1.002, 34.998, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to boat",
+                    coords=[
+                        Vec3(5.000, 1.002, 30.000),
+                        Vec3(4.500, 1.002, 30.000),
+                        Vec3(4.500, 1.002, 26.500),
+                    ],
+                ),
+                SeqInteract("Board boat"),
+                SeqBoat(
+                    name="Cross sea",
+                    coords=[
+                        Vec3(14.390, 0.500, 3.068),
+                        Vec3(12.943, 0.500, -8.578),
+                        Vec3(7.830, 0.500, -9.588),
+                    ],
+                ),
+                SeqInteract("Disembark"),
+            ],
+        )
+
+
+class MaelstromPoint(SeqList):
+    """Routing of Maelstrom Point in the Sea of Nightmare."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new MaelstromPoint object."""
+        super().__init__(
+            name="Maelstrom Point",
+            children=[
+                SeqMove(
+                    name="Move to area",
+                    coords=[
+                        Vec3(6.500, 1.002, -5.500),
+                        Vec3(7.000, 1.002, -5.500),
+                        Vec3(7.000, 1.002, -2.500),
+                    ],
+                ),
+                SeqInteract("Enter area"),
+                SeqMove(
+                    name="Navigate area #1",
+                    coords=[
+                        Vec3(28.601, 8.002, 0.876),
+                        Vec3(33.076, 8.002, 2.511),
+                        InteractMove(39.415, 8.002, 2.511),
+                        Vec3(42.818, 8.002, 2.511),
+                        Vec3(45.667, 8.002, 5.601),
+                        Vec3(45.711, 8.002, 9.378),
+                        Vec3(42.300, 8.002, 12.807),
+                        InteractMove(37.119, 8.002, 12.807),
+                        InteractMove(35.533, 10.002, 12.807),
+                        InteractMove(32.293, 12.002, 13.673),
+                        InteractMove(28.344, 15.002, 14.175),
+                        Vec3(25.642, 15.002, 11.457),
+                        Vec3(24.942, 15.002, 11.457),
+                    ],
+                ),
+                SeqCliffClimb(
+                    name="Move along ledge",
+                    coords=[
+                        InteractMove(24.942, 12.000, 11.000),
+                        Vec3(21.514, 12.000, 11.000),
+                        InteractMove(21.089, 15.002, 11.540),
+                    ],
+                ),
+                SeqMove(
+                    name="Navigate area #2",
+                    coords=[
+                        Vec3(18.071, 15.002, 11.540),
+                        Vec3(16.592, 15.002, 10.513),
+                        Vec3(14.217, 15.002, 10.521),
+                        Vec3(13.312, 15.002, 11.543),
+                        InteractMove(13.356, 16.002, 13.403),
+                        Vec3(11.667, 16.002, 14.546),
+                        Vec3(8.623, 16.002, 14.460),
+                    ],
+                ),
+                SeqCliffMove(
+                    name="Move along ledge",
+                    coords=[
+                        HoldDirection(6.983, 16.000, 15.000, joy_dir=Vec2(-1, 0.5)),
+                        Vec3(5.865, 16.000, 15.000),
+                        Vec3(2.743, 16.002, 17.610),
+                    ],
+                ),
+                SeqMove(
+                    name="Graplou to ropes",
+                    coords=[
+                        Vec3(0.621, 16.002, 19.543),
+                        Graplou(0.298, 18.386, 26.038, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        Vec3(0.298, 22.496, 26.038),
+                        Vec3(2.467, 23.540, 23.869),
+                        Vec3(4.046, 23.540, 23.540),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to save branch",
+                    coords=[
+                        HoldDirection(4.046, 21.002, 21.079, joy_dir=Vec2(0, -1)),
+                        Vec3(9.057, 21.002, 16.468),
+                        Vec3(16.516, 21.002, 16.447),
+                    ],
+                ),
+                SeqCheckpoint("sea_of_nightmare_boss"),
+                SeqMove(
+                    name="Move to boss",
+                    coords=[
+                        Vec3(19.528, 21.002, 18.531),
+                        Vec3(23.370, 21.002, 18.531),
+                        Graplou(23.696, 22.182, 22.032, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                        HoldDirection(23.034, 28.002, 22.694, joy_dir=Vec2(0, 1)),
+                        Vec3(15.239, 28.002, 26.549),
+                        Vec3(6.620, 28.002, 31.899),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(-1, 1)),
+                SeqSkipUntilCombat("Stormcaller"),
+                SeqCombat("Stormcaller"),
+                SeqSkipUntilIdle("Acquiring the Vespertine"),
             ],
         )
 
@@ -619,6 +838,6 @@ class SeaOfNightmare(SeqList):
                 SouthwestIsland(),
                 SoutheastIsland(),
                 NorthIsland(),
-                # TODO(orkaboy): Continue routing
+                MaelstromPoint(),
             ],
         )
