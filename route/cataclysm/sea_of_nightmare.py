@@ -467,13 +467,140 @@ class SoutheastIsland(SeqList):
                     ],
                 ),
                 SeqCheckpoint("sea_of_nightmare2"),
-                SeqMove(
-                    name="",
+                SeqCombatAndMove(
+                    name="Move to right lever",
                     coords=[
                         Vec3(24.490, 1.002, 12.922),
-                        # TODO(orkaboy): Continue routing
+                        Vec3(23.489, 1.002, 27.331),
+                        Vec3(22.033, 1.002, 29.763),
+                        Vec3(14.835, 1.002, 33.541),
+                        InteractMove(14.835, 2.002, 36.792),
+                        Vec3(14.603, 2.002, 47.540),
+                        InteractMove(14.603, 5.002, 50.467),
+                        Vec3(16.540, 5.002, 50.467),
+                        InteractMove(18.334, 6.002, 50.467),
+                        Vec3(25.019, 6.002, 43.750),
+                        InteractMove(29.864, 6.002, 43.750),
+                        Vec3(32.187, 6.002, 43.750),
                     ],
                 ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Move to crystal",
+                    coords=[
+                        InteractMove(25.451, 6.002, 43.750),
+                        Vec3(23.915, 6.002, 40.891),
+                        Vec3(22.743, 6.002, 37.292),
+                        Vec3(19.236, 6.002, 33.150),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, -1), timeout_s=0.1),
+                SeqGraplou("Crush crystal"),
+                SeqCombatAndMove(
+                    name="Move to crystal",
+                    coords=[
+                        Vec3(21.520, 6.002, 34.711),
+                        InteractMove(27.101, 6.002, 28.941),
+                        Vec3(29.056, 6.002, 26.814),
+                        Vec3(29.092, 6.002, 16.640),
+                        Vec3(27.483, 6.002, 16.640),
+                    ],
+                ),
+                SeqGraplou("Crush crystal"),
+                SeqCombatAndMove(
+                    name="Move to left lever",
+                    coords=[
+                        InteractMove(24.542, 1.002, 16.640),
+                        Vec3(23.670, 1.002, 28.006),
+                        Vec3(16.955, 1.002, 33.546),
+                        InteractMove(16.955, 2.002, 36.024),
+                        Vec3(13.612, 2.002, 47.546),
+                        InteractMove(13.612, 5.002, 50.467),
+                        Vec3(12.460, 5.002, 50.467),
+                        InteractMove(10.407, 6.002, 50.467),
+                        Vec3(5.994, 6.002, 48.817),
+                        Vec3(2.460, 6.002, 50.601),
+                        InteractMove(-0.714, 6.002, 50.601),
+                        Vec3(-3.087, 6.002, 48.225),
+                        Vec3(-2.927, 6.002, 40.888),
+                        InteractMove(0.467, 10.002, 40.888),
+                        Vec3(2.152, 10.002, 41.036),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Move to crystal",
+                    coords=[
+                        InteractMove(4.458, 6.002, 41.036),
+                        Vec3(7.116, 6.002, 36.519),
+                        Vec3(9.939, 6.002, 33.038),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, -1), timeout_s=0.1),
+                SeqGraplou("Crush crystal"),
+                SeqCombatAndMove(
+                    name="Move to crystal",
+                    coords=[
+                        Vec3(7.064, 6.002, 34.782),
+                        Graplou(-2.102, 6.002, 26.575, joy_dir=Vec2(-1, -1), hold_timer=0.1),
+                        Vec3(0.946, 6.002, 16.887),
+                        Vec3(2.288, 6.002, 16.887),
+                    ],
+                ),
+                SeqGraplou("Crush crystal"),
+                SeqMove(
+                    name="Leave area",
+                    coords=[
+                        Vec3(14.589, 1.002, 2.655),
+                        HoldDirection(37.500, 1.002, -31.502, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Leave island",
+                    coords=[
+                        Vec3(37.500, 1.002, -33.000),
+                        Vec3(33.000, 1.002, -33.000),
+                        Vec3(33.000, 1.002, -31.500),
+                        Vec3(30.500, 1.002, -31.500),
+                    ],
+                ),
+                SeqInteract("Board boat"),
+                SeqBoat(
+                    name="Cross sea",
+                    coords=[
+                        Vec3(14.433, 0.500, 6.790),
+                        Vec3(5.053, 0.500, 25.050),
+                    ],
+                ),
+                SeqInteract("Disembark"),
+            ],
+        )
+
+
+class NorthIsland(SeqList):
+    """Routing of North Island in the Sea of Nightmare."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new NorthIsland object."""
+        super().__init__(
+            name="North Island",
+            children=[
+                SeqMove(
+                    name="Go to area",
+                    coords=[
+                        Vec3(4.500, 1.002, 30.000),
+                        Vec3(5.000, 1.002, 30.000),
+                        Vec3(5.000, 1.002, 35.500),
+                    ],
+                ),
+                SeqInteract("Enter area"),
+                SeqMove(
+                    name="Move to save branch",
+                    coords=[
+                        Vec3(18.961, 1.002, 0.420),
+                    ],
+                ),
+                SeqCheckpoint("sea_of_nightmare3"),
                 # TODO(orkaboy): Continue routing
             ],
         )
@@ -491,6 +618,7 @@ class SeaOfNightmare(SeqList):
                 TheVespertine(),
                 SouthwestIsland(),
                 SoutheastIsland(),
+                NorthIsland(),
                 # TODO(orkaboy): Continue routing
             ],
         )
