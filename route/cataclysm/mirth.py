@@ -52,7 +52,6 @@ class BriskRestored(SeqList):
                         Vec3(228.808, 0.500, 192.250),
                     ],
                 ),
-                # TODO(orkaboy): Doesn't hit the docks correctly
                 SeqInteract("Disembark"),
             ],
         )
