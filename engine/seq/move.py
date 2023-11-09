@@ -509,11 +509,15 @@ class SeqBoat(SeqMove):
             return Vec3(0.0, 0.0, 0.0)
         return boat_pos
 
-    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
+    def execute(self: Self, delta: float) -> bool:
         ctrl = sos_ctrl()
         if self.hold_skip:
             ctrl.toggle_turbo(state=True)
             ctrl.toggle_confirm(state=True)
+        return super().execute(delta)
+
+    def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
+        ctrl = sos_ctrl()
         # Get the trajectory between the player pos and the target
         target_vec = target_pos - player_pos
         target_vec_v2 = Vec2(target_vec.x, target_vec.z)
