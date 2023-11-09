@@ -88,10 +88,17 @@ class SeqTextCrawl(SeqBase):
 class SeqCommentary(SeqBase):
     """Prints text entries to a side window that looks like a chat."""
 
-    def __init__(self: Self, author: CommentaryAuthor, text: str, lifetime: float = 60.0) -> None:
+    def __init__(
+        self: Self, author: CommentaryAuthor, text: str, delay: float = 0.0, lifetime: float = 60.0
+    ) -> None:
         """Initialize a SeqCommentary node."""
         super().__init__()
-        self.entry = CommentaryEntry(author, text, lifetime)
+        self.entry = CommentaryEntry(
+            author=author,
+            text=text,
+            delay=delay,
+            lifetime=lifetime,
+        )
 
     def execute(self: Self, delta: float) -> bool:
         log = get_commentary_log()

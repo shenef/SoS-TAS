@@ -36,11 +36,14 @@ class AUTHORS:
 class CommentaryEntry:
     """Internal representation of a comment in the commentary log."""
 
-    def __init__(self: Self, author: CommentaryAuthor, text: str, lifetime: float) -> None:
+    def __init__(
+        self: Self, author: CommentaryAuthor, text: str, lifetime: float, delay: float
+    ) -> None:
         """Initialize a CommentaryEntry object."""
         self.author = author
         self.text = text
         self.timer = 0.0
+        self.delay = delay
         self.lifetime = lifetime
 
 
@@ -68,9 +71,10 @@ class CommentaryLog(Menu):
 
         for entry in log:
             entry.timer += delta
-            imgui.text_colored(entry.author.color, entry.author.name)
-            imgui.same_line()
-            imgui.text_wrapped(entry.text)
+            if entry.timer >= entry.delay:
+                imgui.text_colored(entry.author.color, entry.author.name)
+                imgui.same_line()
+                imgui.text_wrapped(entry.text)
 
         imgui.set_scroll_y(imgui.get_scroll_max_y())
 
