@@ -5,7 +5,7 @@ from typing import Self
 
 from engine.seq import SeqCheckpoint, SeqList
 from route.cataclysm.brisk_destroyed import BriskDestroyed
-from route.cataclysm.brisk_restored import BriskRestored
+from route.cataclysm.mirth import BriskRestored, Mirth
 from route.cataclysm.sea_of_nightmare import SeaOfNightmare
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,7 @@ class Cataclysm(SeqList):
                 SeaOfNightmare(),
                 SeqCheckpoint("brisk5"),
                 BriskRestored(),
+                Mirth(),
                 # TODO(orkaboy): Continue routing
             ],
         )
