@@ -54,6 +54,7 @@ class EnemyName:
         # Sea of Nightmare
         "1b827e3f77cf5e44cbb3c8fbfde8c1df": "Ranged Matey",
         "6081b4ccf00a36343827bc45999f0df2": "Melee Matey",
+        "b4e6c3b0168970144a55f4d41fe344c4": "Stormcaller",
         # Watcher Island: Jungle Path
         "d34eee0d16a720248a3ce2e6ce2b108b": "Skullpion",
         "fb69218273345394baef9abf6fa9a345": "Prapra",
