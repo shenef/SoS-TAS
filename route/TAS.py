@@ -30,6 +30,7 @@ from route.evermist_island import EvermistIsland
 from route.shop_test import ShopTest
 from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
+from route.watcher_island import WatcherIsland
 from route.wraith_island import WraithIsland
 
 logger = logging.getLogger("SYSTEM")
@@ -99,6 +100,7 @@ class TASMenu(Menu):
         ("sea_of_nightmare3", "North island"),
         ("sea_of_nightmare_boss", "Maelstrom Point"),
         ("brisk5", "After getting the Vespertine"),
+        ("jungle_path", "First arrival at Watcher Island"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
@@ -293,6 +295,7 @@ class SoSAnyPercentMenu(TASMenu):
                 SleeperIsland(),
                 WraithIsland(),
                 Cataclysm(),
+                WatcherIsland(),
                 # TODO(orkaboy): Continue routing
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],

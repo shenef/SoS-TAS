@@ -24,6 +24,5 @@ class Cataclysm(SeqList):
                 SeqCheckpoint("brisk5"),
                 BriskRestored(),
                 Mirth(),
-                # TODO(orkaboy): Continue routing
             ],
         )

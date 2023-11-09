@@ -40,6 +40,7 @@ class TheVespertine(SeqList):
         super().__init__(
             name="The Vespertine",
             children=[
+                # TODO(orkaboy): There are some good healing items here; get them?
                 SeqMove(
                     name="Move to rope ladder",
                     coords=[
