@@ -169,7 +169,8 @@ class SoSConsideration(Consideration):
                 # Make a unique action for each appraisal and enemy combination
                 new_appraisal.value *= lock_multiplier
                 new_appraisal.target = enemy.unique_id
-                actions.append(copy.copy(Action(self, new_appraisal)))
+                new_appraisal.adjust_value(enemy)
+                actions.append(Action(self, new_appraisal))
         return actions
 
     def execute(self: Self) -> None:

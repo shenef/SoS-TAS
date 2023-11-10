@@ -8,7 +8,7 @@ from engine.combat.utility.sos_appraisal import (
     SoSTargetType,
     SoSTimingType,
 )
-from memory.combat_manager import CombatDamageType
+from memory.combat_manager import CombatDamageType, CombatEnemyTarget
 
 logger = logging.getLogger(__name__)
 
@@ -33,3 +33,8 @@ class Disorient(SoSAppraisal):
         self.skill_command_index = 1
         self.resource = SoSResource.Mana
         self.cost = 7
+
+    def adjust_value(self: Self, enemy: CombatEnemyTarget) -> None:
+        """Heavily reduce utility value if enemy has already taken action."""
+        if enemy.turns_to_action == 0:
+            self.value *= 0.1

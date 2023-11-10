@@ -5,7 +5,12 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.utility.core import Appraisal
-from memory.combat_manager import CombatDamageType, CombatPlayer, combat_manager_handle
+from memory.combat_manager import (
+    CombatDamageType,
+    CombatEnemyTarget,
+    CombatPlayer,
+    combat_manager_handle,
+)
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
@@ -364,3 +369,7 @@ class SoSAppraisal(Appraisal):
             if player.character == self.character:
                 return player.timed_attack_ready
         return False
+
+    def adjust_value(self: Self, enemy: CombatEnemyTarget) -> None:
+        """Can be overridden to adjust value against specific enemy."""
+        return
