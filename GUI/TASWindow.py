@@ -42,12 +42,12 @@ class TASWindow(Window):
                 time_of_day_manager_handle().update()
                 level_up_manager_handle().update()
                 combat_manager_handle().update()
-                shop_manager_handle().update()
                 new_dialog_manager_handle().update()
                 # These don't need to be updated all the time
                 if self.timer >= TASWindow.INVENTORY_UPDATE_TIME:
                     self.timer = 0.0
                     inventory_manager_handle().update()
                     currency_manager_handle().update()
+                    shop_manager_handle().update()
                 if "WorldMap" in scene_name:
                     boat_manager_handle().update()
