@@ -104,6 +104,7 @@ class TASMenu(Menu):
         ("jungle_path2", "Campfire halfway through Jungle Path"),
         ("sacred_grove", "Entrance of Sacred Grove"),
         ("docarri_village", "First arrival at Docarri Village"),
+        ("antsudlo", "Just inside entrance of tower"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
