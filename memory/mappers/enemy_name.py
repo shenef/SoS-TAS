@@ -60,7 +60,9 @@ class EnemyName:
         "fb69218273345394baef9abf6fa9a345": "Prapra",
         "50229dee567088647809e9b737b397b7": "Croube",
         # Watcher Island: Tower of Antsudlo
+        "2ac7d969f7f6fb74a9c8322db76bf9b6": "Sharksenal",
         "6fd00c7bd71304e41aacabb2c6f401c7": "Shrimp Knight",
+        "667e9f6f8bb894f4dafcbc412dfdc293": "Zale",
         "6df65b41a30cde44a967d340ec7666d3": "Valere",
         "aaf855be11272ed4da5687c47da27579": "Seraï",
         # Watcher Island: Torment Peak

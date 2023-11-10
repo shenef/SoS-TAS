@@ -7,11 +7,11 @@ from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     HoldDirection,
+    InteractMove,
     SeqCheckpoint,
     SeqHoldDirectionDelay,
     SeqInteract,
     SeqList,
-    SeqLoot,
     SeqMove,
     SeqSelectOption,
 )
@@ -105,11 +105,11 @@ class Seafloor(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Turn", joy_dir=Vec2(-1, -1), timeout_s=0.1),
-                SeqLoot("Sapphire Ore"),
+                SeqInteract("Sapphire Ore"),
                 SeqMove(
                     name="Move to bell",
                     coords=[
-                        Vec3(26.439, 1.303, 166.361),
+                        InteractMove(26.439, 1.303, 166.361),
                         Vec3(25.033, 1.303, 170.297),
                     ],
                 ),
@@ -148,10 +148,10 @@ class FirstFloor(SeqList):
             name="First Floor",
             children=[
                 SeqMove(
-                    name="",
+                    name="Enter next room",
                     coords=[
-                        Vec3(261.462, 1.002, 20.499),
-                        # TODO(orkaboy): Continue routing
+                        Vec3(261.556, 1.002, 20.238),
+                        HoldDirection(264.500, 1.002, 80.000, joy_dir=Vec2(0, 1)),
                     ],
                 ),
                 # TODO(orkaboy): Continue routing

@@ -198,6 +198,7 @@ class SeqLoot(SeqBase):
     def __init__(
         self: Self,
         name: str,
+        skip_timeout: float = None,
         item: Item = None,
         amount: int = 1,
         equip_node: SeqEquip = None,
@@ -208,6 +209,8 @@ class SeqLoot(SeqBase):
         self.item = item
         self.amount = amount
         self.state = SeqLoot.FSM.GRAB
+        self.skip_timeout = skip_timeout
+        self.timer = 0.0
         # Optionally, initialize a new SeqEquip node
         self.equip_node: SeqEquip = None
         if equip_node is not None:
@@ -233,7 +236,15 @@ class SeqLoot(SeqBase):
             case SeqLoot.FSM.CLEAR_TEXT:
                 ctrl.toggle_turbo(state=True)
                 ctrl.toggle_confirm(state=True)
-                if player_party_manager.movement_state == PlayerMovementState.Idle:
+
+                done = player_party_manager.movement_state == PlayerMovementState.Idle
+                if self.skip_timeout is not None:
+                    self.timer += delta
+                    if self.timer >= self.skip_timeout:
+                        done = True
+                        logger.info(f"SeqLoot timed out after {self.skip_timeout}s")
+
+                if done:
                     item = f"{self.amount}x {self.item} " if self.item is not None else ""
                     logger.info(f"Grab loot({self.name}): {item}")
                     ctrl.toggle_turbo(state=False)
