@@ -139,7 +139,6 @@ class RightWing(SeqList):
                         HoldDirection(168.167, 1.002, 86.056, joy_dir=Vec2(1, 1)),
                     ],
                 ),
-                # TODO(orkaboy): Better juking
                 SeqCombatAndMove(
                     name="Move to torch",
                     coords=[
