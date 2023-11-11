@@ -1,6 +1,8 @@
 from typing import Self
 
 from memory.core import mem_handle
+from memory.inventory_manager import ItemReference
+from memory.mappers.items import ItemMapper
 
 
 # ShopManager is the internal naming for the class that handles shops in the game.
@@ -16,7 +18,8 @@ class ShopManager:
         """Initialize a new ShopManager object."""
         self.memory = mem_handle()
         self.base = None
-        self.shop_items: list[str] = []
+        self.items: list[str] = []
+        self.items_mapped: list[ItemReference] = []
 
     def update(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -31,16 +34,23 @@ class ShopManager:
 
                 else:
                     self._get_shop_items()
+                    self.items_mapped = [
+                        ItemReference(
+                            guid=guid,
+                            item=ItemMapper.items.get(guid),
+                        )
+                        for guid in self.items
+                    ]
             except Exception as _e:
                 # logger.debug(f"ShopManager Reloading {type(_e)}")
                 self.__init__()
 
     def _get_shop_items(self: Self) -> None:
-        shop_items = []
+        shop_guids = []
         try:
             items_to_sell = self.memory.follow_pointer(self.base, [0x20, 0x30, 0x10, 0x0])
         except Exception:
-            self.shop_items = []
+            self.items = []
             return
         if items_to_sell:
             # Item objects are as follows:
@@ -53,9 +63,9 @@ class ShopManager:
             for _item in range(count):
                 item_ptr = self.memory.follow_pointer(items_to_sell, [address, 0x0])
                 guid = self.memory.read_guid(item_ptr + 0x14)
-                shop_items.append(guid.replace("\x00", ""))
+                shop_guids.append(guid.replace("\x00", ""))
                 address += self.ITEM_OBJECT_OFFSET
-        self.shop_items = shop_items
+        self.items = shop_guids
 
 
 _shop_manager_mem = ShopManager()

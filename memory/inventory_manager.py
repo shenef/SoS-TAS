@@ -9,21 +9,32 @@ logger = logging.getLogger(__name__)
 
 
 class ItemReference:
-    """Item, guid and quantity (one entry in the memory inventory list)."""
+    """Item, guid (mapping from)."""
 
-    def __init__(self: Self, guid: str, quantity: int, item: Item = None) -> None:
+    def __init__(self: Self, guid: str, item: Item = None) -> None:
         """Initialize a new ItemReference object."""
         self.guid = guid
-        self.quantity = quantity
         self.item = item
 
     def __repr__(self: Self) -> str:
-        return f"ItemRef[{self.guid} ({self.item}), {self.quantity}]"
+        return f"ItemRef[{self.guid} ({self.item})]"
 
     def __lt__(self: Self, other: Self) -> bool:
         if self.item is None or other.item is None:
             return False
         return self.item.order_prio < other.item.order_prio
+
+
+class ItemReferenceQuantity(ItemReference):
+    """Item, guid and quantity (one entry in the memory inventory list)."""
+
+    def __init__(self: Self, guid: str, quantity: int, item: Item = None) -> None:
+        """Initialize a new ItemReferenceQuantity object."""
+        super().__init__(guid=guid, item=item)
+        self.quantity = quantity
+
+    def __repr__(self: Self) -> str:
+        return f"ItemRef[{self.guid} ({self.item}), {self.quantity}]"
 
 
 class InventoryManager:
@@ -36,13 +47,13 @@ class InventoryManager:
         """Initialize a new InventoryManager object."""
         self.memory = mem_handle()
         self.base = None
-        self.items: list[ItemReference] = []
+        self.items: list[ItemReferenceQuantity] = []
         # Dictionary of Items and amounts carried
-        self.items_mapped: list[ItemReference] = []
+        self.items_mapped: list[ItemReferenceQuantity] = []
 
-    def get_items_by_type(self: Self, item_type: ItemType) -> list[ItemReference]:
+    def get_items_by_type(self: Self, item_type: ItemType) -> list[ItemReferenceQuantity]:
         """Return a list of items held, based on item type."""
-        ret: list[ItemReference] = []
+        ret: list[ItemReferenceQuantity] = []
         for item_ref in self.items_mapped:
             item = item_ref.item
             if item is not None:
@@ -68,7 +79,7 @@ class InventoryManager:
                 else:
                     self._read_items()
                     self.items_mapped = [
-                        ItemReference(
+                        ItemReferenceQuantity(
                             guid=item_ref.guid,
                             quantity=item_ref.quantity,
                             item=ItemMapper.items.get(item_ref.guid),
@@ -80,7 +91,7 @@ class InventoryManager:
                 self.__init__()
 
     def _read_items(self: Self) -> None:
-        items: list[ItemReference] = []
+        items: list[ItemReferenceQuantity] = []
         address = 0x0
         if self.memory.ready_for_updates:
             try:
@@ -95,7 +106,7 @@ class InventoryManager:
                             break
                         guid = self.memory.read_guid(guid_ptr + 0x14).replace("\x00", "")
                         quantity = self.memory.read_int(ptr + 0x10)
-                        items.append(ItemReference(guid, quantity))
+                        items.append(ItemReferenceQuantity(guid, quantity))
                         address += self.INVENTORY_ITEM_OFFSET
                     else:
                         break

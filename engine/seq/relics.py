@@ -6,7 +6,7 @@ from control import sos_ctrl
 from engine.inventory.items import KEY
 from engine.seq.base import SeqBase
 from engine.seq.inventory import Item, ItemType
-from memory.inventory_manager import ItemReference, inventory_manager_handle
+from memory.inventory_manager import ItemReferenceQuantity, inventory_manager_handle
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class SeqToggleRelic(SeqBase):
         self.target_index = 0
         self.step = 0
         self.state = SeqToggleRelic.FSM.OPEN_MENU
-        self.held_relics: list[ItemReference] = None
+        self.held_relics: list[ItemReferenceQuantity] = None
 
     # Override
     def execute(self: Self, delta: float) -> bool:

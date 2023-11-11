@@ -28,8 +28,8 @@ class ShopHelper(Menu):
         imgui.set_window_size(imgui.ImVec2(240, 410), cond=imgui.Cond_.first_use_ever)
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
-        for item in shop_manager.shop_items:
-            imgui.text(item)
+        for item_ref in shop_manager.items_mapped:
+            imgui.text(f"{item_ref.item} [{item_ref.item.order_prio}]")
         LayoutHelper.add_spacer()
 
         ret = False
