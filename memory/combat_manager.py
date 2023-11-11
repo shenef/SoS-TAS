@@ -311,6 +311,8 @@ class CombatManager:
                     address += self.ITEM_OBJECT_OFFSET
             else:
                 return
+        if not selected_target_ptr:
+            return
         with contextlib.suppress(Exception):
             target_unique_id_base = self.memory.follow_pointer(
                 selected_target_ptr,
