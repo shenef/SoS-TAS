@@ -313,6 +313,7 @@ class CombatManager:
                 return
         if not selected_target_ptr:
             return
+
         with contextlib.suppress(Exception):
             target_unique_id_base = self.memory.follow_pointer(
                 selected_target_ptr,
@@ -324,7 +325,7 @@ class CombatManager:
                     0xA8,
                     0x80,
                     0x40,
-                    0xA8,
+                    0x100,
                     0x80,
                     0xF8,
                     0xF0,
@@ -345,7 +346,7 @@ class CombatManager:
         # skill target, but gets a bit washed out if there are AOE targets.
         with contextlib.suppress(Exception):
             target_unique_id_base = self.memory.follow_pointer(
-                first_player_ptr,
+                selected_target_ptr,
                 [
                     0x68,
                     0x38,
@@ -356,7 +357,7 @@ class CombatManager:
                     0xA8,
                     0x80,
                     0x40,
-                    0xA8,
+                    0x100,
                     0x80,
                     0xF8,
                     0xF0,
