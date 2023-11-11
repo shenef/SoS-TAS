@@ -278,42 +278,75 @@ class MoveToward(Vec3):
         return f"MoveToward({super().__repr__()}, anchor: {self.anchor}, mash: {self.mash})"
 
 
-class SeqMove(SeqBase):
+class SeqMoveBase(SeqBase):
     def __init__(
         self: Self,
         name: str,
         coords: list[Vec3 | InteractMove | CancelMove | Graplou | HoldDirection | MoveToward],
-        precision: float = 0.2,
-        precision2: float = 1.0,
-        tap_rate: float = 0.05,
+        precision: float,
         running: bool = True,
-        func: Callable = None,
-        emergency_skip: Callable[[], bool] | None = None,
         invert: bool = False,
+        func: Callable = None,
     ) -> None:
+        super().__init__(name, func)
         self.step = 0
-        self.coords = coords
+        self.timer = 0
+        self.running = running
+        self.invert = invert
         # Used for detecting endpoint of Vec3/InteractMove
         self.precision = precision
-        # Used for detecting endpoint of HoldDirection and end of mashing during InteractMove
-        self.precision2 = precision2
-        self.running = running
-        self.emergency_skip = emergency_skip
-        self.invert = invert
-        # Interact variables
-        self.confirm_state = False
-        self.timer = 0
-        self.hold_timer = 0
-        self.tap_rate = tap_rate
-        super().__init__(name, func=func)
+        self.coords = coords
 
     def reset(self: Self) -> None:
+        """Reset node."""
         self.step = 0
+        self.timer = 0
+
+    def advance_checkpoint(
+        self: Self, player_pos: Vec3, target: Vec3, precision: float = None
+    ) -> bool:
+        """
+        Check if we are close to the next target.
+
+        If so, log and advance to the next step in the sequence and reset the local timer.
+        """
+        if precision is None:
+            precision = self.precision
+        if Vec3.is_close(player_pos, target, precision):
+            logger.debug(
+                f"Checkpoint {self.step}, "
+                + f"Δ: {Vec3.dist(player_pos, target):.3f}, "
+                + f"Pos: {player_pos}, "
+                + f"{target}"
+            )
+            self.next_step()
+            # Reset state variables
+            self.timer = 0
+            return True
+        return False
+
+    def next_step(self: Self) -> None:
+        self.step += 1
+
+    def update_timer(self: Self, delta: float, timeout_s: float) -> bool:
+        self.timer += delta
+        if self.timer >= timeout_s:
+            self.timer = 0
+            return True
+        return False
 
     def _nav_done(self: Self) -> bool:
         num_coords = len(self.coords)
         # If we are already done with the entire sequence, terminate early
         return self.step >= num_coords
+
+    def get_target(self: Self) -> Vec3:
+        if self.step >= len(self.coords):
+            return None
+        return self.coords[self.step]
+
+    def player_position(self: Self) -> Vec3:
+        return player_party_manager.position
 
     def move_function(self: Self, player_pos: Vec3, target_pos: Vec3) -> None:
         move_to(
@@ -389,36 +422,18 @@ class SeqMove(SeqBase):
             self.move_function(player_pos=player_pos, target_pos=target.anchor)
         else:
             self.move_function(player_pos=player_pos, target_pos=target)
+    def on_done(self: Self) -> None:
+        sos_ctrl().set_neutral()
 
     def navigate_to_checkpoint(self: Self, delta: float) -> None:
-        # Move towards target
-        if self.step >= len(self.coords):
-            return
-        target = self.coords[self.step]
-
-        player_pos = self.player_position()
-        if player_pos.x is None:
-            return
-
-        self.handle_toggling_input(delta, player_pos, target)
-        self.handle_movement(player_pos, target)
+        return None
 
     def execute(self: Self, delta: float) -> bool:
         self.navigate_to_checkpoint(delta)
-
         done = self._nav_done()
-
         if done:
-            logger.info(f"Finished move section: {self.name}")
-            self.on_done()
-        elif self.emergency_skip and self.emergency_skip():
-            logger.warning(f"Finished move section with emergency skip: {self.name}")
-            done = True
             self.on_done()
         return done
-
-    def on_done(self: Self) -> None:
-        sos_ctrl().set_neutral()
 
     def __repr__(self: Self) -> str:
         num_coords = len(self.coords)
@@ -461,6 +476,100 @@ class SeqMove(SeqBase):
                 imgui.pop_style_color()
                 if imgui.button("Skip Coord"):
                     self.step += 1
+                if imgui.button("Skip Coord"):
+                    self.step += 1
+
+
+class SeqMove(SeqMoveBase):
+    def __init__(
+        self: Self,
+        name: str,
+        coords: list[Vec3 | InteractMove | CancelMove | Graplou | HoldDirection | MoveToward],
+        precision: float = 0.2,
+        precision2: float = 1.0,
+        tap_rate: float = 0.05,
+        running: bool = True,
+        func: Callable = None,
+        emergency_skip: Callable[[], bool] | None = None,
+        invert: bool = False,
+    ) -> None:
+        # Used for detecting endpoint of HoldDirection and end of mashing during InteractMove
+        self.precision2 = precision2
+        self.emergency_skip = emergency_skip
+        # Interact variables
+        self.confirm_state = False
+        self.hold_timer = 0
+        self.tap_rate = tap_rate
+        super().__init__(
+            name, func=func, coords=coords, precision=precision, running=running, invert=invert
+        )
+
+    def handle_toggling_input(self: Self, delta: float, player_pos: Vec3, target: Vec3) -> None:
+        ctrl = sos_ctrl()
+        if isinstance(target, InteractMove) or (isinstance(target, MoveToward) and target.mash):
+            # Only tap while outside the secondary precision radius
+            if Vec3.is_close(player_pos, target, self.precision2):
+                ctrl.toggle_confirm(False)
+            elif self.update_timer(delta, self.tap_rate):
+                self.confirm_state = not self.confirm_state
+                ctrl.toggle_confirm(self.confirm_state)
+        elif isinstance(target, CancelMove):
+            if self.update_timer(delta, self.tap_rate):
+                self.confirm_state = not self.confirm_state
+                ctrl.toggle_cancel(self.confirm_state)
+        elif isinstance(target, Graplou):
+            self.hold_timer += delta
+            if target.joy_dir is None:
+                target.joy_dir = Vec2(target.x - player_pos.x, target.z - player_pos.z)
+            if self.hold_timer >= target.hold_timer:
+                # Only Graplou while outside the secondary precision radius
+                if Vec3.is_close(player_pos, target, self.precision2):
+                    ctrl.toggle_graplou(False)
+                elif self.update_timer(delta, self.tap_rate):
+                    self.confirm_state = not self.confirm_state
+                    ctrl.toggle_graplou(self.confirm_state)
+
+    def handle_movement(self: Self, player_pos: Vec3, target: Vec3) -> None:
+        ctrl = sos_ctrl()
+        precision = (
+            self.precision2 if isinstance(target, Graplou | HoldDirection) else self.precision
+        )
+        # If arrived, go to next coordinate in the list
+        if self.advance_checkpoint(player_pos, target, precision):
+            self.hold_timer = 0
+            self.confirm_state = False
+            # Clear potentially held buttons
+            ctrl.toggle_cancel(False)
+            ctrl.toggle_confirm(False)
+        elif isinstance(target, HoldDirection | Graplou):
+            ctrl.set_joystick(target.joy_dir)
+        elif isinstance(target, MoveToward):
+            self.move_function(player_pos=player_pos, target_pos=target.anchor)
+        else:
+            self.move_function(player_pos=player_pos, target_pos=target)
+
+    def navigate_to_checkpoint(self: Self, delta: float) -> None:
+        # Move towards target
+        target = self.get_target()
+        if target is None:
+            return
+
+        player_pos = self.player_position()
+        if player_pos.x is None:
+            return
+
+        self.handle_toggling_input(delta, player_pos, target)
+        self.handle_movement(player_pos, target)
+
+    def execute(self: Self, delta: float) -> bool:
+        done = super().execute(delta)
+        if done:
+            logger.info(f"Finished move section: {self.name}")
+        elif self.emergency_skip and self.emergency_skip():
+            logger.warning(f"Finished move section with emergency skip: {self.name}")
+            done = True
+            self.on_done()
+        return done
 
 
 class SeqClimb(SeqMove):
