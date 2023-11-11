@@ -272,6 +272,7 @@ class SoSAppraisal(Appraisal):
             # logger.debug(f"Selected Target {self.target}")
             return
         # logger.warn("Enemy Target Not Valid, moving cursor")
+        # Use a randomly selected directional input to find enemies that are otherwise not reachable
         direction = random.randint(0, 3)
         match direction:
             case 0:
@@ -283,8 +284,8 @@ class SoSAppraisal(Appraisal):
             case 3:
                 sos_ctrl().dpad.tap_down()
         # TODO(eein): This will be improved when we have a better way to
-        # detect who we are targeting. For now we just fail after 6 failures
-        # to avoid getting stuck in a loop
+        # detect who we are targeting. For now we just fail after a set amount of
+        # failures to avoid getting stuck in a loop.
         self.enemy_targeting_failures += 1
         if self.enemy_targeting_failures >= self.MAX_ENEMY_TARGETING_FAILURES:
             self.step = SoSAppraisalStep.ConfirmEnemySequence
