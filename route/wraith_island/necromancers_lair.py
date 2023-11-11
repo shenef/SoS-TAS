@@ -7,6 +7,7 @@ from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.inventory.items import ARMORS, TRINKETS, VALUABLES, WEAPONS
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    EquipmentCommand,
     Graplou,
     HoldDirection,
     InteractMove,
@@ -15,6 +16,7 @@ from engine.seq import (
     SeqCliffMove,
     SeqClimb,
     SeqDelay,
+    SeqEquip,
     SeqGraplou,
     SeqHoldDirectionDelay,
     SeqHoldDirectionUntilLostControl,
@@ -318,8 +320,13 @@ class NecromancersLairGraplou(SeqList):
                     ],
                 ),
                 SeqHoldDirectionDelay("Face chest", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SeqLoot(
-                    "Spectral Cape", item=ARMORS.SpectralCape, equip_to=PlayerPartyCharacter.Serai
+                SeqLoot("Spectral Cape", item=ARMORS.SpectralCape),
+                SeqEquip(
+                    "Swap armors",
+                    commands=[
+                        EquipmentCommand(PlayerPartyCharacter.Serai, item=ARMORS.SpectralCape),
+                        EquipmentCommand(PlayerPartyCharacter.Zale, item=ARMORS.PirateGarb),
+                    ],
                 ),
                 SeqMove(
                     name="Move to ladder",
