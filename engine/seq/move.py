@@ -249,6 +249,14 @@ class HoldDirection(Vec3):
         return f"HoldDirection({super().__repr__()}, joy_dir={self.joy_dir})"
 
 
+class MistralBracelet:
+    """Action: Use Mistral Bracelet in a given direction."""
+
+    def __init__(self: Self, joy_dir: Vec2, timeout_s: float = 0.1) -> None:
+        self.joy_dir = joy_dir
+        self.timeout_s = timeout_s
+
+
 class Graplou(Vec3):
     def __init__(
         self: Self,
