@@ -256,6 +256,9 @@ class MistralBracelet:
         self.joy_dir = joy_dir
         self.timeout_s = timeout_s
 
+    def __repr__(self: Self) -> str:
+        return f"MistralBracelet({self.joy_dir})"
+
 
 class Graplou(Vec3):
     def __init__(
