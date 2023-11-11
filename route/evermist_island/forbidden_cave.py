@@ -252,7 +252,7 @@ class IntroForbiddenCave(SeqList):
                             # TODO(orkaboy): Equip to whom?
                             SeqLoot(
                                 "Leeching Thorn",
-                                TRINKETS.LeechingThorn,
+                                item=TRINKETS.LeechingThorn,
                                 equip_to=PlayerPartyCharacter.Valere,
                                 trinket_slot=1,
                             ),
@@ -360,7 +360,7 @@ class IntroForbiddenCave(SeqList):
                             ),
                             SeqLoot(
                                 "Adventurer's Vest",
-                                ARMORS.AdventurersVest,
+                                item=ARMORS.AdventurersVest,
                                 equip_to=PlayerPartyCharacter.Valere,
                             ),
                             SeqMove(
