@@ -1,3 +1,6 @@
+from engine.combat.controllers.botanical_horror_encounter_controller import (
+    BotanicalHorrorEncounterController,
+)
 from engine.combat.controllers.dweller_of_woe_encounter_controller import (
     DwellerOfWoeEncounterController,
 )
@@ -20,6 +23,7 @@ __all__ = [
     "FirstEncounterController",
     "SecondEncounterController",
     "LiveManaTutorialController",
+    "BotanicalHorrorEncounterController",
     "ElderMistEncounterController",
     "DwellerOfWoeEncounterController",
 ]

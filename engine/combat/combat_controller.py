@@ -4,7 +4,11 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
+<<<<<<< HEAD
     DwellerOfWoeEncounterController,
+=======
+    BotanicalHorrorEncounterController,
+>>>>>>> d76b72d (adds botanical horror controller)
     ElderMistEncounterController,
     EncounterController,
     FirstEncounterController,
@@ -31,10 +35,14 @@ class CombatController:
     # TODO(eein): Use objects/mappers for these later on.
     ELDER_MIST_ENEMY_GUID = "962aa552d33fc124782b230fce9185ce"
     ELDER_MIST_TRIAL_LEVEL_GUID = "11810c4630980eb43abf7fecebfd5a6b"
+<<<<<<< HEAD
     DWELLER_OF_WOE_GUID_LIST = [
         "bcde1eb0ea076f846a0ee20287d88204",  # true dweller
         "807fd9a36ea523f4aa7d532ddc565a69",  # dweller
     ]
+=======
+    BOTANICAL_HORROR_ENEMY_GUID = "64246a3a9059257409ea628466ced26e"
+>>>>>>> d76b72d (adds botanical horror controller)
 
     class FSM(Enum):
         """Finite-state machine States."""
@@ -137,6 +145,7 @@ class CombatController:
             case _:
                 match list(map(lambda x: x.guid, combat_manager.enemies)):
                     # Handle Enemy Specific Controllers
+
                     # Elder Mist Fight
                     case _ as enemies if self.ELDER_MIST_ENEMY_GUID in enemies:
                         return ElderMistEncounterController()
@@ -145,9 +154,13 @@ class CombatController:
                         True for x in enemies if x in self.DWELLER_OF_WOE_GUID_LIST
                     ):
                         return DwellerOfWoeEncounterController()
+                    # Botanical Horror Fight
+                    case _ as enemies if self.BOTANICAL_HORROR_ENEMY_GUID in enemies:
+                        return BotanicalHorrorEncounterController()
+
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
-                    case _:
+                    case enemies:
                         match level_manager.current_level:
                             # Elder Mist Zone
                             case self.ELDER_MIST_TRIAL_LEVEL_GUID:
