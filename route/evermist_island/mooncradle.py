@@ -11,6 +11,7 @@ from engine.seq import (
     SeqAwaitLostControl,
     SeqCheckpoint,
     SeqClimb,
+    SeqCommentary,
     SeqHoldDirectionUntilLostControl,
     SeqIfMainCharacterValere,
     SeqInteract,
@@ -19,6 +20,7 @@ from engine.seq import (
     SeqSelectOption,
     SeqSkipUntilIdle,
 )
+from GUI import AUTHORS
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +104,7 @@ class IntroMooncradle(SeqList):
                     name="Move to cutscene",
                     joy_dir=Vec2(0, 1),
                 ),
+                SeqCommentary(author=AUTHORS.tas, text="Garl nooo", delay=16),
                 SeqSkipUntilIdle(name="Garl nooo"),
                 # Zenith Academy
                 SeqMove(
@@ -225,6 +228,7 @@ class IntroZenithAcademy(SeqList):
                 SeqSkipUntilIdle(name="Train with Erlina"),
                 SeqAwaitLostControl(name="Train with Erlina"),
                 SeqSkipUntilIdle(name="Sewing"),
+                SeqCommentary(author=AUTHORS.shenef, text="That looked more like weaving to me."),
                 LoomsToCenter("Move to main area"),
                 SeqMove(
                     name="Move to main area",
@@ -283,6 +287,7 @@ class IntroZenithAcademy(SeqList):
                     joy_dir=Vec2(0, -1),
                 ),
                 SeqSkipUntilIdle(name="Cookies!!!"),
+                SeqCommentary(author=AUTHORS.tas, text="Can't wait to never eat return that Jar."),
                 LoomsToCenter("Move to main area"),
                 SeqCheckpoint("intro_dorms2"),
                 SeqMove(

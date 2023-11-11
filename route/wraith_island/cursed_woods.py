@@ -12,6 +12,7 @@ from engine.seq import (
     SeqCheckpoint,
     SeqCliffClimb,
     SeqCliffMove,
+    SeqCommentary,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
     SeqIfMainCharacterValere,
@@ -21,6 +22,7 @@ from engine.seq import (
     SeqMove,
     SeqSkipUntilIdle,
 )
+from GUI import AUTHORS
 from memory.player_party_manager import PlayerPartyCharacter
 
 logger = logging.getLogger(__name__)
@@ -227,6 +229,7 @@ class ClearingWeeds(SeqList):
                     ],
                 ),
                 SeqHoldDirectionUntilLostControl("Follow that man!", joy_dir=Vec2(0, 1)),
+                SeqCommentary(author=AUTHORS.tas, text="Garl nooo v2", delay=36),
                 SeqSkipUntilIdle("Garl nooo v2"),
             ],
         )
