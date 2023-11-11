@@ -89,6 +89,20 @@ class SeqCheckpoint(SeqBase):
             blackboard().log_checkpoint(self.name)
         return done
 
+    # Override render_tree to have a custom color in the graph
+    def render_tree(self: Self, parent_path: str, selected: bool) -> None:
+        """Render imgui tree view."""
+        imgui.push_id(parent_path)
+        imgui.push_style_color(imgui.Col_.text, imgui.ImVec4(0.7, 0.1, 0.1, 1.0))
+        imgui.tree_node_ex(
+            f"{self.__class__.__name__}({self.name})",
+            imgui.TreeNodeFlags_.no_tree_push_on_open
+            | imgui.TreeNodeFlags_.leaf
+            | imgui.TreeNodeFlags_.span_full_width,
+        )
+        imgui.pop_style_color()
+        imgui.pop_id()
+
 
 class SeqList(SeqBase):
     """A list of other nodes. Can be used to create a hierarchical tree."""

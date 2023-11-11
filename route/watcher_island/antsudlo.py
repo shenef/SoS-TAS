@@ -9,6 +9,7 @@ from engine.seq import (
     HoldDirection,
     InteractMove,
     SeqCheckpoint,
+    SeqDelay,
     SeqHoldDirectionDelay,
     SeqInteract,
     SeqList,
@@ -53,6 +54,15 @@ class Seafloor(SeqList):
                         Vec3(4.084, 1.303, 62.271),
                         Vec3(-26.913, 1.303, 94.066),
                         Vec3(-22.859, 1.303, 97.681),
+                    ],
+                ),
+                SeqDelay("Wait", 0.7),
+                SeqCombatAndMove(
+                    name="Navigate water maze",
+                    coords=[
+                        Vec3(-23.645, 1.303, 97.867),
+                        Vec3(-24.697, 1.303, 102.931),
+                        Vec3(-20.898, 1.303, 108.235),
                         Vec3(-17.660, 1.303, 111.515),
                         Vec3(-17.134, 1.303, 118.142),
                         Vec3(2.101, 1.303, 138.048),
@@ -68,9 +78,11 @@ class Seafloor(SeqList):
                 SeqCombatAndMove(
                     name="Move to bell",
                     coords=[
-                        Vec3(-5.254, 1.303, 174.492),
-                        Vec3(-9.201, 1.303, 186.419),
-                        Vec3(-13.926, 1.303, 191.440),
+                        Vec3(-5.628, 1.303, 173.090),
+                        Vec3(-8.013, 1.303, 175.695),
+                        Vec3(-8.925, 1.303, 179.404),
+                        Vec3(-8.766, 1.303, 186.246),
+                        Vec3(-14.254, 1.303, 191.446),
                     ],
                     recovery_path=SeqMove(
                         name="Return to path",

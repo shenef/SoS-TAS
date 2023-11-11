@@ -14,6 +14,7 @@ from engine.seq import (
     SeqCliffMove,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
+    SeqIfMainCharacterValere,
     SeqInteract,
     SeqList,
     SeqLoot,
@@ -317,6 +318,17 @@ class ToFerryman(SeqList):
             name="To Ferryman",
             children=[
                 SeqSkipUntilIdle("Rest well, Warrior Cook"),
+                # Zale starts on right side of bed, so go around it
+                SeqIfMainCharacterValere(
+                    name="Alternate path",
+                    when_false=SeqMove(
+                        name="Zale path",
+                        coords=[
+                            Vec3(37.722, 1.002, 176.739),
+                            Vec3(34.313, 1.002, 176.739),
+                        ],
+                    ),
+                ),
                 SeqMove(
                     name="Move to Ferryman's Vigil",
                     coords=[
