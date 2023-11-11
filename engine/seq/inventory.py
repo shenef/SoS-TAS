@@ -11,12 +11,17 @@ from engine.seq.base import SeqBase
 from memory import (
     PlayerMovementState,
     PlayerPartyCharacter,
+    inventory_manager_handle,
     player_party_manager_handle,
+    shop_manager_handle,
 )
+from memory.inventory_manager import ItemReferenceQuantity
 
 logger = logging.getLogger(__name__)
 
 player_party_manager = player_party_manager_handle()
+shop_manager = shop_manager_handle()
+inventory_manager = inventory_manager_handle()
 
 
 class EquipmentCommand(NamedTuple):
@@ -282,7 +287,16 @@ class ShoppingCommand:
 class SeqShop(SeqBase):
     """Shopping node."""
 
+    ITEM_TIMEOUT = 0.2
     SKIP_TIMEOUT = 1.0
+    SELL_TABS = [
+        ItemType.VALUABLE,
+        ItemType.FOOD,
+        ItemType.WEAPON,
+        ItemType.ARMOR,
+        ItemType.TRINKET,
+        ItemType.INGREDIENT,
+    ]
 
     class FSM(Enum):
         """Finite-State-Machine States."""
@@ -294,6 +308,7 @@ class SeqShop(SeqBase):
         SELECT_AMOUNT = auto()
         STORE_OR_EQUIP = auto()
         EQUIP_GEAR = auto()
+        WAIT_ITEM = auto()
         NEXT_ITEM = auto()
         CLOSE_SHOP = auto()
 
@@ -305,6 +320,11 @@ class SeqShop(SeqBase):
         self.commands = commands
         self.state = SeqShop.FSM.OPEN_SHOP
         self.sell_mode = False
+        self.item_index = 0
+        self.item_tab = 0
+        # Read out from memory
+        self.tabs: dict[ItemType, list[ItemReferenceQuantity]] = {}
+        self.tabs_visible: list[ItemType] = []
 
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
         return False
@@ -334,19 +354,82 @@ class SeqShop(SeqBase):
                     ctrl.toggle_turbo(state=False)
                     ctrl.toggle_confirm(state=False)
                     self.state = SeqShop.FSM.SELECT_MODE
+                    self.timer = 0.0
             case SeqShop.FSM.SELECT_MODE:
+                self.item_index = 0
                 if command.sell != self.sell_mode:
                     self.sell_mode = command.sell
                     ctrl.dpad.tap_down()
                     ctrl.confirm(tapping=True)
+                # If in sell mode, update the inventory tabs
+                if self.sell_mode:
+                    inventory_manager.update()
+                    # TODO(orkaboy): There's some behavior that's not accounted for yet;
+                    # Specifically, if you clear all items in a tab and return to the buy
+                    # menu, then enter the sell menu again, the item_tab will be reset.
+                    # If the tabs don't change, the item_tab will retain its value.
+                    self.tabs_visible = []
+                    # Get a mapping of the full party inventory, separated by category
+                    for item_type in SeqShop.SELL_TABS:
+                        items = inventory_manager.get_items_by_type(item_type)
+                        self.tabs[item_type] = [item.item for item in items]
+                        if len(items) > 0:
+                            self.tabs_visible.append(item_type)
                 logger.debug(f"SeqShop: Mode = {"Sell" if self.sell_mode else "Buy"}")
                 self.state = SeqShop.FSM.SELECT_ITEM
             case SeqShop.FSM.SELECT_ITEM:
-                # TODO(orkaboy): Need to know which slot the item we want is in, from memory?
-
-                # TODO(orkaboy): In sell mode, we need to be in the correct category (LB/RB)
-
-                # TODO(orkaboy): For now, select whatever's first in the list (not correct!)
+                if command.sell:
+                    item_type = command.item.item_type
+                    # In sell mode, we need to be in the correct category (LB/RB)
+                    try:
+                        # Find the target tab of the item to sell, based on our inventory
+                        target_tab = self.tabs_visible.index(item_type)
+                    except ValueError:
+                        logger.error(f"Not holding any items of item type {item_type}!")
+                        self.state = SeqShop.FSM.NEXT_ITEM
+                        return False
+                    # The item tab type is to the right
+                    while self.item_tab < target_tab:
+                        self.item_tab += 1
+                        self.item_index = 0
+                        ctrl.shift_right(tapping=True)
+                    # The item tab type is to the left
+                    while self.item_tab > target_tab:
+                        self.item_tab -= 1
+                        self.item_index = 0
+                        ctrl.shift_left(tapping=True)
+                    # Select the item itself
+                    try:
+                        # Find the target index of the item to sell, based on our inventory
+                        target_index = self.tabs[item_type].index(command.item)
+                    except ValueError:
+                        logger.error(f"Not holding any item: {command.item}!")
+                        self.state = SeqShop.FSM.NEXT_ITEM
+                        return False
+                    # If the item is further down
+                    while self.item_index < target_index:
+                        self.item_index += 1
+                        ctrl.dpad.tap_down()
+                    # If the item is further up
+                    while self.item_index > target_index:
+                        self.item_index -= 1
+                        ctrl.dpad.tap_up()
+                else:
+                    try:
+                        # Figure out which slot the item we want is in
+                        target_index = shop_manager.items_mapped.index(command.item)
+                        # If the item is further down
+                        while self.item_index < target_index:
+                            self.item_index += 1
+                            ctrl.dpad.tap_down()
+                        # If the item is further up
+                        while self.item_index > target_index:
+                            self.item_index -= 1
+                            ctrl.dpad.tap_up()
+                    except ValueError:
+                        logger.error(f"The shop doesn't have the item {command.item}")
+                        self.state = SeqShop.FSM.NEXT_ITEM
+                        return False
                 logger.debug(f"SeqShop:   Item = {command.item}")
                 ctrl.confirm(tapping=True)
                 # TODO(orkaboy): Need to handle logic for Relics?
@@ -364,7 +447,7 @@ class SeqShop(SeqBase):
                 # Actually buy/sell the item
                 ctrl.confirm(tapping=True)
 
-                self.state = SeqShop.FSM.NEXT_ITEM
+                self.state = SeqShop.FSM.WAIT_ITEM
             case SeqShop.FSM.STORE_OR_EQUIP:
                 # Equip is selected by default
                 if command.character is None:
@@ -372,7 +455,7 @@ class SeqShop(SeqBase):
                     ctrl.dpad.tap_left()
                     # Actually buy the item
                     ctrl.confirm(tapping=True)
-                    self.state = SeqShop.FSM.NEXT_ITEM
+                    self.state = SeqShop.FSM.WAIT_ITEM
                 else:
                     ctrl.confirm(tapping=True)
                     self.state = SeqShop.FSM.EQUIP_GEAR
@@ -397,8 +480,16 @@ class SeqShop(SeqBase):
                     ctrl.cancel(tapping=True)
                     ctrl.cancel(tapping=True)
 
-                self.state = SeqShop.FSM.NEXT_ITEM
+                self.state = SeqShop.FSM.WAIT_ITEM
+            case SeqShop.FSM.WAIT_ITEM:
+                self.timer += delta
+                if self.timer >= SeqShop.ITEM_TIMEOUT:
+                    self.state = SeqShop.FSM.NEXT_ITEM
+                    self.timer = 0.0
             case SeqShop.FSM.NEXT_ITEM:
+                old_command = self.commands[self.step]
+                old_sell = old_command.sell
+                old_type = old_command.item.item_type
                 if self.next_command():
                     command = self.commands[self.step]
                     if command.sell != self.sell_mode:
@@ -406,6 +497,11 @@ class SeqShop(SeqBase):
                         self.state = SeqShop.FSM.SELECT_MODE
                     else:
                         self.state = SeqShop.FSM.SELECT_ITEM
+                    # Update inventory if needed
+                    if old_sell and command.sell:
+                        inventory_manager.update()
+                        items = inventory_manager.get_items_by_type(old_type)
+                        self.tabs[old_type] = [item.item for item in items]
                 else:
                     self.state = SeqShop.FSM.CLOSE_SHOP
             case SeqShop.FSM.CLOSE_SHOP:

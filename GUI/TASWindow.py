@@ -20,7 +20,7 @@ from memory import (
 class TASWindow(Window):
     """SoS TAS specific implementation."""
 
-    INVENTORY_UPDATE_TIME = 0.5
+    INVENTORY_UPDATE_TIME = 0.25
 
     def __init__(self: Self, config: dict) -> None:
         super().__init__(config)

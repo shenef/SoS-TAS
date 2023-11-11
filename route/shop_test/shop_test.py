@@ -1,11 +1,10 @@
 from typing import Self
 
-from engine.inventory.items import ARMORS, RELICS
+from engine.inventory.items import ARMORS, VALUABLES, WEAPONS
 from engine.seq import (
     SeqDelay,
     SeqList,
     SeqShop,
-    SeqToggleRelic,
     ShoppingCommand,
 )
 from memory.player_party_manager import PlayerPartyCharacter
@@ -22,34 +21,48 @@ class ShopTest(SeqList):
             name="ShopTest",
             children=[
                 SeqDelay(name="MANUAL: Focus SoS window!", timeout_in_s=2.5),
-                SeqToggleRelic(
-                    "Relic test 1",
-                    relics=[
-                        RELICS.AmuletOfStorytelling,
-                        RELICS.ArtfulGambit,
-                        RELICS.DubiousDare,
-                        RELICS.AdamantShard,
-                        RELICS.AmuletOfStorytelling,
-                        RELICS.BearingReel,
-                        RELICS.GoldTooth,
-                        RELICS.ExtraPockets,
-                        RELICS.AmuletOfStorytelling,
-                    ],
-                ),
+                # SeqToggleRelic(
+                #     "Relic test 1",
+                #     relics=[
+                #         RELICS.AmuletOfStorytelling,
+                #         RELICS.ArtfulGambit,
+                #         RELICS.DubiousDare,
+                #         RELICS.AdamantShard,
+                #         RELICS.AmuletOfStorytelling,
+                #         RELICS.BearingReel,
+                #         RELICS.GoldTooth,
+                #         RELICS.ExtraPockets,
+                #         RELICS.AmuletOfStorytelling,
+                #     ],
+                # ),
                 SeqShop(
                     name="Equipment Shop",
                     commands=[
+                        ShoppingCommand(item=VALUABLES.ShinyPearl, sell=True),
+                        ShoppingCommand(item=VALUABLES.TealAmberOre, amount=5, sell=True),
+                        ShoppingCommand(item=VALUABLES.ObsidianOre, sell=True),
+                        ShoppingCommand(item=VALUABLES.ObsidianIngot, sell=True),
+                        ShoppingCommand(item=WEAPONS.ShimmeringDaggers, sell=True),
+                        ShoppingCommand(item=WEAPONS.SeraiWeapon, sell=True),
+                        ShoppingCommand(item=WEAPONS.CauldronLid, sell=True),
+                        ShoppingCommand(item=WEAPONS.TrainingStaff, sell=True),
                         ShoppingCommand(item=ARMORS.AdventurersVest, sell=True),
-                        ShoppingCommand(item=ARMORS.BasicArmor, sell=True),
-                        ShoppingCommand(item=ARMORS.CosmicCape, sell=False),
                         ShoppingCommand(
-                            item=ARMORS.DocarriArmor,
-                            sell=False,
-                            character=PlayerPartyCharacter.Zale,
+                            item=ARMORS.PearlescentApron, character=PlayerPartyCharacter.Garl
                         ),
-                        ShoppingCommand(item=ARMORS.EclipseArmor, sell=True),
                         ShoppingCommand(
-                            item=ARMORS.GarlsApron, sell=False, character=PlayerPartyCharacter.Garl
+                            item=ARMORS.DocarriArmor, character=PlayerPartyCharacter.Zale
+                        ),
+                        ShoppingCommand(
+                            item=ARMORS.DocarriArmor, character=PlayerPartyCharacter.Valere
+                        ),
+                        ShoppingCommand(
+                            item=WEAPONS.CoralStaff,
+                            character=PlayerPartyCharacter.Valere,
+                        ),
+                        ShoppingCommand(
+                            item=WEAPONS.CoralSword,
+                            character=PlayerPartyCharacter.Zale,
                         ),
                     ],
                 ),
