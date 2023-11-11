@@ -160,7 +160,7 @@ class CombatController:
 
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
-                    case enemies:
+                    case _:
                         match level_manager.current_level:
                             # Elder Mist Zone
                             case self.ELDER_MIST_TRIAL_LEVEL_GUID:
