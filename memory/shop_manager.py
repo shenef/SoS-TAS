@@ -16,7 +16,7 @@ class Shopmanager:
         """Initialize a new Shopmanager object."""
         self.memory = mem_handle()
         self.base = None
-        self.shop_items = []
+        self.shop_items: list[str] = []
 
     def update(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -26,7 +26,6 @@ class Shopmanager:
                     if singleton_ptr is None:
                         return
                     self.base = self.memory.get_class_base(singleton_ptr)
-                    print(hex(self.base))
                     if self.base == 0x0:
                         return
 
