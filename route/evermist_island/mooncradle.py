@@ -287,7 +287,7 @@ class IntroZenithAcademy(SeqList):
                     joy_dir=Vec2(0, -1),
                 ),
                 SeqSkipUntilIdle(name="Cookies!!!"),
-                SeqCommentary(author=AUTHORS.tas, text="Can't wait to never eat return that Jar."),
+                SeqCommentary(author=AUTHORS.tas, text="Can't wait to never return that Jar."),
                 LoomsToCenter("Move to main area"),
                 SeqCheckpoint("intro_dorms2"),
                 SeqMove(
