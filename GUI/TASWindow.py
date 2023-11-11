@@ -11,6 +11,7 @@ from memory import (
     mem_handle,
     new_dialog_manager_handle,
     player_party_manager_handle,
+    shop_manager_handle,
     time_of_day_manager_handle,
     title_sequence_manager_handle,
 )
@@ -41,6 +42,7 @@ class TASWindow(Window):
                 time_of_day_manager_handle().update()
                 level_up_manager_handle().update()
                 combat_manager_handle().update()
+                shop_manager_handle().update()
                 new_dialog_manager_handle().update()
                 # These don't need to be updated all the time
                 if self.timer >= TASWindow.INVENTORY_UPDATE_TIME:
