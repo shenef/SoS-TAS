@@ -10,6 +10,7 @@ from engine.seq import (
     HoldDirection,
     InteractMove,
     MistralBracelet,
+    SeqBlackboard,
     SeqBlockPuzzle,
     SeqBoat,
     SeqCheckpoint,
@@ -840,5 +841,7 @@ class SeaOfNightmare(SeqList):
                 SoutheastIsland(),
                 NorthIsland(),
                 MaelstromPoint(),
+                # After defeating Stormcaller, Seraï's ultimate is available
+                SeqBlackboard("Seraï Ultimate", key="serai_ult", value=True),
             ],
         )

@@ -5,7 +5,7 @@ from control import sos_ctrl
 from engine.blackboard import blackboard
 from engine.combat.appraisals.basic_attack import BasicAttack
 from engine.combat.appraisals.combos import SolarRain, SolsticeStrike, XStrike
-from engine.combat.appraisals.serai import Disorient, PhaseShiv
+from engine.combat.appraisals.serai import Disorient, PhaseShiv, VespertineCannons
 from engine.combat.appraisals.valere import CrescentArc, Moonerang
 from engine.combat.appraisals.zale import DashStrike, Sunball
 from engine.combat.utility.core.action import Action
@@ -135,6 +135,12 @@ class SoSConsideration(Consideration):
                             PhaseShiv(value=150, boost=boost),
                         )
                     )
+                    # Seraï ultimate attack
+                    has_ultimate = blackboard().get_dict(key="serai_ult", default=False)
+                    if has_ultimate:
+                        # TODO(orkaboy): Value
+                        char_appraisals.append(VespertineCannons(value=100, boost=boost))
+                    # Combos
                     has_x_strike = blackboard().get_dict(key="x_strike", default=False)
                     x_strike = XStrike(value=150, boost=boost, skill_command_index=0)
                     if has_x_strike and x_strike.can_use():
