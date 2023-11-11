@@ -284,8 +284,11 @@ class CombatManager:
 
         selected_attack_target_guid = ""
         selected_skill_target_guid = ""
+        selected_target_ptr = None
+
+        # Finds the player that is currently selected and uses their controller for selection.
         with contextlib.suppress(Exception):
-            first_player_ptr = self.memory.follow_pointer(
+            items_ptr = self.memory.follow_pointer(
                 self.base,
                 [
                     self.current_encounter_base,
@@ -293,13 +296,24 @@ class CombatManager:
                     0x98,
                     0x40,
                     0x10,
-                    0x20,
                     0x0,
                 ],
             )
+            if items_ptr:
+                count = self.memory.read_int(items_ptr + 0x18)
+                address = self.ITEM_INDEX_0_ADDRESS
+                for _item in range(count):
+                    item_ptr = self.memory.follow_pointer(items_ptr, [address, 0x0])
+                    selected = self.memory.read_bool(item_ptr + 0x78)
+                    if selected:
+                        selected_target_ptr = item_ptr
+                        break
+                    address += self.ITEM_OBJECT_OFFSET
+            else:
+                return
         with contextlib.suppress(Exception):
             target_unique_id_base = self.memory.follow_pointer(
-                first_player_ptr,
+                selected_target_ptr,
                 [
                     0x68,
                     0x38,
