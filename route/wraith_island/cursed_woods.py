@@ -321,6 +321,7 @@ class ToFerryman(SeqList):
                 # Zale starts on right side of bed, so go around it
                 SeqIfMainCharacterValere(
                     name="Alternate path",
+                    when_true=None,
                     when_false=SeqMove(
                         name="Zale path",
                         coords=[
