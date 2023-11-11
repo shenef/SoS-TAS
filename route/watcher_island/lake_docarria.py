@@ -61,7 +61,7 @@ class LakeDocarria(SeqList):
                 SeqSelectOption("Ring bell", skip_dialog_check=True),
                 SeqSkipUntilIdle("Stairs rising"),
                 SeqMove(
-                    name="",
+                    name="Move to hut",
                     coords=[
                         Vec3(24.701, 43.002, 77.896),
                         Vec3(36.297, 48.002, 77.257),

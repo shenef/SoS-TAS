@@ -119,7 +119,7 @@ class RightWing(SeqList):
                 SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(0, 1)),
                 SeqSkipUntilIdle("Seraï joins"),
                 SeqMove(
-                    name="",
+                    name="Move to save branch",
                     coords=[
                         Vec3(70.100, 1.002, 46.028),
                         HoldDirection(104.000, 1.002, 84.000, joy_dir=Vec2(1, 1)),
