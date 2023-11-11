@@ -5,7 +5,11 @@ from typing import Self
 
 from engine.mathlib import Vec3
 from engine.seq import SeqBoat, SeqInteract, SeqList
+from route.watcher_island.antsudlo import TowerOfAntsudlo
+from route.watcher_island.docarri_village import DocarriVillage
 from route.watcher_island.jungle_path import JunglePath
+from route.watcher_island.lake_docarria import LakeDocarria
+from route.watcher_island.sacred_grove import SacredGrove
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +53,10 @@ class WatcherIsland(SeqList):
             children=[
                 GoToWatcherIsland(),
                 JunglePath(),
+                LakeDocarria(),
+                SacredGrove(),
+                DocarriVillage(),
+                TowerOfAntsudlo(),
                 # TODO(orkaboy): Continue routing
             ],
         )

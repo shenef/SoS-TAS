@@ -101,6 +101,10 @@ class TASMenu(Menu):
         ("sea_of_nightmare_boss", "Maelstrom Point"),
         ("brisk5", "After getting the Vespertine"),
         ("jungle_path", "First arrival at Watcher Island"),
+        ("jungle_path2", "Campfire halfway through Jungle Path"),
+        ("sacred_grove", "Entrance of Sacred Grove"),
+        ("docarri_village", "First arrival at Docarri Village"),
+        ("antsudlo", "Just inside entrance of tower"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
@@ -257,6 +261,11 @@ class SoSAnyPercentMenu(TASMenu):
         ),
         RouteOption(
             name="hm_obsidian_ingot", description="Haunted Mansion Obsidian Ingot", default=True
+        ),
+        RouteOption(
+            name="sg_coral_daggers",
+            description="Coral Daggers for Seraï in Sacred Grove",
+            default=True,
         ),
     ]
 

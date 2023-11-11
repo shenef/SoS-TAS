@@ -36,7 +36,6 @@ class BriskRestored(SeqList):
                     ],
                 ),
                 SeqSelectOption("Board boat", skip_dialog_check=True),
-                # TODO(orkaboy): Doesn't skip dialog correctly. Short delay?
                 SeqBoat(
                     name="Cutscene into boat",
                     coords=[
@@ -47,12 +46,12 @@ class BriskRestored(SeqList):
                 SeqBoat(
                     name="Cross ocean",
                     coords=[
-                        Vec3(220.745, 0.500, 189.763),
-                        Vec3(225.469, 0.500, 189.777),
-                        Vec3(227.235, 0.500, 191.829),
+                        Vec3(217.436, 0.500, 183.592),
+                        Vec3(225.185, 0.500, 185.897),
+                        Vec3(228.283, 0.500, 189.447),
+                        Vec3(228.808, 0.500, 192.250),
                     ],
                 ),
-                # TODO(orkaboy): Doesn't hit the docks correctly
                 SeqInteract("Disembark"),
             ],
         )

@@ -28,7 +28,12 @@ class PhaseShiv(SoSAppraisal):
         )
         self.value = value
         self.target_type = SoSTargetType.Enemy
-        self.damage_type = [CombatDamageType.Sword, CombatDamageType.Poison]
+        self.damage_type = [
+            CombatDamageType.Sword,
+            CombatDamageType.Sword,
+            CombatDamageType.Poison,
+            CombatDamageType.Poison,
+        ]
         self.battle_command_targeting_type = SoSBattleCommand.Attack
         self.skill_command_index = 2
         self.resource = SoSResource.Mana
