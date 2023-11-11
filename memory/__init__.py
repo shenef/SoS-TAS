@@ -22,6 +22,7 @@ from memory.mappers.enemy_name import EnemyName
 from memory.mappers.player_party_character import PlayerPartyCharacter
 from memory.new_dialog_manager import new_dialog_manager_handle
 from memory.player_party_manager import PlayerMovementState, player_party_manager_handle
+from memory.shop_manager import shop_manager_handle
 from memory.time_of_day_manager import time_of_day_manager_handle
 from memory.title_sequence_manager import (
     TitleCursorPosition,
@@ -32,6 +33,7 @@ __all__ = [
     "SoSMemory",
     "mem_handle",
     "boat_manager_handle",
+    "shop_manager_handle",
     "combat_manager_handle",
     "level_up_manager_handle",
     "LevelUpManager",

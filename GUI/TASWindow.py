@@ -11,6 +11,7 @@ from memory import (
     mem_handle,
     new_dialog_manager_handle,
     player_party_manager_handle,
+    shop_manager_handle,
     time_of_day_manager_handle,
     title_sequence_manager_handle,
 )
@@ -47,5 +48,6 @@ class TASWindow(Window):
                     self.timer = 0.0
                     inventory_manager_handle().update()
                     currency_manager_handle().update()
+                    shop_manager_handle().update()
                 if "WorldMap" in scene_name:
                     boat_manager_handle().update()
