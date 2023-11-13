@@ -69,7 +69,7 @@ class RouteSegmentType(Enum):
     CLIFF_MOVE = auto()  # SeqCliffMove
     CLIFF_CLIMB = auto()  # SeqCliffClimb
     BOAT = auto()  # SeqBoat
-    BLOCK_PUZZLE = auto()  # SeqBlockPuzzle
+    BRACELET_PUZZLE = auto()  # SeqBraceletPuzzle
 
 
 class RouteSegment:
@@ -96,8 +96,8 @@ class RouteSegment:
                 return "SeqCliffClimb"
             case RouteSegmentType.BOAT:
                 return "SeqBoat"
-            case RouteSegmentType.BLOCK_PUZZLE:
-                return "SeqBlockPuzzle"
+            case RouteSegmentType.BRACELET_PUZZLE:
+                return "SeqBraceletPuzzle"
         return ""
 
     def __repr__(self: Self) -> str:
@@ -127,7 +127,9 @@ class RouteHelper(Menu):
         self.segments: list[RouteSegment] = []
         self.current_type = RouteSegmentType.MOVE
 
-    def gui_section(self: Self, idx: int, segment_type: RouteSegmentType, coord: Vec3) -> None:
+    def gui_section(
+        self: Self, idx: int, segment_type: RouteSegmentType, coord: Vec3, coord2: Vec3 = None
+    ) -> None:
         """
         Generate the GUI section (a set of buttons) for a particular segment.
 
@@ -138,7 +140,7 @@ class RouteHelper(Menu):
                 coord=RouteCoord(RouteCoordType.MOVE, coord),
                 segment_type=segment_type,
             )
-        if segment_type not in {RouteSegmentType.BOAT, RouteSegmentType.BLOCK_PUZZLE}:
+        if segment_type not in {RouteSegmentType.BOAT, RouteSegmentType.BRACELET_PUZZLE}:
             imgui.same_line()
             if imgui.button(f"Interact##{idx}"):
                 self.add_coord(
@@ -155,10 +157,11 @@ class RouteHelper(Menu):
             imgui.same_line()
             if imgui.button(f"Graplou##{idx}"):
                 self.add_coord(
-                    coord=RouteCoord(RouteCoordType.GRAPLOU, coord),
+                    # Use gameobject coord for this
+                    coord=RouteCoord(RouteCoordType.GRAPLOU, coord2),
                     segment_type=segment_type,
                 )
-        if segment_type == RouteSegmentType.BLOCK_PUZZLE:
+        if segment_type == RouteSegmentType.BRACELET_PUZZLE:
             directions = [
                 _Direction(joy_dir=Vec2(1, 0), label="E"),
                 _Direction(joy_dir=Vec2(0, 1), label="N"),
@@ -199,21 +202,21 @@ class RouteHelper(Menu):
             player_party_manager.position.z or 0,
         )
 
-        imgui.text(
-            f"Regular movement:{' (cur)' if self.current_type is RouteSegmentType.MOVE else ''}"
-        )
-        self.gui_section(1, RouteSegmentType.MOVE, coord=player_pos)
-        LayoutHelper.add_spacer()
-
-        imgui.text(f"Climb wall:{' (cur)' if self.current_type is RouteSegmentType.CLIMB else ''}")
-        self.gui_section(2, RouteSegmentType.CLIMB, coord=player_pos)
-        LayoutHelper.add_spacer()
-
         gameobject_pos = Vec3(
             player_party_manager.gameobject_position.x or 0,
             player_party_manager.gameobject_position.y or 0,
             player_party_manager.gameobject_position.z or 0,
         )
+
+        imgui.text(
+            f"Regular movement:{' (cur)' if self.current_type is RouteSegmentType.MOVE else ''}"
+        )
+        self.gui_section(1, RouteSegmentType.MOVE, coord=player_pos, coord2=gameobject_pos)
+        LayoutHelper.add_spacer()
+
+        imgui.text(f"Climb wall:{' (cur)' if self.current_type is RouteSegmentType.CLIMB else ''}")
+        self.gui_section(2, RouteSegmentType.CLIMB, coord=player_pos)
+        LayoutHelper.add_spacer()
 
         imgui.text(
             f"Ledge move:{' (cur)' if self.current_type is RouteSegmentType.CLIFF_MOVE else ''}"
@@ -238,9 +241,9 @@ class RouteHelper(Menu):
         LayoutHelper.add_spacer()
 
         imgui.text(
-            f"Block Puzzle:{' (cur)' if self.current_type is RouteSegmentType.BLOCK_PUZZLE else ''}"
+            f"Bracelet Puzzle:{' (cur)' if self.current_type is RouteSegmentType.BRACELET_PUZZLE else ''}"  # noqa E501
         )
-        self.gui_section(6, RouteSegmentType.BLOCK_PUZZLE, coord=player_pos)
+        self.gui_section(6, RouteSegmentType.BRACELET_PUZZLE, coord=player_pos)
 
         ret = False
         if not top_level and imgui.button("Back"):

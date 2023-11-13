@@ -65,6 +65,7 @@ class EnemyName:
         "667e9f6f8bb894f4dafcbc412dfdc293": "Zale",
         "6df65b41a30cde44a967d340ec7666d3": "Valere",
         "aaf855be11272ed4da5687c47da27579": "Seraï",
+        "ea0a539bb73e45a42ae867fce0822b92": "Garnooy",
         # Watcher Island: Torment Peak
         "40f05ed0202783449a704978e8670c9b": "Tsiclop",
         "c6f57cbee5d9cff4a82778ce36f94fdf": "Sleuth",

@@ -12,8 +12,8 @@ from engine.seq import (
     MistralBracelet,
     MoveToward,
     SeqAwaitLostControl,
-    SeqBlockPuzzle,
     SeqBracelet,
+    SeqBraceletPuzzle,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
@@ -298,7 +298,7 @@ class WindTunnelMinesFirstFloor(SeqList):
         )
 
 
-class WindTunnelMinesLowerFloorBlockPuzzle1(SeqBlockPuzzle):
+class WindTunnelMinesLowerFloorBlockPuzzle1(SeqBraceletPuzzle):
     """First block puzzle sequence."""
 
     def __init__(self: Self) -> None:
@@ -336,7 +336,7 @@ class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
         super().__init__(
             name="Block Puzzle #2",
             children=[
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="First section",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(1, 0)),
@@ -354,7 +354,7 @@ class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
                     ],
                 ),
                 SeqDelay("Wait", timeout_in_s=6.0),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Second section",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(0, -1)),
@@ -694,7 +694,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
         super().__init__(
             name="Block Puzzle #3",
             children=[
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="First segment",
                     coords=[
                         Vec3(25.177, 1.002, 7.939),
@@ -715,7 +715,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
                         InteractMove(25.386, 1.002, -5.665),
                     ],
                 ),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Second segment",
                     coords=[
                         Vec3(18.642, 1.002, -5.079),
@@ -743,7 +743,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
                     ],
                 ),
                 SeqDelay(name="Wait", timeout_in_s=1.5),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Third segment",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(-1, 0)),

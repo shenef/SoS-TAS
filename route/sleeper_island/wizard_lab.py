@@ -14,7 +14,7 @@ from engine.seq import (
     MistralBracelet,
     MoveToward,
     SeqAwaitLostControl,
-    SeqBlockPuzzle,
+    SeqBraceletPuzzle,
     SeqCheckpoint,
     SeqDelay,
     SeqHoldDirectionUntilCombat,
@@ -32,7 +32,7 @@ from engine.seq import (
 logger = logging.getLogger(__name__)
 
 
-class FirstBlockPuzzle(SeqBlockPuzzle):
+class FirstBlockPuzzle(SeqBraceletPuzzle):
     """Block puzzle in first room."""
 
     def __init__(self: Self) -> None:
@@ -406,7 +406,7 @@ class WizardLabTealArea(SeqList):
                         Vec3(-85.221, 5.002, 156.048),
                     ],
                 ),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Push block out of the way",
                     coords=[
                         Vec3(-85.221, 5.002, 160.632),
@@ -423,7 +423,7 @@ class WizardLabTealArea(SeqList):
                         Vec3(-98.264, 5.002, 161.106),
                     ],
                 ),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Move block",
                     coords=[
                         Vec3(-100.157, 5.002, 161.106),

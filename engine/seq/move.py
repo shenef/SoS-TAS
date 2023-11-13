@@ -364,6 +364,9 @@ class SeqMove(SeqBase):
         precision = (
             self.precision2 if isinstance(target, Graplou | HoldDirection) else self.precision
         )
+        # Sometimes when graplouing to walls, the player position doesn't update
+        if isinstance(target, Graplou):
+            player_pos = player_party_manager.gameobject_position
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, precision):
             logger.debug(
