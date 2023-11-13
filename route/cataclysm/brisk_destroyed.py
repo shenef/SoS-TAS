@@ -10,8 +10,8 @@ from engine.seq import (
     HoldDirection,
     InteractMove,
     MistralBracelet,
-    SeqBlockPuzzle,
     SeqBracelet,
+    SeqBraceletPuzzle,
     SeqCheckpoint,
     SeqGraplou,
     SeqHoldDirectionDelay,
@@ -96,7 +96,7 @@ class BriskDestroyed(SeqList):
                         InteractMove(68.460, 8.002, 1.542),
                     ],
                 ),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     "Push block",
                     coords=[
                         Vec3(68.460, 8.002, 3.050),

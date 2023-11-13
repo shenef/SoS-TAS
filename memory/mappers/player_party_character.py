@@ -12,9 +12,11 @@ class PlayerPartyCharacter(Enum):
     Serai = "Seraï"
     Reshan = "Resh'an"
     Bst = "B'st"
+    Moraine = "Moraine"
 
     def parse_definition_id(definition_id: str) -> Self:
         ascii_data = definition_id.encode("ascii", "ignore")
+
         if ascii_data == b"Z\x00A\x00L\x00E\x00":
             return PlayerPartyCharacter.Zale
         if ascii_data == b"V\x00A\x00L\x00E\x00":
@@ -27,4 +29,6 @@ class PlayerPartyCharacter(Enum):
             return PlayerPartyCharacter.Reshan
         if ascii_data == b"B\x00S\x00T\x00\x00\x00":
             return PlayerPartyCharacter.Bst
+        if ascii_data == b"M\x00A\x00S\x00T\x00":
+            return PlayerPartyCharacter.Moraine
         return PlayerPartyCharacter.NONE

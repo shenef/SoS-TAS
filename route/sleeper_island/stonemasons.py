@@ -12,8 +12,8 @@ from engine.seq import (
     MistralBracelet,
     MoveToward,
     SeqAwaitLostControl,
-    SeqBlockPuzzle,
     SeqBracelet,
+    SeqBraceletPuzzle,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
@@ -298,7 +298,7 @@ class WindTunnelMinesFirstFloor(SeqList):
         )
 
 
-class WindTunnelMinesLowerFloorBlockPuzzle1(SeqBlockPuzzle):
+class WindTunnelMinesLowerFloorBlockPuzzle1(SeqBraceletPuzzle):
     """First block puzzle sequence."""
 
     def __init__(self: Self) -> None:
@@ -336,7 +336,7 @@ class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
         super().__init__(
             name="Block Puzzle #2",
             children=[
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="First section",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(1, 0)),
@@ -354,7 +354,7 @@ class WindTunnelMinesLowerFloorBlockPuzzle2(SeqList):
                     ],
                 ),
                 SeqDelay("Wait", timeout_in_s=6.0),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Second section",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(0, -1)),
@@ -694,7 +694,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
         super().__init__(
             name="Block Puzzle #3",
             children=[
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="First segment",
                     coords=[
                         Vec3(25.177, 1.002, 7.939),
@@ -715,7 +715,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
                         InteractMove(25.386, 1.002, -5.665),
                     ],
                 ),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Second segment",
                     coords=[
                         Vec3(18.642, 1.002, -5.079),
@@ -743,7 +743,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
                     ],
                 ),
                 SeqDelay(name="Wait", timeout_in_s=1.5),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Third segment",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(-1, 0)),
@@ -751,20 +751,13 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
                         Vec3(-2.431, 1.002, -4.096),
                         Vec3(-3.525, 1.002, -3.460),
                         MistralBracelet(joy_dir=Vec2(0, 1)),
-                        Vec3(-2.364, 1.002, 8.755),
-                        Vec3(-2.364, 1.002, 14.450),
-                        MistralBracelet(joy_dir=Vec2(-1, 0)),
-                        Vec3(-4.357, 1.010, 16.794),
-                        Vec3(-5.600, 1.002, 16.794),
-                        MistralBracelet(joy_dir=Vec2(0, -1)),
-                        Vec3(-7.614, 1.010, 14.596),
-                        Vec3(-7.614, 1.010, 13.458),
+                        Vec3(-5.658, 1.010, 13.494),
+                        Vec3(-5.658, 1.010, 14.847),
                         MistralBracelet(joy_dir=Vec2(1, 0)),
-                        Vec3(-2.758, 1.002, 14.873),
-                        Vec3(3.716, 1.002, 14.873),
+                        Vec3(3.632, 1.002, 16.853),
                         MistralBracelet(joy_dir=Vec2(0, -1)),
-                        Vec3(5.631, 1.010, 12.938),
-                        Vec3(5.631, 1.010, 11.490),
+                        Vec3(5.560, 1.002, 12.502),
+                        Vec3(5.560, 1.002, 11.334),
                         MistralBracelet(joy_dir=Vec2(-1, 0)),
                         Vec3(1.144, 1.002, 12.768),
                         Vec3(-4.959, 1.002, 12.768),
@@ -810,6 +803,7 @@ class EarthWizardMalkomud(SeqList):
                     coords=[
                         Vec3(-0.718, 7.002, 18.458),
                         InteractMove(-0.718, 1.002, 17.540),
+                        Vec3(-2.501, 1.002, 17.542),
                         HoldDirection(-60.500, 1.002, 95.467, joy_dir=Vec2(0, 1)),
                     ],
                 ),

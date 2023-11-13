@@ -49,6 +49,14 @@ class SoSConsideration(Consideration):
     def _default_appraisals(self: Self) -> list[SoSAppraisal]:
         """Generate default appraisals generic to every consideration."""
         attacks: list[BasicAttack] = []
+        if self.actor.character is PlayerPartyCharacter.Moraine:
+            moraine_rune = BasicAttack(
+                caster=self.actor.character,
+                boost=0,
+            )
+            attacks.append(moraine_rune)
+            return attacks
+
         for boost in range(0, 4):  # Generate [0,1,2,3]
             basic_attack = BasicAttack(
                 caster=self.actor.character,

@@ -105,6 +105,8 @@ class TASMenu(Menu):
         ("sacred_grove", "Entrance of Sacred Grove"),
         ("docarri_village", "First arrival at Docarri Village"),
         ("antsudlo", "Just inside entrance of tower"),
+        ("antsudlo2", "Final floor of tower"),
+        ("glacial_peak", "First save point after portal"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
