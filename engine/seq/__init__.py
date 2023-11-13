@@ -1,5 +1,5 @@
 from engine.seq.base import SeqBase, SeqBlackboard, SeqCheckpoint, SeqIf, SeqList, SeqWhile
-from engine.seq.block_puzzle import MistralBracelet, SeqBlockPuzzle
+from engine.seq.bracelet_puzzle import MistralBracelet, SeqBraceletPuzzle
 from engine.seq.interact import (
     SeqBracelet,
     SeqGraplou,
@@ -95,7 +95,7 @@ __all__ = [
     "SeqRouteBranch",
     "RouteBranchMode",
     "SeqChangeTimeOfDay",
-    "SeqBlockPuzzle",
+    "SeqBraceletPuzzle",
     "MistralBracelet",
     "EquipmentCommand",
     "ShoppingCommand",

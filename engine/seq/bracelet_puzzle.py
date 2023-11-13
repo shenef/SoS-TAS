@@ -1,4 +1,4 @@
-"""Block puzzle sequencer node."""
+"""Bracelet puzzle sequencer node."""
 
 import logging
 from collections.abc import Callable
@@ -27,8 +27,8 @@ class MistralBracelet:
         self.timeout_s = timeout_s
 
 
-class SeqBlockPuzzle(SeqBase):
-    """Sequence to perform a block puzzle."""
+class SeqBraceletPuzzle(SeqBase):
+    """Sequence to perform a bracelet puzzle."""
 
     def __init__(
         self: Self,
@@ -67,7 +67,7 @@ class SeqBlockPuzzle(SeqBase):
         return player_party_manager.position
 
     def handle_movement(self: Self, player_pos: Vec3, target: Vec3) -> None:
-        """Handle movement between block pushes."""
+        """Handle movement between bracelet uses."""
         # If arrived, go to next coordinate in the list
         if Vec3.is_close(player_pos, target, self.precision):
             logger.debug(
@@ -83,7 +83,7 @@ class SeqBlockPuzzle(SeqBase):
             self._move_function(player_pos=player_pos, target_pos=target)
 
     def navigate_to_checkpoint(self: Self, delta: float) -> None:
-        """Handle pushing blocks."""
+        """Handle bracelet logic."""
         # Move towards target
         if self.step >= len(self.coords):
             return
@@ -112,7 +112,7 @@ class SeqBlockPuzzle(SeqBase):
         done = self._nav_done()
 
         if done:
-            logger.info(f"Finished block puzzle section: {self.name}")
+            logger.info(f"Finished bracelet puzzle section: {self.name}")
             self._on_done()
         return done
 

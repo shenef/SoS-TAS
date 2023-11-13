@@ -10,7 +10,10 @@ from engine.seq import (
     Graplou,
     HoldDirection,
     InteractMove,
+    MistralBracelet,
+    SeqAwaitLostControl,
     SeqBracelet,
+    SeqBraceletPuzzle,
     SeqCheckpoint,
     SeqCliffMove,
     SeqClimb,
@@ -22,6 +25,7 @@ from engine.seq import (
     SeqMove,
     SeqRaft,
     SeqSelectOption,
+    SeqSkipUntilIdle,
 )
 from memory.player_party_manager import PlayerPartyCharacter
 
@@ -305,9 +309,7 @@ class FirstFloor(SeqList):
                     name="Move to lever",
                     coords=[
                         Vec3(134.375, 12.002, 99.021),
-                        # TODO(orkaboy): Better routing
-                        InteractMove(134.871, 4.303, 98.036),
-                        Vec3(142.660, 4.303, 90.953),
+                        InteractMove(142.660, 4.303, 90.953),
                         Vec3(149.909, 4.303, 89.040),
                         Vec3(153.351, 4.303, 90.058),
                         Vec3(158.110, 4.303, 94.243),
@@ -383,13 +385,15 @@ class FirstFloor(SeqList):
 class SecondFloor(SeqList):
     """Routing of Second Floor of Tower of Antsudlo."""
 
+    TUMBLER_TIMEOUT = 1.3
+
     def __init__(self: Self) -> None:
         """Initialize a new SecondFloor object."""
         super().__init__(
             name="Second Floor",
             children=[
                 SeqMove(
-                    name="Enter left room",
+                    name="Enter right room",
                     coords=[
                         Vec3(265.222, 14.303, 105.486),
                         Vec3(276.624, 14.303, 105.542),
@@ -434,7 +438,7 @@ class SecondFloor(SeqList):
                 SeqMove(
                     name="Move to chest",
                     coords=[
-                        Vec3(415.432, 12.002, 195.079),
+                        Vec3(415.216, 12.002, 194.863),
                         InteractMove(416.156, 7.002, 194.501),
                         Vec3(417.248, 7.002, 188.760),
                         InteractMove(412.908, 1.803, 177.565),
@@ -487,7 +491,7 @@ class SecondFloor(SeqList):
                     ],
                 ),
                 SeqInteract("Raise tumbler"),
-                SeqDelay("Wait", timeout_in_s=1.5),
+                SeqDelay("Wait", timeout_in_s=SecondFloor.TUMBLER_TIMEOUT),
                 SeqInteract("Raise tumbler"),
                 SeqMove(
                     name="Move to second tumbler",
@@ -503,7 +507,7 @@ class SecondFloor(SeqList):
                     ],
                 ),
                 SeqInteract("Raise tumbler"),
-                SeqDelay("Wait", timeout_in_s=1.5),
+                SeqDelay("Wait", timeout_in_s=SecondFloor.TUMBLER_TIMEOUT),
                 SeqInteract("Raise tumbler"),
                 SeqMove(
                     name="Move to pearl",
@@ -555,62 +559,112 @@ class SecondFloor(SeqList):
                     ],
                 ),
                 SeqBracelet("Windtrap"),
-                # TODO(orkaboy): All rafting sections have major issues completing
-                SeqRaft(
-                    name="Rafting",
+                SeqSkipUntilIdle("Wait for bracelet"),
+                SeqAwaitLostControl("Wait for cutscene"),
+                SeqSkipUntilIdle("Cutscene"),
+                SeqBraceletPuzzle(
+                    name="Raft to first windtrap",
                     coords=[
-                        Vec3(154.755, 4.217, 201.854),
-                        Vec3(151.602, 4.265, 199.206),
-                        Vec3(143.653, 4.320, 198.966),
-                        Vec3(140.325, 4.262, 191.733),
-                        Vec3(143.158, 4.268, 183.648),
-                        Vec3(148.888, 4.337, 182.980),
-                    ],
-                ),
-                SeqMove(
-                    name="Move to windtrap",
-                    coords=[
+                        MistralBracelet(joy_dir=Vec2(1, 1)),
+                        Vec3(153.160, 4.387, 204.870),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(153.160, 4.218, 206.571),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(152.841, 4.265, 202.488),
+                        MistralBracelet(joy_dir=Vec2(1, 1)),
+                        Vec3(149.838, 4.246, 199.481),
+                        MistralBracelet(joy_dir=Vec2(1, 1)),
+                        Vec3(148.060, 4.364, 196.800),
+                        MistralBracelet(joy_dir=Vec2(1, -1)),
+                        Vec3(143.815, 4.397, 197.747),
+                        MistralBracelet(joy_dir=Vec2(1, 1)),
+                        Vec3(142.852, 4.364, 197.016),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(139.630, 4.376, 196.391),
+                        MistralBracelet(joy_dir=Vec2(1, 1)),
+                        Vec3(140.478, 4.376, 194.266),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(141.121, 4.207, 192.141),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(141.121, 4.371, 188.077),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(141.121, 4.243, 183.993),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(141.121, 4.340, 180.484),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(143.250, 4.265, 181.815),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(147.344, 4.333, 181.815),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(149.992, 4.314, 182.376),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(150.860, 4.395, 183.564),
+                        # Move to windtrap
                         Vec3(150.938, 4.383, 184.504),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
                     ],
                 ),
-                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SeqBracelet("Windtrap"),
-                SeqRaft(
-                    name="Rafting",
+                SeqBraceletPuzzle(
+                    name="Raft to second windtrap",
                     coords=[
-                        Vec3(127.739, 4.318, 181.809),
+                        Vec3(147.022, 4.355, 180.948),
+                        MistralBracelet(joy_dir=Vec2(1, 1)),
+                        Vec3(145.063, 4.390, 179.967),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(141.331, 4.383, 179.967),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(137.107, 4.396, 179.967),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(132.890, 4.321, 179.967),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(128.687, 4.289, 179.967),
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(125.090, 4.347, 179.967),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        # Move to windtrap
+                        Vec3(125.443, 4.295, 184.050),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
                     ],
                 ),
-                SeqMove(
-                    name="Move to windtrap",
+                SeqBraceletPuzzle(
+                    name="Raft to ledge",
                     coords=[
-                        Vec3(125.515, 4.314, 184.051),
+                        Vec3(128.545, 4.231, 183.659),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(132.368, 4.361, 183.659),
+                        MistralBracelet(joy_dir=Vec2(-1, -1)),
+                        Vec3(135.127, 4.278, 185.730),
+                        MistralBracelet(joy_dir=Vec2(-1, -1)),
+                        Vec3(133.211, 4.207, 187.396),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(133.124, 4.213, 189.094),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(133.211, 4.406, 191.016),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(132.932, 4.291, 193.362),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(132.932, 4.369, 196.709),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(132.932, 4.399, 200.934),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(132.932, 4.207, 205.022),
+                        Vec3(135.126, 4.215, 205.844),
+                        MistralBracelet(joy_dir=Vec2(-1, -1)),
+                        Vec3(137.690, 4.307, 208.333),
+                        MistralBracelet(joy_dir=Vec2(-1, -1)),
+                        Vec3(140.149, 4.398, 209.231),
+                        MistralBracelet(joy_dir=Vec2(-1, -1)),
+                        Vec3(142.970, 4.292, 211.299),
+                        MistralBracelet(joy_dir=Vec2(-1, -1)),
+                        Vec3(145.851, 4.201, 214.089),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                        Vec3(144.979, 4.307, 216.540),
                     ],
                 ),
-                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
-                SeqBracelet("Windtrap"),
-                SeqRaft(
-                    name="Rafting",
-                    coords=[
-                        Vec3(130.288, 4.231, 182.169),
-                        Vec3(132.909, 4.306, 188.800),
-                        Vec3(134.912, 4.394, 208.540),
-                        Vec3(140.693, 4.203, 209.077),
-                        Vec3(141.561, 4.207, 212.921),
-                    ],
-                ),
-                SeqMove(
-                    name="Move closer",
-                    coords=[
-                        Vec3(144.118, 4.362, 214.818),
-                    ],
-                ),
-                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, -1), timeout_s=0.1),
-                SeqBracelet("Nudge raft"),
                 SeqMove(
                     name="Move to lever",
                     coords=[
-                        InteractMove(144.112, 6.002, 217.467),
+                        InteractMove(144.979, 6.002, 217.467),
                         Vec3(146.545, 6.002, 218.449),
                         InteractMove(146.500, 11.002, 219.642),
                         Vec3(145.051, 11.002, 221.293),
@@ -630,6 +684,13 @@ class SecondFloor(SeqList):
                         Vec3(135.881, 4.325, 208.410),
                     ],
                 ),
+                SeqBraceletPuzzle(
+                    name="Push raft",
+                    coords=[
+                        Vec3(135.818, 4.212, 207.667),
+                        MistralBracelet(joy_dir=Vec2(0, -1)),
+                    ],
+                ),
                 SeqMove(
                     name="Move to pearl",
                     coords=[
@@ -644,8 +705,8 @@ class SecondFloor(SeqList):
                 SeqMove(
                     name="Retrace steps",
                     coords=[
-                        InteractMove(134.493, 1.002, 203.783),
-                        Vec3(137.777, 1.002, 201.476),
+                        InteractMove(134.530, 1.002, 200.429),
+                        Vec3(136.953, 1.002, 198.007),
                         Vec3(139.669, 1.002, 199.674),
                         Vec3(142.178, 1.002, 199.674),
                         Vec3(148.344, 1.002, 202.208),
@@ -664,6 +725,7 @@ class SecondFloor(SeqList):
                     name="Climb wall",
                     coords=[
                         InteractMove(153.320, 6.002, 215.654),
+                        # TODO(orkaboy): can fail
                     ],
                 ),
                 SeqMove(
@@ -681,13 +743,25 @@ class SecondFloor(SeqList):
                     ],
                 ),
                 SeqMove(
-                    name="Move to pedistal",
+                    name="Graplou",
                     coords=[
                         Vec3(253.330, 20.002, 106.715),
                         Graplou(261.540, 20.002, 99.457, joy_dir=Vec2(1, -1), hold_timer=0.1),
-                        # TODO(orkaboy): Fails to jump down, running against corner
-                        InteractMove(264.922, 14.303, 106.790),
-                        Vec3(261.348, 14.303, 111.029),
+                    ],
+                ),
+                SeqMove(
+                    name="Jump into water",
+                    coords=[
+                        InteractMove(262.459, 14.303, 99.460),
+                    ],
+                    precision=5,
+                ),
+                SeqMove(
+                    name="Move to pedistal",
+                    coords=[
+                        Vec3(263.657, 14.303, 106.255),
+                        Vec3(263.657, 14.303, 108.857),
+                        Vec3(261.222, 14.303, 111.020),
                     ],
                 ),
                 # Must wait until water level has stabilized to interact with pedistal
@@ -705,7 +779,7 @@ class SecondFloor(SeqList):
                 SeqMove(
                     name="Move to elevator",
                     coords=[
-                        Vec3(267.353, 14.303, 111.013),
+                        Vec3(265.697, 14.303, 111.641),
                     ],
                 ),
                 SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
@@ -736,7 +810,188 @@ class ThirdFloor(SeqList):
                         HoldDirection(199.000, 7.002, 295.000, joy_dir=Vec2(-1, -1)),
                     ],
                 ),
-                # TODO(orkaboy): Continue routing
+                SeqMove(
+                    name="Move to water pipe",
+                    coords=[
+                        Vec3(196.652, 7.002, 292.626),
+                        Graplou(188.410, 7.010, 289.746, joy_dir=Vec2(-1, -0.5), hold_timer=0.1),
+                        Vec3(188.214, 7.002, 288.254),
+                        Vec3(186.059, 7.002, 286.291),
+                        Vec3(173.714, 7.002, 290.638),
+                        HoldDirection(361.281, 4.553, 269.879, joy_dir=Vec2(-1, 1)),
+                    ],
+                ),
+                SeqCombatAndMove(
+                    name="Move to valve",
+                    coords=[
+                        Vec3(351.594, 4.553, 272.946),
+                        InteractMove(350.775, 7.002, 273.974),
+                        Vec3(344.997, 7.002, 275.096),
+                    ],
+                ),
+                SeqLoot("Valve"),
+                SeqCombatAndMove(
+                    name="Move to water pipe",
+                    coords=[
+                        Vec3(341.257, 7.002, 279.365),
+                        InteractMove(341.996, 7.002, 291.467),
+                        Vec3(344.203, 7.002, 293.848),
+                        HoldDirection(191.958, 10.303, 297.889, joy_dir=Vec2(-1, 1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to slot",
+                    coords=[
+                        InteractMove(190.048, 13.002, 296.292),
+                        Vec3(184.975, 13.002, 293.902),
+                        Vec3(182.784, 13.002, 296.238),
+                    ],
+                ),
+                SeqSelectOption("Place valve", skip_dialog_check=True),
+                SeqInteract("Valve"),
+                SeqMove(
+                    name="Move to water pipe",
+                    coords=[
+                        Vec3(181.053, 13.002, 293.594),
+                        InteractMove(180.465, 7.002, 292.884),
+                        Vec3(173.506, 7.002, 291.255),
+                        HoldDirection(363.715, 11.803, 296.409, joy_dir=Vec2(-1, 0.5)),
+                        InteractMove(361.776, 14.002, 295.155),
+                        Vec3(361.887, 14.002, 292.676),
+                        Vec3(360.233, 14.002, 292.610),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Jump down to pearl",
+                    coords=[
+                        Vec3(359.211, 14.002, 291.435),
+                        InteractMove(358.238, 4.553, 290.927),
+                        InteractMove(358.955, 8.002, 291.705),
+                        Vec3(359.501, 8.002, 292.866),
+                    ],
+                ),
+                SeqInteract("Pearl"),
+                SeqMove(
+                    name="Move to valve",
+                    coords=[
+                        Vec3(359.794, 8.002, 290.852),
+                        # TODO(orkaboy): Suboptimal movement
+                        InteractMove(359.216, 1.002, 289.865),
+                        Vec3(359.216, 1.002, 287.406),
+                        Vec3(363.294, 1.002, 287.406),
+                    ],
+                ),
+                SeqLoot("Valve"),
+                SeqMove(
+                    name="Move to pedistal",
+                    coords=[
+                        Vec3(360.081, 1.002, 286.998),
+                        Vec3(358.608, 1.002, 288.231),
+                        Graplou(358.342, 1.987, 290.993, joy_dir=Vec2(0, 1), hold_timer=0.1),
+                        HoldDirection(359.005, 8.002, 291.655, joy_dir=Vec2(0, 1)),
+                        Vec3(359.268, 8.002, 293.071),
+                    ],
+                ),
+                SeqSelectOption("Place pearl", skip_dialog_check=True),
+                SeqMove(
+                    name="Move to water pipe",
+                    coords=[
+                        InteractMove(356.207, 4.553, 289.008),
+                        Vec3(347.458, 4.553, 294.630),
+                        InteractMove(345.631, 7.002, 294.630),
+                        HoldDirection(191.958, 10.303, 297.889, joy_dir=Vec2(-1, 0.5)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to slot",
+                    coords=[
+                        InteractMove(188.898, 13.002, 295.198),
+                        Vec3(185.263, 13.002, 293.642),
+                        Vec3(180.789, 13.002, 294.326),
+                    ],
+                ),
+                SeqSelectOption("Place valve", skip_dialog_check=True),
+                SeqInteract("Valve"),
+                SeqMove(
+                    name="Move to lever",
+                    coords=[
+                        Vec3(181.130, 13.002, 293.517),
+                        InteractMove(180.497, 7.002, 292.852),
+                        Vec3(174.403, 7.002, 290.435),
+                        HoldDirection(349.888, 11.803, 303.902, joy_dir=Vec2(-1, 1)),
+                        InteractMove(353.540, 14.002, 308.120),
+                        Vec3(355.829, 14.002, 308.898),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqMove(
+                    name="Move to pearl",
+                    coords=[
+                        Vec3(355.864, 14.002, 304.510),
+                        InteractMove(356.587, 7.002, 303.936),
+                        Vec3(355.747, 7.002, 299.900),
+                        InteractMove(354.369, 4.553, 293.048),
+                        Vec3(357.464, 4.553, 291.295),
+                        InteractMove(358.955, 8.002, 291.705),
+                        Vec3(359.527, 8.002, 292.852),
+                    ],
+                ),
+                SeqInteract("Pearl"),
+                SeqMove(
+                    name="Move to pedistal",
+                    coords=[
+                        Vec3(358.775, 8.002, 291.871),
+                        InteractMove(356.865, 1.002, 289.872),
+                        Vec3(347.940, 1.002, 293.415),
+                        Vec3(345.171, 1.002, 289.424),
+                        Vec3(336.620, 1.002, 289.360),
+                        HoldDirection(315.917, 1.002, 224.000, joy_dir=Vec2(-1, 1)),
+                        Vec3(313.095, 1.002, 226.943),
+                        Vec3(299.238, 1.002, 226.943),
+                        HoldDirection(279.174, 35.002, 110.098, joy_dir=Vec2(-1, -1)),
+                        Vec3(274.467, 35.002, 112.080),
+                        Vec3(274.467, 35.002, 113.540),
+                    ],
+                ),
+                SeqSelectOption("Place pearl", skip_dialog_check=True),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(277.637, 35.002, 108.570),
+                        Vec3(280.565, 35.002, 104.001),
+                        Vec3(281.500, 35.002, 104.001),
+                        InteractMove(281.500, 48.002, 105.651),
+                        Vec3(280.700, 48.002, 105.606),
+                        Vec3(278.908, 48.002, 103.735),
+                        Vec3(276.815, 48.002, 105.783),
+                        HoldDirection(274.614, 62.002, 112.461, joy_dir=Vec2(1, 1)),
+                        Vec3(270.612, 62.002, 111.443),
+                    ],
+                ),
+            ],
+        )
+
+
+class FourthFloor(SeqList):
+    """Routing of fourth floor of Tower of Antsudlo."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new FourthFloor object."""
+        super().__init__(
+            name="Fourth Floor",
+            children=[
+                SeqMove(
+                    name="Move to door",
+                    coords=[
+                        Vec3(266.123, 62.002, 111.427),
+                        Vec3(264.642, 62.002, 113.133),
+                    ],
+                ),
+                SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
+                SeqInteract("Door"),
+                SeqSkipUntilIdle("The Immortal Alchemist"),
             ],
         )
 
@@ -754,6 +1009,7 @@ class TowerOfAntsudlo(SeqList):
                 FirstFloor(),
                 SecondFloor(),
                 ThirdFloor(),
-                # TODO(orkaboy): Continue routing
+                SeqCheckpoint("antsudlo2"),
+                FourthFloor(),
             ],
         )

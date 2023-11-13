@@ -11,8 +11,8 @@ from engine.seq import (
     InteractMove,
     MistralBracelet,
     SeqBlackboard,
-    SeqBlockPuzzle,
     SeqBoat,
+    SeqBraceletPuzzle,
     SeqCheckpoint,
     SeqCliffClimb,
     SeqCliffMove,
@@ -232,7 +232,7 @@ class SouthwestIsland(SeqList):
                         Vec3(51.073, 6.002, 43.657),
                     ],
                 ),
-                SeqBlockPuzzle(
+                SeqBraceletPuzzle(
                     name="Palm tree block puzzle",
                     coords=[
                         MistralBracelet(joy_dir=Vec2(-1, 0)),
