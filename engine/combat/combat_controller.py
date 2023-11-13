@@ -4,6 +4,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
+    BotanicalHorrorEncounterController,
     DwellerOfWoeEncounterController,
     ElderMistEncounterController,
     EncounterController,
@@ -35,6 +36,7 @@ class CombatController:
         "bcde1eb0ea076f846a0ee20287d88204",  # true dweller
         "807fd9a36ea523f4aa7d532ddc565a69",  # dweller
     ]
+    BOTANICAL_HORROR_ENEMY_GUID = "64246a3a9059257409ea628466ced26e"
 
     class FSM(Enum):
         """Finite-state machine States."""
@@ -52,7 +54,10 @@ class CombatController:
         self.level_up_timeout = level_up_timeout
 
     def is_done(self: Self) -> bool:
-        return self.state in {CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT}
+        return self.state in {
+            CombatController.FSM.IDLE,
+            CombatController.FSM.AFTER_COMBAT,
+        }
 
     def update_state(self: Self, delta: float) -> None:
         """
@@ -137,6 +142,7 @@ class CombatController:
             case _:
                 match list(map(lambda x: x.guid, combat_manager.enemies)):
                     # Handle Enemy Specific Controllers
+
                     # Elder Mist Fight
                     case _ as enemies if self.ELDER_MIST_ENEMY_GUID in enemies:
                         return ElderMistEncounterController()
@@ -145,6 +151,10 @@ class CombatController:
                         True for x in enemies if x in self.DWELLER_OF_WOE_GUID_LIST
                     ):
                         return DwellerOfWoeEncounterController()
+                    # Botanical Horror Fight
+                    case _ as enemies if self.BOTANICAL_HORROR_ENEMY_GUID in enemies:
+                        return BotanicalHorrorEncounterController()
+
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
                     case _:
