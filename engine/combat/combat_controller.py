@@ -4,8 +4,8 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
-    DwellerOfWoeEncounterController,
     BotanicalHorrorEncounterController,
+    DwellerOfWoeEncounterController,
     ElderMistEncounterController,
     EncounterController,
     FirstEncounterController,
@@ -94,9 +94,7 @@ class CombatController:
                     self.state = CombatController.FSM.IDLE
                 if level_up_manager.level_up_screen_active:
                     self.state = CombatController.FSM.LEVEL_UP_SCREEN
-                    logger.debug(
-                        f"After combat state -> Level up screen, took {self.timer:.3f}s"
-                    )
+                    logger.debug(f"After combat state -> Level up screen, took {self.timer:.3f}s")
             case CombatController.FSM.LEVEL_UP_SCREEN:
                 if level_up_manager.level_up_screen_active is False:
                     self.state = CombatController.FSM.IDLE
