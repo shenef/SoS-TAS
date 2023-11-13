@@ -4,6 +4,7 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
+    DwellerOfWoeEncounterController,
     ElderMistEncounterController,
     EncounterController,
     FirstEncounterController,
@@ -30,6 +31,10 @@ class CombatController:
     # TODO(eein): Use objects/mappers for these later on.
     ELDER_MIST_ENEMY_GUID = "962aa552d33fc124782b230fce9185ce"
     ELDER_MIST_TRIAL_LEVEL_GUID = "11810c4630980eb43abf7fecebfd5a6b"
+    DWELLER_OF_WOE_GUID_LIST = [
+        "bcde1eb0ea076f846a0ee20287d88204",  # true dweller
+        "807fd9a36ea523f4aa7d532ddc565a69",  # dweller
+    ]
 
     class FSM(Enum):
         """Finite-state machine States."""
@@ -130,11 +135,16 @@ class CombatController:
             case CombatEncounter.LiveManaTutorial:
                 return LiveManaTutorialController()
             case _:
-                match map(lambda x: x.guid, combat_manager.enemies):
+                match list(map(lambda x: x.guid, combat_manager.enemies)):
                     # Handle Enemy Specific Controllers
                     # Elder Mist Fight
                     case _ as enemies if self.ELDER_MIST_ENEMY_GUID in enemies:
                         return ElderMistEncounterController()
+                    # Dweller of Woe fight
+                    case _ as enemies if any(
+                        True for x in enemies if x in self.DWELLER_OF_WOE_GUID_LIST
+                    ):
+                        return DwellerOfWoeEncounterController()
                     # Handle level specific controllers or fall back to
                     # standard encounter controller
                     case _:
