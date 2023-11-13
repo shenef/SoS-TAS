@@ -30,14 +30,14 @@ class SeqBraceletPuzzle(SeqMoveBase):
         super().__init__(name, func=func, coords=coords, precision=precision)
 
     def handle_movement(self: Self, player_pos: Vec3, target: Vec3) -> None:
-        """Handle movement between block pushes."""
+        """Handle movement between bracelet uses."""
         # If arrived, go to next coordinate in the list
 
         if not self.advance_checkpoint(player_pos, target):
             self.move_function(player_pos=player_pos, target_pos=target)
 
     def navigate_to_checkpoint(self: Self, delta: float) -> None:
-        """Handle pushing blocks."""
+        """Handle bracelet."""
         # Move towards target
         target = self.get_target()
         if target is None:
@@ -61,5 +61,5 @@ class SeqBraceletPuzzle(SeqMoveBase):
         """Top level execution function, called by Sequencer."""
         done = super().execute(delta)
         if done:
-            logger.info(f"Finished block puzzle section: {self.name}")
+            logger.info(f"Finished bracelet puzzle section: {self.name}")
         return done
