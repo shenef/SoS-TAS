@@ -147,7 +147,7 @@ class SeqCombatAndMove(SeqMove):
                         self.state = SeqCombatAndMove.FSM.MOVE
             case SeqCombatAndMove.FSM.RECOVER:
                 # After combat, run the recovery node, then continue regular movement
-                if self.recovery_path.execute(delta):
+                if self.recovery_path.execute_wrapper(delta):
                     logger.info("Finished recovery path, continuing navigation")
                     self.state = SeqCombatAndMove.FSM.MOVE
 

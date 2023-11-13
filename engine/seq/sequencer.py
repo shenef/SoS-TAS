@@ -92,7 +92,7 @@ class SequencerEngine:
         """Execute current gamestate logic."""
         if not self.paused:
             delta = self._get_deltatime()
-            self.done = self.root.execute(delta=delta)
+            self.done = self.root.execute_wrapper(delta=delta)
 
     def _print_timer(self: Self) -> None:
         # Timestamp

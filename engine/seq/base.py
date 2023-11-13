@@ -12,6 +12,7 @@ from typing import Any, Self
 
 from imgui_bundle import imgui
 
+from control import sos_ctrl
 from engine.blackboard import blackboard
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,7 @@ class SeqBase:
     def __init__(self: Self, name: str = "", func: Callable = None) -> None:
         self.name = name
         self.func = func
+        self.skip = False
 
     def reset(self: Self) -> None:
         """Reset node. Override to implement node-specific behavior."""
@@ -30,6 +32,15 @@ class SeqBase:
     def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
         """Advance node to checkpoint. Returns True if checkpoint reached."""
         return False
+
+    def execute_wrapper(self: Self, delta: float) -> bool:
+        """Top level wrapper, allowing for manual skip."""
+        if self.skip:
+            ctrl = sos_ctrl()
+            ctrl.set_neutral()
+            ctrl.release_buttons()
+            return True
+        return self.execute(delta=delta)
 
     def execute(self: Self, delta: float) -> bool:
         """
@@ -58,6 +69,8 @@ class SeqBase:
         )
         if selected:
             imgui.pop_style_color()
+            if imgui.button("Skip"):
+                self.skip = True
         imgui.pop_id()
 
     # Should be overloaded
@@ -84,7 +97,7 @@ class SeqCheckpoint(SeqBase):
         done = True
         # Optionally, run a return to route sequence, for when the save point is out of the way
         if self.skipped_to and self.return_path is not None:
-            done = self.return_path.execute(delta)
+            done = self.return_path.execute_wrapper(delta)
         if done:
             blackboard().log_checkpoint(self.name)
         return done
@@ -140,7 +153,7 @@ class SeqList(SeqBase):
             return True
         cur_child = self.children[self.step]
         # Perform logic of current child step
-        ret = cur_child.execute(delta=delta)
+        ret = cur_child.execute_wrapper(delta=delta)
         if ret is True:  # If current child is done
             self.step = self.step + 1
         return False
@@ -163,6 +176,8 @@ class SeqList(SeqBase):
         )
         if selected:
             imgui.pop_style_color()
+            if imgui.button("Skip"):
+                self.skip = True
         if tree_node:
             for idx, child in enumerate(self.children):
                 child_selected = selected and idx == self.step
@@ -228,7 +243,7 @@ class SeqIf(SeqBase):
         if self.selection is None:
             self.selection = self.condition()
         branch = self.when_true if self.selection else self.when_false
-        return branch.execute(delta) if branch is not None else True
+        return branch.execute_wrapper(delta) if branch is not None else True
 
     def render(self: Self) -> None:
         if self.selection is None:
@@ -256,6 +271,8 @@ class SeqIf(SeqBase):
         )
         if selected:
             imgui.pop_style_color()
+            if imgui.button("Skip"):
+                self.skip = True
         if tree_node:
             if self.when_true:
                 branch_selected = selected and self.selection is True
@@ -298,7 +315,7 @@ class SeqWhile(SeqBase):
             self.result = self.condition()
         # Check loop condition
         if self.result is True:
-            ret = self.child.execute(delta)
+            ret = self.child.execute_wrapper(delta)
             # Loop is done, recalculate loop condition
             if ret is True:
                 self.result = self.condition()
@@ -326,6 +343,8 @@ class SeqWhile(SeqBase):
         )
         if selected:
             imgui.pop_style_color()
+            if imgui.button("Skip"):
+                self.skip = True
         if tree_node:
             if self.child:
                 self.child.render_tree(parent_path + self.name, selected=selected)

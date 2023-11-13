@@ -137,6 +137,8 @@ class SeqBraceletPuzzle(SeqBase):
         )
         if selected:
             imgui.pop_style_color()
+            if imgui.button("Skip"):
+                self.skip = True
         if tree_node:
             self.render_coords(selected)
             imgui.tree_pop()
@@ -156,3 +158,5 @@ class SeqBraceletPuzzle(SeqBase):
             )
             if child_selected:
                 imgui.pop_style_color()
+                if imgui.button("Skip Coord"):
+                    self.step += 1

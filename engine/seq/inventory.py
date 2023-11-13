@@ -253,7 +253,7 @@ class SeqLoot(SeqBase):
                         return True
                     self.state = SeqLoot.FSM.EQUIP
             case SeqLoot.FSM.EQUIP:
-                return self.equip_node.execute(delta)
+                return self.equip_node.execute_wrapper(delta)
         return False
 
     def __repr__(self: Self) -> str:
