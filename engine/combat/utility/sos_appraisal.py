@@ -1,4 +1,5 @@
 import logging
+import random
 import time
 from enum import Enum, auto
 from typing import Self
@@ -62,7 +63,7 @@ class SoSResource(Enum):
 
 
 class SoSAppraisal(Appraisal):
-    MAX_ENEMY_TARGETING_FAILURES = 6
+    MAX_ENEMY_TARGETING_FAILURES = 15
 
     def __init__(
         self: Self,
@@ -271,10 +272,20 @@ class SoSAppraisal(Appraisal):
             # logger.debug(f"Selected Target {self.target}")
             return
         # logger.warn("Enemy Target Not Valid, moving cursor")
-        sos_ctrl().dpad.tap_right()
+        # Use a randomly selected directional input to find enemies that are otherwise not reachable
+        direction = random.randint(0, 3)
+        match direction:
+            case 0:
+                sos_ctrl().dpad.tap_left()
+            case 1:
+                sos_ctrl().dpad.tap_right()
+            case 2:
+                sos_ctrl().dpad.tap_up()
+            case 3:
+                sos_ctrl().dpad.tap_down()
         # TODO(eein): This will be improved when we have a better way to
-        # detect who we are targeting. For now we just fail after 6 failures
-        # to avoid getting stuck in a loop
+        # detect who we are targeting. For now we just fail after a set amount of
+        # failures to avoid getting stuck in a loop.
         self.enemy_targeting_failures += 1
         if self.enemy_targeting_failures >= self.MAX_ENEMY_TARGETING_FAILURES:
             self.step = SoSAppraisalStep.ConfirmEnemySequence

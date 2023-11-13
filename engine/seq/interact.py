@@ -68,7 +68,7 @@ class SeqSkipUntilIdle(SeqBase):
     def __init__(
         self: Self,
         name: str,
-        hold_cancel: bool = False,
+        hold_cancel: bool = False,  # can be used to skip animated cutscenes
         time_target: float = None,
         func: Callable[..., Any] = None,
     ) -> None:

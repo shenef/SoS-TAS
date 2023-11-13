@@ -449,7 +449,7 @@ class Library(SeqList):
                 ),
                 SkullPuzzleFlip("L3", num_flips=1),
                 SeqMove(
-                    name="Move to eight skull",
+                    name="Move to eighth skull",
                     coords=[
                         Vec3(-85.867, 10.002, 207.546),
                         Vec3(-85.426, 10.002, 207.546),

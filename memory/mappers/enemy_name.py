@@ -62,9 +62,9 @@ class EnemyName:
         # Watcher Island: Tower of Antsudlo
         "2ac7d969f7f6fb74a9c8322db76bf9b6": "Sharksenal",
         "6fd00c7bd71304e41aacabb2c6f401c7": "Shrimp Knight",
-        "667e9f6f8bb894f4dafcbc412dfdc293": "Zale",
-        "6df65b41a30cde44a967d340ec7666d3": "Valere",
-        "aaf855be11272ed4da5687c47da27579": "Seraï",
+        "667e9f6f8bb894f4dafcbc412dfdc293": "Bubble Zale",
+        "6df65b41a30cde44a967d340ec7666d3": "Bubble Valere",
+        "aaf855be11272ed4da5687c47da27579": "Bubble Seraï",
         "ea0a539bb73e45a42ae867fce0822b92": "Garnooy",
         # Watcher Island: Torment Peak
         "40f05ed0202783449a704978e8670c9b": "Tsiclop",
