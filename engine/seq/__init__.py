@@ -1,5 +1,5 @@
 from engine.seq.base import SeqBase, SeqBlackboard, SeqCheckpoint, SeqIf, SeqList, SeqWhile
-from engine.seq.bracelet_puzzle import MistralBracelet, SeqBraceletPuzzle
+from engine.seq.bracelet_puzzle import SeqBraceletPuzzle
 from engine.seq.interact import (
     SeqBracelet,
     SeqGraplou,
@@ -19,6 +19,7 @@ from engine.seq.move import (
     Graplou,
     HoldDirection,
     InteractMove,
+    MistralBracelet,
     MoveToward,
     SeqAwaitLostControl,
     SeqBoat,
