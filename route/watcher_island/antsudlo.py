@@ -568,8 +568,6 @@ class SecondFloor(SeqList):
                         MistralBracelet(joy_dir=Vec2(1, 1)),
                         Vec3(153.160, 4.387, 204.870),
                         MistralBracelet(joy_dir=Vec2(0, 1)),
-                        Vec3(153.160, 4.218, 206.571),
-                        MistralBracelet(joy_dir=Vec2(0, 1)),
                         Vec3(152.841, 4.265, 202.488),
                         MistralBracelet(joy_dir=Vec2(1, 1)),
                         Vec3(149.838, 4.246, 199.481),

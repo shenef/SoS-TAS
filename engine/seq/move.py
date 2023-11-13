@@ -421,8 +421,6 @@ class SeqMoveBase(SeqBase):
                 imgui.pop_style_color()
                 if imgui.button("Skip Coord"):
                     self.step += 1
-                if imgui.button("Skip Coord"):
-                    self.step += 1
 
 
 class SeqMove(SeqMoveBase):
