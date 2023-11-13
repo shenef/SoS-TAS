@@ -4,11 +4,8 @@ from typing import Self
 
 from control import sos_ctrl
 from engine.combat.controllers import (
-<<<<<<< HEAD
     DwellerOfWoeEncounterController,
-=======
     BotanicalHorrorEncounterController,
->>>>>>> d76b72d (adds botanical horror controller)
     ElderMistEncounterController,
     EncounterController,
     FirstEncounterController,
@@ -35,14 +32,11 @@ class CombatController:
     # TODO(eein): Use objects/mappers for these later on.
     ELDER_MIST_ENEMY_GUID = "962aa552d33fc124782b230fce9185ce"
     ELDER_MIST_TRIAL_LEVEL_GUID = "11810c4630980eb43abf7fecebfd5a6b"
-<<<<<<< HEAD
     DWELLER_OF_WOE_GUID_LIST = [
         "bcde1eb0ea076f846a0ee20287d88204",  # true dweller
         "807fd9a36ea523f4aa7d532ddc565a69",  # dweller
     ]
-=======
     BOTANICAL_HORROR_ENEMY_GUID = "64246a3a9059257409ea628466ced26e"
->>>>>>> d76b72d (adds botanical horror controller)
 
     class FSM(Enum):
         """Finite-state machine States."""
@@ -60,7 +54,10 @@ class CombatController:
         self.level_up_timeout = level_up_timeout
 
     def is_done(self: Self) -> bool:
-        return self.state in {CombatController.FSM.IDLE, CombatController.FSM.AFTER_COMBAT}
+        return self.state in {
+            CombatController.FSM.IDLE,
+            CombatController.FSM.AFTER_COMBAT,
+        }
 
     def update_state(self: Self, delta: float) -> None:
         """
@@ -97,7 +94,9 @@ class CombatController:
                     self.state = CombatController.FSM.IDLE
                 if level_up_manager.level_up_screen_active:
                     self.state = CombatController.FSM.LEVEL_UP_SCREEN
-                    logger.debug(f"After combat state -> Level up screen, took {self.timer:.3f}s")
+                    logger.debug(
+                        f"After combat state -> Level up screen, took {self.timer:.3f}s"
+                    )
             case CombatController.FSM.LEVEL_UP_SCREEN:
                 if level_up_manager.level_up_screen_active is False:
                     self.state = CombatController.FSM.IDLE
