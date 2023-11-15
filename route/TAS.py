@@ -107,6 +107,7 @@ class TASMenu(Menu):
         ("antsudlo", "Just inside entrance of tower"),
         ("antsudlo2", "Final floor of tower"),
         ("glacial_peak", "First save point after portal"),
+        ("glacial_peak2", "Campfire under the ice"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
