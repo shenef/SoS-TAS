@@ -552,36 +552,16 @@ class LeaveMountain(SeqList):
                         HoldDirection(-2.434, 15.002, 17.434, joy_dir=Vec2(1, -1)),
                     ],
                 ),
-                SeqCheckpoint(
-                    "glacial_peak4",
-                    return_path=SeqMove(
-                        name="Go around save point",
-                        coords=[
-                            Vec3(1.299, 15.002, 13.548),
-                        ],
-                    ),
-                ),
-                SeqMove(
-                    name="Move across gap",
-                    coords=[
-                        Vec3(1.322, 15.002, 17.978),
-                        Vec3(6.773, 15.002, 21.053),
-                        Graplou(25.500, 15.010, 21.145, joy_dir=Vec2(1, 0), hold_timer=0.1),
-                        Vec3(29.731, 15.002, 16.766),
-                    ],
-                ),
-                SeqClimb(
-                    name="Climb wall",
-                    coords=[
-                        InteractMove(29.731, 9.859, 15.530),
-                        Vec3(26.136, 9.551, 17.199),
-                    ],
-                ),
+                SeqCheckpoint("glacial_peak4"),
                 SeqMove(
                     name="Move to portal",
                     coords=[
-                        Vec3(22.041, 9.002, 13.766),
-                        Vec3(17.698, 9.002, 13.233),
+                        Vec3(1.180, 15.002, 12.849),
+                        Vec3(4.119, 15.002, 10.103),
+                        Vec3(5.540, 15.002, 10.103),
+                        InteractMove(6.458, 9.002, 10.103),
+                        Vec3(8.142, 9.002, 10.103),
+                        Vec3(17.062, 9.002, 13.347),
                     ],
                 ),
                 SeqSelectOption("Enter portal"),
