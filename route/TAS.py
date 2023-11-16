@@ -108,6 +108,9 @@ class TASMenu(Menu):
         ("antsudlo2", "Final floor of tower"),
         ("glacial_peak", "First save point after portal"),
         ("glacial_peak2", "Campfire under the ice"),
+        ("glacial_peak_auto", "Just before getting the Solstice Amulet"),
+        ("glacial_peak3", "Campfire under the ice, after Solstice Amulet"),
+        ("glacial_peak4", "Last save point before portal"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:

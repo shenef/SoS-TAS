@@ -10,6 +10,7 @@ from engine.seq import (
     HoldDirection,
     InteractMove,
     MistralBracelet,
+    SeqAwaitLostControl,
     SeqBracelet,
     SeqBraceletPuzzle,
     SeqChangeTimeOfDay,
@@ -17,11 +18,14 @@ from engine.seq import (
     SeqCliffClimb,
     SeqCliffMove,
     SeqClimb,
+    SeqDelay,
     SeqHoldDirectionDelay,
     SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
+    SeqInteract,
     SeqList,
     SeqMove,
+    SeqSelectOption,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
 )
@@ -338,13 +342,15 @@ class Acolytes(SeqList):
                 SeqCliffMove(
                     name="Move along ledge",
                     coords=[
+                        HoldDirection(-132.132, 71.000, 222.000, joy_dir=Vec2(-1, 1)),
                         Vec3(-137.543, 71.002, 222.189),
+                        HoldDirection(-58.542, 62.002, 213.092, joy_dir=Vec2(0, 1)),
                     ],
                 ),
+                SeqCheckpoint("glacial_peak_auto"),
                 SeqMove(
                     name="Grab wall",
                     coords=[
-                        HoldDirection(-58.542, 62.002, 213.092, joy_dir=Vec2(0, 1)),
                         Vec3(-58.546, 62.002, 217.033),
                         Vec3(-56.407, 62.002, 219.511),
                         Graplou(-60.097, 62.610, 228.238, joy_dir=Vec2(-0.5, 1), hold_timer=0.1),
@@ -390,13 +396,14 @@ class Acolytes(SeqList):
                     coords=[
                         InteractMove(-52.460, 70.002, 252.531),
                         Vec3(-50.737, 70.002, 254.090),
-                        InteractMove(-49.195, 56.002, 254.629),
+                        InteractMove(-50.135, 56.002, 254.786),
+                        Vec3(-48.640, 56.002, 254.998),
                         InteractMove(-46.654, 56.002, 256.976),
                         Vec3(-41.792, 56.002, 273.583),
                     ],
                 ),
-                SeqHoldDirectionUntilLostControl("Move to cutscene"),
-                SeqSkipUntilIdle("Solstice Amulet", time_target=10.0),
+                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(0, 1)),
+                SeqSkipUntilIdle("Solstice Amulet", time_target=8.0),
             ],
         )
 
@@ -410,14 +417,182 @@ class Descent(SeqList):
             name="Descent",
             children=[
                 SeqMove(
+                    name="Move past ice block",
+                    coords=[
+                        Vec3(-42.349, 56.002, 248.852),
+                    ],
+                ),
+                SeqChangeTimeOfDay("Ice block", time_target=15.0),
+                SeqMove(
                     name="Move to boulder",
                     coords=[
                         Vec3(-43.130, 56.002, 246.801),
                         Vec3(-45.340, 56.002, 241.346),
                     ],
                 ),
+                SeqDelay("Melt ice", timeout_in_s=1.5),
                 SeqChangeTimeOfDay("Boulder", time_target=22.0),
-                # TODO(orkaboy): Continue routing
+                SeqMove(
+                    name="Move past boulder",
+                    coords=[
+                        Vec3(-43.136, 56.002, 236.628),
+                    ],
+                ),
+                SeqChangeTimeOfDay("Boulder", time_target=3.0),
+                SeqMove(
+                    name="",
+                    coords=[
+                        Vec3(-40.814, 56.002, 231.551),
+                        Vec3(-37.620, 56.002, 229.954),
+                    ],
+                ),
+                SeqInteract("Lever"),
+                SeqChangeTimeOfDay("Ice block", time_target=8.0),
+                SeqMove(
+                    name="Return to cave under ice",
+                    coords=[
+                        Vec3(-41.713, 56.002, 221.660),
+                        Vec3(-41.713, 56.002, 217.424),
+                        HoldDirection(-201.000, 52.002, 220.500, joy_dir=Vec2(0, -1)),
+                        Vec3(-201.000, 52.002, 218.190),
+                        Vec3(-195.868, 52.002, 205.584),
+                        Vec3(-195.607, 49.211, 190.023),
+                        Graplou(-195.352, 49.010, 176.511, joy_dir=Vec2(0, -1), hold_timer=0.1),
+                        Vec3(-195.352, 49.010, 169.048),
+                        HoldDirection(-200.100, 39.002, 63.075, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+            ],
+        )
+
+
+class LeaveMountain(SeqList):
+    """Routing of final descent segment of Glacial Peak."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new LeaveMountain object."""
+        super().__init__(
+            name="Leave mountain",
+            children=[
+                SeqMove(
+                    name="Jump cliffs",
+                    coords=[
+                        Vec3(-197.702, 39.002, 58.820),
+                        Vec3(-198.687, 39.002, 51.033),
+                        Vec3(-207.191, 39.002, 34.879),
+                    ],
+                ),
+                SeqChangeTimeOfDay("Activate right rune", time_target=19.0),
+                SeqMove(
+                    name="Jump cliffs",
+                    coords=[
+                        InteractMove(-208.213, 32.002, 34.059),
+                        Vec3(-209.311, 32.002, 28.953),
+                        InteractMove(-209.311, 25.002, 24.366),
+                        Vec3(-206.461, 25.027, 15.685),
+                        Vec3(-207.518, 25.010, 15.015),
+                    ],
+                ),
+                SeqDelay("Wait", timeout_in_s=1.0),
+                SeqChangeTimeOfDay("Activate left rune", time_target=9.0),
+                SeqSkipUntilIdle("Wait for control"),
+                SeqAwaitLostControl("Await cutscene"),
+                SeqChangeTimeOfDay("Prepare", time_target=21.0),
+                SeqBraceletPuzzle(
+                    name="Push block",
+                    coords=[
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                        Vec3(-218.387, 25.002, 13.133),
+                        Vec3(-219.487, 25.002, 13.133),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(-221.567, 25.007, 18.304),
+                        Vec3(-221.567, 25.007, 19.306),
+                    ],
+                ),
+                SeqDelay("Wait", timeout_in_s=1.0),
+                SeqChangeTimeOfDay("Activate left rune", time_target=6.0),
+                SeqBraceletPuzzle(
+                    name="Push block",
+                    coords=[
+                        MistralBracelet(joy_dir=Vec2(1, 0)),
+                        Vec3(-219.601, 25.002, 18.247),
+                        Vec3(-219.601, 25.002, 18.247),
+                        Vec3(-218.626, 25.002, 18.247),
+                        MistralBracelet(joy_dir=Vec2(0, 1)),
+                        Vec3(-216.410, 25.010, 24.428),
+                        Vec3(-216.410, 25.010, 25.720),
+                        MistralBracelet(joy_dir=Vec2(-1, 0)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to ladder",
+                    coords=[
+                        Vec3(-218.446, 25.019, 27.870),
+                        Vec3(-222.381, 25.002, 27.870),
+                        Vec3(-224.386, 25.002, 26.454),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb down ladder",
+                    coords=[
+                        InteractMove(-224.179, 18.922, 25.530),
+                        HoldDirection(-66.500, 17.850, 25.530, joy_dir=Vec2(0, -1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to save branch",
+                    coords=[
+                        Vec3(-66.500, 9.002, 24.322),
+                        Vec3(-64.607, 9.002, 22.978),
+                        Vec3(-63.460, 9.002, 18.454),
+                        InteractMove(-63.460, 7.002, 17.536),
+                        Vec3(-60.495, 7.002, 14.319),
+                        InteractMove(-60.522, -0.998, 10.634),
+                        Vec3(-55.712, -0.998, 5.571),
+                        HoldDirection(-2.434, 15.002, 17.434, joy_dir=Vec2(1, -1)),
+                    ],
+                ),
+                SeqCheckpoint(
+                    "glacial_peak4",
+                    return_path=SeqMove(
+                        name="Go around save point",
+                        coords=[
+                            Vec3(1.299, 15.002, 13.548),
+                        ],
+                    ),
+                ),
+                SeqMove(
+                    name="Move across gap",
+                    coords=[
+                        Vec3(1.322, 15.002, 17.978),
+                        Vec3(6.773, 15.002, 21.053),
+                        Graplou(25.500, 15.010, 21.145, joy_dir=Vec2(1, 0), hold_timer=0.1),
+                        Vec3(29.731, 15.002, 16.766),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(29.731, 9.859, 15.530),
+                        Vec3(26.136, 9.551, 17.199),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to portal",
+                    coords=[
+                        Vec3(22.041, 9.002, 13.766),
+                        Vec3(17.698, 9.002, 13.233),
+                    ],
+                ),
+                SeqSelectOption("Enter portal"),
+                SeqSkipUntilIdle("Tethered Mind Potion"),
+                SeqMove(
+                    name="Move to Docarri portal",
+                    coords=[
+                        Vec3(8.253, 0.002, 18.487),
+                    ],
+                ),
+                SeqSelectOption("Enter portal"),
             ],
         )
 
@@ -434,6 +609,7 @@ class GlacialPeak(SeqList):
                 SeqCheckpoint("glacial_peak2"),
                 Acolytes(),
                 Descent(),
-                # TODO(orkaboy): Continue routing
+                SeqCheckpoint("glacial_peak3"),
+                LeaveMountain(),
             ],
         )
