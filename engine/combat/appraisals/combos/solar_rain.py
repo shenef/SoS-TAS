@@ -19,8 +19,8 @@ class SolarRain(ComboSkill):
 
     def __init__(
         self: Self,
-        value: int,
         skill_command_index: int,
+        value: float = 0.0,
         boost: int = 0,
     ) -> None:
         super().__init__(

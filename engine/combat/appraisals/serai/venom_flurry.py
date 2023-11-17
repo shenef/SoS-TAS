@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class VenomFlurry(SoSAppraisal):
     def __init__(
         self: Self,
-        value: int = 0,
+        value: float = 0.0,
         timing_type: SoSTimingType = SoSTimingType.MultiHit,
         boost: int = 0,
     ) -> None:

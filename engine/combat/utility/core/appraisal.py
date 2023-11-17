@@ -5,9 +5,9 @@ logger = logging.getLogger(__name__)
 
 
 class Appraisal:
-    def __init__(self: Self, name: str, value: int = 0) -> None:
+    def __init__(self: Self, name: str, value: float = 0) -> None:
         self.name: str = name
-        self.value: int = value
+        self.value: float = value
         self.target: str = None
         self.complete: bool = False
 
