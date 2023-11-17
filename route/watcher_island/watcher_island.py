@@ -11,6 +11,7 @@ from route.watcher_island.glacial_peak import GlacialPeak
 from route.watcher_island.jungle_path import JunglePath
 from route.watcher_island.lake_docarria import LakeDocarria
 from route.watcher_island.sacred_grove import SacredGrove
+from route.watcher_island.torment_peak import TormentPeak
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +60,7 @@ class WatcherIsland(SeqList):
                 DocarriVillage(),
                 TowerOfAntsudlo(),
                 GlacialPeak(),
+                TormentPeak(),
                 # TODO(orkaboy): Continue routing
             ],
         )
