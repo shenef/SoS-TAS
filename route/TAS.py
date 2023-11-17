@@ -111,6 +111,7 @@ class TASMenu(Menu):
         ("glacial_peak_auto", "Just before getting the Solstice Amulet"),
         ("glacial_peak3", "Campfire under the ice, after Solstice Amulet"),
         ("glacial_peak4", "Last save point before portal"),
+        ("torment_peak", "Just inside entrance"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
