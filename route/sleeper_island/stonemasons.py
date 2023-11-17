@@ -742,7 +742,7 @@ class WindTunnelMinesBlockPuzzle3(SeqList):
                         Vec3(21.640, 1.010, -1.990),
                     ],
                 ),
-                SeqDelay(name="Wait", timeout_in_s=1.5),
+                SeqDelay(name="Wait", timeout_in_s=0.5),
                 SeqBraceletPuzzle(
                     name="Third segment",
                     coords=[
