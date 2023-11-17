@@ -114,6 +114,9 @@ class SoSAppraisal(Appraisal):
     def __repr__(self: Self) -> str:
         name = f"[{self.name}]" if self.battle_command != SoSBattleCommand.Attack else ""
         target = ""
+        boost = ""
+        if self.boost > 0:
+            boost = f" boost={self.boost}"
         if self.target is not None:
             enemy_name = ""
             enemy_idx = 0
@@ -125,7 +128,7 @@ class SoSAppraisal(Appraisal):
                 target = f" (target = {enemy_name} [{enemy_idx}])"
             else:
                 target = f" (target = {self.target})"
-        return f"{self.battle_command.name}{name}{target}"
+        return f"{self.battle_command.name}{name}{target}{boost}"
 
     def execute(self: Self) -> None:
         """Select the step to perform based on the current step."""
