@@ -17,6 +17,23 @@ from memory.mappers.player_party_character import PlayerPartyCharacter
 logger = logging.getLogger(__name__)
 
 
+class UtilityEntry:
+    """Internal representation of a comment in the utility log."""
+
+    def __init__(self: Self, character: PlayerPartyCharacter, appraisal: Appraisal) -> None:
+        """Initialize a UtilityEntry object."""
+        self.character = character
+        self.appraisal = appraisal
+
+
+_utility_log: list[UtilityEntry] = []
+
+
+def get_utility_log() -> list[UtilityEntry]:
+    """Return a handle to the log."""
+    return _utility_log
+
+
 class SoSBattleCommand(Enum):
     """Actions that a player can take. See `AppraisalType`."""
 
