@@ -5,11 +5,14 @@ from engine.combat.contexts.reasoner_execution_context import ReasonerExecutionC
 from engine.combat.utility.core.action import Action
 from engine.combat.utility.core.consideration import Consideration
 from engine.combat.utility.core.reasoner import Reasoner
+from engine.combat.utility.sos_appraisal import UtilityEntry, get_utility_log
 from engine.combat.utility.sos_consideration import SoSConsideration
 from memory import CombatEnemyTarget, CombatPlayer, combat_manager_handle
 
 logger = logging.getLogger(__name__)
 combat_manager = combat_manager_handle()
+
+utility_log = get_utility_log()
 
 
 class SoSReasoner(Reasoner):
@@ -50,6 +53,12 @@ class SoSReasoner(Reasoner):
         # if we have priority targets, then filter out any actions that don't target them
         if self.reasoner_execution_context.priority_targets != []:
             actions = self._filter_priority_targets(actions)
+
+        utility_log.clear()
+        for action in actions:
+            consideration: SoSConsideration = action.consideration
+            character = consideration.actor.character
+            utility_log.append(UtilityEntry(character=character, appraisal=action.appraisal))
 
         if not actions:
             return None

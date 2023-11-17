@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class VespertineCannons(SoSAppraisal):
     def __init__(
         self: Self,
-        value: int = 0,
+        value: float = 0.0,
         boost: int = 0,
     ) -> None:
         super().__init__(

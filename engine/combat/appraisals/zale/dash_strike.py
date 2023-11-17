@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class DashStrike(SoSAppraisal):
     def __init__(
         self: Self,
-        value: int = 0,
+        value: float = 0.0,
         timing_type: SoSTimingType = SoSTimingType.OneHit,
         boost: int = 0,
     ) -> None:

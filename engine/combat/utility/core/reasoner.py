@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Any, Self
 
 from engine.combat.utility.core.consideration import Consideration
 
@@ -8,7 +8,7 @@ class Reasoner:
         """Initialize a new Reasoner object."""
         self.considerations = []
 
-    def generate_considerations(self: Self, actors: list[any]) -> list[Consideration]:
+    def generate_considerations(self: Self, actors: list[Any]) -> list[Consideration]:
         considerations = []
         for actor in actors:
             considerations.append(Consideration(actor))

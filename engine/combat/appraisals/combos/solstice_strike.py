@@ -20,7 +20,7 @@ class SolsticeStrike(ComboSkill):
     def __init__(
         self: Self,
         main_caster: PlayerPartyCharacter,
-        value: int,
+        value: float = 0.0,
         boost: int = 0,
     ) -> None:
         super().__init__(

@@ -17,6 +17,7 @@ from GUI.tools.inventory_helper import InventoryHelper
 from GUI.tools.nav_helper import NavHelper
 from GUI.tools.route_helper import RouteHelper
 from GUI.tools.shop_helper import ShopHelper
+from GUI.tools.utility_helper import UtilityHelper
 from log_init import initialize_logging
 from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu, SoSShopTestMenu
 
@@ -52,6 +53,7 @@ if __name__ == "__main__":
             ShopHelper(window=gui),
             BlackboardHelper(window=gui),
             CommentaryLog(window=gui),
+            UtilityHelper(window=gui),
         ],
     )
     menu_manager.run()

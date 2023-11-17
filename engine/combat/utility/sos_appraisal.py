@@ -97,18 +97,21 @@ class SoSAppraisal(Appraisal):
     def __repr__(self: Self) -> str:
         name = f"[{self.name}]" if self.battle_command != SoSBattleCommand.Attack else ""
         target = ""
+        boost = ""
+        if self.boost > 0:
+            boost = f" boost={self.boost}"
         if self.target is not None:
             enemy_name = ""
             enemy_idx = 0
             for idx, enemy in enumerate(self.combat_manager.enemies):
-                if self.target is enemy.unique_id:
+                if self.target == enemy.unique_id:
                     enemy_idx = idx
                     enemy_name = enemy.name
-            if not enemy_name:
+            if enemy_name is not None and enemy_name != "":
                 target = f" (target = {enemy_name} [{enemy_idx}])"
             else:
                 target = f" (target = {self.target})"
-        return f"{self.battle_command.name}{name}{target}"
+        return f"{self.battle_command.name}{name}{target}{boost}"
 
     def execute(self: Self) -> None:
         """Select the step to perform based on the current step."""
@@ -384,3 +387,23 @@ class SoSAppraisal(Appraisal):
     def adjust_value(self: Self, enemy: CombatEnemyTarget) -> None:
         """Can be overridden to adjust value against specific enemy."""
         return
+
+
+class UtilityEntry:
+    """Internal representation of a comment in the utility log."""
+
+    def __init__(self: Self, character: PlayerPartyCharacter, appraisal: SoSAppraisal) -> None:
+        """Initialize a UtilityEntry object."""
+        self.character = character
+        self.appraisal = appraisal
+
+    def __repr__(self: Self) -> str:
+        return f"[{self.appraisal.value}] {self.character.name}: {self.appraisal}"
+
+
+_utility_log: list[UtilityEntry] = []
+
+
+def get_utility_log() -> list[UtilityEntry]:
+    """Return a handle to the log."""
+    return _utility_log
