@@ -17,23 +17,6 @@ from memory.mappers.player_party_character import PlayerPartyCharacter
 logger = logging.getLogger(__name__)
 
 
-class UtilityEntry:
-    """Internal representation of a comment in the utility log."""
-
-    def __init__(self: Self, character: PlayerPartyCharacter, appraisal: Appraisal) -> None:
-        """Initialize a UtilityEntry object."""
-        self.character = character
-        self.appraisal = appraisal
-
-
-_utility_log: list[UtilityEntry] = []
-
-
-def get_utility_log() -> list[UtilityEntry]:
-    """Return a handle to the log."""
-    return _utility_log
-
-
 class SoSBattleCommand(Enum):
     """Actions that a player can take. See `AppraisalType`."""
 
@@ -121,10 +104,10 @@ class SoSAppraisal(Appraisal):
             enemy_name = ""
             enemy_idx = 0
             for idx, enemy in enumerate(self.combat_manager.enemies):
-                if self.target is enemy.unique_id:
+                if self.target == enemy.unique_id:
                     enemy_idx = idx
                     enemy_name = enemy.name
-            if not enemy_name:
+            if enemy_name is not None and enemy_name != "":
                 target = f" (target = {enemy_name} [{enemy_idx}])"
             else:
                 target = f" (target = {self.target})"
@@ -404,3 +387,23 @@ class SoSAppraisal(Appraisal):
     def adjust_value(self: Self, enemy: CombatEnemyTarget) -> None:
         """Can be overridden to adjust value against specific enemy."""
         return
+
+
+class UtilityEntry:
+    """Internal representation of a comment in the utility log."""
+
+    def __init__(self: Self, character: PlayerPartyCharacter, appraisal: SoSAppraisal) -> None:
+        """Initialize a UtilityEntry object."""
+        self.character = character
+        self.appraisal = appraisal
+
+    def __repr__(self: Self) -> str:
+        return f"[{self.appraisal.value}] {self.character.name}: {self.appraisal}"
+
+
+_utility_log: list[UtilityEntry] = []
+
+
+def get_utility_log() -> list[UtilityEntry]:
+    """Return a handle to the log."""
+    return _utility_log

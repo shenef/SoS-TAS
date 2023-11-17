@@ -29,7 +29,7 @@ class UtilityHelper(Menu):
         imgui.begin_child("scroll_area")
 
         for entry in get_utility_log():
-            imgui.text(f"[{entry.appraisal.value}] {entry.character.name}: {entry.appraisal}")
+            imgui.text(f"{entry}")
 
         ret = False
         if not top_level and imgui.button("Back"):
