@@ -501,7 +501,7 @@ class SeqMove(SeqMoveBase):
             return
 
         player_pos = self.player_position()
-        if player_pos.x is None:
+        if player_pos is None:
             return
 
         self.handle_toggling_input(delta, player_pos, target)

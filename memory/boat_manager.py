@@ -9,8 +9,8 @@ class BoatManager:
         """Initialize a new BoatManager object."""
         self.memory = mem_handle()
         self.base = None
-        self.position = Vec3(None, None, None)
-        self.rotation = Quaternion(None, None, None, None)
+        self.position: Vec3 = None
+        self.rotation: Quaternion = None
         self.speed = 0
         self.max_speed = 0
 
@@ -47,7 +47,7 @@ class BoatManager:
                 self.position = Vec3(x, y, z)
                 return
 
-        self.position = Vec3(None, None, None)
+        self.position = None
 
     def _read_rotation(self: Self) -> None:
         if self.memory.ready_for_updates:
@@ -63,7 +63,7 @@ class BoatManager:
                 self.rotation = Quaternion(x, y, z, w)
                 return
 
-        self.rotation = Quaternion(None, None, None, None)
+        self.rotation = None
 
     def _read_speed(self: Self) -> None:
         if self.memory.ready_for_updates:

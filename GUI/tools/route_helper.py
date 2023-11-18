@@ -196,17 +196,9 @@ class RouteHelper(Menu):
 
         LayoutHelper.add_spacer()
 
-        player_pos = Vec3(
-            player_party_manager.position.x or 0,
-            player_party_manager.position.y or 0,
-            player_party_manager.position.z or 0,
-        )
+        player_pos = player_party_manager.position or Vec3(0, 0, 0)
 
-        gameobject_pos = Vec3(
-            player_party_manager.gameobject_position.x or 0,
-            player_party_manager.gameobject_position.y or 0,
-            player_party_manager.gameobject_position.z or 0,
-        )
+        gameobject_pos = player_party_manager.gameobject_position or Vec3(0, 0, 0)
 
         imgui.text(
             f"Regular movement:{' (cur)' if self.current_type is RouteSegmentType.MOVE else ''}"
@@ -230,11 +222,7 @@ class RouteHelper(Menu):
         self.gui_section(4, RouteSegmentType.CLIFF_CLIMB, coord=gameobject_pos)
         LayoutHelper.add_spacer()
 
-        boat_pos = Vec3(
-            boat_manager.position.x or 0,
-            boat_manager.position.y or 0,
-            boat_manager.position.z or 0,
-        )
+        boat_pos = boat_manager.position or Vec3(0, 0, 0)
 
         imgui.text(f"Boat:{' (cur)' if self.current_type is RouteSegmentType.BOAT else ''}")
         self.gui_section(5, RouteSegmentType.BOAT, coord=boat_pos)
