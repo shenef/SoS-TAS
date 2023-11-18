@@ -26,6 +26,9 @@ class EnemyName:
         "810980f005079324fb9fb643243eccee": "Malkomud",
         "fc51f181f5f913f4e99195da947b1425": "Malkomount",
         # Sleeper Island: Wizard Lab
+        "013ecd2381fd8574c910cb58203eb2df": "Arcane Sentry",
+        "14c5d91be67e5214ba8ce66c21a282e7": "Croube",
+        "42c3cf27ee18164428ad318882f5137e": "Wanderer",
         "90c4097a7ecb8d6439bdc8d7a48b8992": "Crystal Tulip",
         "a3b51cc4bda782c41a9ada029c202824": "Chromatic Apparition",
         # Wraith Island: Cursed Woods
