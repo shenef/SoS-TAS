@@ -4,7 +4,7 @@ from typing import Self
 from control import sos_ctrl
 from engine.combat.contexts.reasoner_execution_context import ReasonerExecutionContext
 from engine.combat.utility.core.action import Action
-from engine.combat.utility.sos_appraisal import SoSAppraisalStep
+from engine.combat.utility.sos_appraisal import SoSAppraisalStep, get_utility_log
 from engine.combat.utility.sos_consideration import SoSConsideration
 from engine.combat.utility.sos_reasoner import SoSReasoner
 from memory import (
@@ -37,6 +37,7 @@ class EncounterController:
     def encounter_done(self: Self) -> bool:
         """If combat is done, just exit."""
         if combat_manager.encounter_done is True:
+            get_utility_log().clear()
             return True
         return False
 
