@@ -480,6 +480,8 @@ class SeqMove(SeqMoveBase):
         if isinstance(target, Graplou):
             # If graplouing onto a wall/ladder, the player position won't update correctly
             player_pos = player_party_manager.gameobject_position
+            if player_pos is None:
+                return
         # If arrived, go to next coordinate in the list
         if self.advance_checkpoint(player_pos, target, precision):
             self.hold_timer = 0
