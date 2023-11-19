@@ -955,7 +955,7 @@ class ThirdFloor(SeqList):
                 ),
                 SeqSelectOption("Place pearl", skip_dialog_check=True),
                 SeqMove(
-                    name="",
+                    name="",  # TODO(orkaboy): Add name
                     coords=[
                         Vec3(277.637, 35.002, 108.570),
                         Vec3(280.565, 35.002, 104.001),
