@@ -3,17 +3,17 @@ from typing import Self
 from memory.core import mem_handle
 
 
-# Shopmanager is the internal naming for the class that handles shops in the game.
+# ShopManager is the internal naming for the class that handles shops in the game.
 # The class has a currentShop -> itemsToSell definition that we will use to traverse
 # items in the shop.
-class Shopmanager:
+class ShopManager:
     NULL_POINTER = 0xFFFFFFFF
     ZERO_NULL_POINTER = 0x0
     ITEM_OBJECT_OFFSET = 0x8
     ITEM_INDEX_0_ADDRESS = 0x20
 
     def __init__(self: Self) -> None:
-        """Initialize a new Shopmanager object."""
+        """Initialize a new ShopManager object."""
         self.memory = mem_handle()
         self.base = None
         self.shop_items: list[str] = []
@@ -58,8 +58,8 @@ class Shopmanager:
         self.shop_items = shop_items
 
 
-_shop_manager_mem = Shopmanager()
+_shop_manager_mem = ShopManager()
 
 
-def shop_manager_handle() -> Shopmanager:
+def shop_manager_handle() -> ShopManager:
     return _shop_manager_mem
