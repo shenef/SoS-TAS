@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class OnToTormentPeak(SeqList):
-    """Routing from Lake Doccaria to Torment Peak."""
+    """Routing from Lake Docarria to Torment Peak."""
 
     def __init__(self: Self) -> None:
         """Initialize a new OnToTormentPeak object."""
@@ -32,7 +32,7 @@ class OnToTormentPeak(SeqList):
             name="On to Torment Peak",
             children=[
                 SeqMove(
-                    name="Navigate Lake Doccaria",
+                    name="Navigate Lake Docarria",
                     coords=[
                         Vec3(63.480, 43.002, 64.460),
                         InteractMove(63.459, 40.803, 63.540),
@@ -62,7 +62,7 @@ class OnToTormentPeak(SeqList):
                 SeqInteract("Torment Peak"),
                 SeqChangeTimeOfDay("Right rune", time_target=16.0),
                 SeqMove(
-                    name="Move close to pedistal",
+                    name="Move close to pedestal",
                     coords=[
                         Vec3(26.130, 5.002, -43.551),
                     ],

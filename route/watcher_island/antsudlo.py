@@ -292,7 +292,7 @@ class FirstFloor(SeqList):
                 ),
                 SeqInteract("Lever"),
                 SeqMove(
-                    name="Move to pedistal",
+                    name="Move to pedestal",
                     coords=[
                         Vec3(148.064, 1.002, 95.842),
                         Vec3(147.035, 1.002, 93.074),
@@ -351,7 +351,7 @@ class FirstFloor(SeqList):
                 ),
                 SeqInteract("Turn valve"),
                 SeqMove(
-                    name="Move to left pedistal",
+                    name="Move to left pedestal",
                     coords=[
                         Vec3(212.472, 1.002, 81.887),
                         Vec3(215.059, 1.002, 79.210),
@@ -365,7 +365,7 @@ class FirstFloor(SeqList):
                 ),
                 SeqSelectOption("Place pearl", skip_dialog_check=True),
                 SeqMove(
-                    name="Move to right pedistal",
+                    name="Move to right pedestal",
                     coords=[
                         Vec3(266.962, 1.002, 111.054),
                     ],
@@ -755,19 +755,19 @@ class SecondFloor(SeqList):
                     precision=5,
                 ),
                 SeqMove(
-                    name="Move to pedistal",
+                    name="Move to pedestal",
                     coords=[
                         Vec3(263.657, 14.303, 106.255),
                         Vec3(263.657, 14.303, 108.857),
                         Vec3(261.222, 14.303, 111.020),
                     ],
                 ),
-                # Must wait until water level has stabilized to interact with pedistal
+                # Must wait until water level has stabilized to interact with pedestal
                 SeqDelay("Wait", timeout_in_s=0.5),
                 SeqHoldDirectionDelay("Turn", joy_dir=Vec2(0, 1), timeout_s=0.1),
                 SeqSelectOption("Place pearl", skip_dialog_check=True),
                 SeqMove(
-                    name="Move to pedistal",
+                    name="Move to pedestal",
                     coords=[
                         Vec3(267.353, 14.303, 111.013),
                     ],
@@ -883,7 +883,7 @@ class ThirdFloor(SeqList):
                 ),
                 SeqLoot("Valve"),
                 SeqMove(
-                    name="Move to pedistal",
+                    name="Move to pedestal",
                     coords=[
                         Vec3(360.081, 1.002, 286.998),
                         Vec3(358.608, 1.002, 288.231),
@@ -938,7 +938,7 @@ class ThirdFloor(SeqList):
                 ),
                 SeqInteract("Pearl"),
                 SeqMove(
-                    name="Move to pedistal",
+                    name="Move to pedestal",
                     coords=[
                         Vec3(358.775, 8.002, 291.871),
                         InteractMove(356.865, 1.002, 289.872),
@@ -955,7 +955,7 @@ class ThirdFloor(SeqList):
                 ),
                 SeqSelectOption("Place pearl", skip_dialog_check=True),
                 SeqMove(
-                    name="",
+                    name="",  # TODO(orkaboy): Add name
                     coords=[
                         Vec3(277.637, 35.002, 108.570),
                         Vec3(280.565, 35.002, 104.001),
