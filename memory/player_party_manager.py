@@ -25,8 +25,8 @@ class PlayerPartyManager:
         self.base = None
         self.fields_base = None
         self.current_party: list[PlayerPartyCharacter] = []
-        self.position = Vec3(None, None, None)
-        self.gameobject_position = Vec3(None, None, None)
+        self.position: Vec3 = None
+        self.gameobject_position: Vec3 = None
         self.leader = None
         self.movement_state = PlayerMovementState.NONE
         self.leader_character = PlayerPartyCharacter.NONE
@@ -106,14 +106,14 @@ class PlayerPartyManager:
                 self.position = Vec3(x, y, z)
                 return
 
-        self.position = Vec3(None, None, None)
+        self.position = None
 
     def _read_gameobject_position(self: Self) -> None:
         if self.memory.ready_for_updates:
             # leader -> controller -> currentTargetPosition
             gameobject_ptr = self.memory.follow_pointer(self.base, [self.leader, 0x30, 0x0])
             if gameobject_ptr == 0x0:
-                self.gameobject_position = Vec3(None, None, None)
+                self.gameobject_position = None
                 return
 
             ptr = self.memory.follow_pointer(gameobject_ptr, [0x48, 0x1C])
@@ -125,7 +125,7 @@ class PlayerPartyManager:
                 self.gameobject_position = Vec3(x, y, z)
                 return
 
-        self.gameobject_position = Vec3(None, None, None)
+        self.gameobject_position = None
 
     def _read_movement_state(self: Self) -> None:
         if self.memory.ready_for_updates:

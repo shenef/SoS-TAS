@@ -45,17 +45,8 @@ class NavHelper(Menu):
         mstate_v = player_party_manager.movement_state.value
         mstate_m = player_party_manager.movement_state.name
 
-        player_pos = Vec3(
-            player_party_manager.position.x or 0,
-            player_party_manager.position.y or 0,
-            player_party_manager.position.z or 0,
-        )
-
-        gameobject_pos = Vec3(
-            player_party_manager.gameobject_position.x or 0,
-            player_party_manager.gameobject_position.y or 0,
-            player_party_manager.gameobject_position.z or 0,
-        )
+        player_pos = player_party_manager.position or Vec3(0, 0, 0)
+        gameobject_pos = player_party_manager.gameobject_position or Vec3(0, 0, 0)
 
         imgui.text(f"Movement State: {mstate_m} ({mstate_v})")
 
@@ -146,17 +137,10 @@ class NavHelper(Menu):
             LayoutHelper.add_spacings(2)
 
         ui_boat_coordinates, visible = imgui.collapsing_header("Boat Coordinates", True, flags=32)
-        boat_pos = Vec3(
-            boat_manager.position.x or 0,
-            boat_manager.position.y or 0,
-            boat_manager.position.z or 0,
-        )
-        boat_rotation = Quaternion(
-            boat_manager.rotation.x or 0,
-            boat_manager.rotation.y or 0,
-            boat_manager.rotation.z or 0,
-            boat_manager.rotation.w or 0,
-        )
+
+        boat_pos = boat_manager.position or Vec3(0, 0, 0)
+        boat_rotation = boat_manager.rotation or Quaternion(0, 0, 0, 0)
+
         if ui_boat_coordinates and visible:
             imgui.text(f"x: {boat_pos.x:.3f}")
             imgui.text(f"y: {boat_pos.y:.3f}")
