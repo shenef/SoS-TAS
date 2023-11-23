@@ -3,7 +3,7 @@
 import logging
 from typing import Self
 
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
     Graplou,
@@ -16,13 +16,17 @@ from engine.seq import (
     SeqCheckpoint,
     SeqCliffClimb,
     SeqCliffMove,
+    SeqClimb,
     SeqDelay,
     SeqGraplou,
     SeqHoldDirectionDelay,
+    SeqHoldDirectionUntilCombat,
     SeqHoldDirectionUntilLostControl,
     SeqInteract,
     SeqList,
+    SeqLoot,
     SeqMove,
+    SeqSkipUntilClose,
     SeqSkipUntilIdle,
 )
 
@@ -377,21 +381,238 @@ class FirstRoom(SeqList):
         )
 
 
-class SecondRoom(SeqList):
+class SecondRoom(SeqMove):
     """Routing of first room segment of Torment Peak."""
 
     def __init__(self: Self) -> None:
         """Initialize a new SecondRoom object."""
         super().__init__(
             name="Second room",
+            coords=[
+                Vec3(93.000, 5.002, 228.420),
+                Vec3(98.343, 5.002, 234.393),
+                Vec3(100.546, 5.002, 234.237),
+                InteractMove(103.398, 4.002, 234.454),
+                InteractMove(103.398, -3.998, 233.536),
+                Vec3(107.017, -3.998, 229.666),
+                InteractMove(110.023, -6.998, 226.918),
+                InteractMove(111.126, -9.998, 219.352),
+                Vec3(112.257, -9.998, 209.968),
+                HoldDirection(386.500, 0.002, 157.117, joy_dir=Vec2(0, -1)),
+            ],
+        )
+
+
+class ThirdRoom(SeqList):
+    """Routing of third room segment of Torment Peak."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new ThirdRoom object."""
+        super().__init__(
+            name="Third room",
             children=[
-                SeqMove(
-                    name="",  # TODO(orkaboy): Name
+                SeqCombatAndMove(
+                    name="Navigate to cavern",
                     coords=[
-                        Vec3(93.000, 5.002, 228.420),
-                        # TODO(orkaboy): Continue routing
+                        Vec3(381.065, 0.002, 137.485),
+                        Vec3(381.092, 0.002, 131.739),
+                        InteractMove(378.763, 0.002, 129.315),
+                        InteractMove(375.530, 0.002, 126.253),
+                        InteractMove(372.437, 0.002, 129.085),
+                        InteractMove(369.629, 0.002, 126.124),
+                        InteractMove(364.185, 0.002, 126.190),
+                        Vec3(356.879, 0.002, 130.527),
+                        Vec3(352.955, 0.002, 136.893),
+                        Vec3(346.250, 0.002, 136.893),
+                        Vec3(344.723, 0.002, 133.457),
+                        InteractMove(344.723, -4.998, 130.442),
+                        Vec3(356.104, -4.998, 128.028),
+                        HoldDirection(360.730, 4.002, 47.730, joy_dir=Vec2(1, 1)),
                     ],
                 ),
+                SeqCombatAndMove(
+                    name="Move to pillar",
+                    coords=[
+                        Vec3(365.140, 4.002, 51.583),
+                        Vec3(367.311, 4.002, 60.121),
+                        Vec3(367.238, 4.002, 63.700),
+                    ],
+                ),
+                SeqInteract("Pillar"),
+                SeqCombatAndMove(
+                    name="Leave cavern",
+                    coords=[
+                        Vec3(363.775, 4.002, 51.266),
+                        Vec3(359.661, 4.002, 47.067),
+                        HoldDirection(355.257, -4.998, 126.798, joy_dir=Vec2(-1, -1)),
+                    ],
+                ),
+                SeqMove(
+                    name="Navigate platforms",
+                    coords=[
+                        Vec3(350.249, -4.998, 127.042),
+                        Vec3(346.349, -4.998, 123.079),
+                        Vec3(344.940, -4.998, 118.564),
+                        InteractMove(340.460, -5.257, 118.548),
+                        InteractMove(337.519, -7.457, 118.548),
+                        InteractMove(334.460, -8.464, 118.548),
+                        InteractMove(331.460, -6.498, 118.548),
+                        InteractMove(328.119, -4.998, 118.548),
+                        Vec3(326.407, -4.998, 117.526),
+                        Vec3(325.177, -4.998, 115.892),
+                        Vec3(324.667, -4.998, 113.642),
+                        Vec3(320.061, -4.998, 113.377),
+                    ],
+                ),
+                SeqClimb(
+                    name="Climb wall",
+                    coords=[
+                        InteractMove(320.282, 4.540, 113.530),
+                        Vec3(321.914, 4.540, 113.530),
+                        Vec3(321.914, 9.540, 113.530),
+                    ],
+                ),
+                SeqMove(
+                    name="Move to chest",
+                    coords=[
+                        Vec3(321.914, 12.002, 115.084),
+                        Vec3(320.403, 12.002, 116.201),
+                    ],
+                ),
+                SeqLoot("Green Leaf"),
+                SeqMove(
+                    name="Move to monkeys",
+                    coords=[
+                        Vec3(315.460, 12.002, 116.201),
+                        InteractMove(314.193, 2.002, 116.201),
+                        Vec3(312.079, 2.002, 118.655),
+                        Vec3(309.879, 2.002, 118.764),
+                        InteractMove(309.879, -5.998, 116.454),
+                        Vec3(306.864, -5.998, 116.471),
+                        Vec3(306.574, -5.998, 118.732),
+                        Vec3(306.574, -5.998, 124.602),
+                        Vec3(305.414, -5.998, 125.530),
+                        InteractMove(300.619, -5.998, 125.530),
+                        InteractMove(300.619, -5.998, 130.248),
+                        InteractMove(286.423, -5.998, 130.248),
+                        Vec3(283.238, -5.998, 130.248),
+                        InteractMove(283.238, -1.998, 133.467),
+                        InteractMove(279.632, 0.002, 133.467),
+                        Vec3(271.719, 0.002, 133.467),
+                        HoldDirection(257.399, 6.002, 127.000, joy_dir=Vec2(-1, 0)),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(-1, 0)),
+                SeqSkipUntilIdle("Baby Gorillas"),
+                SeqMove(
+                    name="Move to save branch",
+                    coords=[
+                        Vec3(238.321, 6.002, 120.370),
+                        Vec3(232.208, 6.002, 126.131),
+                    ],
+                ),
+            ],
+        )
+
+
+class GorillaMatriarch(SeqList):
+    """Routing of Gorilla Matriarch segment of Torment Peak."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new GorillaMatriarch object."""
+        super().__init__(
+            name="Gorilla Matriarch",
+            children=[
+                SeqMove(
+                    name="Move to Matriarch",
+                    coords=[
+                        Vec3(226.703, 6.002, 126.198),
+                        HoldDirection(208.106, 15.002, 127.570, joy_dir=Vec2(-1, 0)),
+                        Vec3(209.544, 15.002, 126.353),
+                        # Jump off ledge to lower level
+                        InteractMove(210.632, 5.002, 125.453),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Move to next room", joy_dir=Vec2(1, 0)),
+                SeqSkipUntilIdle("Matriach"),
+                SeqMove(
+                    name="Move to whirlpool",
+                    coords=[
+                        InteractMove(247.538, 2.303, 74.542),
+                        Vec3(247.538, 2.303, 71.839),
+                    ],
+                ),
+                SeqInteract("Whirlpool"),
+                SeqMove(
+                    name="Underwater segment",
+                    coords=[
+                        Vec3(201.417, 1.303, 37.126),
+                        Vec3(217.356, 1.303, 41.908),
+                    ],
+                ),
+                SeqInteract("Whirlpool"),
+                SeqMove(
+                    name="Get out of water",
+                    coords=[
+                        InteractMove(247.502, 5.002, 21.483),
+                    ],
+                ),
+                SeqHoldDirectionUntilLostControl("Move to cutscene", joy_dir=Vec2(0, 1)),
+            ],
+        )
+
+
+class DwellerOfTorment(SeqList):
+    """Routing of Dweller of Torment segment of Torment Peak."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new DwellerOfTorment object."""
+        super().__init__(
+            name="Dweller of Torment",
+            children=[
+                SeqHoldDirectionUntilCombat("Come forth, Dweller!"),
+                # TODO(orkaboy): Need custom combat controller (cutscene)
+                SeqCombat("Dweller of Torment"),
+                # Cutscene ends on world map
+                SeqSkipUntilClose("The Cleansing", coord=Vec3(237.484, 3.000, 77.218)),
+            ],
+        )
+
+
+class TheVialOfTime(SeqList):
+    """Routing of The Vial of Time segment of Torment Peak."""
+
+    def __init__(self: Self) -> None:
+        """Initialize a new TheVialOfTime object."""
+        super().__init__(
+            name="The Vial of Time",
+            children=[
+                SeqMove(
+                    name="Move to Mossy Cache",
+                    coords=[
+                        InteractMove(237.500, 3.002, 75.000),
+                        Vec3(238.500, 3.002, 75.000),
+                        Vec3(238.500, 3.002, 73.000),
+                        Vec3(239.000, 3.002, 73.000),
+                    ],
+                ),
+                SeqChangeTimeOfDay("Reveal secret", time_target=14.5),
+                SeqMove(
+                    name="Move to Mossy Cache",
+                    coords=[
+                        Vec3(239.000, 3.002, 72.000),
+                        Vec3(243.500, 3.002, 72.000),
+                        Vec3(243.500, 3.002, 72.500),
+                    ],
+                ),
+                SeqInteract("Mossy Cache"),
+                SeqMove(
+                    name="Move to Puzzle",
+                    coords=[
+                        Vec3(33.000, 8.002, 19.340),
+                    ],
+                ),
+                SeqInteract("Start puzzle"),
                 # TODO(orkaboy): Continue routing
             ],
         )
@@ -410,6 +631,19 @@ class TormentPeak(SeqList):
                 FirstRoom(),
                 SeqCheckpoint("torment_peak2"),
                 SecondRoom(),
+                ThirdRoom(),
+                SeqCheckpoint(
+                    "torment_peak3",
+                    return_path=SeqMove(
+                        name="Back to route",
+                        coords=[
+                            Vec3(239.050, 6.002, 126.198),
+                        ],
+                    ),
+                ),
+                GorillaMatriarch(),
+                DwellerOfTorment(),
+                TheVialOfTime(),
                 # TODO(orkaboy): Continue routing
             ],
         )

@@ -113,6 +113,7 @@ class TASMenu(Menu):
         ("glacial_peak4", "Last save point before portal"),
         ("torment_peak", "Just inside entrance"),
         ("torment_peak2", "Second room in Torment Peak"),
+        ("torment_peak3", "Baby Gorillas"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
