@@ -28,6 +28,7 @@ class AutumnHills(SeqList):
                     ],
                 ),
                 SeqCheckpoint("autumn_hills"),
+                # TODO(orkaboy): Equip Resh'an?
                 # TODO(orkaboy): Continue routing
             ],
         )
