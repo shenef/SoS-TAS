@@ -4,11 +4,13 @@ import math
 from typing import NamedTuple, Self
 
 
-class Vec2(NamedTuple):
+class Vec2:
     """Class representing a 2d point in space, or a 2d vector."""
 
-    x: float
-    y: float
+    def __init__(self: Self, x: float, y: float) -> None:
+        """Create a new Vec2 object."""
+        self.x: float = x
+        self.y: float = y
 
     def __eq__(self: Self, other: Self) -> bool:
         return self.x == other.x and self.y == other.y
@@ -90,11 +92,13 @@ def is_left(p1: Vec2, p2: Vec2, point: Vec2) -> bool:
     return cross(p1, p2, point) > 0
 
 
-class Polar(NamedTuple):
+class Polar:
     """Polar coordinate. A point in space, defined by an angle and a distance from origo."""
 
-    r: float
-    theta: float
+    def __init__(self: Self, r: float, theta: float) -> None:
+        """Initialize a new Polar coordinate object."""
+        self.r: float = r
+        self.theta: float = theta
 
     def to_vec2(self: Self) -> Vec2:
         """Convert polar coordinate to Vec2 point."""
