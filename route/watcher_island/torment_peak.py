@@ -1,8 +1,10 @@
 """Routing of Torment Peak segment of Watcher Island."""
 
 import logging
+from enum import Enum, auto
 from typing import Self
 
+from control import sos_ctrl
 from engine.combat import SeqCombat, SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
@@ -11,6 +13,8 @@ from engine.seq import (
     InteractMove,
     MistralBracelet,
     SeqAwaitLostControl,
+    SeqBase,
+    SeqBoat,
     SeqBraceletPuzzle,
     SeqChangeTimeOfDay,
     SeqCheckpoint,
@@ -26,6 +30,7 @@ from engine.seq import (
     SeqList,
     SeqLoot,
     SeqMove,
+    SeqSelectOption,
     SeqSkipUntilClose,
     SeqSkipUntilIdle,
 )
@@ -570,13 +575,115 @@ class DwellerOfTorment(SeqList):
         super().__init__(
             name="Dweller of Torment",
             children=[
-                SeqHoldDirectionUntilCombat("Come forth, Dweller!"),
+                SeqHoldDirectionUntilCombat("Come forth, Dweller!", joy_dir=Vec2(0, 1)),
                 # TODO(orkaboy): Need custom combat controller (cutscene)
                 SeqCombat("Dweller of Torment"),
                 # Cutscene ends on world map
                 SeqSkipUntilClose("The Cleansing", coord=Vec3(237.484, 3.000, 77.218)),
             ],
         )
+
+
+class VialPuzzle(SeqBase):
+    """Sequencer node to solve the Vial of Time puzzle."""
+
+    class FSM(Enum):
+        """Finite State Machine states."""
+
+        START_DELAY = auto()
+        NAVIGATE_TO_TILE = auto()
+        ROTATE_TILE = auto()
+        DELAY = auto()
+
+    # Delay before starting sequence (time it takes for puzzle to activate)
+    START_DELAY_TIME = 1.2
+    # Delay after rotating a tile
+    DELAY_TIME = 0.5
+
+    # Coordinate system is [0, 0] in lower left corner
+    # Each entry in the STEPS list indicates to rotate a tile at that coordinate
+    STEPS: list[Vec2] = [
+        Vec2(0, 0),
+        Vec2(0, 0),
+        Vec2(0, 0),
+        Vec2(0, 1),
+        Vec2(0, 1),
+        Vec2(0, 2),
+        Vec2(0, 2),
+        Vec2(0, 2),
+        Vec2(1, 2),
+        Vec2(1, 2),
+        Vec2(2, 2),
+        Vec2(2, 1),
+        Vec2(2, 1),
+        Vec2(2, 0),
+        Vec2(2, 0),
+        Vec2(1, 0),
+        Vec2(1, 1),
+        Vec2(1, 1),
+        Vec2(1, 1),
+    ]
+
+    def __init__(self: Self) -> None:
+        """Initialize a new VialPuzzle object."""
+        super().__init__(
+            name="Vial Puzzle",
+        )
+        self.timer = 0.0
+        self.step = 0
+        self.state = VialPuzzle.FSM.START_DELAY
+        self.position: Vec2 = Vec2(0, 0)
+
+    def execute(self: Self, delta: float) -> bool:
+        # Get the current rotation instruction, or end sequence
+        if self.step >= len(self.STEPS):
+            logger.info("Completed VialPuzzle sequence.")
+            return True
+        cur_step = self.STEPS[self.step]
+
+        ctrl = sos_ctrl()
+
+        match self.state:
+            # Wait for control when activating the puzzle
+            case VialPuzzle.FSM.START_DELAY:
+                self.timer += delta
+                # Check if we have should have control yet, if so, select first tile
+                if self.timer >= self.START_DELAY_TIME:
+                    self.timer = 0.0
+                    self.state = VialPuzzle.FSM.NAVIGATE_TO_TILE
+            # Navigate to the correct coordinate
+            case VialPuzzle.FSM.NAVIGATE_TO_TILE:
+                if self.position.x < cur_step.x:
+                    ctrl.dpad.tap_right()
+                    self.position.x += 1
+                elif self.position.x > cur_step.x:
+                    ctrl.dpad.tap_left()
+                    self.position.x -= 1
+                elif self.position.y < cur_step.y:
+                    ctrl.dpad.tap_up()
+                    self.position.y += 1
+                elif self.position.y > cur_step.y:
+                    ctrl.dpad.tap_down()
+                    self.position.y -= 1
+                else:
+                    # We are already at the correct coordinate
+                    self.state = VialPuzzle.FSM.ROTATE_TILE
+            # Rotate the tile, once, and advance to the next step in the sequence
+            case VialPuzzle.FSM.ROTATE_TILE:
+                ctrl.confirm()
+                self.state = VialPuzzle.FSM.DELAY
+                self.step += 1
+            # Wait until puzzle can be interacted with again
+            case VialPuzzle.FSM.DELAY:
+                self.timer += delta
+                if self.timer >= self.DELAY_TIME:
+                    self.timer = 0.0
+                    # Select the next tile
+                    self.state = VialPuzzle.FSM.NAVIGATE_TO_TILE
+        return False
+
+    def __repr__(self: Self) -> str:
+        return f"VialPuzzle step {self.step}/{len(self.STEPS)}"
 
 
 class TheVialOfTime(SeqList):
@@ -606,6 +713,7 @@ class TheVialOfTime(SeqList):
                     ],
                 ),
                 SeqInteract("Mossy Cache"),
+                SeqCheckpoint("TEMP_VIAL"),
                 SeqMove(
                     name="Move to Puzzle",
                     coords=[
@@ -613,7 +721,64 @@ class TheVialOfTime(SeqList):
                     ],
                 ),
                 SeqInteract("Start puzzle"),
-                # TODO(orkaboy): Continue routing
+                VialPuzzle(),
+                SeqMove(
+                    name="Move to vial",
+                    coords=[
+                        Vec3(34.303, 8.002, 19.200),
+                        Vec3(34.303, 8.002, 34.113),
+                        Vec3(32.603, 8.002, 42.546),
+                        InteractMove(32.603, 17.002, 45.467),
+                        Vec3(32.417, 17.002, 46.394),
+                    ],
+                ),
+                SeqLoot("Vial of Time"),
+                SeqMove(
+                    name="Move to Lake Doccaria",
+                    coords=[
+                        InteractMove(32.420, 8.002, 42.275),
+                        Vec3(31.701, 8.002, 21.785),
+                        Vec3(31.701, 8.002, 18.960),
+                        Vec3(32.757, 8.002, 13.492),
+                        Vec3(32.757, 6.010, -1.430),
+                        HoldDirection(243.500, 3.002, 71.998, joy_dir=Vec2(0, -1)),
+                        Vec3(239.500, 3.002, 72.000),
+                        Vec3(239.000, 3.002, 72.000),
+                        Vec3(239.000, 3.002, 72.500),
+                        Vec3(237.500, 3.002, 72.500),
+                        Vec3(237.500, 3.002, 71.000),
+                    ],
+                ),
+                SeqInteract("Lake Doccaria"),
+                SeqMove(
+                    name="Move to portal",
+                    coords=[
+                        Vec3(54.750, 48.002, 79.460),
+                        InteractMove(58.246, 40.803, 66.676),
+                        Vec3(61.453, 40.803, 63.112),
+                        Vec3(63.453, 40.803, 63.137),
+                        InteractMove(63.454, 43.002, 64.467),
+                        Vec3(63.419, 43.002, 67.097),
+                    ],
+                ),
+                SeqSelectOption("Archives", skip_dialog_check=True),
+                # Cutscene into boat movement
+                SeqBoat(
+                    name="Resh'an joins",
+                    coords=[
+                        Vec3(237.500, 0.500, 55.000),
+                    ],
+                    hold_skip=True,
+                ),
+                SeqBoat(
+                    name="On to Mesa Island",
+                    coords=[
+                        Vec3(260.709, 0.500, 72.606),
+                        Vec3(261.326, 0.500, 132.289),
+                        Vec3(247.700, 0.500, 155.610),
+                    ],
+                ),
+                SeqInteract("Disembark"),
             ],
         )
 
@@ -644,6 +809,5 @@ class TormentPeak(SeqList):
                 GorillaMatriarch(),
                 DwellerOfTorment(),
                 TheVialOfTime(),
-                # TODO(orkaboy): Continue routing
             ],
         )
