@@ -761,6 +761,7 @@ class TheVialOfTime(SeqList):
                         Vec3(63.419, 43.002, 67.097),
                     ],
                 ),
+                # TODO(orkaboy): Currently gets stuck on the select prompt here
                 SeqSelectOption("Archives", skip_dialog_check=True),
                 # Cutscene into boat movement
                 SeqBoat(
