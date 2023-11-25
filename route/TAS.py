@@ -116,7 +116,7 @@ class TASMenu(Menu):
         ("torment_peak2", "Second room in Torment Peak"),
         ("torment_peak3", "Baby Gorillas"),
         # TODO(orkaboy): Remove temporary checkpoint
-        ("TEMP_VIAL", "TEMP: Vial of Time test (area with puzzle)"),
+        ("TEMP_VIAL", "TEMP: Vial of Time (area with puzzle)"),
         ("autumn_hills", "Start of Autumn Hills area on Mesa"),
     ]
 

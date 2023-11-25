@@ -62,6 +62,7 @@ class MesaHike(SeqList):
                         Vec3(248.000, 7.002, 165.500),
                     ],
                 ),
+                # TODO(orkaboy): Equip Resh'an?
                 SeqInteract("Autumn Hills"),
             ],
         )
