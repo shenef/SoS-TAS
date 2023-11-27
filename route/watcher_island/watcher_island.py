@@ -61,6 +61,5 @@ class WatcherIsland(SeqList):
                 TowerOfAntsudlo(),
                 GlacialPeak(),
                 TormentPeak(),
-                # TODO(orkaboy): Continue routing
             ],
         )

@@ -185,7 +185,7 @@ class Ascent(SeqList):
                     ],
                 ),
                 SeqCombatAndMove(
-                    name="",  # TODO(orkaboy): Add name
+                    name="Navigate in front of enemy",
                     coords=[
                         InteractMove(-198.373, 32.002, 23.659),
                     ],
@@ -440,7 +440,7 @@ class Descent(SeqList):
                 ),
                 SeqChangeTimeOfDay("Boulder", time_target=3.0),
                 SeqMove(
-                    name="",  # TODO(orkaboy): Add name
+                    name="Move to lever",
                     coords=[
                         Vec3(-40.814, 56.002, 231.551),
                         Vec3(-37.620, 56.002, 229.954),

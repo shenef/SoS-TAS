@@ -73,6 +73,8 @@ class EnemyName:
         "40f05ed0202783449a704978e8670c9b": "Tsiclop",
         "c6f57cbee5d9cff4a82778ce36f94fdf": "Sleuth",
         "e79eceacb415fd04f84e6da6f9b23d3d": "BilePile",
+        # TODO(orkaboy): All three bodyparts has the same guid
+        "94680e3651254c54ca6030f9461b3ed7": "Dweller of Torment",
         # Mesa Island: Glacial Peak
         "a1a5c1333a1e7fe4f98de4d28b3b9900": "Rochecrossidere",
         "33a6c54c83b68894a93b46c02da7fbc8": "Boulder Douche",

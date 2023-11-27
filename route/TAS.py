@@ -27,6 +27,7 @@ from route.cataclysm import Cataclysm
 
 # Routing
 from route.evermist_island import EvermistIsland
+from route.mesa_island import MesaIsland
 from route.shop_test import ShopTest
 from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
@@ -112,6 +113,11 @@ class TASMenu(Menu):
         ("glacial_peak3", "Campfire under the ice, after Solstice Amulet"),
         ("glacial_peak4", "Last save point before portal"),
         ("torment_peak", "Just inside entrance"),
+        ("torment_peak2", "Second room in Torment Peak"),
+        ("torment_peak3", "Baby Gorillas"),
+        # TODO(orkaboy): Remove temporary checkpoint
+        ("TEMP_VIAL", "TEMP: Vial of Time (area with puzzle)"),
+        ("autumn_hills", "Start of Autumn Hills area on Mesa"),
     ]
 
     def __init__(self: Self, window: Window, config_data: dict, title: str) -> None:
@@ -312,6 +318,7 @@ class SoSAnyPercentMenu(TASMenu):
                 WraithIsland(),
                 Cataclysm(),
                 WatcherIsland(),
+                MesaIsland(),
                 # TODO(orkaboy): Continue routing
                 SeqLog(name="SYSTEM", text="SoS Any% TAS done!"),
             ],
