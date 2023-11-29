@@ -33,6 +33,7 @@ from engine.seq import (
     SeqSelectOption,
     SeqSkipUntilClose,
     SeqSkipUntilIdle,
+    SeqTurboMashDelay,
 )
 
 logger = logging.getLogger(__name__)
@@ -761,8 +762,9 @@ class TheVialOfTime(SeqList):
                         Vec3(63.419, 43.002, 67.097),
                     ],
                 ),
-                # TODO(orkaboy): Currently gets stuck on the select prompt here
                 SeqSelectOption("Archives", skip_dialog_check=True),
+                # Currently gets stuck on the select prompt here unless we mash
+                SeqTurboMashDelay("Skip past portal", timeout_in_s=10.0),
                 # Cutscene into boat movement
                 SeqBoat(
                     name="Resh'an joins",
