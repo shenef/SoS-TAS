@@ -99,6 +99,7 @@ class AutumnHills(SeqList):
                         Graplou(143.317, 13.450, 8.019, joy_dir=Vec2(1, 0), hold_timer=0.1),
                         HoldDirection(143.979, 16.002, 8.681, joy_dir=Vec2(0, 1)),
                         Vec3(145.658, 16.002, 9.667),
+                        # TODO(orkaboy): Can jump off this tree ledge which causes desync
                         InteractMove(150.641, 16.193, 9.543),
                         Vec3(154.540, 16.010, 6.455),
                         InteractMove(156.416, 13.002, 6.455),
