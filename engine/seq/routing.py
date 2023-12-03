@@ -51,6 +51,12 @@ class SeqRouteBranch(SeqIf):
         self.route = route
         self.mode = mode
 
+    def advance_to_checkpoint(self: Self, checkpoint: str) -> bool:
+        branch = self.when_true if self.condition() else self.when_false
+        if branch:
+            return branch.advance_to_checkpoint(checkpoint)
+        return False
+
     def condition(self: Self) -> bool:
         """Select `when_true` branch when the route conditions are active."""
         route_config = get_route_config()
