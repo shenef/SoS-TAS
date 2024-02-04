@@ -55,7 +55,6 @@ class EncounterController:
             return True
         return False
 
-    #
     def generate_action(self: Self) -> bool:
         """
         Generate an action.
