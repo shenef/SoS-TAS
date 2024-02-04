@@ -1,5 +1,5 @@
 PyYAML >= 6.0.1
-Pymem >= 1.13.0
-glfw >= 2.6.2
-imgui-bundle >= 1.0.0
+Pymem >= 1.13.1
+glfw >= 2.6.5
+imgui-bundle >= 1.3.0
 vgamepad >= 0.1.0
