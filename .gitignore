@@ -11,3 +11,6 @@ Logs
 
 # Ruff output
 report.json
+
+# virtual env
+venv
