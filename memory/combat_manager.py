@@ -151,9 +151,9 @@ class CombatManager:
             else:
                 self._read_encounter_done()
 
-                # if self.encounter_done is True:
-                #     self.combat_controller = CombatEncounter.Basic
-                #     return
+                if self.encounter_done is True:
+                    self.combat_controller = CombatEncounter.Basic
+                    return
 
                 self._read_combat_controller()
                 self._read_combo_and_ultimates()
@@ -178,7 +178,7 @@ class CombatManager:
                     self.base,
                     [
                         self.current_encounter_base,
-                        0x120,
+                        0x128,
                         0x98,
                         0x50,
                         0x0,
@@ -208,7 +208,7 @@ class CombatManager:
                     self.base,
                     [
                         self.current_encounter_base,
-                        0x120,
+                        0x128,
                         0x58,
                         0x10,
                         0x20,
@@ -220,7 +220,7 @@ class CombatManager:
                     self.base,
                     [
                         self.current_encounter_base,
-                        0x120,
+                        0x128,
                         0x58,
                         0x10,
                         0x20,
@@ -292,7 +292,7 @@ class CombatManager:
                 self.base,
                 [
                     self.current_encounter_base,
-                    0x120,
+                    0x128,
                     0x98,
                     0x40,
                     0x10,
@@ -324,7 +324,7 @@ class CombatManager:
                     0x30,
                     0xA8,
                     0x80,
-                    0x40,
+                    0x48,
                     0x100,
                     0x80,
                     0xF8,
@@ -356,7 +356,7 @@ class CombatManager:
                     0x20,
                     0xA8,
                     0x80,
-                    0x40,
+                    0x48,
                     0x100,
                     0x80,
                     0xF8,
@@ -383,7 +383,7 @@ class CombatManager:
             try:
                 combat_controller_ptr = self.memory.follow_pointer(
                     self.base,
-                    [self.current_encounter_base, 0x120, 0x0, 0x78, 0x10, 0x0],
+                    [self.current_encounter_base, 0x128, 0x0, 0x78, 0x10, 0x0],
                 )
 
                 controller = self.memory.read_string(combat_controller_ptr + 0x0, 25)
@@ -497,7 +497,7 @@ class CombatManager:
     def _read_battle_commands(self: Self) -> None:
         if self._should_update():
             battle_command_selector = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x138, 0x50, 0x68, 0x0]
+                self.base, [self.current_encounter_base, 0x140, 0x50, 0x68, 0x0]
             )
             # Checks if we lost access to the selector pointer for a brief period as the UI changes.
             if battle_command_selector == self.NULL_POINTER:
@@ -534,7 +534,7 @@ class CombatManager:
     def _read_skill_commands(self: Self) -> None:
         if self._should_update():
             skill_command_selector = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x138, 0x50, 0x78, 0x0]
+                self.base, [self.current_encounter_base, 0x140, 0x50, 0x78, 0x0]
             )
             # Checks if we lost access to the selector pointer for a brief period as the UI changes.
             if skill_command_selector == self.NULL_POINTER:
@@ -577,7 +577,7 @@ class CombatManager:
                     self.base, [self.current_encounter_base, 0x0]
                 )
                 if current_encounter:
-                    done = self.memory.read_bool(current_encounter + 0x162)
+                    done = self.memory.read_bool(current_encounter + 0x16A)
                     self.encounter_done = done
                     return
             except Exception:
@@ -596,14 +596,14 @@ class CombatManager:
     def _read_live_mana(self: Self) -> None:
         if self._should_update():
             small_live_mana = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x78, 0x20, 0x0]
+                self.base, [self.current_encounter_base, 0x80, 0x20, 0x0]
             )
             if small_live_mana == self.NULL_POINTER:
                 self.small_live_mana = 0
                 self.big_live_mana = 0
                 return
             big_live_mana = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x78, 0x28, 0x0]
+                self.base, [self.current_encounter_base, 0x80, 0x28, 0x0]
             )
             if big_live_mana == self.NULL_POINTER:
                 self.small_live_mana = 0
@@ -620,11 +620,11 @@ class CombatManager:
             selected_character = PlayerPartyCharacter.NONE
             try:
                 panel_count_ptr = self.memory.follow_pointer(
-                    self.base, [self.current_encounter_base, 0x120, 0x98, 0x0]
+                    self.base, [self.current_encounter_base, 0x128, 0x98, 0x0]
                 )
                 panel_count = self.memory.read_int(panel_count_ptr + 0x5C)
                 player_panels_list = self.memory.follow_pointer(
-                    self.base, [self.current_encounter_base, 0x120, 0x98, 0x40, 0x0]
+                    self.base, [self.current_encounter_base, 0x128, 0x98, 0x40, 0x0]
                 )
             except Exception:
                 self.players = []
@@ -747,7 +747,7 @@ class CombatManager:
     def _read_enemies(self: Self) -> None:
         if self._should_update():
             enemy_targets = self.memory.follow_pointer(
-                self.base, [self.current_encounter_base, 0x180, 0x0]
+                self.base, [self.current_encounter_base, 0x188, 0x0]
             )
             # item is a list of pointers of size 0x08
             items = self.memory.follow_pointer(
@@ -793,9 +793,7 @@ class CombatManager:
                     magic_attack = self.memory.read_int(enemy_data + 0x30)
                     magic_defense = self.memory.read_int(enemy_data + 0x34)
                     enemy_guid = self.memory.read_guid(guid + 0x14)
-                    print(enemy_guid)
                     enemy_unique_id = self.memory.read_uuid(unique_id + 0x14)
-                    print(enemy_unique_id)
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 
