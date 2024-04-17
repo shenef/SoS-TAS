@@ -134,7 +134,8 @@ class CombatManager:
         self.projectile_speed = 0.0
 
     def update(self: Self) -> None:
-        try:
+
+        # try:
             if self.memory.ready_for_updates:
                 if self.base is None or self.fields_base is None:
                     self.encounter_done = True
@@ -151,9 +152,9 @@ class CombatManager:
                 else:
                     self._read_encounter_done()
 
-                    if self.encounter_done is True:
-                        self.combat_controller = CombatEncounter.Basic
-                        return
+                    # if self.encounter_done is True:
+                    #     self.combat_controller = CombatEncounter.Basic
+                    #     return
 
                     self._read_combat_controller()
                     self._read_combo_and_ultimates()
@@ -167,9 +168,9 @@ class CombatManager:
                     self.projectile_hit_count = self.read_projectile_hit_count()
                     self.projectile_speed = self.read_projectile_speed()
 
-        except Exception as _e:
-            # logger.debug(f"Combat Manager Reloading - {type(_e)}")
-            self.__init__()
+        # except Exception as _e:
+        #     # logger.debug(f"Combat Manager Reloading - {type(_e)}")
+        #     self.__init__()
 
     def _read_combo_and_ultimates(self: Self) -> None:
         if self._should_update():
@@ -774,7 +775,7 @@ class CombatManager:
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
                     #    - 0x20 - Item[0] -> Pointer 0x00000000
                     #    - 0x20 - Item[0] -> Pointer 0xF30d0930
-                    if hex(item) == "0x0":
+                    if hex(item) == "0x0" or hex(item) == "0":
                         address += self.ITEM_OBJECT_OFFSET
                         continue
 
@@ -793,7 +794,9 @@ class CombatManager:
                     magic_attack = self.memory.read_int(enemy_data + 0x30)
                     magic_defense = self.memory.read_int(enemy_data + 0x34)
                     enemy_guid = self.memory.read_guid(guid + 0x14)
+                    print(enemy_guid)
                     enemy_unique_id = self.memory.read_uuid(unique_id + 0x14)
+                    print(enemy_unique_id)
                     turns_to_action = self.memory.read_short(casting_data + 0x24)
                     total_spell_locks = self.memory.read_short(casting_data + 0x28)
 

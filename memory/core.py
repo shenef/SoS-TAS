@@ -126,8 +126,11 @@ class SoSMemory:
     def read_int(self: Self, ptr: int) -> int:
         return pyMeow.r_int(self.pm, ptr)
 
-    def read_short(self: Self, ptr: int) -> int:
-        return pyMeow.r_ints(self.pm, ptr)
+
+    def read_short(self: Self, address: int):
+        bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("h"))
+        bytes = struct.unpack("<h", bytes)[0]
+        return bytes
 
     # Reads the garbled uuid string utf-8 field provided by Sea Of Stars
     # For example, for "TitleScreen" you may see:
@@ -135,9 +138,11 @@ class SoSMemory:
     # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
     # To "fix" this string, you will need to run value.replace("\x00", "")
     def read_uuid(self: Self, ptr: int) -> str:
-        string_bytes = pyMeow.r_bytes(self.pm, ptr, 71)
+        string = pyMeow.bytes_to_string(self.pm, ptr, 37 * 2)
+        print("UUID")
+        print(string)
 
-        return codecs.decode(string_bytes, "UTF-8")
+        return string
 
     # Reads the garbled guid string utf-8 field provided by Sea Of Stars
     # For example, for "TitleScreen" you may see:
@@ -145,14 +150,14 @@ class SoSMemory:
     # This returns as example: e6ac627711e4ee44da103c47d1cd5736
     # To "fix" this string, you will need to run value.replace("\x00", "")
     def read_guid(self: Self, ptr: int) -> str:
-        string_bytes = pyMeow.r_bytes(self.pm, ptr, 64)
-
-        return codecs.decode(string_bytes, "UTF-8")
+        string = pyMeow.bytes_to_string(self.pm, ptr, 64)
+        print("GUID")
+        print(string)
+        return string
 
     def read_string(self: Self, ptr: int, length: int) -> str:
-        string_bytes = pyMeow.r_bytes(self.pm, ptr, length)
-
-        return codecs.decode(string_bytes, "UTF-8")
+        string = pyMeow.bytes_to_string(self.pm, ptr, length)
+        return string
 
     # Scans the module/image class list for a specific class name by string.
     def get_class(self: Self, class_name: str) -> int | None:
