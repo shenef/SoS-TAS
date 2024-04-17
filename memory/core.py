@@ -1,12 +1,13 @@
 # Libraries and Core Files
 import codecs
-import ctypes, struct
 import logging
+import struct
 from typing import Self
 
 from pyMeow import pyMeow
 
 logger = logging.getLogger(__name__)
+
 
 class SoSMemory:
     def __init__(self: Self) -> None:
@@ -50,7 +51,7 @@ class SoSMemory:
 
     def update(self: Self) -> None:
         try:
-            if self.pm is not None and not self.pm['pid']:
+            if self.pm is not None and not self.pm["pid"]:
                 self.__init__()
                 return
 
@@ -157,9 +158,7 @@ class SoSMemory:
     def get_class(self: Self, class_name: str) -> int | None:
         unity_classes = self._get_image_classes()
         for item in unity_classes:
-            ptr = self.read_longlong(
-                item + self.offsets["monoclass_name"]
-            )
+            ptr = self.read_longlong(item + self.offsets["monoclass_name"])
 
             name = pyMeow.r_string(self.pm, ptr, 128)
             if name == class_name:
@@ -172,33 +171,25 @@ class SoSMemory:
         unity_fields = self._get_fields(class_ptr)
 
         for item in unity_fields:
-            ptr = self.read_longlong(
-                item + self.offsets["monoclassfield_name"]
-            )
+            ptr = self.read_longlong(item + self.offsets["monoclassfield_name"])
             name = pyMeow.r_string(self.pm, ptr, 128)
             if name == field_name:
                 record = item
                 break
         if record is not None:
-            return pyMeow.r_int(
-                self.pm, record + self.offsets["monoclassfield_offset"]
-            )
+            return pyMeow.r_int(self.pm, record + self.offsets["monoclassfield_offset"])
         return None
 
     # Get the static table pointer for a provided class pointer. This is an array of pointers
     # to each static field on the class.
     def get_static_table(self: Self, class_ptr: int) -> int:
-        return self.read_longlong(
-            class_ptr + self.offsets["monoclass_static_fields"]
-        )
+        return self.read_longlong(class_ptr + self.offsets["monoclass_static_fields"])
 
     # This is used to get the parent class of a type. This should
     # only be used in specific circumstances, like finding the Generic class to
     # find an instanced class. See get_singleton_by_class_name for its usage.
     def get_parent(self: Self, class_ptr: int) -> int:
-        return self.read_longlong(
-            class_ptr + self.offsets["monoclass_parent"]
-        )
+        return self.read_longlong(class_ptr + self.offsets["monoclass_parent"])
 
     # This is used to get the fields lookup base of the class
     # Provides the field offset relative to the base class.
@@ -219,10 +210,7 @@ class SoSMemory:
             # 32bit "8A 07 47 84 C0 75 ?? 8B 35"
             # signature = b"\\x8A\\x07\\x47\\x84\\xC0\\x75.\\x8B\\x35"
             aob_scan = pyMeow.aob_scan_module(self.pm, self.module["name"], signature)
-            address = (
-                aob_scan[0]
-                + 12
-            )
+            address = aob_scan[0] + 12
             self.assemblies = address + 0x4 + pyMeow.r_int(self.pm, address)
 
     # Scans for the type info definition table signature for the specific version of unity for SoS
@@ -232,13 +220,8 @@ class SoSMemory:
             signature = "48 83 3C ?? 00 75 ?? 8B C? E8"
             # signature = b"\\x48\\x83\\x3C.\\x00\\x75.\\x8B.\\xe8"
             aob_scan = pyMeow.aob_scan_module(self.pm, self.module["name"], signature)
-            address = (
-                aob_scan[0]
-                - 4
-            )
-            self.type_info_definition_table = (
-                address + 0x4 + pyMeow.r_int(self.pm, address)
-            )
+            address = aob_scan[0] - 4
+            self.type_info_definition_table = address + 0x4 + pyMeow.r_int(self.pm, address)
 
     def read_ulonglong(self: Self, address: int):
         bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("Q"))
@@ -287,9 +270,7 @@ class SoSMemory:
             )
             & 0xFFFF
         )
-        fields_ptr = self.read_longlong(
-            class_ptr + self.offsets["monoclass_fields"]
-        )
+        fields_ptr = self.read_longlong(class_ptr + self.offsets["monoclass_fields"])
         fields: list[int] = []
         struct_size = self.offsets["monoclassfield_structsize"] & 0xFFFFFFFFFFFFFFFF
         for field in range(0, field_count):
@@ -298,9 +279,7 @@ class SoSMemory:
 
     # Get all Unity Types/Classes in the provided module/dll
     def _get_image_classes(self: Self) -> list[int]:
-        type_count = pyMeow.r_int(
-            self.pm, self.image + self.offsets["monoimage_typecount"]
-        )
+        type_count = pyMeow.r_int(self.pm, self.image + self.offsets["monoimage_typecount"])
 
         inner_handle = self.read_longlong(
             self.image + self.offsets["monoimage_metadatahandle"],
