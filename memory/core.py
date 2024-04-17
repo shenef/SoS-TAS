@@ -1,5 +1,4 @@
 # Libraries and Core Files
-import codecs
 import logging
 import struct
 from typing import Self
@@ -125,7 +124,6 @@ class SoSMemory:
 
     def read_int(self: Self, ptr: int) -> int:
         return pyMeow.r_int(self.pm, ptr)
-
 
     def read_short(self: Self, address: int):
         bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("h"))
