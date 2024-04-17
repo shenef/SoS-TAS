@@ -20,6 +20,7 @@
             pkgs.libGL.dev
             pkgs.stdenv.cc.cc.lib
             pkgs.libevdev
+            pkgs.xorg.libXtst
           ];
           postShellHook = ''
             export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.lib.makeLibraryPath[
@@ -28,6 +29,7 @@
               pkgs.libGL.dev
               pkgs.stdenv.cc.cc.lib
               pkgs.libevdev
+              pkgs.xorg.libXtst
             ]};
           '';
           packages = with pkgs; [ 

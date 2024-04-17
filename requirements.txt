@@ -1,5 +1,5 @@
 PyYAML >= 6.0.1
-Pymem >= 1.13.0
+pyMeow @ https://github.com/Eein/pyMeow/releases/download/sos-tas-1/pyMeow.zip
 glfw >= 2.6.2
 imgui-bundle >= 1.0.0
 vgamepad >= 0.1.0

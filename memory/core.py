@@ -1,12 +1,12 @@
 # Libraries and Core Files
 import codecs
+import ctypes, struct
 import logging
 from typing import Self
 
-import pymem
+from pyMeow import pyMeow
 
 logger = logging.getLogger(__name__)
-
 
 class SoSMemory:
     def __init__(self: Self) -> None:
@@ -39,7 +39,6 @@ class SoSMemory:
     def _set_ready_for_updates(self: Self) -> None:
         ready = (
             self.pm is not None
-            and self.pm.process_handle is not None
             and self.assemblies is not None
             and self.type_info_definition_table is not None
             and self.module is not None
@@ -51,16 +50,16 @@ class SoSMemory:
 
     def update(self: Self) -> None:
         try:
-            if self.pm is not None and not self.pm.base_address:
+            if self.pm is not None and not self.pm['pid']:
                 self.__init__()
                 return
 
             if not self.ready_for_updates:
-                pm = pymem.Pymem("SeaOfStars.exe")
+                pm = pyMeow.open_process("SeaOfStars.exe")
                 self.pm = pm
 
-                self.module = pymem.process.module_from_name(pm.process_handle, "GameAssembly.dll")
-                self.module_base = self.module.lpBaseOfDll
+                self.module = pyMeow.get_module(self.pm, "GameAssembly.dll")
+                self.module_base = self.module["base"]
 
                 logger.info(
                     f"Base address of GameAssembly.dll in SeaOfStars.exe: {hex(self.module_base)}"
@@ -73,7 +72,7 @@ class SoSMemory:
                 self._set_ready_for_updates()
 
         except Exception as _e:
-            # logger.debug(f"Memory Core Reloading {type(_e)}")
+            logger.debug(f"Memory Core Reloading {type(_e)}")
             self.__init__()
 
     # This is a helper function designed to facilitate in finding instanced/dynamically allocated
@@ -113,21 +112,21 @@ class SoSMemory:
         last = offsets.pop()
         addr = base
         for offset in offsets:
-            addr = self.pm.read_longlong(addr + offset)
+            addr = self.read_longlong(addr + offset)
 
         return addr + last
 
     def read_float(self: Self, ptr: int) -> float:
-        return self.pm.read_float(ptr)
+        return pyMeow.r_float(self.pm, ptr)
 
     def read_bool(self: Self, ptr: int) -> bool:
-        return self.pm.read_bool(ptr)
+        return pyMeow.r_bool(self.pm, ptr)
 
     def read_int(self: Self, ptr: int) -> int:
-        return self.pm.read_int(ptr)
+        return pyMeow.r_int(self.pm, ptr)
 
     def read_short(self: Self, ptr: int) -> int:
-        return self.pm.read_short(ptr)
+        return pyMeow.r_ints(self.pm, ptr)
 
     # Reads the garbled uuid string utf-8 field provided by Sea Of Stars
     # For example, for "TitleScreen" you may see:
@@ -135,7 +134,7 @@ class SoSMemory:
     # b'T\x00i\x00t\x00t\x00l\x00e\x00S\x00c\x00r\x00e\x00e\x00n'
     # To "fix" this string, you will need to run value.replace("\x00", "")
     def read_uuid(self: Self, ptr: int) -> str:
-        string_bytes = self.pm.read_bytes(ptr, 71)
+        string_bytes = pyMeow.r_bytes(self.pm, ptr, 71)
 
         return codecs.decode(string_bytes, "UTF-8")
 
@@ -145,27 +144,24 @@ class SoSMemory:
     # This returns as example: e6ac627711e4ee44da103c47d1cd5736
     # To "fix" this string, you will need to run value.replace("\x00", "")
     def read_guid(self: Self, ptr: int) -> str:
-        string_bytes = self.pm.read_bytes(ptr, 64)
+        string_bytes = pyMeow.r_bytes(self.pm, ptr, 64)
 
         return codecs.decode(string_bytes, "UTF-8")
 
     def read_string(self: Self, ptr: int, length: int) -> str:
-        string_bytes = self.pm.read_bytes(ptr, length)
+        string_bytes = pyMeow.r_bytes(self.pm, ptr, length)
 
         return codecs.decode(string_bytes, "UTF-8")
-
-    def read_longlong(self: Self, ptr: int) -> int:
-        return self.pm.read_longlong(ptr)
 
     # Scans the module/image class list for a specific class name by string.
     def get_class(self: Self, class_name: str) -> int | None:
         unity_classes = self._get_image_classes()
         for item in unity_classes:
-            ptr = pymem.memory.read_longlong(
-                self.pm.process_handle, item + self.offsets["monoclass_name"]
+            ptr = self.read_longlong(
+                item + self.offsets["monoclass_name"]
             )
 
-            name = pymem.memory.read_string(self.pm.process_handle, ptr, 128)
+            name = pyMeow.r_string(self.pm, ptr, 128)
             if name == class_name:
                 return item
         return None
@@ -176,78 +172,92 @@ class SoSMemory:
         unity_fields = self._get_fields(class_ptr)
 
         for item in unity_fields:
-            ptr = pymem.memory.read_longlong(
-                self.pm.process_handle, item + self.offsets["monoclassfield_name"]
+            ptr = self.read_longlong(
+                item + self.offsets["monoclassfield_name"]
             )
-            name = pymem.memory.read_string(self.pm.process_handle, ptr, 128)
+            name = pyMeow.r_string(self.pm, ptr, 128)
             if name == field_name:
                 record = item
                 break
         if record is not None:
-            return pymem.memory.read_int(
-                self.pm.process_handle, record + self.offsets["monoclassfield_offset"]
+            return pyMeow.r_int(
+                self.pm, record + self.offsets["monoclassfield_offset"]
             )
         return None
 
     # Get the static table pointer for a provided class pointer. This is an array of pointers
     # to each static field on the class.
     def get_static_table(self: Self, class_ptr: int) -> int:
-        return pymem.memory.read_longlong(
-            self.pm.process_handle, class_ptr + self.offsets["monoclass_static_fields"]
+        return self.read_longlong(
+            class_ptr + self.offsets["monoclass_static_fields"]
         )
 
     # This is used to get the parent class of a type. This should
     # only be used in specific circumstances, like finding the Generic class to
     # find an instanced class. See get_singleton_by_class_name for its usage.
     def get_parent(self: Self, class_ptr: int) -> int:
-        return pymem.memory.read_longlong(
-            self.pm.process_handle, class_ptr + self.offsets["monoclass_parent"]
+        return self.read_longlong(
+            class_ptr + self.offsets["monoclass_parent"]
         )
 
     # This is used to get the fields lookup base of the class
     # Provides the field offset relative to the base class.
     def get_class_fields_base(self: Self, class_ptr: int) -> int:
-        return pymem.memory.read_longlong(self.pm.process_handle, self.get_class_base(class_ptr))
+        return self.read_longlong(self.get_class_base(class_ptr))
 
     # This is used to get the actual base of the class
     # This can be used as the base when following pointer + field offsets
     def get_class_base(self: Self, class_ptr: int) -> int:
-        return pymem.memory.read_longlong(self.pm.process_handle, class_ptr)
+        return self.read_longlong(class_ptr)
 
     # Scans for the assemblies signature for the specific version of unity for SoS
     def _assemblies_trg_sig(self: Self) -> None:
         if self.assemblies is None:
             # "48 FF C5 80 3C ?? 00 75 ?? 48 8B 1D"
-            signature = b"\\x48\\xFF\\xC5\\x80\\x3C.\\x00\\x75.\\x48\\x8B\\x1D"
+            signature = "48 FF C5 80 3C ?? 00 75 ?? 48 8B 1D"
+            # signature = b"\\x48\\xFF\\xC5\\x80\\x3C.\\x00\\x75.\\x48\\x8B\\x1D"
             # 32bit "8A 07 47 84 C0 75 ?? 8B 35"
             # signature = b"\\x8A\\x07\\x47\\x84\\xC0\\x75.\\x8B\\x35"
+            aob_scan = pyMeow.aob_scan_module(self.pm, self.module["name"], signature)
             address = (
-                pymem.pattern.pattern_scan_module(self.pm.process_handle, self.module, signature)
+                aob_scan[0]
                 + 12
             )
-            self.assemblies = address + 0x4 + pymem.memory.read_int(self.pm.process_handle, address)
+            self.assemblies = address + 0x4 + pyMeow.r_int(self.pm, address)
 
     # Scans for the type info definition table signature for the specific version of unity for SoS
     def _type_info_definition_table_trg_sig(self: Self) -> None:
         if self.type_info_definition_table is None:
             # "48 83 3C ?? 00 75 ?? 8B C? E8"
-            signature = b"\\x48\\x83\\x3C.\\x00\\x75.\\x8B.\\xe8"
+            signature = "48 83 3C ?? 00 75 ?? 8B C? E8"
+            # signature = b"\\x48\\x83\\x3C.\\x00\\x75.\\x8B.\\xe8"
+            aob_scan = pyMeow.aob_scan_module(self.pm, self.module["name"], signature)
             address = (
-                pymem.pattern.pattern_scan_module(self.pm.process_handle, self.module, signature)
+                aob_scan[0]
                 - 4
             )
             self.type_info_definition_table = (
-                address + 0x4 + pymem.memory.read_int(self.pm.process_handle, address)
+                address + 0x4 + pyMeow.r_int(self.pm, address)
             )
+
+    def read_ulonglong(self: Self, address: int):
+        bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("Q"))
+        bytes = struct.unpack("<Q", bytes)[0]
+        return bytes
+
+    def read_longlong(self: Self, address: int):
+        bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("q"))
+        bytes = struct.unpack("<q", bytes)[0]
+        return bytes
 
     # Gets the Assembly-CSharp image where the games code lives so it can be used as a module base
     def get_image(self: Self, assembly_name: str = "Assembly-CSharp") -> int:
-        assemblies = pymem.memory.read_longlong(self.pm.process_handle, self.assemblies)
+        assemblies = self.read_longlong(self.assemblies)
 
         image = None
 
         while True:
-            mono_assembly = pymem.memory.read_longlong(self.pm.process_handle, assemblies)
+            mono_assembly = self.read_longlong(assemblies)
 
             if mono_assembly is None:
                 return
@@ -257,12 +267,11 @@ class SoSMemory:
                 + self.offsets["monoassembly_aname"]
                 + self.offsets["monoassemblyname_name"]
             )
-            name_addr = pymem.memory.read_longlong(self.pm.process_handle, name_addr_pointer)
-            name = pymem.memory.read_string(self.pm.process_handle, name_addr, 128)
+            name_addr = self.read_longlong(name_addr_pointer)
+            name = pyMeow.r_string(self.pm, name_addr, 128)
 
             if name == assembly_name:
-                image = pymem.memory.read_longlong(
-                    self.pm.process_handle,
+                image = self.read_longlong(
                     mono_assembly + self.offsets["monoassembly_image"],
                 )
                 break
@@ -273,14 +282,13 @@ class SoSMemory:
     # Get the pointers for each field in a class pointer
     def _get_fields(self: Self, class_ptr: int) -> list[int]:
         field_count = (
-            pymem.memory.read_longlong(
-                self.pm.process_handle,
+            self.read_longlong(
                 class_ptr + self.offsets["monoclass_field_count"],
             )
             & 0xFFFF
         )
-        fields_ptr = pymem.memory.read_longlong(
-            self.pm.process_handle, class_ptr + self.offsets["monoclass_fields"]
+        fields_ptr = self.read_longlong(
+            class_ptr + self.offsets["monoclass_fields"]
         )
         fields: list[int] = []
         struct_size = self.offsets["monoclassfield_structsize"] & 0xFFFFFFFFFFFFFFFF
@@ -290,21 +298,20 @@ class SoSMemory:
 
     # Get all Unity Types/Classes in the provided module/dll
     def _get_image_classes(self: Self) -> list[int]:
-        type_count = pymem.memory.read_int(
-            self.pm.process_handle, self.image + self.offsets["monoimage_typecount"]
+        type_count = pyMeow.r_int(
+            self.pm, self.image + self.offsets["monoimage_typecount"]
         )
 
-        inner_handle = pymem.memory.read_longlong(
-            self.pm.process_handle,
+        inner_handle = self.read_longlong(
             self.image + self.offsets["monoimage_metadatahandle"],
         )
-        metadata_handle = pymem.memory.read_int(self.pm.process_handle, inner_handle)
-        ptr = pymem.memory.read_longlong(self.pm.process_handle, self.type_info_definition_table)
+        metadata_handle = pyMeow.r_int(self.pm, inner_handle)
+        ptr = self.read_longlong(self.type_info_definition_table)
 
         ptr = ptr + (metadata_handle * 8)
         classes: list[int] = []
         for field in range(0, type_count):
-            field_class = pymem.memory.read_ulonglong(self.pm.process_handle, ptr + (field * 8))
+            field_class = self.read_ulonglong(ptr + (field * 8))
 
             if field_class:
                 classes.append(field_class)
