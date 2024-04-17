@@ -125,10 +125,9 @@ class SoSMemory:
     def read_int(self: Self, ptr: int) -> int:
         return pyMeow.r_int(self.pm, ptr)
 
-    def read_short(self: Self, address: int):
-        bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("h"))
-        bytes = struct.unpack("<h", bytes)[0]
-        return bytes
+    def read_short(self: Self, address: int) -> str:
+        returned_bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("h"))
+        return struct.unpack("<h", returned_bytes)[0]
 
     # Reads the garbled uuid string utf-8 field provided by Sea Of Stars
     # For example, for "TitleScreen" you may see:
@@ -218,15 +217,13 @@ class SoSMemory:
             address = aob_scan[0] - 4
             self.type_info_definition_table = address + 0x4 + pyMeow.r_int(self.pm, address)
 
-    def read_ulonglong(self: Self, address: int):
-        bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("Q"))
-        bytes = struct.unpack("<Q", bytes)[0]
-        return bytes
+    def read_ulonglong(self: Self, address: int) -> int:
+        returned_bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("Q"))
+        return struct.unpack("<Q", returned_bytes)[0]
 
-    def read_longlong(self: Self, address: int):
-        bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("q"))
-        bytes = struct.unpack("<q", bytes)[0]
-        return bytes
+    def read_longlong(self: Self, address: int) -> int:
+        returned_bytes = pyMeow.r_bytes(self.pm, address, struct.calcsize("q"))
+        return struct.unpack("<q", returned_bytes)[0]
 
     # Gets the Assembly-CSharp image where the games code lives so it can be used as a module base
     def get_image(self: Self, assembly_name: str = "Assembly-CSharp") -> int:
