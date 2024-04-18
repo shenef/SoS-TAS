@@ -1,6 +1,6 @@
 from typing import Self
 
-from engine.combat import SeqCombatAndMove
+from engine.combat import SeqCombat
 from engine.seq import (
     InteractMove,
     SeqBlackboard,
@@ -32,11 +32,8 @@ class BattleTestSequence(SeqList):
             name="Testing Fight",
             children=[
                 SeqBlackboard("Dash Strike", key="dash_strike", value=True),
-                SeqCombatAndMove(
-                    name="Fights",
-                    coords=[
-                        InteractMove(33.253, 6.002, 20.273),
-                    ],
+                SeqCombat(
+                    name="Battle Test",
                 ),
             ],
         )
