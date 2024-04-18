@@ -383,10 +383,10 @@ class CombatManager:
             try:
                 combat_controller_ptr = self.memory.follow_pointer(
                     self.base,
-                    [self.current_encounter_base, 0x128, 0x0, 0x78, 0x10, 0x0],
+                    [self.current_encounter_base, 0x128, 0x0, 0x10, 0x0],
                 )
 
-                controller = self.memory.read_string(combat_controller_ptr + 0x0, 25)
+                controller = self.memory.read_raw_string(combat_controller_ptr, 25)
                 match controller:
                     case s if s.startswith("FirstEncounter"):
                         self.combat_controller = CombatEncounter.FirstEncounter
