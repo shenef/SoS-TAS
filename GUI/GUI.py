@@ -222,6 +222,7 @@ class LayoutHelper:
         ----
             ui_element: Check the demo window for valid values
             color: Tuple of (r, g, b, a) values.
+
         """
         ui_element = getattr(imgui.Col_, ui_element)
         imgui.get_style().set_color_(ui_element, color)
