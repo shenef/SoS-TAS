@@ -2,7 +2,6 @@ from typing import Self
 
 from engine.combat import SeqCombat
 from engine.seq import (
-    InteractMove,
     SeqBlackboard,
     SeqDelay,
     SeqList,
