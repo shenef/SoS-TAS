@@ -75,12 +75,12 @@ class LevelUpManager:
     def _read_current_character(self: Self) -> None:
         try:
             definition_id_ptr = self.memory.follow_pointer(
-                self.base, [0x88, 0x88, 0x50, 0x58, 0x40, 0x0]
+                self.base, [0x90, 0x88, 0x50, 0x58, 0x40, 0x0]
             )
             definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)
             # LevelUpSceneController -> currentCharacter -> stateMachine -> currentState...
             # -> player -> characterDefinitionId
-            definition_id_ptr = self.memory.follow_pointer(self.base, [0x88, 0x0])
+            definition_id_ptr = self.memory.follow_pointer(self.base, [0x90, 0x0])
             character = PlayerPartyCharacter.parse_definition_id(definition_id)
             self.current_character = character
         except Exception:
@@ -88,9 +88,9 @@ class LevelUpManager:
 
     def _read_current_level_up_upgrades(self: Self) -> None:
         # LevelUpSceneController -> currentLevelUpUpgrades -> _items -> item[x]
-        self.memory.follow_pointer(self.base, [0xB0, 0x0])
+        self.memory.follow_pointer(self.base, [0xB8, 0x0])
         try:
-            items = self.memory.follow_pointer(self.base, [0xB0, 0x10, 0x0])
+            items = self.memory.follow_pointer(self.base, [0xB8, 0x10, 0x0])
         except Exception:
             self.current_upgrades = []
             return
