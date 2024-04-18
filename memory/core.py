@@ -55,7 +55,11 @@ class SoSMemory:
                 return
 
             if not self.ready_for_updates:
-                pm = pyMeow.open_process("SeaOfStars.exe")
+                try:
+                    pm = pyMeow.open_process("SeaOfStars.exe")
+                except Exception as _e:
+                    return
+
                 self.pm = pm
 
                 self.module = pyMeow.get_module(self.pm, "GameAssembly.dll")
