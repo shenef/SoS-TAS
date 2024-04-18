@@ -1,8 +1,7 @@
 # Libraries and Core Files
 import logging
-import time
 import os
-
+import time
 from enum import IntEnum
 from typing import Self
 
@@ -41,9 +40,9 @@ class SoSController:
 
     def set_joystick(self: Self, direction: Vec2) -> None:
         if self.os_name == "posix":
-           self.ctrl.set_joystick(direction.x, -direction.y)
+            self.ctrl.set_joystick(direction.x, -direction.y)
         else:
-           self.ctrl.set_joystick(direction.x, direction.y)
+            self.ctrl.set_joystick(direction.x, direction.y)
 
     def set_neutral(self: Self) -> None:
         self.ctrl.set_neutral()
