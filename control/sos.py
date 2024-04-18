@@ -1,5 +1,6 @@
 # Libraries and Core Files
 import logging
+import os
 import time
 from enum import IntEnum
 from typing import Self
@@ -31,13 +32,17 @@ class SoSController:
         self.ctrl = ctrl_handle()
         self.delay = delay  # In seconds
         self.dpad = self.DPad(ctrl=self.ctrl, delay=self.delay)
+        self.os_name = os.name
 
     # Wrappers
     def set_button(self: Self, x_key: Buttons, value: int | float) -> None:
         self.ctrl.set_button(x_key, value)
 
     def set_joystick(self: Self, direction: Vec2) -> None:
-        self.ctrl.set_joystick(direction.x, direction.y)
+        if self.os_name == "posix":
+            self.ctrl.set_joystick(direction.x, -direction.y)
+        else:
+            self.ctrl.set_joystick(direction.x, direction.y)
 
     def set_neutral(self: Self) -> None:
         self.ctrl.set_neutral()
