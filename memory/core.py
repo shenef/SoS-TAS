@@ -128,7 +128,7 @@ class SoSMemory:
     def resolve_pointer(self: Self, base: int) -> int:
         return self.follow_pointer(base, [0x0, 0x0])
 
-    def follow_fields(self: Self, manager: any, fields: list[str], debug=False) -> int:
+    def follow_fields(self: Self, manager: any, fields: list[str], debug: bool = False) -> int:
         last = fields[-1]
 
         if manager.fields_base is None:
