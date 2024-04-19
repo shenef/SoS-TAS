@@ -6,9 +6,10 @@ from memory import PlayerPartyCharacter, mem_handle
 
 class TitleCursorPosition(Enum):
     NONE = auto()
-    Continue = auto()
+    Store = auto()
     NewGame = auto()
     NewGamePlus = auto()
+    Continue = auto()
     LoadGame = auto()
     Options = auto()
     Quit = auto()
@@ -132,17 +133,17 @@ class TitleSequenceManager:
                 PlayerPartyCharacter.NONE, False
             )
 
-    def _read_continue_selected(self: Self) -> None:
+    def _read_store_selected(self: Self) -> None:
         # titleScreen -> continueButton -> selected
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xA8, 0x148])
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0x98, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
-            self.title_cursor_position = TitleCursorPosition.Continue
+            self.title_cursor_position = TitleCursorPosition.Store
             self.title_position_set = True
 
     def _read_new_game_selected(self: Self) -> None:
         # titleScreen -> newGameButton -> selected
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0x98, 0x148])
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xA0, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.NewGame
@@ -150,15 +151,23 @@ class TitleSequenceManager:
 
     def _read_new_game_plus_selected(self: Self) -> None:
         # titleScreen -> newGameButton -> selected
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xA0, 0x148])
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xA8, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.NewGamePlus
             self.title_position_set = True
 
+    def _read_continue_selected(self: Self) -> None:
+        # titleScreen -> continueButton -> selected
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xB0, 0x148])
+        value = self.memory.read_bool(ptr)
+        if value:
+            self.title_cursor_position = TitleCursorPosition.Continue
+            self.title_position_set = True
+
     def _read_load_game_selected(self: Self) -> None:
         # titleScreen -> loadGameButton -> selected
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xB0, 0x148])
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xB8, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.LoadGame
@@ -166,7 +175,7 @@ class TitleSequenceManager:
 
     def _read_options_selected(self: Self) -> None:
         # titleScreen -> optionsButton -> selected
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xB8, 0x148])
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xC0, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.Options
@@ -174,7 +183,7 @@ class TitleSequenceManager:
 
     def _read_quit_selected(self: Self) -> None:
         # titleScreen -> quitGameButton -> selected
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xC0, 0x148])
+        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xC8, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.Quit
