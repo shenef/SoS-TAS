@@ -140,11 +140,11 @@ class SoSMemory:
         base = manager.fields_base
         addr = manager.base
         if debug:
-            logger.debug(f"")
-            logger.debug(f"::: BASE ")
+            logger.debug("")
+            logger.debug("::: BASE ")
             logger.debug(f"::: {hex(base)}")
             logger.debug(f"addr: {hex(addr)}")
-            logger.debug(f"-----------------")
+            logger.debug("-----------------")
 
         for field in fields:
             base = self.get_class_base(addr)
@@ -156,7 +156,7 @@ class SoSMemory:
             addr = addr + offset if field == last else self.follow_pointer(addr, [offset, 0])
             if debug:
                 logger.debug(f"addr: {hex(addr)}")
-                logger.debug(f"-----------------")
+                logger.debug("-----------------")
 
         return addr
 
