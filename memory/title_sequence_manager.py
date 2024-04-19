@@ -79,20 +79,20 @@ class TitleSequenceManager:
     def _read_new_game_characters(self: Self) -> None:
         try:
             # characterSelectionScreen -> leftButton -> characterDefinitionId
-            left_button_character_definition_id_ptr = self.memory.follow_pointer(
-                self.base, [self.character_selection_screen, 0xD8, 0x18, 0x0]
+            left_button_character_definition_id_ptr = self.memory.follow_fields(
+                self, ["characterSelectionScreen", "leftButton", "characterDefinitionId"]
             )
             left_character_value = self.memory.read_string(
-                left_button_character_definition_id_ptr + 0x14, 8
+                self.memory.resolve_pointer(left_button_character_definition_id_ptr) + 0x14, 8
             )
             left_character = PlayerPartyCharacter.parse_definition_id(left_character_value)
 
             # characterSelectionScreen -> rightButton -> characterDefinitionId
-            right_button_character_definition_id_ptr = self.memory.follow_pointer(
-                self.base, [self.character_selection_screen, 0xE0, 0x18, 0x0]
+            right_button_character_definition_id_ptr = self.memory.follow_fields(
+                self, ["characterSelectionScreen", "rightButton", "characterDefinitionId"]
             )
             right_character_value = self.memory.read_string(
-                right_button_character_definition_id_ptr + 0x14, 8
+                self.memory.resolve_pointer(right_button_character_definition_id_ptr) + 0x14, 8
             )
             right_character = PlayerPartyCharacter.parse_definition_id(right_character_value)
         except Exception:
@@ -100,10 +100,10 @@ class TitleSequenceManager:
             left_character = None
 
         try:
-            selected_character_pointer = self.memory.follow_pointer(
-                self.base, [self.character_selection_screen, 0xE8, 0x0]
+            selected_character_pointer = self.memory.follow_fields(
+                self, ["characterSelectionScreen", "selectedCharacter", "selected"]
             )
-            selected_character_value = self.memory.read_bool(selected_character_pointer + 0x60)
+            selected_character_value = self.memory.read_bool(selected_character_pointer)
             selected_character = None
             match selected_character_value:
                 case False:
@@ -160,7 +160,6 @@ class TitleSequenceManager:
     def _read_continue_selected(self: Self) -> None:
         # titleScreen -> continueButton -> selected
         ptr = self.memory.follow_fields(self, ["titleScreen", "continueButton", "selected"])
-        ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xB0, 0x148])
         value = self.memory.read_bool(ptr)
         if value:
             self.title_cursor_position = TitleCursorPosition.Continue
@@ -193,7 +192,7 @@ class TitleSequenceManager:
     # True if there was a save to load and the continue button shows up
     def _read_load_save_done(self: Self) -> None:
         if self.memory.ready_for_updates:
-            ptr = self.memory.follow_pointer(self.base, [0xC0])
+            ptr = self.memory.follow_fields(self, ["loadSaveDone"])
             value = self.memory.read_bool(ptr)
             self.load_save_done = value
             return
@@ -202,7 +201,7 @@ class TitleSequenceManager:
     # True if you pressed start on the "press start" screen before the title menu shows up
     def _read_pressed_start(self: Self) -> None:
         if self.memory.ready_for_updates:
-            ptr = self.memory.follow_pointer(self.base, [self.title_screen, 0xE0])
+            ptr = self.memory.follow_fields(self, ["titleScreen", "startPressed"])
             value = self.memory.read_bool(ptr)
             self.pressed_start = value
             return

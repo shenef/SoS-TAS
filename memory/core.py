@@ -120,6 +120,14 @@ class SoSMemory:
 
         return addr + last
 
+    # Used for following a pointer at the given address.
+    # This is useful for when you're accessing a field that uses a primitive non-mono type:
+    # For example: Character Definition ID points to an internal String that has a
+    # length and value, but we cannot look up those field names based on the class.
+    # We must resolve/follow it to add the offset required (0x18) to get the value.
+    def resolve_pointer(self: Self, base: int) -> int:
+        return self.follow_pointer(base, [0x0, 0x0])
+
     def follow_fields(self: Self, manager: any, fields: list[str]) -> int:
         last = fields[-1]
 
