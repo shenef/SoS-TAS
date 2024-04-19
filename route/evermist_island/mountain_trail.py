@@ -37,7 +37,7 @@ class IntroMountainTrail(SeqList):
         super().__init__(
             name="Mountain Trail",
             children=[
-                SeqSkipUntilCombat(name="Wait for combat"),
+                SeqSkipUntilCombat(name="Wait for combat", hold_cancel=True),
                 SeqLog(name="SYSTEM", text="We have control!"),
                 SeqCombatAndMove(
                     name="Fights",
