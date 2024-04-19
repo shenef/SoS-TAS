@@ -49,35 +49,39 @@ class SoSMemory:
         self.ready_for_updates = ready
 
     def update(self: Self) -> None:
-        try:
-            if self.pm is not None and not self.pm["pid"]:
-                self.__init__()
-                return
-
-            if not self.ready_for_updates:
-                try:
-                    pm = pyMeow.open_process("SeaOfStars.exe")
-                except Exception as _e:
-                    return
-
-                self.pm = pm
-
-                self.module = pyMeow.get_module(self.pm, "GameAssembly.dll")
-                self.module_base = self.module["base"]
-
-                logger.info(
-                    f"Base address of GameAssembly.dll in SeaOfStars.exe: {hex(self.module_base)}"
-                )
-
-                # Update Sigscans
-                self._assemblies_trg_sig()
-                self._type_info_definition_table_trg_sig()
-                self.get_image()
-                self._set_ready_for_updates()
-
-        except Exception as _e:
-            logger.debug(f"Memory Core Reloading {type(_e)}")
+        # try:
+        if self.pm is not None and not self.pm["pid"]:
             self.__init__()
+            return
+
+        if not self.ready_for_updates:
+            pm = pyMeow.open_process("SeaOfStars.exe")
+
+            self.pm = pm
+            # for m in pyMeow.enum_modules(self.pm):
+            #     try:
+            #         self.module = m
+            #         self._assemblies_trg_sig()
+            #         break
+            #     except:
+            #         pass
+
+            self.module = pyMeow.get_module(self.pm, "GameAssembly.dll")
+            self.module_base = self.module["base"]
+
+            logger.info(
+                f"Base address of GameAssembly.dll in SeaOfStars.exe: {hex(self.module_base)}"
+            )
+
+            # Update Sigscans
+            self._assemblies_trg_sig()
+            self._type_info_definition_table_trg_sig()
+            self.get_image()
+            self._set_ready_for_updates()
+
+    # except Exception as _e:
+    #     logger.debug(f"Memory Core Reloading {type(_e)}")
+    #     self.__init__()
 
     # This is a helper function designed to facilitate in finding instanced/dynamically allocated
     # objects. This is used most of the time for classes that inherit from a generic class such
@@ -201,6 +205,8 @@ class SoSMemory:
             # 32bit "8A 07 47 84 C0 75 ?? 8B 35"
             # signature = b"\\x8A\\x07\\x47\\x84\\xC0\\x75.\\x8B\\x35"
             aob_scan = pyMeow.aob_scan_module(self.pm, self.module["name"], signature)
+            if aob_scan == []:
+                raise "Could not scan for assemblies trg"
             address = aob_scan[0] + 12
             self.assemblies = address + 0x4 + pyMeow.r_int(self.pm, address)
 
@@ -211,6 +217,8 @@ class SoSMemory:
             signature = "48 83 3C ?? 00 75 ?? 8B C? E8"
             # signature = b"\\x48\\x83\\x3C.\\x00\\x75.\\x8B.\\xe8"
             aob_scan = pyMeow.aob_scan_module(self.pm, self.module["name"], signature)
+            if aob_scan == []:
+                raise "Could not scan for type info definition trg"
             address = aob_scan[0] - 4
             self.type_info_definition_table = address + 0x4 + pyMeow.r_int(self.pm, address)
 
