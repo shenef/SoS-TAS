@@ -119,6 +119,8 @@ class LevelUpManager:
                 active = not self.memory.read_bool(active_ptr + 0xA0)
                 upgrades.append(LevelUpUpgrade(upgrade_type, active))
                 address += self.ITEM_OBJECT_OFFSET
+                if active:
+                    self.active_index = _item
         self.current_upgrades = upgrades
 
 
