@@ -66,21 +66,23 @@ class LevelUpManager:
                 self.__init__()
 
     def _read_level_up_screen_active(self: Self) -> None:
-        ptr = self.memory.follow_pointer(self.base, [0x20, 0x0])
-        if ptr == 0x0:
+        # check if the callback function is available and ready to fire
+        ptr = self.memory.follow_fields(self, ["onLevelUpDone"])
+
+        if self.memory.resolve_pointer(ptr) == 0x0:
             self.level_up_screen_active = False
         else:
             self.level_up_screen_active = True
 
     def _read_current_character(self: Self) -> None:
+        # State machines are not field queryable so we must resolve manually.
+        # LevelUpSceneController -> currentCharacter -> stateMachine -> currentState...
+        # -> player -> characterDefinitionId
         try:
             definition_id_ptr = self.memory.follow_pointer(
                 self.base, [0x90, 0x88, 0x50, 0x58, 0x40, 0x0]
             )
             definition_id = self.memory.read_string(definition_id_ptr + 0x14, 8)
-            # LevelUpSceneController -> currentCharacter -> stateMachine -> currentState...
-            # -> player -> characterDefinitionId
-            definition_id_ptr = self.memory.follow_pointer(self.base, [0x90, 0x0])
             character = PlayerPartyCharacter.parse_definition_id(definition_id)
             self.current_character = character
         except Exception:
@@ -88,9 +90,11 @@ class LevelUpManager:
 
     def _read_current_level_up_upgrades(self: Self) -> None:
         # LevelUpSceneController -> currentLevelUpUpgrades -> _items -> item[x]
-        self.memory.follow_pointer(self.base, [0xB8, 0x0])
+        # items = self.memory.follow_pointer(self.base, [0xB8, 0x0])
         try:
-            items = self.memory.follow_pointer(self.base, [0xB8, 0x10, 0x0])
+            items = self.memory.follow_fields(self, ["currentLevelUpUpgrades"])
+            items = self.memory.resolve_pointer(items)
+            items = self.memory.follow_pointer(items, [0x10, 0x0])
         except Exception:
             self.current_upgrades = []
             return

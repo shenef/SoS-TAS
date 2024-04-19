@@ -128,7 +128,7 @@ class SoSMemory:
     def resolve_pointer(self: Self, base: int) -> int:
         return self.follow_pointer(base, [0x0, 0x0])
 
-    def follow_fields(self: Self, manager: any, fields: list[str]) -> int:
+    def follow_fields(self: Self, manager: any, fields: list[str], debug=False) -> int:
         last = fields[-1]
 
         if manager.fields_base is None:
@@ -139,11 +139,24 @@ class SoSMemory:
 
         base = manager.fields_base
         addr = manager.base
+        if debug:
+            logger.debug(f"")
+            logger.debug(f"::: BASE ")
+            logger.debug(f"::: {hex(base)}")
+            logger.debug(f"addr: {hex(addr)}")
+            logger.debug(f"-----------------")
 
         for field in fields:
             base = self.get_class_base(addr)
             offset = self.get_field(base, field)
+            if debug:
+                logger.debug(f"::: {field}")
+                logger.debug(f"base: {hex(base)}")
+                logger.debug(f"offset: {hex(offset)}")
             addr = addr + offset if field == last else self.follow_pointer(addr, [offset, 0])
+            if debug:
+                logger.debug(f"addr: {hex(addr)}")
+                logger.debug(f"-----------------")
 
         return addr
 
