@@ -292,7 +292,7 @@ class SoSAppraisal(Appraisal):
             return
 
         # if we shouldn't be here, go back a step
-        if not combat_manager.battle_command_index == None:
+        if combat_manager.battle_command_index != None:
             self.step == SoSAppraisalStep.ConfirmCommand
             return
 
