@@ -29,12 +29,12 @@ class Moonerang(SoSAppraisal):
     ) -> None:
         super().__init__(
             name="Moonerang",
+            internal_name="Moonrang",
             boost=boost,
             timing_type=timing_type,
             battle_command=SoSBattleCommand.Skill,
         )
         self.value = value
-        self.battle_command_targeting_type = SoSBattleCommand.Attack
         self.target_type = SoSTargetType.Enemy
         self.damage_type = [CombatDamageType.Moon] * 10
         # this needs to move to a system that tracks available abilities.

@@ -22,6 +22,7 @@ class BasicAttack(SoSAppraisal):
     ) -> None:
         super().__init__(
             name="Attack",
+            internal_name="Combat",
             boost=boost,
             timing_type=timing_type,
             battle_command=SoSBattleCommand.Attack,

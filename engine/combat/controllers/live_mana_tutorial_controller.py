@@ -18,8 +18,6 @@ combat_manager = combat_manager_handle()
 new_dialog_manager = new_dialog_manager_handle()
 
 
-# The classes in encounter controllers are intended to return True if they
-# should short circuit the root combat controller.
 class LiveManaTutorialController(EncounterController):
     MIN_LIVE_MANA = 5
 
@@ -33,16 +31,18 @@ class LiveManaTutorialController(EncounterController):
     def _get_action(self: Self) -> Action:
         for player in combat_manager.players:
             if combat_manager.selected_character == player.character:
+                enemy = combat_manager.enemies[0]
                 if combat_manager.small_live_mana >= self.MIN_LIVE_MANA:
-                    return Action(
-                        SoSConsideration(player),
-                        BasicAttack(
-                            caster=player.character, timing_type=SoSTimingType.NONE, boost=1
-                        ),
+                    appraisal = BasicAttack(
+                        caster=player.character, timing_type=SoSTimingType.NONE, boost=1
                     )
-                return Action(
-                    SoSConsideration(player),
-                    BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
-                )
+                    appraisal.target = enemy.unique_id
+                    combat_manager.current_appraisal = appraisal
+                    return Action(SoSConsideration(player), appraisal)
+
+                appraisal = BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE)
+                appraisal.target = enemy.unique_id
+                combat_manager.current_appraisal = appraisal
+                return Action(SoSConsideration(player), appraisal)
 
         return None

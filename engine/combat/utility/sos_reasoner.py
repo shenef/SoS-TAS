@@ -62,6 +62,8 @@ class SoSReasoner(Reasoner):
 
         if not actions:
             return None
+
+        combat_manager.current_appraisal = actions[0].appraisal
         return actions[0]
 
     def _can_generate_consideration_for_player(self: Self, player: CombatPlayer) -> bool:

@@ -26,15 +26,20 @@ class FirstEncounterController(EncounterController):
     def _get_action(self: Self) -> Action:
         for player in combat_manager.players:
             if combat_manager.selected_character == player.character:
+                enemy = combat_manager.enemies[0]
                 match player.character:
                     case PlayerPartyCharacter.Valere:
-                        return Action(
-                            SoSConsideration(player),
-                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
+                        appraisal = BasicAttack(
+                            caster=player.character, timing_type=SoSTimingType.NONE, boost=0
                         )
+                        appraisal.target = enemy.unique_id
+                        combat_manager.current_appraisal = appraisal
+                        return Action(SoSConsideration(player), appraisal)
                     case PlayerPartyCharacter.Zale:
-                        return Action(
-                            SoSConsideration(player),
-                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
+                        appraisal = BasicAttack(
+                            caster=player.character, timing_type=SoSTimingType.NONE, boost=0
                         )
+                        appraisal.target = enemy.unique_id
+                        combat_manager.current_appraisal = appraisal
+                        return Action(SoSConsideration(player), appraisal)
         return None

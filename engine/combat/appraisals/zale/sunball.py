@@ -27,6 +27,7 @@ class Sunball(SoSAppraisal):
     ) -> None:
         super().__init__(
             name="Sunball",
+            internal_name="Sunball",
             boost=boost,
             timing_type=timing_type,
             battle_command=SoSBattleCommand.Skill,

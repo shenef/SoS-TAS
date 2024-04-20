@@ -30,7 +30,7 @@ class BattleTestSequence(SeqList):
         super().__init__(
             name="Testing Fight",
             children=[
-                SeqBlackboard("Dash Strike", key="dash_strike", value=True),
+                SeqBlackboard("Dash Strike", key="dash_strike", value=False),
                 SeqCombat(
                     name="Battle Test",
                 ),

@@ -14,6 +14,7 @@ from memory.combat_manager import (
 )
 from memory.mappers.player_party_character import PlayerPartyCharacter
 
+combat_manager = combat_manager_handle()
 logger = logging.getLogger(__name__)
 
 
@@ -64,17 +65,20 @@ class SoSResource(Enum):
 
 class SoSAppraisal(Appraisal):
     MAX_ENEMY_TARGETING_FAILURES = 15
+    CONFIRM_DELAY_IN_SECONDS = 0.1
 
     def __init__(
         self: Self,
         name: str,
         timing_type: SoSTimingType = SoSTimingType.NONE,
+        internal_name: str = "",
         boost: int = 0,
         battle_command: SoSBattleCommand = SoSBattleCommand.Attack,
+        battle_command_targeting_type: SoSBattleCommand = None,
     ) -> None:
         super().__init__(name=name)
 
-        self.combat_manager = combat_manager_handle()
+        self.internal_name = internal_name
         self.complete = False
         self.battle_command: SoSBattleCommand = battle_command
         self.skill_command_index = 0
@@ -83,7 +87,10 @@ class SoSAppraisal(Appraisal):
         # the following provides an alternative targeting type for moves that break out of
         # the normal controller types. Moonerang is an example of this, which acts like a
         # basic attack when it targets, but is a skill when it is selected
-        self.battle_command_targeting_type: SoSBattleCommand = self.battle_command
+        self.battle_command_targeting_type: SoSBattleCommand = (
+            battle_command_targeting_type or self.battle_command
+        )
+
         self.timing_type: SoSTimingType = timing_type
         self.step = SoSAppraisalStep.SelectingCommand
         self.character = PlayerPartyCharacter.NONE
@@ -103,7 +110,7 @@ class SoSAppraisal(Appraisal):
         if self.target is not None:
             enemy_name = ""
             enemy_idx = 0
-            for idx, enemy in enumerate(self.combat_manager.enemies):
+            for idx, enemy in enumerate(combat_manager.enemies):
                 if self.target == enemy.unique_id:
                     enemy_idx = idx
                     enemy_name = enemy.name
@@ -156,8 +163,8 @@ class SoSAppraisal(Appraisal):
         tap down until it is selected
         """
         if (
-            self.combat_manager.battle_command_has_focus
-            and self.combat_manager.battle_command_index != self.battle_command.value
+            combat_manager.battle_command_has_focus
+            and combat_manager.battle_command_index != self.battle_command.value
         ):
             sos_ctrl().dpad.tap_down()
         else:
@@ -181,10 +188,17 @@ class SoSAppraisal(Appraisal):
 
     def execute_confirm_command(self: Self) -> None:
         if (
-            self.combat_manager.battle_command_has_focus
-            and self.combat_manager.battle_command_index == self.battle_command.value
+            combat_manager.battle_command_has_focus
+            and combat_manager.battle_command_index == self.battle_command.value
         ):
+            time.sleep(self.CONFIRM_DELAY_IN_SECONDS)
             sos_ctrl().confirm()
+
+            # If we dont see an enemy targeted, then just go back to confirm command.
+            # This prevents a race where jumping in place to combat area can sometimes
+            # jump too far forward in state.
+            # TODO(eein): add player_targeted here too
+
             # Attack skips to selecting enemy sequence
             match self.battle_command:
                 case SoSBattleCommand.Attack:
@@ -199,15 +213,15 @@ class SoSAppraisal(Appraisal):
                     logger.error(f"Invalid Battle Command: {self.battle_command}")
 
             # set the character here for use later - since it drops from memory
-            self.character = self.combat_manager.selected_character
+            self.character = combat_manager.selected_character
             logger.debug(f"Confirmed Battle Command: {self.battle_command.name}")
             # logger.debug(f"Entering step: {self.step.name}")
 
     def execute_selecting_skill(self: Self) -> None:
         if (
-            self.combat_manager.battle_command_has_focus is False
-            and self.combat_manager.skill_command_has_focus is True
-            and self.combat_manager.skill_command_index != self.skill_command_index
+            combat_manager.battle_command_has_focus is False
+            and combat_manager.skill_command_has_focus is True
+            and combat_manager.skill_command_index != self.skill_command_index
         ):
             sos_ctrl().dpad.tap_down()
         else:
@@ -216,10 +230,11 @@ class SoSAppraisal(Appraisal):
 
     def execute_confirm_skill(self: Self) -> None:
         if (
-            self.combat_manager.battle_command_has_focus is False
-            and self.combat_manager.skill_command_has_focus
-            and self.combat_manager.skill_command_index == self.skill_command_index
+            combat_manager.battle_command_has_focus is False
+            and combat_manager.skill_command_has_focus
+            and combat_manager.skill_command_index == self.skill_command_index
         ):
+            time.sleep(self.CONFIRM_DELAY_IN_SECONDS)
             sos_ctrl().confirm()
             # Attack skips to selecting enemy sequence
             match self.battle_command:
@@ -239,19 +254,20 @@ class SoSAppraisal(Appraisal):
 
     def execute_select_combo(self: Self) -> None:
         if (
-            self.combat_manager.battle_command_has_focus is True
-            and self.combat_manager.battle_command_index != self.skill_command_index
+            combat_manager.battle_command_has_focus is True
+            and combat_manager.battle_command_index != self.skill_command_index
         ):
             sos_ctrl().dpad.tap_down()
         else:
             self.step = SoSAppraisalStep.ConfirmCombo
-            # logger.debug(f"Selecting Battle Combo: {self.name}")
+            logger.debug(f"Selecting Battle Combo: {self.name}")
 
     def execute_confirm_combo(self: Self) -> None:
         if (
-            self.combat_manager.battle_command_has_focus is True
-            and self.combat_manager.battle_command_index == self.skill_command_index
+            combat_manager.battle_command_has_focus is True
+            and combat_manager.battle_command_index == self.skill_command_index
         ):
+            time.sleep(self.CONFIRM_DELAY_IN_SECONDS)
             sos_ctrl().confirm()
             # TODO(orkaboy): Check targeting type
             match self.target_type:
@@ -267,14 +283,20 @@ class SoSAppraisal(Appraisal):
     def execute_selecting_enemy_sequence(self: Self) -> None:
         if (
             self._enemy_targeted()
-            and not self.combat_manager.battle_command_has_focus
-            and self.combat_manager.battle_command_index is None
-            and self.combat_manager.selected_character != PlayerPartyCharacter.NONE
+            and not combat_manager.battle_command_has_focus
+            and combat_manager.battle_command_index is None
+            and combat_manager.selected_character != PlayerPartyCharacter.NONE
         ):
             self.step = SoSAppraisalStep.ConfirmEnemySequence
-            # logger.debug(f"Selected Target {self.target}")
+            logger.debug(f"Selected Target {self.target}")
             return
-        # logger.warn("Enemy Target Not Valid, moving cursor")
+
+        # if we shouldn't be here, go back a step
+        if combat_manager.battle_command_index is not None:
+            self.step = SoSAppraisalStep.ConfirmCommand
+            return
+
+        logger.warn("Enemy Target Not Valid, moving cursor")
         # Use a randomly selected directional input to find enemies that are otherwise not reachable
         direction = random.randint(0, 3)
         match direction:
@@ -295,7 +317,7 @@ class SoSAppraisal(Appraisal):
             logger.warn("Max Targeting Failures Reached, Confirming Target")
 
     def execute_confirm_enemy_sequence(self: Self) -> None:
-        if self.combat_manager.selected_character != PlayerPartyCharacter.NONE:
+        if combat_manager.selected_character != PlayerPartyCharacter.NONE:
             logger.debug(f"Confirming Enemy {self.target}")
             sos_ctrl().confirm()
         else:
@@ -342,28 +364,24 @@ class SoSAppraisal(Appraisal):
         timing, so complete the action so a new one can be generated.
         """
         if (
-            self.combat_manager.battle_command_has_focus
-            and self.combat_manager.skill_command_has_focus
-            and self.combat_manager.selected_character is not PlayerPartyCharacter.NONE
+            combat_manager.battle_command_has_focus
+            and combat_manager.skill_command_has_focus
+            and combat_manager.selected_character is not PlayerPartyCharacter.NONE
             and self.step is SoSAppraisalStep.TimingSequence
         ):
             logger.warn("Missing Action Complete, Fallback")
             self.step = SoSAppraisalStep.ActionComplete
 
     def _enemy_targeted(self: Self) -> bool:
-        # If we are doing some custom controller stuff that doesn't need a target, just return True
-        if self.target is None:
-            return True
-
-        for enemy in self.combat_manager.enemies:
+        for enemy in combat_manager.enemies:
             if enemy.unique_id == self.target:
                 match self.battle_command_targeting_type:
                     case SoSBattleCommand.Attack:
-                        if enemy.unique_id == self.combat_manager.selected_attack_target_guid:
+                        if enemy.unique_id == combat_manager.selected_attack_target_guid:
                             return True
 
                     case SoSBattleCommand.Skill | SoSBattleCommand.Combo:
-                        if enemy.unique_id == self.combat_manager.selected_skill_target_guid:
+                        if enemy.unique_id == combat_manager.selected_skill_target_guid:
                             return True
         return False
 
@@ -379,7 +397,7 @@ class SoSAppraisal(Appraisal):
                 return True
 
     def is_player_timed_attack_ready(self: Self) -> bool:
-        for player in self.combat_manager.players:
+        for player in combat_manager.players:
             if player.character == self.character:
                 return player.timed_attack_ready
         return False

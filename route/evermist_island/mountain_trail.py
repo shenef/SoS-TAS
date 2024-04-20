@@ -13,6 +13,7 @@ from engine.seq import (
     SeqCliffClimb,
     SeqCliffMove,
     SeqClimb,
+    SeqDelay,
     SeqHoldConfirm,
     SeqHoldDirectionUntilLostControl,
     SeqIfMainCharacterValere,
@@ -37,7 +38,7 @@ class IntroMountainTrail(SeqList):
         super().__init__(
             name="Mountain Trail",
             children=[
-                SeqSkipUntilCombat(name="Wait for combat"),
+                SeqSkipUntilCombat(name="Wait for combat", hold_cancel=True),
                 SeqLog(name="SYSTEM", text="We have control!"),
                 SeqCombatAndMove(
                     name="Fights",
@@ -132,7 +133,7 @@ class IntroMountainTrail(SeqList):
                     name="Go out of cavern",
                     joy_dir=Vec2(1, -0.2),
                 ),
-                SeqSkipUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control", hold_cancel=True),
             ],
         )
 
@@ -294,7 +295,15 @@ class MountainTrail(SeqList):
                     name="Navigate to cave",
                     coords=[
                         Vec3(96.371, 30.002, 100.611),
-                        # TODO(orkaboy): Can drop down and desync
+                        Vec3(99.0, 30.002, 100.611),
+                    ],
+                ),
+                # TODO(orkaboy): Can drop down and desync
+                # eein: Avoids drop down and dsync, but can be tuned
+                SeqDelay("Wait for rocks", timeout_in_s=1.0),
+                SeqCombatAndMove(
+                    name="Navigate to cave",
+                    coords=[
                         InteractMove(103.873, 30.002, 100.548),
                         Vec3(105.732, 30.002, 100.548),
                         Vec3(109.080, 30.002, 105.382),

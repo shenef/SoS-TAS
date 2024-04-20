@@ -47,7 +47,7 @@ class XtolsLanding(SeqList):
                                     InteractMove(-453.412, -9.998, -72.458),
                                     Vec3(-450.379, -9.998, -72.458),
                                     HoldDirection(-491.448, 1.002, -219.789, joy_dir=Vec2(0, 1)),
-                                    Vec3(-491.448, 3.002, -206.558),
+                                    Vec3(-491.448, 3.002, -207.100),
                                 ],
                             ),
                             # TODO(orkaboy): Equip to whom?

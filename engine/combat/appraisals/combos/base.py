@@ -22,9 +22,11 @@ class ComboSkill(SoSAppraisal):
     def __init__(
         self: Self,
         name: str,
+        internal_name: str = "",
         timing_type: SoSTimingType = SoSTimingType.OneHit,
         boost: int = 0,
         casters: list[PlayerPartyCharacter] = None,
+        battle_command_targeting_type: SoSBattleCommand = None,
         combo_cost: int = 1,
     ) -> None:
         """Initialize a ComboSkill object."""
@@ -32,6 +34,7 @@ class ComboSkill(SoSAppraisal):
             name=name,
             boost=boost,
             timing_type=timing_type,
+            internal_name=internal_name,
             battle_command=SoSBattleCommand.Combo,
         )
         self.target_type = SoSTargetType.Enemy

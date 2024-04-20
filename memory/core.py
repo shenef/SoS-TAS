@@ -55,7 +55,11 @@ class SoSMemory:
                 return
 
             if not self.ready_for_updates:
-                pm = pyMeow.open_process("SeaOfStars.exe")
+                try:
+                    pm = pyMeow.open_process("SeaOfStars.exe")
+                except Exception as _e:
+                    return
+
                 self.pm = pm
 
                 self.module = pyMeow.get_module(self.pm, "GameAssembly.dll")
@@ -115,6 +119,46 @@ class SoSMemory:
             addr = self.read_longlong(addr + offset)
 
         return addr + last
+
+    # Used for following a pointer at the given address.
+    # This is useful for when you're accessing a field that uses a primitive non-mono type:
+    # For example: Character Definition ID points to an internal String that has a
+    # length and value, but we cannot look up those field names based on the class.
+    # We must resolve/follow it to add the offset required (0x18) to get the value.
+    def resolve_pointer(self: Self, base: int) -> int:
+        return self.follow_pointer(base, [0x0, 0x0])
+
+    def follow_fields(self: Self, manager: any, fields: list[str], debug: bool = False) -> int:
+        last = fields[-1]
+
+        if manager.fields_base is None:
+            raise Exception("follow_fields", "must has a manager that has `fields_base` set.")
+
+        if manager.base is None:
+            raise Exception("follow_fields", "must has a manager that has `base` set.")
+
+        base = manager.fields_base
+        addr = manager.base
+        if debug:
+            logger.debug("")
+            logger.debug("::: BASE ")
+            logger.debug(f"::: {hex(base)}")
+            logger.debug(f"addr: {hex(addr)}")
+            logger.debug("-----------------")
+
+        for field in fields:
+            base = self.get_class_base(addr)
+            offset = self.get_field(base, field)
+            if debug:
+                logger.debug(f"::: {field}")
+                logger.debug(f"base: {hex(base)}")
+                logger.debug(f"offset: {hex(offset)}")
+            addr = addr + offset if field == last else self.follow_pointer(addr, [offset, 0])
+            if debug:
+                logger.debug(f"addr: {hex(addr)}")
+                logger.debug("-----------------")
+
+        return addr
 
     def read_float(self: Self, ptr: int) -> float:
         return pyMeow.r_float(self.pm, ptr)
