@@ -90,7 +90,6 @@ class LevelUpManager:
 
     def _read_current_level_up_upgrades(self: Self) -> None:
         # LevelUpSceneController -> currentLevelUpUpgrades -> _items -> item[x]
-        # items = self.memory.follow_pointer(self.base, [0xB8, 0x0])
         try:
             items = self.memory.follow_fields(self, ["currentLevelUpUpgrades"])
             items = self.memory.resolve_pointer(items)
