@@ -136,41 +136,41 @@ class CombatManager:
         self.current_appraisal: any = None
 
     def update(self: Self) -> None:
-        # try:
-        if self.memory.ready_for_updates:
-            if self.base is None or self.fields_base is None:
-                self.encounter_done = True
-                singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
+        try:
+            if self.memory.ready_for_updates:
+                if self.base is None or self.fields_base is None:
+                    self.encounter_done = True
+                    singleton_ptr = self.memory.get_singleton_by_class_name("CombatManager")
 
-                if singleton_ptr is None:
-                    return
-                self.base = self.memory.get_class_base(singleton_ptr)
-                self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
-                self.current_encounter_base = self.memory.get_field(
-                    self.fields_base, "currentEncounter"
-                )
-            else:
-                self._read_encounter_done()
+                    if singleton_ptr is None:
+                        return
+                    self.base = self.memory.get_class_base(singleton_ptr)
+                    self.fields_base = self.memory.get_class_fields_base(singleton_ptr)
+                    self.current_encounter_base = self.memory.get_field(
+                        self.fields_base, "currentEncounter"
+                    )
+                else:
+                    self._read_encounter_done()
 
-                if self.encounter_done is True:
-                    self.combat_controller = CombatEncounter.Basic
-                    return
+                    if self.encounter_done is True:
+                        self.combat_controller = CombatEncounter.Basic
+                        return
 
-                self._read_combat_controller()
-                self._read_combo_and_ultimates()
-                self._read_players()
-                self._read_enemies()
-                self._read_battle_commands()
-                if not self.battle_command_has_focus:
-                    self._read_skill_commands()
-                self._read_live_mana()
-                self._read_current_target()
-                self.projectile_hit_count = self.read_projectile_hit_count()
-                self.projectile_speed = self.read_projectile_speed()
+                    self._read_combat_controller()
+                    self._read_combo_and_ultimates()
+                    self._read_players()
+                    self._read_enemies()
+                    self._read_battle_commands()
+                    if not self.battle_command_has_focus:
+                        self._read_skill_commands()
+                    self._read_live_mana()
+                    self._read_current_target()
+                    self.projectile_hit_count = self.read_projectile_hit_count()
+                    self.projectile_speed = self.read_projectile_speed()
 
-    # except Exception as _e:
-    #     # logger.debug(f"Combat Manager Reloading - {type(_e)}")
-    #     self.__init__()
+        except Exception as _e:
+            # logger.debug(f"Combat Manager Reloading - {type(_e)}")
+            self.__init__()
 
     def _read_combo_and_ultimates(self: Self) -> None:
         if self._should_update():

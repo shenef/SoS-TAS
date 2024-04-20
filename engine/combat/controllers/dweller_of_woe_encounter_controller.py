@@ -28,5 +28,5 @@ class DwellerOfWoeEncounterController(EncounterController):
         """Initialize a new DwellerOfWoeEncounterController object."""
         super().__init__()
         priority_list = [self.TRUE_DWELLER_OF_WOE, self.DWELLER_OF_WOE, self.DWELLER_OF_WOE_CLONE]
-        reasoner_execution_context = ReasonerExecutionContext(priority_list=priority_list)
+        reasoner_execution_context = ReasonerExecutionContext(priority_list)
         self.reasoner = SoSReasoner(reasoner_execution_context)
