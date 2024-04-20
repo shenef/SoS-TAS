@@ -1,6 +1,8 @@
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+
+[tool.ruff.lint]
 select = [
   # https://beta.ruff.rs/docs/rules/
   "A",        # flake8-builtins
@@ -11,7 +13,7 @@ select = [
   "E",        # pycodestyle
   # "ERA",    # eradicate (removes commented out code) - wait for code changes to calm down
   "F",        # pyflakes
-  "FURB",     # refurb - blocks pre-commit cause fully in preview
+  "FURB",     # refurb - currently fully in preview
   "I",        # isort
   "PL",       # pylint
   "RET",      # flake8-return
@@ -23,6 +25,7 @@ select = [
   "TRY401",   # tryceratops verbose-log-message
   "UP",       # pyupgrade
 ]
+
 ignore = [
   "ANN002",   # Missing type annotation for *{name} (args)
   "ANN003",   # Missing type annotation for **{name} (kwargs)
@@ -30,10 +33,14 @@ ignore = [
   "D104",     # undocumented-public-package
   "D203",     # one-blank-line-before-class
   "D212",     # multi-line-summary-first-line
+  "PLR0904", # too-many-public-methods
   "PLR0911",  # too-many-return-statements
   "PLR0912",  # too-many-branches
   "PLR0913",  # too-many-arguments
+  "PLR0914", # too-many-variables
   "PLR0915",  # too-many-statements
+  "PLR0917",  # too-many-positional
+  "PLR1702",  # too-many-nested-blocks
   "PLW0603",  # global-statement
   "TD003",    # missing-todo-link
 
@@ -45,15 +52,20 @@ ignore = [
   "D100",     # undocumented-public-module        (~ 9%)
   "D103",     # undocumented-public-function      (~ 3%)
   "D106",     # undocumented-public-nested-class  (~.4%)
-]
-unfixable = [
-  "ERA",      # false positives
+
+  # do we want to add those?
+  "PLR6301",  # no-self-use
+  "PLC2801",  # unnecessary-dunder-call
 ]
 
-[tool.ruff.flake8-builtins]
+unfixable = [
+  "ERA"      # false positives
+]
+
+[tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = [
   "format",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 combine-as-imports = true
