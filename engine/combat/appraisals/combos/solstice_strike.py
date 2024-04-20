@@ -22,12 +22,15 @@ class SolsticeStrike(ComboSkill):
         main_caster: PlayerPartyCharacter,
         value: float = 0.0,
         boost: int = 0,
+        skill_command_index: int = 1,
     ) -> None:
         super().__init__(
             name="Solstice Strike",
+            internal_name="DualAttack",
             timing_type=SoSTimingType.OneHit,
             boost=boost,
             casters=[PlayerPartyCharacter.Valere, PlayerPartyCharacter.Zale],
+            battle_command_targeting_type=SoSBattleCommand.Attack,
             combo_cost=1,
         )
         self.damage_type = [
@@ -45,4 +48,3 @@ class SolsticeStrike(ComboSkill):
         self.skill_command_index = 0
         self.target_type = SoSTargetType.Enemy
         self.value = value
-        self.battle_command_targeting_type = SoSBattleCommand.Attack

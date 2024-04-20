@@ -132,7 +132,7 @@ class IntroMountainTrail(SeqList):
                     name="Go out of cavern",
                     joy_dir=Vec2(1, -0.2),
                 ),
-                SeqSkipUntilIdle(name="Wait for control"),
+                SeqSkipUntilIdle(name="Wait for control", hold_cancel=True),
             ],
         )
 

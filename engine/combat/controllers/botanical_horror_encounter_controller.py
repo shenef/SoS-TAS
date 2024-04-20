@@ -28,5 +28,5 @@ class BotanicalHorrorEncounterController(EncounterController):
         """Initialize a new BotanicalHorrorEncounterController object."""
         super().__init__()
         priority_list = [self.TOP_FLOWER_GUID, self.BOTTOM_FLOWER_GUID, self.BOTANICAL_HORROR_GUID]
-        reasoner_execution_context = ReasonerExecutionContext(priority_list)
+        reasoner_execution_context = ReasonerExecutionContext(priority_list=priority_list)
         self.reasoner = SoSReasoner(reasoner_execution_context)

@@ -132,6 +132,8 @@ class CombatManager:
         # Moonerang
         self.projectile_hit_count = 0
         self.projectile_speed = 0.0
+        # Appraisal
+        self.current_appraisal: any = None
 
     def update(self: Self) -> None:
         # try:
@@ -147,7 +149,6 @@ class CombatManager:
                 self.current_encounter_base = self.memory.get_field(
                     self.fields_base, "currentEncounter"
                 )
-
             else:
                 self._read_encounter_done()
 
@@ -280,14 +281,13 @@ class CombatManager:
         return self.memory.ready_for_updates and self.current_encounter_base is not None
 
     def _read_current_target(self: Self) -> None:
-        target_unique_id_base = None
+        if self.current_appraisal == None:
+            return
 
-        selected_attack_target_guid = ""
-        selected_skill_target_guid = ""
-        selected_target_ptr = None
-
-        # Finds the player that is currently selected and uses their controller for selection.
         with contextlib.suppress(Exception):
+            selected_target_ptr = None
+
+            # Finds the player that is currently selected and uses their controller for selection.
             items_ptr = self.memory.follow_pointer(
                 self.base,
                 [
@@ -309,74 +309,89 @@ class CombatManager:
                         selected_target_ptr = item_ptr
                         break
                     address += self.ITEM_OBJECT_OFFSET
-            else:
-                return
-        if not selected_target_ptr:
-            return
 
-        with contextlib.suppress(Exception):
-            target_unique_id_base = self.memory.follow_pointer(
-                selected_target_ptr,
-                [
-                    0x68,
-                    0x38,
-                    0x190,
-                    0x30,
-                    0xA8,
-                    0x80,
-                    0x48,
-                    0x100,
-                    0x80,
-                    0xF8,
-                    0xF0,
-                    0x18,
-                    0x0,
-                ],
-            )
+                fighter_definition_ptr = self.memory.follow_pointer(
+                    selected_target_ptr,
+                    [
+                        0x68,
+                        0x38,
+                        0x190,
+                        0x0,
+                    ],
+                )
+                type_offset = None
+                from engine.combat.utility.sos_appraisal import SoSBattleCommand
 
-        # This check was added due to the pointer not falling off in time,
-        # referencing an enemy that just died
-        try:
-            selected_attack_target_guid = self.memory.read_uuid(target_unique_id_base + 0x14)
-        except Exception:
-            selected_attack_target_guid = ""
+                match self.current_appraisal.battle_command:
+                    case SoSBattleCommand.Attack:
+                        target = self.memory.follow_pointer(
+                            fighter_definition_ptr,
+                            [
+                                0x30,
+                                0xA8,
+                                0x80,
+                                0x48,
+                                0x100,
+                                0x80,
+                                0xF8,
+                                0xF0,
+                                0x18,
+                                0x0,
+                            ],
+                        )
+                        guid = self.memory.read_uuid(target + 0x14)
+                        self.selected_attack_target_guid = guid
+                        self.selected_skill_target_guid = None
+                    case default:
+                        type_offset = 0x28
+                        move_type_ptr = self.memory.resolve_pointer(
+                            fighter_definition_ptr + type_offset
+                        )
+                        items = self.memory.follow_pointer(
+                            move_type_ptr,
+                            [0x10, 0x0],
+                        )
 
-        # Separate Skill section lookup
-        # TODO(eein): This is currently not correct as it does consider the
-        # skill target, but gets a bit washed out if there are AOE targets.
-        with contextlib.suppress(Exception):
-            target_unique_id_base = self.memory.follow_pointer(
-                selected_target_ptr,
-                [
-                    0x68,
-                    0x38,
-                    0x190,
-                    0x28,
-                    0x10,
-                    0x20,
-                    0xA8,
-                    0x80,
-                    0x48,
-                    0x100,
-                    0x80,
-                    0xF8,
-                    0xF0,
-                    0x18,
-                    0x0,
-                ],
-            )
+                        skill_count = self.memory.read_int(items + 0x18)
 
-        # This check was added due to the pointer not falling off in time,
-        # referencing an enemy that just died
-        try:
-            selected_skill_target_guid = self.memory.read_uuid(target_unique_id_base + 0x14)
-        except Exception:
-            selected_skill_target_guid = ""
+                        if items:
+                            address = self.ITEM_INDEX_0_ADDRESS
 
-        # if the current player is selected, set it to the main combat manager state
-        # this will help us prevent scanning lists later on
-        self.selected_attack_target_guid = selected_attack_target_guid
-        self.selected_skill_target_guid = selected_skill_target_guid
+                            active_move = None
+                            for _item in range(skill_count):
+                                item = self.memory.follow_pointer(items, [address, 0x0])
+                                move_id = self.memory.follow_pointer(item, [0x18, 0x0])
+                                move_length = self.memory.read_int(move_id + 0x10)
+                                # *2 for utf characters
+                                move_name = self.memory.read_string(move_id + 0x14, move_length * 2)
+                                if move_name == self.current_appraisal.internal_name:
+                                    active_move = item
+                                    break
+
+                                address += self.ITEM_OBJECT_OFFSET
+
+                            target = self.memory.follow_pointer(
+                                active_move,
+                                [
+                                    0xA8,
+                                    0x80,
+                                    0x48,
+                                    0x100,
+                                    0x80,
+                                    0xF8,
+                                    0xF0,
+                                    0x18,
+                                    0x0,
+                                ],
+                            )
+                            guid = self.memory.read_uuid(target + 0x14)
+                            match self.current_appraisal.battle_command:
+                                case SoSBattleCommand.Attack:
+                                    self.selected_attack_target_guid = guid
+                                    self.selected_skill_target_guid = None
+                                case _:
+                                    self.selected_attack_target_guid = None
+                                    self.selected_skill_target_guid = guid
 
     def _read_combat_controller(self: Self) -> None:
         if self._should_update():

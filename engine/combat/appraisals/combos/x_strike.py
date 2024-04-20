@@ -25,6 +25,7 @@ class XStrike(ComboSkill):
     ) -> None:
         super().__init__(
             name="X-Strike",
+            internal_name="XStrike",
             timing_type=SoSTimingType.OneHit,
             boost=boost,
             casters=[PlayerPartyCharacter.Zale, PlayerPartyCharacter.Serai],

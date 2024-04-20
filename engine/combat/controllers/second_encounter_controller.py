@@ -46,26 +46,45 @@ class SecondEncounterController(EncounterController):
     def _get_action(self: Self) -> Action:
         for player in combat_manager.players:
             if combat_manager.selected_character == player.character:
+                enemy = combat_manager.enemies[0]
+
                 match player.character:
                     case PlayerPartyCharacter.Valere:
                         if self.second_attack is True:
+                            appraisal = CrescentArc(timing_type=SoSTimingType.NONE)
+                            appraisal.target = enemy.unique_id
+                            combat_manager.current_appraisal = appraisal
                             return Action(
                                 SoSConsideration(player),
-                                CrescentArc(timing_type=SoSTimingType.NONE),
+                                appraisal,
                             )
+                        appraisal = BasicAttack(
+                            caster=player.character, timing_type=SoSTimingType.NONE
+                        )
+                        appraisal.target = enemy.unique_id
+                        combat_manager.current_appraisal = appraisal
                         return Action(
                             SoSConsideration(player),
-                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
+                            appraisal,
                         )
                     case PlayerPartyCharacter.Zale:
                         if self.second_attack is True:
+                            appraisal = Sunball(value=1000, hold_time=2.0)
+                            appraisal.target = enemy.unique_id
+                            combat_manager.current_appraisal = appraisal
                             return Action(
                                 SoSConsideration(player),
-                                Sunball(value=1000, hold_time=2.0),
+                                appraisal,
                             )
+
+                        appraisal = BasicAttack(
+                            caster=player.character, timing_type=SoSTimingType.NONE
+                        )
+                        appraisal.target = enemy.unique_id
+                        combat_manager.current_appraisal = appraisal
                         return Action(
                             SoSConsideration(player),
-                            BasicAttack(caster=player.character, timing_type=SoSTimingType.NONE),
+                            appraisal,
                         )
 
         return None

@@ -26,5 +26,5 @@ class ElderMistEncounterController(EncounterController):
         """Initialize a new ElderMistController object."""
         super().__init__()
         priority_list = [self.ELDER_MIST_SWORD_GUID]
-        reasoner_execution_context = ReasonerExecutionContext(priority_list)
+        reasoner_execution_context = ReasonerExecutionContext(priority_list=priority_list)
         self.reasoner = SoSReasoner(reasoner_execution_context)
