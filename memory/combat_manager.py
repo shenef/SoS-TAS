@@ -281,7 +281,7 @@ class CombatManager:
         return self.memory.ready_for_updates and self.current_encounter_base is not None
 
     def _read_current_target(self: Self) -> None:
-        if self.current_appraisal == None:
+        if self.current_appraisal is None:
             return
 
         with contextlib.suppress(Exception):
@@ -342,7 +342,7 @@ class CombatManager:
                         guid = self.memory.read_uuid(target + 0x14)
                         self.selected_attack_target_guid = guid
                         self.selected_skill_target_guid = None
-                    case default:
+                    case _default:
                         type_offset = 0x28
                         move_type_ptr = self.memory.resolve_pointer(
                             fighter_definition_ptr + type_offset

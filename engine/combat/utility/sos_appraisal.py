@@ -292,8 +292,8 @@ class SoSAppraisal(Appraisal):
             return
 
         # if we shouldn't be here, go back a step
-        if combat_manager.battle_command_index != None:
-            self.step == SoSAppraisalStep.ConfirmCommand
+        if combat_manager.battle_command_index is not None:
+            self.step = SoSAppraisalStep.ConfirmCommand
             return
 
         logger.warn("Enemy Target Not Valid, moving cursor")
