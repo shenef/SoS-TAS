@@ -70,7 +70,6 @@ class BoatManager:
             # (BoatInstance) k__BackingField -> boatSnapRotation -> pitchRollLocalRotation
             ptr = self.memory.follow_pointer(self.base, [0x40, 0x0])
             if ptr:
-                #
                 max_speed = self.memory.read_float(ptr + 0x78)
                 speed = self.memory.read_float(ptr + 0x134)
 
