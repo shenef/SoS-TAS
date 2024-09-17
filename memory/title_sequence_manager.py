@@ -23,6 +23,7 @@ class CharacterSelectButton:
         self.character = character
         self.selected = selected
 
+
 class Relic:
     def __init__(self: Self, name: str, enabled: bool, selected: bool) -> None:
         """Initialize a new Relic."""
