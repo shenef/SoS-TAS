@@ -2,9 +2,9 @@ import logging
 from enum import Enum, auto
 from typing import Self
 
-logger = logging.getLogger(__name__)
-
 from memory import PlayerPartyCharacter, mem_handle
+
+logger = logging.getLogger(__name__)
 
 
 class TitleCursorPosition(Enum):
@@ -22,23 +22,6 @@ class CharacterSelectButton:
     def __init__(self: Self, character: PlayerPartyCharacter, selected: bool) -> None:
         self.character = character
         self.selected = selected
-
-
-# TODO(eein): For Selecting Relics
-# 0x88 relicSelectionScreen
-# - 0xE8 relicButtons
-# - - 0x10 relicButtons (items 20+ usual)
-# - - - 0x148 selected
-# - - - 0x188 textField
-# - - - - 0x188 m_text
-# - - - - - 0x10 length
-# - - - - - 0x14 value (Solstice Diploma)Diplomainvent
-# - - - 0x1B0 onOffSwitchImage
-# - - - - 0x0D8 m_Sprite
-# - - - - - 0x10 cachedPtr
-# - - - - - - 0x30 (sprite details)
-# - - - - - - - 0x0 relic-switch-on / relic-switch-off (string) - ignore last char
-
 
 class Relic:
     def __init__(self: Self, name: str, enabled: bool, selected: bool) -> None:

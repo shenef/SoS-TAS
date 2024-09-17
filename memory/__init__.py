@@ -36,7 +36,6 @@ __all__ = [
     "shop_manager_handle",
     "combat_manager_handle",
     "level_up_manager_handle",
-    "RelicManager",
     "LevelUpManager",
     "LevelUpUpgrade",
     "LevelUpUpgradeType",
