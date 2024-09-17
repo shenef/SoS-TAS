@@ -1,5 +1,7 @@
 from enum import Enum, auto
 from typing import Self
+import logging
+logger = logging.getLogger(__name__)
 
 from memory import PlayerPartyCharacter, mem_handle
 
@@ -20,15 +22,53 @@ class CharacterSelectButton:
         self.character = character
         self.selected = selected
 
+# TODO(eein): For Selecting Relics
+# 0x88 relicSelectionScreen
+# - 0xE8 relicButtons
+# - - 0x10 relicButtons (items 20+ usual)
+# - - - 0x148 selected
+# - - - 0x188 textField
+# - - - - 0x188 m_text
+# - - - - - 0x10 length
+# - - - - - 0x14 value (Solstice Diploma)Diplomainvent
+# - - - 0x1B0 onOffSwitchImage
+# - - - - 0x0D8 m_Sprite
+# - - - - - 0x10 cachedPtr
+# - - - - - - 0x30 (sprite details)
+# - - - - - - - 0x0 relic-switch-on / relic-switch-off (string) - ignore last char
+
+class Relic:
+    def __init__(self: Self, name: str, enabled: bool, selected: bool) -> None:
+        """Initialize a new Relic."""
+        self.name = name
+        self.enabled = enabled
+        self.selected = selected
+
+    def name(self: Self) -> str:
+        return self.name
+
+    def enabled(self: Self) -> bool:
+        return self.enabled
+
+    def selected(self: Self) -> bool:
+        return self.selected
+
 
 class TitleSequenceManager:
+    NULL_POINTER = 0xFFFFFFFF
+    ITEM_OBJECT_OFFSET = 0x8
+    ITEM_INDEX_0_ADDRESS = 0x20
+
     def __init__(self: Self) -> None:
         """Initialize a new TitleSequenceManager object."""
         self.memory = mem_handle()
+
         self.base = None
+        self.relics: list[Relic] = []
         self.fields_base = None
         self.title_screen = None
         self.character_selection_screen = None
+        self.relic_selection_screen = None
         # True if there was a save to load and the continue button shows up
         self.load_save_done = False
         # True if you pressed start on the "press start" screen before the title menu shows up
@@ -56,9 +96,13 @@ class TitleSequenceManager:
                     self.character_selection_screen = self.memory.get_field(
                         self.fields_base, "characterSelectionScreen"
                     )
+                    self.relic_selection_screen = self.memory.get_field(
+                        self.fields_base, "relicSelectionScreen"
+                    )
                 else:
                     # Update fields
                     self.title_position_set = False
+                    self._read_relics()
                     self._read_load_save_done()
                     self._read_new_game_characters()
                     self._read_pressed_start()
@@ -73,8 +117,41 @@ class TitleSequenceManager:
                     self.title_cursor_position = TitleCursorPosition.NONE
 
         except Exception as _e:
-            # logger.debug(f"Title Sequence Manager Reloading {type(_e)}")
+            logger.debug(f"Title Sequence Manager Reloading {type(_e)}")
             self.__init__()
+
+    def _read_relics(self: Self) -> None:
+        items_ptr_base = self.memory.follow_fields(
+            self, ["relicSelectionScreen", "relicButtons"]
+        )
+        items_ptr = self.memory.follow_pointer(items_ptr_base, [0x0, 0x10, 0x0])
+        relics = []
+
+        if items_ptr:
+            count = self.memory.read_int(items_ptr + 0x18)
+            address = self.ITEM_INDEX_0_ADDRESS
+            for _item in range(count):
+                item_ptr = self.memory.follow_pointer(items_ptr, [address, 0x0])
+                if item_ptr == 0x0: 
+                    break
+
+                selected = self.memory.read_bool(item_ptr + 0x148)
+
+                name_size_ptr = self.memory.follow_pointer(item_ptr, [0x188, 0xD8, 0x10])
+                name_size = self.memory.read_int(name_size_ptr)
+                name_ptr = self.memory.follow_pointer(item_ptr, [0x188, 0xD8, 0x14])
+                name = self.memory.read_string(name_ptr, name_size * 2)
+
+                enabled_ptr = self.memory.follow_pointer(item_ptr, [0x1B0, 0xD8, 0x10, 0x30, 0x0])
+                
+                enabled_str = self.memory.read_raw_string(enabled_ptr, 20)
+                enabled = "relic-switch-on" in enabled_str
+
+                relics.append(Relic(name=name, enabled=enabled, selected=selected))
+
+                address += self.ITEM_OBJECT_OFFSET
+
+        self.relics = relics
 
     def _read_new_game_characters(self: Self) -> None:
         try:

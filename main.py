@@ -15,6 +15,7 @@ from GUI.tools.blackboard_helper import BlackboardHelper
 from GUI.tools.commentary import CommentaryLog
 from GUI.tools.inventory_helper import InventoryHelper
 from GUI.tools.nav_helper import NavHelper
+from GUI.tools.relic_helper import RelicHelper
 from GUI.tools.route_helper import RouteHelper
 from GUI.tools.shop_helper import ShopHelper
 from GUI.tools.utility_helper import UtilityHelper
@@ -51,6 +52,7 @@ if __name__ == "__main__":
             BattleMenu(window=gui),
             InventoryHelper(window=gui),
             ShopHelper(window=gui),
+            RelicHelper(window=gui),
             BlackboardHelper(window=gui),
             CommentaryLog(window=gui),
             UtilityHelper(window=gui),

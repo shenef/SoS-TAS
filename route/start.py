@@ -1,6 +1,7 @@
 """Contains the sequencer node code for navigating the main menu to start the game."""
 
 import math
+
 from typing import Self
 
 from control import sos_ctrl
@@ -48,6 +49,26 @@ class SeqIfNewGame(SeqIf):
     def condition(self: Self) -> bool:
         return self.saveslot == 0
 
+
+class SeqKonamiCode(SeqBase):
+    def __init__(self: Self, name: str = "Konami Code (Speedrun Relic)") -> None:
+        super().__init__(name)
+
+    def execute(self: Self, delta: float) -> bool:
+        sos_ctrl().dpad.tap_up()
+        sos_ctrl().dpad.tap_up()
+        sos_ctrl().dpad.tap_down()
+        sos_ctrl().dpad.tap_down()
+        sos_ctrl().dpad.tap_left()
+        sos_ctrl().dpad.tap_right()
+        sos_ctrl().dpad.tap_left()
+        sos_ctrl().dpad.tap_right()
+
+        sos_ctrl().cancel()
+        sos_ctrl().confirm()
+
+        sos_ctrl().start()
+        return True
 
 class SeqMenuStartButton(SeqBase):
     def __init__(self: Self, name: str = "Start button") -> None:
@@ -141,7 +162,8 @@ class SoSStartGame(SeqList):
                 SeqCommentary(author=AUTHORS.orkaboy, text="https://github.com/orkaboy"),
                 SeqCommentary(author=AUTHORS.eein, text="https://github.com/Eein"),
                 SeqCommentary(author=AUTHORS.shenef, text="https://github.com/shenef"),
-                SeqMenuStartButton(),
+                # SeqMenuStartButton(),
+                SeqKonamiCode(),
                 SeqDelay(name="Menu", timeout_in_s=1.5),
                 SeqIfNewGame(
                     name="Game mode",
