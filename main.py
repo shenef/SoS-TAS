@@ -20,7 +20,7 @@ from GUI.tools.route_helper import RouteHelper
 from GUI.tools.shop_helper import ShopHelper
 from GUI.tools.utility_helper import UtilityHelper
 from log_init import initialize_logging
-from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu, SoSShopTestMenu
+from route.TAS import SoSAnyPercentMenu, SoSBattleTestMenu, SoSRelicSelectMenu, SoSShopTestMenu
 
 if __name__ == "__main__":
     # Read config data from file
@@ -43,6 +43,7 @@ if __name__ == "__main__":
                 children=[
                     SoSAnyPercentMenu(window=gui, config_data=config_data),
                     SoSBattleTestMenu(window=gui, config_data=config_data),
+                    SoSRelicSelectMenu(window=gui, config_data=config_data),
                     SoSShopTestMenu(window=gui, config_data=config_data),
                 ],
             ),

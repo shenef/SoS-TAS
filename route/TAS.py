@@ -28,6 +28,7 @@ from route.cataclysm import Cataclysm
 # Routing
 from route.evermist_island import EvermistIsland
 from route.mesa_island import MesaIsland
+from route.relic_select_test import RelicSelectTest
 from route.shop_test import ShopTest
 from route.sleeper_island import SleeperIsland
 from route.start import SoSStartGame
@@ -259,6 +260,7 @@ class SoSAnyPercentMenu(TASMenu):
 
     # We can add route configuration parameters here (apply branches with `SeqRouteBranch` node)
     ROUTE_CONFIG_PARAMS: list[RouteOption] = [
+        RouteOption(name="speedrun_mode", description="Enable Speedrun Mode", default=True),
         RouteOption(name="amulet", description="Use the Amulet of Storytelling", default=True),
         RouteOption(name="fc_leeching_thorn", description="Grab Leeching Thorn", default=False),
         RouteOption(name="fc_bosslug_loot", description="Loot Bosslug cave", default=True),
@@ -351,11 +353,36 @@ class SoSAnyPercentMenu(TASMenu):
             LayoutHelper.add_spacer()
 
 
+class SoSRelicSelectMenu(TASMenu):
+    """Used for testing purposes."""
+
+    def __init__(self: Self, window: Window, config_data: dict) -> None:
+        super().__init__(window, config_data, title="Relic Select Test")
+
+    # Override
+    def init_TAS(self: Self) -> None:
+        # This is the root node of the TAS
+        TAS_root = SeqList(
+            name="RelicTest",
+            children=[
+                RelicSelectTest(),
+                SeqLog(name="SYSTEM", text="EnableSpeedrunRelics Done!"),
+            ],
+        )
+        # This initializes the sequencer engine that will execute the TAS
+        self.sequencer = SequencerEngine(window=self.window, config=self.config_data, root=TAS_root)
+
+    def custom_gui(self: Self) -> None:
+        imgui.text_wrapped(
+            "Warning! This mode is only intended for testing the Speedrun Relic Selection Seq."
+        )
+
+
 class SoSBattleTestMenu(TASMenu):
     """Used for testing purposes."""
 
     def __init__(self: Self, window: Window, config_data: dict) -> None:
-        super().__init__(window, config_data, title="Battle Test")
+        super().__init__(window, config_data, title="Test")
 
     # Override
     def init_TAS(self: Self) -> None:

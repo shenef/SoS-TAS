@@ -6,6 +6,7 @@ from typing import Self
 from engine.combat import SeqCombatAndMove
 from engine.mathlib import Vec2, Vec3
 from engine.seq import (
+    SeqBase,
     CancelMove,
     HoldDirection,
     InteractMove,
@@ -22,6 +23,7 @@ from engine.seq import (
     SeqLog,
     SeqMove,
     SeqSkipUntilClose,
+    SeqRouteBranch,
     SeqSkipUntilCombat,
     SeqSkipUntilIdle,
     SeqTurboMashDelay,
@@ -133,10 +135,28 @@ class IntroMountainTrail(SeqList):
                     name="Go out of cavern",
                     joy_dir=Vec2(1, -0.2),
                 ),
-                SeqSkipUntilIdle(name="Wait for control", hold_cancel=True),
+                SeqRouteBranch(
+                    name="Handle prologue skip if exists",
+                    route=["speedrun_mode"],
+                    when_true=SeqList(
+                        name="Skip Prologue Sequence",
+                        children=[
+                            SeqSkipPrologue(),
+                            SeqSkipUntilIdle(name="Wait for control", hold_cancel=True)
+                        ]
+                    ),
+                    when_false=SeqSkipUntilIdle(name="Wait for control", hold_cancel=True),
+                ),
             ],
         )
 
+
+class SeqSkipPrologue(SeqBase):
+    def __init__(self: Self, name: str = "Skip Prologue") -> None:
+        super().__init__(name)
+
+    def execute(self: Self, delta: float) -> bool:
+        return False
 
 class MountainTrail(SeqList):
     """Route Mountain Trail section. From leaving Forbidden Cave to arrival at Elder Mist."""

@@ -1,5 +1,8 @@
 """Contains the sequencer node code for navigating the main menu to start the game."""
 
+import logging
+logger = logging.getLogger(__name__)
+
 import math
 from typing import Self
 
@@ -14,6 +17,7 @@ from engine.seq import (
     SeqInteract,
     SeqList,
     SeqLog,
+    SeqRouteBranch,
 )
 from GUI import AUTHORS
 from log_init import reset_logging_time_reference
@@ -22,6 +26,7 @@ from memory import (
     title_sequence_manager_handle,
 )
 
+from memory.title_sequence_manager import Relic
 
 def start_timer() -> None:
     """Restart the TAS timer."""
@@ -65,6 +70,58 @@ class SeqKonamiCode(SeqBase):
 
         sos_ctrl().cancel()
         sos_ctrl().confirm()
+
+        sos_ctrl().start()
+        return True
+
+DEFAULT_RELICS = [
+    Relic(name="Solstice Diploma", enabled=True, selected=False),
+    Relic(name="Amulet of Storytelling", enabled=True, selected=False),
+    Relic(name="Guardian Aura", enabled=True, selected=False),
+    Relic(name="Sequent Flare", enabled=True, selected=False),
+    Relic(name="Truestrike Pendant", enabled=True, selected=False),
+    Relic(name="Tome of Knowledge", enabled=True, selected=False),
+    Relic(name="Falcon-eyed Parrot", enabled=False, selected=False),
+    Relic(name="Salient Sails", enabled=True, selected=False),
+    Relic(name="Gold Tooth", enabled=True, selected=False),
+    Relic(name="Sixth Sense", enabled=True, selected=False),
+    Relic(name="Adamant Shard", enabled=False, selected=False),
+    Relic(name="Hidden Pockets", enabled=True, selected=False),
+    Relic(name="Mithreel Rod", enabled=False, selected=False),
+    Relic(name="Bearing Reel", enabled=False, selected=False),
+    Relic(name="Stereofilament Line", enabled=False, selected=False),
+    Relic(name="Tactician's Mettle", enabled=False, selected=False),
+    Relic(name="Artful Gambit", enabled=False, selected=False),
+    Relic(name="Double Edge", enabled=False, selected=False),
+    Relic(name="Dubious Dare", enabled=False, selected=False),
+    Relic(name="Solstice Doctorate", enabled=True, selected=False),
+    Relic(name="Mark of the Speedrunner", enabled=True, selected=False)
+]
+
+class SeqEnableSpeedrunRelics(SeqBase):
+    def __init__(self: Self, name: str = "Enable Speedrun Relics") -> None:
+        super().__init__(name)
+
+    def execute(self: Self, delta: float) -> bool:
+        relics = title_sequence_manager.relics
+        if relics == []: 
+            return False
+
+        selected_available = map(lambda x: x.selected, relics)
+        if any(selected_available):
+            selected = next(x for x in relics if x.selected)
+            expected = next((x for x in DEFAULT_RELICS if x.name == selected.name), None)
+            if expected is None or selected.enabled == expected.enabled:
+                sos_ctrl().dpad.tap_down()
+            else:
+                sos_ctrl().confirm()
+                sos_ctrl().dpad.tap_down()
+
+            # check every to ensure we are correctly set
+        for default_relic in DEFAULT_RELICS:
+            selected = next((x for x in relics if x.name == default_relic.name), None)
+            if selected is not None and selected.enabled != default_relic.enabled:
+                return False
 
         sos_ctrl().start()
         return True
@@ -162,8 +219,12 @@ class SoSStartGame(SeqList):
                 SeqCommentary(author=AUTHORS.orkaboy, text="https://github.com/orkaboy"),
                 SeqCommentary(author=AUTHORS.eein, text="https://github.com/Eein"),
                 SeqCommentary(author=AUTHORS.shenef, text="https://github.com/shenef"),
-                # SeqMenuStartButton(),
-                SeqKonamiCode(),
+                SeqRouteBranch(
+                    name="Konami Code for speedrun",
+                    route=["speedrun_mode"],
+                    when_true=SeqKonamiCode(),
+                    when_false=SeqMenuStartButton(),
+                ),
                 SeqDelay(name="Menu", timeout_in_s=1.5),
                 SeqIfNewGame(
                     name="Game mode",
@@ -197,6 +258,11 @@ class SoSStartGame(SeqList):
                             SeqInteract("Confirm load"),
                         ],
                     ),
+                ),
+                SeqRouteBranch(
+                    name="Select Relics",
+                    route=["speedrun_mode"],
+                    when_true=SeqEnableSpeedrunRelics(),
                 ),
                 SeqLog(name="SYSTEM", text="In game!"),
             ],

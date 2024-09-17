@@ -79,6 +79,10 @@ class CombatController:
         if self.controller.encounter_done() is False:
             self.state = CombatController.FSM.COMBAT
 
+        # TODO(eein): Was this needed? Saw it in an old workflow
+        # if self.controller.encounter_done() is True and level_up_manager.level_up_screen_active:
+        #     self.state = CombatController.FSM.LEVEL_UP_SCREEN
+
         match self.state:
             case CombatController.FSM.IDLE:
                 pass
