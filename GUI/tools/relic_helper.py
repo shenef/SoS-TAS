@@ -1,17 +1,18 @@
 """GUI window for showing relics."""
 
 import logging
+from typing import Self
+
+from imgui_bundle import imgui
 
 from GUI.GUI import Window
 from GUI.menu import Menu
-
-from imgui_bundle import imgui
 from memory import title_sequence_manager_handle
-from typing import Self
 
 logger = logging.getLogger(__name__)
 
 title_sequence_manager = title_sequence_manager_handle()
+
 
 class RelicHelper(Menu):
     """GUI window for showing relics."""
@@ -28,7 +29,6 @@ class RelicHelper(Menu):
         imgui.set_window_collapsed(1, cond=imgui.Cond_.once)
 
         imgui.begin_child("scroll_area")
-
 
         for entry in title_sequence_manager.relics:
             enabled = "[ ]"

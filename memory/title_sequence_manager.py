@@ -1,6 +1,7 @@
+import logging
 from enum import Enum, auto
 from typing import Self
-import logging
+
 logger = logging.getLogger(__name__)
 
 from memory import PlayerPartyCharacter, mem_handle
@@ -22,6 +23,7 @@ class CharacterSelectButton:
         self.character = character
         self.selected = selected
 
+
 # TODO(eein): For Selecting Relics
 # 0x88 relicSelectionScreen
 # - 0xE8 relicButtons
@@ -36,6 +38,7 @@ class CharacterSelectButton:
 # - - - - - 0x10 cachedPtr
 # - - - - - - 0x30 (sprite details)
 # - - - - - - - 0x0 relic-switch-on / relic-switch-off (string) - ignore last char
+
 
 class Relic:
     def __init__(self: Self, name: str, enabled: bool, selected: bool) -> None:
@@ -121,9 +124,7 @@ class TitleSequenceManager:
             self.__init__()
 
     def _read_relics(self: Self) -> None:
-        items_ptr_base = self.memory.follow_fields(
-            self, ["relicSelectionScreen", "relicButtons"]
-        )
+        items_ptr_base = self.memory.follow_fields(self, ["relicSelectionScreen", "relicButtons"])
         items_ptr = self.memory.follow_pointer(items_ptr_base, [0x0, 0x10, 0x0])
         relics = []
 
@@ -132,7 +133,7 @@ class TitleSequenceManager:
             address = self.ITEM_INDEX_0_ADDRESS
             for _item in range(count):
                 item_ptr = self.memory.follow_pointer(items_ptr, [address, 0x0])
-                if item_ptr == 0x0: 
+                if item_ptr == 0x0:
                     break
 
                 selected = self.memory.read_bool(item_ptr + 0x148)
@@ -143,7 +144,7 @@ class TitleSequenceManager:
                 name = self.memory.read_string(name_ptr, name_size * 2)
 
                 enabled_ptr = self.memory.follow_pointer(item_ptr, [0x1B0, 0xD8, 0x10, 0x30, 0x0])
-                
+
                 enabled_str = self.memory.read_raw_string(enabled_ptr, 20)
                 enabled = "relic-switch-on" in enabled_str
 

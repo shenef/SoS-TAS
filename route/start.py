@@ -1,7 +1,6 @@
 """Contains the sequencer node code for navigating the main menu to start the game."""
 
 import math
-
 from typing import Self
 
 from control import sos_ctrl
@@ -69,6 +68,7 @@ class SeqKonamiCode(SeqBase):
 
         sos_ctrl().start()
         return True
+
 
 class SeqMenuStartButton(SeqBase):
     def __init__(self: Self, name: str = "Start button") -> None:
