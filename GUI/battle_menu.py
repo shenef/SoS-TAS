@@ -61,7 +61,7 @@ class BattleMenu(Menu):
         imgui.separator()
         imgui.columns(self.COLUMN_MAX)
 
-        if combat_manager.enemies is not []:
+        if combat_manager.enemies != []:
             for idx, enemy in enumerate(combat_manager.enemies):
                 if not enemy.name:
                     imgui.text(f"({idx}) guid")
@@ -95,7 +95,7 @@ class BattleMenu(Menu):
                 imgui.next_column()
             imgui.separator()
 
-        if combat_manager.players is not []:
+        if combat_manager.players != []:
             for player in combat_manager.players:
                 imgui.text_wrapped(f"{player.character.value}:")
                 imgui.text_wrapped(f"HP: {player.current_hp} |")
