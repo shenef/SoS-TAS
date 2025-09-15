@@ -339,7 +339,7 @@ class SeqShop(SeqBase):
                     self.sell_mode = command.sell
                     ctrl.dpad.tap_down()
                     ctrl.confirm(tapping=True)
-                logger.debug(f"SeqShop: Mode = {"Sell" if self.sell_mode else "Buy"}")
+                logger.debug(f"SeqShop: Mode = {'Sell' if self.sell_mode else 'Buy'}")
                 self.state = SeqShop.FSM.SELECT_ITEM
             case SeqShop.FSM.SELECT_ITEM:
                 # TODO(orkaboy): Need to know which slot the item we want is in, from memory?
