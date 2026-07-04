@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository currently serves largely as an archive as it has been superseded by https://github.com/Eein/sea-of-stars-tas
+
 # Sea of Stars TAS
 
 This Tool Assisted Speedrun uses memory reading and branching logic to automate speedrunning Sea of Stars.
